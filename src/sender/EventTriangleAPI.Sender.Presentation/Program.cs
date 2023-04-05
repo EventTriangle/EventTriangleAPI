@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Identity.Web;
+using Microsoft.IdentityModel.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,8 @@ builder.Services
     .AddMicrosoftIdentityWebApi(configurationSection);
 
 var app = builder.Build();
+
+IdentityModelEventSource.ShowPII = true;
 
 
 app.UseSwagger();
