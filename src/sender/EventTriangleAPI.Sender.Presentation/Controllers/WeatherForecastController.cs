@@ -22,8 +22,8 @@ public class WeatherForecastController : ControllerBase
     }
 
     [Authorize(Roles = "User, Admin")]
-    [HttpGet("user")]
-    public IEnumerable<WeatherForecast> GetForUser()
+    [HttpGet("user_and_admin")]
+    public IEnumerable<WeatherForecast> GetForUserAndAdmin()
     {
         return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
