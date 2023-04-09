@@ -6,4 +6,8 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\..\shared\EventTriangleAPI.Shared.Application\EventTriangleAPI.Shared.Application.csproj" />
+    </ItemGroup>
+
 </Project>
