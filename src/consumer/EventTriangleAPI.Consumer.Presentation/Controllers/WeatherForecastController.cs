@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EventTriangleAPI.Consumer.Presentation.Controllers;
@@ -17,9 +18,23 @@ public class WeatherForecastController : ControllerBase
     {
         _logger = logger;
     }
+    
+    [Authorize(Roles = "User, Admin")]
+    [HttpGet("user_and_admin")]
+    public IEnumerable<WeatherForecast> GetForUserAndAdmin()
+    {
+        return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+            {
+                Date = DateTime.Now.AddDays(index),
+                TemperatureC = Random.Shared.Next(-20, 55),
+                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
+            })
+            .ToArray();
+    }
 
-    [HttpGet(Name = "GetWeatherForecast")]
-    public IEnumerable<WeatherForecast> Get()
+    [Authorize(Roles = "Admin")]
+    [HttpGet("admin")]
+    public IEnumerable<WeatherForecast> GetForAdmin()
     {
         return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
