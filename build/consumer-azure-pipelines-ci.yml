@@ -1,0 +1,46 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - develop
+      - main
+  paths:
+    include:
+      - build
+      - src/consumer/EventTriangleAPI.Consumer.Application
+      - src/consumer/EventTriangleAPI.Consumer.BusinessLogic
+      - src/consumer/EventTriangleAPI.Consumer.Domain
+      - src/consumer/EventTriangleAPI.Consumer.Presentation
+      - src/consumer/EventTriangleAPI.Consumer.IntegrationTests
+      - src/consumer/EventTriangleAPI.Consumer.UnitTests
+
+pr:
+  branches:
+    include:
+      - develop
+      - main
+  paths:
+    include:
+      - build
+      - src/consumer/EventTriangleAPI.Consumer.Application
+      - src/consumer/EventTriangleAPI.Consumer.BusinessLogic
+      - src/consumer/EventTriangleAPI.Consumer.Domain
+      - src/consumer/EventTriangleAPI.Consumer.Presentation
+      - src/consumer/EventTriangleAPI.Consumer.IntegrationTests
+      - src/consumer/EventTriangleAPI.Consumer.UnitTests
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  - name: buildPlatform
+    value: 'Any CPU'
+  - name: buildConfiguration
+    value: 'Release'
+
+stages:
+  - stage: 'Build_Test_Pack'
+    displayName: 'Build Test and Drop Artifacts'
+    jobs:
+      - template: templates/consumer-dotnet-build-job-template.yml
+      - template: templates/consumer-dotnet-test-job-template.yml
