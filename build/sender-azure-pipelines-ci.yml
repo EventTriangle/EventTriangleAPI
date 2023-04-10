@@ -36,28 +36,13 @@ pr:
 pool:
   vmImage: 'ubuntu-latest'
 
-variables:
-  - name: buildPlatform
-    value: 'Any CPU'
-  - name: buildConfiguration
-    value: 'Release'
-  - name: backendProjectPath
-    value: './src/sender/EventTriangleAPI.Sender.Presentation'
-  - name: integrationTestsProjectPath
-    value: './src/sender/EventTriangleAPI.Sender.IntegrationTests/EventTriangleAPI.Sender.IntegrationTests.csproj'
-  - name: unitTestsProjectPath
-    value: './src/sender/EventTriangleAPI.Sender.UnitTests/MangoAPI.Sender.UnitTests.csproj'
-
 stages:
-  - stage: 'Build_Test_Pack'
-    displayName: 'Build Test and Drop Artifacts'
+  - stage: 'Build_And_Test_SenderAPI'
+    displayName: 'Build and Test Sender API and Drop Artifacts'
     jobs:
-      - template: templates/sender-dotnet-build-job-template.yml
+      - template: templates/dotnet-build-and-test-job-template.yml
         parameters:
-          backendProjectPath: {{ variables.backendProjectPath }}
-          buildConfiguration: {{ variables.buildConfiguration }}
-      - template: templates/sender-dotnet-test-job-template.yml
-        parameters:
-          buildConfiguration: {{ variables.buildConfiguration }}
-          integrationTestsProjectPath: {{ variables.integrationTestsProjectPath }}
-          unitTestProjectPath: {{ variables.unitTestsProjectPath }}
+          buildConfiguration: 'Release'
+          backendProjectPath: './src/sender/EventTriangleAPI.Sender.Presentation'
+          integrationTestsProjectPath: './src/sender/EventTriangleAPI.Sender.IntegrationTests/EventTriangleAPI.Sender.IntegrationTests.csproj'
+          unitTestsProjectPath: './src/sender/EventTriangleAPI.Sender.UnitTests/EventTriangleAPI.Sender.UnitTests.csproj'
