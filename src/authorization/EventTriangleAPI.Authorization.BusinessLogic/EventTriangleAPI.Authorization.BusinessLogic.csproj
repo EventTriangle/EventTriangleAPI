@@ -7,10 +7,6 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <Protobuf Include="Protos\azureAd.proto" GrpcServices="Server" />
-  </ItemGroup>
-  
-  <ItemGroup>
     <ProjectReference Include="..\..\shared\EventTriangleAPI.Shared.Application\EventTriangleAPI.Shared.Application.csproj" />
     <ProjectReference Include="..\..\shared\EventTriangleAPI.Shared.DTO\EventTriangleAPI.Shared.DTO.csproj" />
   </ItemGroup>

@@ -1,14 +1,13 @@
-using EventTriangleAPI.Authorization.BusinessLogic.Protos;
+using EventTriangleAPI.Authorization.BusinessLogic.Interfaces;
 using EventTriangleAPI.Shared.Application.Services;
 using EventTriangleAPI.Shared.DTO.Responses;
-using Grpc.Core;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
 namespace EventTriangleAPI.Authorization.BusinessLogic.Services;
 
-public class AzureAdService : AzureAd.AzureAdBase
+public class AzureAdService : IAzureAdService
 {
     private readonly HttpClient _httpClient;
     private readonly AppSettingsService _appSettingsService;
@@ -19,7 +18,7 @@ public class AzureAdService : AzureAd.AzureAdBase
         _appSettingsService = appSettingsService;
     }
 
-    public override async Task<AzureAdReply> ReceiveToken(AzureAdRequest request, ServerCallContext context)
+    public async Task<AzureAdTokenResponse> GetAuthorizationData(string code, string codeVerifier)
     {
         var appSettingsPath = _appSettingsService.GetAppSettingsPathSender();
 
@@ -39,11 +38,11 @@ public class AzureAdService : AzureAd.AzureAdBase
         {
             { "client_id", clientId },
             { "scope", $"api://{clientId}/{scopes} offline_access" },
-            { "code", request.Code },
+            { "code", code },
             { "redirect_uri", "http://localhost:3000" },
             { "grant_type", "authorization_code" },
             { "client_secret", clientSecret },
-            { "code_verifier", "petro1337" },
+            { "code_verifier", codeVerifier },
         };
         
         var httpRequest = new HttpRequestMessage(HttpMethod.Get, url) { Content = new FormUrlEncodedContent(dict) };
@@ -62,6 +61,6 @@ public class AzureAdService : AzureAd.AzureAdBase
         
         var result = JsonConvert.DeserializeObject<AzureAdTokenResponse>(json, jsonSerializerSettings);
         
-        return new AzureAdReply {Token = result.AccessToken};
+        return result;
     }
 }

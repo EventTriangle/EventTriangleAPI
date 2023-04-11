@@ -1,5 +1,3 @@
-using EventTriangleAPI.Authorization.BusinessLogic.Protos;
-using Grpc.Net.Client;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web.Resource;
@@ -22,19 +20,6 @@ public class WeatherForecastController : ControllerBase
     {
         _logger = logger;
     }
-
-    [HttpGet("receive_token")]
-    public async Task<IActionResult> ReceiveToken([FromQuery] string code)
-    {
-        using var channel = GrpcChannel.ForAddress("https://localhost:7000");
-        var client = new AzureAd.AzureAdClient(channel);
-
-        var azureAdRequest = new AzureAdRequest {Code = code, CodeVerifier = "123"};
-        
-        var result = await client.ReceiveTokenAsync(azureAdRequest);
-        
-        return Ok(result.Token);
-    } 
 
     [Authorize(Roles = "User, Admin")]
     [HttpGet("user_and_admin")]
