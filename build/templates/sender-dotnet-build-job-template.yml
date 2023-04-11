@@ -10,7 +10,7 @@ parameters:
   - name: backendProjectPath
     displayName: 'Backend project path'
     type: string
-    default: './src/consumer/EventTriangleAPI.Consumer.Presentation'
+    default: './src/sender/EventTriangleAPI.Sender.Presentation'
 
 jobs:
   - job: 'Build_Pack'

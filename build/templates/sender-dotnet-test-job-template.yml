@@ -10,12 +10,12 @@ parameters:
   - name: integrationTestsProjectPath
     displayName: 'Integration Tests Project Path'
     type: string
-    default: './src/consumer/EventTriangleAPI.Consumer.IntegrationTests/EventTriangleAPI.Consumer.IntegrationTests.csproj'
+    default: './src/sender/EventTriangleAPI.Sender.IntegrationTests/EventTriangleAPI.Sender.IntegrationTests.csproj'
 
   - name: unitTestsProjectPath
     displayName: 'Unit Tests Project Path'
     type: string
-    default: './src/consumer/EventTriangleAPI.Consumer.UnitTests/MangoAPI.Consumer.UnitTests.csproj'
+    default: './src/sender/EventTriangleAPI.Sender.UnitTests/MangoAPI.Sender.UnitTests.csproj'
 
 jobs:
   - job: 'Build_Test_Dotnet'
