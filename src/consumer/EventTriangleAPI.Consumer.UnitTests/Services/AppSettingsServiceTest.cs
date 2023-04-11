@@ -12,7 +12,7 @@ public class AppSettingsServiceTest
         var appSettingsService = new AppSettingsService();
 
         var path = appSettingsService.GetAppSettingsPathConsumer();
-
+        
         File.Exists(path).Should().BeTrue();
     }
 }
