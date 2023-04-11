@@ -15,15 +15,5 @@
       <PackageReference Include="Microsoft.Identity.Web.UI" Version="2.7.0" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Grpc\" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Protobuf Include="Grpc\Protos\azureAd.proto">
-        <Generator>MSBuild:Compile</Generator>
-      </Protobuf>
-    </ItemGroup>
     
 </Project>
