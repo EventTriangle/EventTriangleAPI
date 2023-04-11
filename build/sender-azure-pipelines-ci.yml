@@ -1,0 +1,46 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - develop
+      - main
+  paths:
+    include:
+      - build
+      - src/sender/EventTriangleAPI.Sender.Application
+      - src/sender/EventTriangleAPI.Sender.BusinessLogic
+      - src/sender/EventTriangleAPI.Sender.Domain
+      - src/sender/EventTriangleAPI.Sender.Presentation
+      - src/sender/EventTriangleAPI.Sender.IntegrationTests
+      - src/sender/EventTriangleAPI.Sender.UnitTests
+
+pr:
+  branches:
+    include:
+      - develop
+      - main
+  paths:
+    include:
+      - build
+      - src/sender/EventTriangleAPI.Sender.Application
+      - src/sender/EventTriangleAPI.Sender.BusinessLogic
+      - src/sender/EventTriangleAPI.Sender.Domain
+      - src/sender/EventTriangleAPI.Sender.Presentation
+      - src/sender/EventTriangleAPI.Sender.IntegrationTests
+      - src/sender/EventTriangleAPI.Sender.UnitTests
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  - name: buildPlatform
+    value: 'Any CPU'
+  - name: buildConfiguration
+    value: 'Release'
+
+stages:
+  - stage: 'Build_Test_Pack'
+    displayName: 'Build Test and Drop Artifacts'
+    jobs:
+      - template: templates/sender-dotnet-build-job-template.yml
+      - template: templates/sender-dotnet-test-job-template.yml
