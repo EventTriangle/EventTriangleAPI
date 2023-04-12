@@ -20,13 +20,10 @@ public class Startup
         serviceCollection.AddSingleton<IAzureAdService, AzureAdService>();
     }
     
-    public void Configure(IApplicationBuilder applicationBuilder, IHostEnvironment hostEnvironment)
+    public void Configure(IApplicationBuilder applicationBuilder)
     {
-        if (hostEnvironment.IsDevelopment())
-        {
-            applicationBuilder.UseSwagger();
-            applicationBuilder.UseSwaggerUI();
-        }
+        applicationBuilder.UseSwagger();
+        applicationBuilder.UseSwaggerUI();
 
         applicationBuilder.UseHttpsRedirection();
 

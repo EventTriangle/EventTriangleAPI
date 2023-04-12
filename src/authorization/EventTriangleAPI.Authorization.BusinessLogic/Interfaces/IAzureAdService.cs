@@ -4,5 +4,7 @@ namespace EventTriangleAPI.Authorization.BusinessLogic.Interfaces;
 
 public interface IAzureAdService
 {
-    Task<AzureAdTokenResponse> GetAuthorizationData(string code, string codeVerifier);
+    Task<AzureAdAuthorizationDataResponse> GetAuthorizationData(string code, string codeVerifier);
+
+    Task<AzureAdAuthorizationDataResponse> GetRefreshData(string code, string codeVerifier);
 } 
