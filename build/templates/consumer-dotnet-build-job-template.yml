@@ -1,17 +1,3 @@
-parameters:
-  - name: buildConfiguration
-    displayName: 'Build Configuration'
-    type: string
-    default: 'Release'
-    values:
-      - Release
-      - Debug
-
-  - name: backendProjectPath
-    displayName: 'Backend project path'
-    type: string
-    default: './src/consumer/EventTriangleAPI.Consumer.Presentation'
-
 jobs:
   - job: 'Build_Pack'
     displayName: 'Build & Drop Artifact'
@@ -26,19 +12,19 @@ jobs:
           version: 6.x
 
       - task: DotNetCoreCLI@2
-        displayName: 'Dotnet build ${{ parameters.buildConfiguration }}'
+        displayName: 'Dotnet build Release'
         inputs:
           command: 'build'
-          projects: '${{ parameters.backendProjectPath }}'
-          arguments: '-c ${{ parameters.buildConfiguration }} --no-restore'
+          projects: './src/consumer/EventTriangleAPI.Consumer.Presentation'
+          arguments: '-c Release --no-restore'
 
       - task: DotNetCoreCLI@2
         displayName: 'Dotnet Publish'
         inputs:
           command: 'publish'
           publishWebProjects: false
-          projects: '${{ parameters.backendProjectPath }}'
-          arguments: '-c ${{ parameters.buildConfiguration }} -o $(Build.ArtifactStagingDirectory)/${{ parameters.buildConfiguration }} --no-build'
+          projects: './src/consumer/EventTriangleAPI.Consumer.Presentation'
+          arguments: '-c Release -o $(Build.ArtifactStagingDirectory)/Release --no-build'
 
       - task: PublishBuildArtifacts@1
         displayName: 'Publish Artifacts'
