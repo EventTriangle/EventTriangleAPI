@@ -21,4 +21,12 @@ public class AuthorizationController : ControllerBase
 
         return Ok(result);
     }
+    
+    [HttpGet("refresh_data")]
+    public async Task<IActionResult> GetRefreshData([FromQuery] string code, [FromQuery] string codeVerifier)
+    {
+        var result = await _azureAdService.GetRefreshData(code, codeVerifier); 
+
+        return Ok(result);
+    }
 }
