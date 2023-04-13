@@ -1,7 +1,9 @@
 namespace EventTriangleAPI.Shared.DTO.Models;
 
-public record AzureAdConfiguration(
-    string Instance,
-    Guid TenantId,
-    Guid ClientId,
-    string Scopes);
+public class AzureAdConfiguration
+{
+    public string Instance { get; set; }
+    public Guid TenantId { get; set; }
+    public Guid ClientId { get; set; }
+    public string Scopes { get; set; }
+}

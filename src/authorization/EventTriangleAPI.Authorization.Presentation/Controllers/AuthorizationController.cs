@@ -14,7 +14,7 @@ public class AuthorizationController : ControllerBase
         _azureAdService = azureAdService;
     }
 
-    [HttpGet("authorization_data")]
+    [HttpGet("get_token")]
     public async Task<IActionResult> GetAuthorizationData([FromQuery] string code, [FromQuery] string codeVerifier)
     {
         var result = await _azureAdService.GetAccessAndIdTokensAsync(code, codeVerifier); 
@@ -22,7 +22,7 @@ public class AuthorizationController : ControllerBase
         return Ok(result);
     }
     
-    [HttpGet("refresh_data")]
+    [HttpPost("refresh_token")]
     public async Task<IActionResult> GetRefreshData([FromQuery] string code, [FromQuery] string codeVerifier)
     {
         var result = await _azureAdService.RefreshAccessAndIdTokensAsync(code, codeVerifier); 
