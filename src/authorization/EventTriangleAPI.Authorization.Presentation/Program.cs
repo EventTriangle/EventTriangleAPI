@@ -1,3 +1,5 @@
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
 using EventTriangleAPI.Authorization.BusinessLogic.Interfaces;
 using EventTriangleAPI.Authorization.BusinessLogic.Services;
 using EventTriangleAPI.Shared.DTO.Models;
@@ -14,6 +16,21 @@ var azAdSection = builder.Configuration
     .GetSection("AzureAd");
 
 var azAdConfig = azAdSection.Get<AzureAdConfiguration>();
+
+var keyVaultUrl = builder.Configuration["KeyVaultUrl"];
+
+var client = new SecretClient(new Uri(keyVaultUrl), new DefaultAzureCredential());
+
+var clientSecret = await client.GetSecretAsync("AzureAppSecret");
+
+var secretString = clientSecret.Value.Value;
+
+if (string.IsNullOrEmpty(secretString))
+{
+    throw new ArgumentNullException(nameof(clientSecret));
+}
+
+azAdConfig.ClientSecret = secretString;
 
 builder.Services.AddScoped<AzureAdConfiguration>(_ => azAdConfig);
 

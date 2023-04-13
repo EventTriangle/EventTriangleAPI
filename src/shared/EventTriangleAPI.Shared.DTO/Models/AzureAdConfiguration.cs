@@ -6,4 +6,6 @@ public class AzureAdConfiguration
     public Guid TenantId { get; set; }
     public Guid ClientId { get; set; }
     public string Scopes { get; set; }
+    public string RedirectUri { get; set; }
+    public string ClientSecret { get; set; }
 }

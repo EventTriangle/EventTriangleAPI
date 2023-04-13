@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EventTriangleAPI.Authorization.Presentation.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/authorization")]
 [ApiController]
 public class AuthorizationController : ControllerBase
 {
@@ -14,7 +14,7 @@ public class AuthorizationController : ControllerBase
         _azureAdService = azureAdService;
     }
 
-    [HttpGet("get_token")]
+    [HttpGet("get-token")]
     public async Task<IActionResult> GetAuthorizationData([FromQuery] string code, [FromQuery] string codeVerifier)
     {
         var result = await _azureAdService.GetAccessAndIdTokensAsync(code, codeVerifier); 
@@ -22,10 +22,10 @@ public class AuthorizationController : ControllerBase
         return Ok(result);
     }
     
-    [HttpPost("refresh_token")]
-    public async Task<IActionResult> GetRefreshData([FromQuery] string code, [FromQuery] string codeVerifier)
+    [HttpPost("refresh-token")]
+    public async Task<IActionResult> GetRefreshData([FromQuery] string refreshToken)
     {
-        var result = await _azureAdService.RefreshAccessAndIdTokensAsync(code, codeVerifier); 
+        var result = await _azureAdService.RefreshAccessAndIdTokensAsync(refreshToken); 
 
         return Ok(result);
     }
