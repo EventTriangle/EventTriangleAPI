@@ -1,13 +1,49 @@
-using EventTriangleAPI.Authorization.Presentation;
+using EventTriangleAPI.Authorization.BusinessLogic.Interfaces;
+using EventTriangleAPI.Authorization.BusinessLogic.Services;
+using EventTriangleAPI.Shared.DTO.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
-class Program
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+var azureAdConfiguration = builder.Configuration
+    .GetSection("AzureAd")
+    .Get<AzureAdConfiguration>();
+
+builder.Services.AddScoped<AzureAdConfiguration>(_ => azureAdConfiguration);
+
+builder.Services.AddGrpc();
+
+builder.Services.AddHttpClient();
+
+builder.Services.AddSingleton<IAzureAdService, AzureAdService>();
+
+var jsonSerializerSettings = new JsonSerializerSettings
 {
-    static void Main(string[] args)
+    ContractResolver = new DefaultContractResolver
     {
-        CreateHostBuilder(args).Build().Run();
+        NamingStrategy = new SnakeCaseNamingStrategy()
     }
+};
 
-    static IHostBuilder CreateHostBuilder(string[] args) =>
-        Host.CreateDefaultBuilder(args).ConfigureWebHostDefaults(hostBuilder => 
-            hostBuilder.UseStartup<Startup>());
-}
+builder.Services.AddScoped<JsonSerializerSettings>(_ => jsonSerializerSettings);
+
+var app = builder.Build();
+
+app.UseSwagger();
+app.UseSwaggerUI();
+
+
+app.UseHttpsRedirection();
+
+app.UseAuthentication();
+
+app.UseAuthorization();
+
+app.MapControllers();
+
+app.Run();
