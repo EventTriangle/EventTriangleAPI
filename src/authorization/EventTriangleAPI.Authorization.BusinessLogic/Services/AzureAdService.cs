@@ -1,18 +1,12 @@
-using Azure.Identity;
-using Azure.Security.KeyVault.Secrets;
 using EventTriangleAPI.Authorization.BusinessLogic.Interfaces;
 using EventTriangleAPI.Shared.DTO.Models;
 using EventTriangleAPI.Shared.DTO.Responses;
-using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
 namespace EventTriangleAPI.Authorization.BusinessLogic.Services;
 
 public class AzureAdService : IAzureAdService
 {
-    private const string AzSecretKey = "AzureAppSecret";
-
-    private readonly IConfiguration _configuration;
     private readonly HttpClient _httpClient;
     private readonly JsonSerializerSettings _jsonSerializerSettings;
     private readonly AzureAdConfiguration _azureAdConfiguration;
@@ -22,56 +16,51 @@ public class AzureAdService : IAzureAdService
     public AzureAdService(
         HttpClient httpClient,
         JsonSerializerSettings jsonSerializerSettings,
-        AzureAdConfiguration azureAdConfiguration, 
-        IConfiguration configuration)
+        AzureAdConfiguration azureAdConfiguration)
     {
         _httpClient = httpClient;
         _jsonSerializerSettings = jsonSerializerSettings;
         _azureAdConfiguration = azureAdConfiguration;
-        _configuration = configuration;
 
         _azureAdTokenUrl = $"{_azureAdConfiguration.Instance}{_azureAdConfiguration.TenantId}/oauth2/v2.0/token";
     }
 
     public async Task<AzureAdAuthorizationDataResponse> GetAccessAndIdTokensAsync(string code, string codeVerifier)
     {
-        var requestAzureAdAsync = await RequestAzureAdAsync(code, codeVerifier, HttpMethod.Get);
+        var bodyDictionary = AccessTokenBody(
+            code, codeVerifier,
+            _azureAdConfiguration.ClientId,
+            _azureAdConfiguration.Scopes,
+            _azureAdConfiguration.ClientSecret,
+            _azureAdConfiguration.RedirectUri,
+            GrantType.AuthorizationCode);
+
+        var requestAzureAdAsync = await RequestAzureAdAsync(bodyDictionary, HttpMethod.Get);
 
         return requestAzureAdAsync;
     }
 
-    public async Task<AzureAdAuthorizationDataResponse> RefreshAccessAndIdTokensAsync(string code, string codeVerifier)
+    public async Task<AzureAdAuthorizationDataResponse> RefreshAccessAndIdTokensAsync(string refreshToken)
     {
-        var requestAzureAdAsync = await RequestAzureAdAsync(code, codeVerifier, HttpMethod.Post);
+        var bodyDictionary = RefreshTokenBody(
+            refreshToken,
+            _azureAdConfiguration.ClientId,
+            _azureAdConfiguration.Scopes,
+            _azureAdConfiguration.ClientSecret,
+            _azureAdConfiguration.RedirectUri,
+            GrantType.RefreshToken);
+
+        var requestAzureAdAsync = await RequestAzureAdAsync(bodyDictionary, HttpMethod.Post);
 
         return requestAzureAdAsync;
     }
 
-    private async Task<AzureAdAuthorizationDataResponse> RequestAzureAdAsync(string code, string codeVerifier,
+    private async Task<AzureAdAuthorizationDataResponse> RequestAzureAdAsync(
+        Dictionary<string, string> body,
         HttpMethod httpMethod)
 
     {
-        var keyVaultUrl = _configuration["KeyVaultUrl"];
-        
-        var client = new SecretClient(new Uri(keyVaultUrl), new DefaultAzureCredential());
-
-        var clientSecret = await client.GetSecretAsync(AzSecretKey);
-
-        var secretString = clientSecret.Value.Value;
-
-        if (string.IsNullOrEmpty(secretString))
-        {
-            throw new ArgumentNullException(nameof(clientSecret));
-        }
-
-        var requestDictionary = AzureAdRequestDictionary(
-            code,
-            codeVerifier,
-            _azureAdConfiguration.ClientId,
-            _azureAdConfiguration.Scopes,
-            secretString);
-
-        var httpContent = new FormUrlEncodedContent(requestDictionary);
+        var httpContent = new FormUrlEncodedContent(body);
         var httpRequest = new HttpRequestMessage(httpMethod, _azureAdTokenUrl);
         httpRequest.Content = httpContent;
 
@@ -83,23 +72,46 @@ public class AzureAdService : IAzureAdService
 
         return result;
     }
-    
-    private static Dictionary<string, string> AzureAdRequestDictionary(
+
+    private static Dictionary<string, string> AccessTokenBody(
         string code,
         string codeVerifier,
         Guid clientId,
         string scopes,
-        string clientSecret)
+        string clientSecret,
+        string redirectUri,
+        string grantType)
     {
         var dict = new Dictionary<string, string>
         {
             { "client_id", clientId.ToString() },
-            { "scope", $"api://{clientId}/{scopes} offline_access openid" },
+            { "scope", scopes },
             { "code", code },
-            { "redirect_uri", "http://localhost:3000" },
-            { "grant_type", "authorization_code" },
+            { "redirect_uri", redirectUri },
+            { "grant_type", grantType },
             { "client_secret", clientSecret },
             { "code_verifier", codeVerifier }
+        };
+
+        return dict;
+    }
+
+    private static Dictionary<string, string> RefreshTokenBody(
+        string refreshToken,
+        Guid clientId,
+        string scopes,
+        string clientSecret,
+        string redirectUri,
+        string grantType)
+    {
+        var dict = new Dictionary<string, string>
+        {
+            { "client_id", clientId.ToString() },
+            { "scope", scopes },
+            { "refresh_token", refreshToken },
+            { "redirect_uri", redirectUri },
+            { "grant_type", grantType },
+            { "client_secret", clientSecret }
         };
 
         return dict;
