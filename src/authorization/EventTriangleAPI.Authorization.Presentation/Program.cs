@@ -10,17 +10,18 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var azureAdConfiguration = builder.Configuration
-    .GetSection("AzureAd")
-    .Get<AzureAdConfiguration>();
+var azAdSection = builder.Configuration
+    .GetSection("AzureAd");
 
-builder.Services.AddScoped<AzureAdConfiguration>(_ => azureAdConfiguration);
+var azAdConfig = azAdSection.Get<AzureAdConfiguration>();
+
+builder.Services.AddScoped<AzureAdConfiguration>(_ => azAdConfig);
 
 builder.Services.AddGrpc();
 
 builder.Services.AddHttpClient();
 
-builder.Services.AddSingleton<IAzureAdService, AzureAdService>();
+builder.Services.AddScoped<IAzureAdService, AzureAdService>();
 
 var jsonSerializerSettings = new JsonSerializerSettings
 {

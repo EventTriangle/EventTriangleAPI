@@ -1,12 +1,18 @@
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
 using EventTriangleAPI.Authorization.BusinessLogic.Interfaces;
 using EventTriangleAPI.Shared.DTO.Models;
 using EventTriangleAPI.Shared.DTO.Responses;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
 namespace EventTriangleAPI.Authorization.BusinessLogic.Services;
 
 public class AzureAdService : IAzureAdService
 {
+    private const string AzSecretKey = "AzureAppSecret";
+
+    private readonly IConfiguration _configuration;
     private readonly HttpClient _httpClient;
     private readonly JsonSerializerSettings _jsonSerializerSettings;
     private readonly AzureAdConfiguration _azureAdConfiguration;
@@ -15,50 +21,45 @@ public class AzureAdService : IAzureAdService
 
     public AzureAdService(
         HttpClient httpClient,
-        JsonSerializerSettings jsonSerializerSettings, 
-        AzureAdConfiguration azureAdConfiguration)
+        JsonSerializerSettings jsonSerializerSettings,
+        AzureAdConfiguration azureAdConfiguration, 
+        IConfiguration configuration)
     {
         _httpClient = httpClient;
         _jsonSerializerSettings = jsonSerializerSettings;
         _azureAdConfiguration = azureAdConfiguration;
+        _configuration = configuration;
 
         _azureAdTokenUrl = $"{_azureAdConfiguration.Instance}{_azureAdConfiguration.TenantId}/oauth2/v2.0/token";
     }
 
     public async Task<AzureAdAuthorizationDataResponse> GetAccessAndIdTokensAsync(string code, string codeVerifier)
     {
-        var clientSecret = Environment.GetEnvironmentVariable("azure_ad_client_secret");
+        var requestAzureAdAsync = await RequestAzureAdAsync(code, codeVerifier, HttpMethod.Get);
 
-        if (string.IsNullOrEmpty(clientSecret))
-        {
-            throw new ArgumentNullException(nameof(clientSecret));
-        }
-
-        var requestDictionary = AzureAdRequestDictionary(
-            code,
-            codeVerifier,
-            _azureAdConfiguration.ClientId,
-            _azureAdConfiguration.Scopes,
-            clientSecret);
-
-        var httpContent = new FormUrlEncodedContent(requestDictionary);
-        var httpRequest = new HttpRequestMessage(HttpMethod.Get, _azureAdTokenUrl);
-        httpRequest.Content = httpContent;
-
-        var response = await _httpClient.SendAsync(httpRequest);
-
-        var json = await response.Content.ReadAsStringAsync();
-
-        var result = JsonConvert.DeserializeObject<AzureAdAuthorizationDataResponse>(json, _jsonSerializerSettings);
-
-        return result;
+        return requestAzureAdAsync;
     }
 
     public async Task<AzureAdAuthorizationDataResponse> RefreshAccessAndIdTokensAsync(string code, string codeVerifier)
     {
-        var clientSecret = Environment.GetEnvironmentVariable("azure_ad_client_secret");
+        var requestAzureAdAsync = await RequestAzureAdAsync(code, codeVerifier, HttpMethod.Post);
+
+        return requestAzureAdAsync;
+    }
+
+    private async Task<AzureAdAuthorizationDataResponse> RequestAzureAdAsync(string code, string codeVerifier,
+        HttpMethod httpMethod)
+
+    {
+        var keyVaultUrl = _configuration["KeyVaultUrl"];
         
-        if (string.IsNullOrEmpty(clientSecret))
+        var client = new SecretClient(new Uri(keyVaultUrl), new DefaultAzureCredential());
+
+        var clientSecret = await client.GetSecretAsync(AzSecretKey);
+
+        var secretString = clientSecret.Value.Value;
+
+        if (string.IsNullOrEmpty(secretString))
         {
             throw new ArgumentNullException(nameof(clientSecret));
         }
@@ -68,10 +69,10 @@ public class AzureAdService : IAzureAdService
             codeVerifier,
             _azureAdConfiguration.ClientId,
             _azureAdConfiguration.Scopes,
-            clientSecret);
+            secretString);
 
         var httpContent = new FormUrlEncodedContent(requestDictionary);
-        var httpRequest = new HttpRequestMessage(HttpMethod.Post, _azureAdTokenUrl);
+        var httpRequest = new HttpRequestMessage(httpMethod, _azureAdTokenUrl);
         httpRequest.Content = httpContent;
 
         var response = await _httpClient.SendAsync(httpRequest);
@@ -82,7 +83,7 @@ public class AzureAdService : IAzureAdService
 
         return result;
     }
-
+    
     private static Dictionary<string, string> AzureAdRequestDictionary(
         string code,
         string codeVerifier,
