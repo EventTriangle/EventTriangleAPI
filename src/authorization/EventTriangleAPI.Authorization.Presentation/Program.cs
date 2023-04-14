@@ -33,7 +33,7 @@ if (string.IsNullOrEmpty(secretString))
 }
 
 azAdConfig.ClientSecret = secretString;
-azAdConfig.AzureAdTokenUrl = $"{azAdConfig.Instance}{azAdConfig.TenantId}/oauth2/v2.0/token";
+azAdConfig.AzureAdTokenUrl = $"{azAdConfig.Instance}/{azAdConfig.TenantId}/oauth2/v2.0/token";
 
 builder.Services.AddScoped(_ => azAdConfig);
 
