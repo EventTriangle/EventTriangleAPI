@@ -1,7 +1,8 @@
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
+using EventTriangleAPI.Authorization.BusinessLogic.Handlers;
 using EventTriangleAPI.Authorization.BusinessLogic.Interfaces;
-using EventTriangleAPI.Authorization.BusinessLogic.Services;
+using EventTriangleAPI.Shared.Application.Abstractions;
 using EventTriangleAPI.Shared.DTO.Models;
 using Microsoft.OpenApi.Models;
 
@@ -36,6 +37,9 @@ if (string.IsNullOrEmpty(secretString))
 azAdConfig.ClientSecret = secretString;
 
 builder.Services.AddScoped(_ => azAdConfig);
+
+builder.Services.AddScoped<RefreshTokenCommandHandler>();
+builder.Services.AddScoped<GetTokenCommandHandler>();
 
 builder.Services.AddGrpc();
 

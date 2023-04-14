@@ -1,20 +1,25 @@
 using System.Net;
 using System.Text.Json;
-using EventTriangleAPI.Authorization.BusinessLogic.Interfaces;
+using EventTriangleAPI.Shared.Application.Abstractions;
+using EventTriangleAPI.Shared.Application.Constants;
+using EventTriangleAPI.Shared.DTO.Abstractions;
+using EventTriangleAPI.Shared.DTO.Commands.Auth;
 using EventTriangleAPI.Shared.DTO.Models;
 using EventTriangleAPI.Shared.DTO.Responses;
+using EventTriangleAPI.Shared.DTO.Responses.Auth;
 using EventTriangleAPI.Shared.DTO.Responses.Errors;
 
-namespace EventTriangleAPI.Authorization.BusinessLogic.Services;
+namespace EventTriangleAPI.Authorization.BusinessLogic.Handlers;
 
-public class AzureAdService : IAzureAdService
+public class
+    RefreshTokenCommandHandler : ICommandHandler<RefreshTokenBody, AzureAdAuthResponse>
 {
     private readonly HttpClient _httpClient;
     private readonly AzureAdConfiguration _azureAdConfiguration;
 
     private readonly string _azureAdTokenUrl;
 
-    public AzureAdService(
+    public RefreshTokenCommandHandler(
         HttpClient httpClient,
         AzureAdConfiguration azureAdConfiguration)
     {
@@ -24,26 +29,10 @@ public class AzureAdService : IAzureAdService
         _azureAdTokenUrl = $"{_azureAdConfiguration.Instance}{_azureAdConfiguration.TenantId}/oauth2/v2.0/token";
     }
 
-    public async Task<Result<AzureAdAuthorizationDataResponse>> GetAccessAndIdTokensAsync(string code,
-        string codeVerifier)
-    {
-        var bodyDictionary = AccessTokenBody(
-            code, codeVerifier,
-            _azureAdConfiguration.ClientId,
-            _azureAdConfiguration.Scopes,
-            _azureAdConfiguration.ClientSecret,
-            _azureAdConfiguration.RedirectUri,
-            GrantType.AuthorizationCode);
-
-        var result = await RequestAzureAdAsync(bodyDictionary, HttpMethod.Get);
-
-        return result;
-    }
-
-    public async Task<Result<AzureAdAuthorizationDataResponse>> RefreshAccessAndIdTokensAsync(string refreshToken)
+    public async Task<IResult<AzureAdAuthResponse, Error>> HandleAsync(ICommand<RefreshTokenBody> command)
     {
         var bodyDictionary = RefreshTokenBody(
-            refreshToken,
+            command.Body.RefreshToken,
             _azureAdConfiguration.ClientId,
             _azureAdConfiguration.Scopes,
             _azureAdConfiguration.ClientSecret,
@@ -55,7 +44,7 @@ public class AzureAdService : IAzureAdService
         return requestAzureAdAsync;
     }
 
-    private async Task<Result<AzureAdAuthorizationDataResponse>> RequestAzureAdAsync(
+    private async Task<Result<AzureAdAuthResponse>> RequestAzureAdAsync(
         Dictionary<string, string> body,
         HttpMethod httpMethod)
 
@@ -71,37 +60,14 @@ public class AzureAdService : IAzureAdService
         if (response.StatusCode != HttpStatusCode.OK)
         {
             var error = new Error(json);
-            return new Result<AzureAdAuthorizationDataResponse>(error);
+            return new Result<AzureAdAuthResponse>(error);
         }
 
-        var azAdResponse = JsonSerializer.Deserialize<AzureAdAuthorizationDataResponse>(json);
+        var azAdResponse = JsonSerializer.Deserialize<AzureAdAuthResponse>(json);
 
-        var result = new Result<AzureAdAuthorizationDataResponse>(azAdResponse);
+        var result = new Result<AzureAdAuthResponse>(azAdResponse);
 
         return result;
-    }
-
-    private static Dictionary<string, string> AccessTokenBody(
-        string code,
-        string codeVerifier,
-        Guid clientId,
-        string scopes,
-        string clientSecret,
-        string redirectUri,
-        string grantType)
-    {
-        var dict = new Dictionary<string, string>
-        {
-            { "client_id", clientId.ToString() },
-            { "scope", scopes },
-            { "code", code },
-            { "redirect_uri", redirectUri },
-            { "grant_type", grantType },
-            { "client_secret", clientSecret },
-            { "code_verifier", codeVerifier }
-        };
-
-        return dict;
     }
 
     private static Dictionary<string, string> RefreshTokenBody(
