@@ -67,7 +67,7 @@ runs:
       run: |
         dotnet publish "${{ inputs.backendCsprojPath }}" \
           -c "${{ inputs.buildConfiguration }}" \
-          -p:Version="${{ env.FullSemVer }}" \
+          -p:Version="$GITVERSION_FULLSEMVER" \
           -o "publish"
       shell: bash
 
