@@ -19,8 +19,6 @@ inputs:
 
 runs:
   using: "composite"
-  env:
-    NUGET_PACKAGES: ${{ github.workspace }}/.github/nuget-packages
 
   steps:
     - name: Setup .NET 6.0 SDK

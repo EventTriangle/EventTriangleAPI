@@ -35,6 +35,9 @@ jobs:
   build-and-test-dotnet:
     name: Build, Test And Drop Artifact
     runs-on: ubuntu-latest
+    
+    env:
+      NUGET_PACKAGES: ${{ github.workspace }}/.github/nuget-packages
 
     steps:
       - name: Fetch Sources
