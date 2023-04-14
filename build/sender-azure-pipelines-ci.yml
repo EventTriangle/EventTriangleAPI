@@ -13,6 +13,8 @@ trigger:
       - src/sender/EventTriangleAPI.Sender.Presentation
       - src/sender/EventTriangleAPI.Sender.IntegrationTests
       - src/sender/EventTriangleAPI.Sender.UnitTests
+      - src/shared/EventTriangleAPI.Shared.Application
+      - src/shared/EventTriangleAPI.Shared.DTO
 
 pr:
   branches:
@@ -28,6 +30,8 @@ pr:
       - src/sender/EventTriangleAPI.Sender.Presentation
       - src/sender/EventTriangleAPI.Sender.IntegrationTests
       - src/sender/EventTriangleAPI.Sender.UnitTests
+      - src/shared/EventTriangleAPI.Shared.Application
+      - src/shared/EventTriangleAPI.Shared.DTO
 
 pool:
   vmImage: 'ubuntu-latest'
