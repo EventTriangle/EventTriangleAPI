@@ -9,48 +9,34 @@ using EventTriangleAPI.Shared.DTO.Responses;
 using EventTriangleAPI.Shared.DTO.Responses.Auth;
 using EventTriangleAPI.Shared.DTO.Responses.Errors;
 
-namespace EventTriangleAPI.Authorization.BusinessLogic.Handlers;
+namespace EventTriangleAPI.Authorization.BusinessLogic.CommandHandlers;
 
-public class GetTokenCommandHandler : ICommandHandler<GetAccessTokenBody, AzureAdAuthResponse>
+public class
+    RefreshTokenCommandHandler : ICommandHandler<RefreshTokenBody, AzureAdAuthResponse>
 {
     private readonly HttpClient _httpClient;
     private readonly AzureAdConfiguration _azureAdConfiguration;
 
-    private readonly string _azureAdTokenUrl;
-
-    public GetTokenCommandHandler(
+    public RefreshTokenCommandHandler(
         HttpClient httpClient,
         AzureAdConfiguration azureAdConfiguration)
     {
         _httpClient = httpClient;
         _azureAdConfiguration = azureAdConfiguration;
-
-        _azureAdTokenUrl = $"{_azureAdConfiguration.Instance}{_azureAdConfiguration.TenantId}/oauth2/v2.0/token";
     }
 
-    public async Task<IResult<AzureAdAuthResponse, Error>> HandleAsync(ICommand<GetAccessTokenBody> command)
+    public async Task<IResult<AzureAdAuthResponse, Error>> HandleAsync(ICommand<RefreshTokenBody> command)
     {
-        var bodyDictionary = AccessTokenBody(
-            command.Body.Code,
-            command.Body.CodeVerifier,
+        var bodyDictionary = RefreshTokenBody(
+            command.Body.RefreshToken,
             _azureAdConfiguration.ClientId,
             _azureAdConfiguration.Scopes,
             _azureAdConfiguration.ClientSecret,
             _azureAdConfiguration.RedirectUri,
-            GrantType.AuthorizationCode);
+            GrantType.RefreshToken);
 
-        var result = await RequestAzureAdAsync(bodyDictionary, HttpMethod.Get);
-
-        return result;
-    }
-
-    private async Task<Result<AzureAdAuthResponse>> RequestAzureAdAsync(
-        Dictionary<string, string> body,
-        HttpMethod httpMethod)
-
-    {
-        var httpContent = new FormUrlEncodedContent(body);
-        var httpRequest = new HttpRequestMessage(httpMethod, _azureAdTokenUrl);
+        var httpContent = new FormUrlEncodedContent(bodyDictionary);
+        var httpRequest = new HttpRequestMessage(HttpMethod.Post, _azureAdConfiguration.AzureAdTokenUrl);
         httpRequest.Content = httpContent;
 
         var response = await _httpClient.SendAsync(httpRequest);
@@ -70,9 +56,8 @@ public class GetTokenCommandHandler : ICommandHandler<GetAccessTokenBody, AzureA
         return result;
     }
 
-    private static Dictionary<string, string> AccessTokenBody(
-        string code,
-        string codeVerifier,
+    private static Dictionary<string, string> RefreshTokenBody(
+        string refreshToken,
         Guid clientId,
         string scopes,
         string clientSecret,
@@ -83,11 +68,10 @@ public class GetTokenCommandHandler : ICommandHandler<GetAccessTokenBody, AzureA
         {
             { "client_id", clientId.ToString() },
             { "scope", scopes },
-            { "code", code },
+            { "refresh_token", refreshToken },
             { "redirect_uri", redirectUri },
             { "grant_type", grantType },
-            { "client_secret", clientSecret },
-            { "code_verifier", codeVerifier }
+            { "client_secret", clientSecret }
         };
 
         return dict;

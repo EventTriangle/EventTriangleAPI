@@ -1,6 +1,6 @@
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
-using EventTriangleAPI.Authorization.BusinessLogic.Handlers;
+using EventTriangleAPI.Authorization.BusinessLogic.CommandHandlers;
 using EventTriangleAPI.Shared.DTO.Models;
 using Microsoft.OpenApi.Models;
 
@@ -33,6 +33,7 @@ if (string.IsNullOrEmpty(secretString))
 }
 
 azAdConfig.ClientSecret = secretString;
+azAdConfig.AzureAdTokenUrl = $"{azAdConfig.Instance}{azAdConfig.TenantId}/oauth2/v2.0/token";
 
 builder.Services.AddScoped(_ => azAdConfig);
 
