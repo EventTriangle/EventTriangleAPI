@@ -1,16 +1,20 @@
 name: Build and test
-
+description: 'Build, test and drop artifact'
 inputs:
   backendCsprojPath:
+    description: '<API-name>.Presentation.csproj path'
     required: true
   
   integrationTestsProjectPath:
+    description: 'Integration tests project path'
     required: true
   
   unitTestsProjectPath:
+    description: 'Unit tests project path'
     required: true
   
   buildConfiguration:
+    description: 'Build configuration (Release or Debug)'
     required: true
 
 runs:
