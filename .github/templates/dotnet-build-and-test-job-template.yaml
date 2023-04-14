@@ -42,19 +42,19 @@ runs:
 
     - name: Build .NET Project
       run: |
-        dotnet build --no-restore /p:ContinuousIntegrationBuild=true --configuration {{ inputs.buildConfiguration }}
+        dotnet build --no-restore /p:ContinuousIntegrationBuild=true --configuration ${{ inputs.buildConfiguration }}
 
     - name: Run unit tests
       run: |
-        dotnet test {{ inputs.unitTestsProjectPath }} --configuration {{ inputs.buildConfiguration }}
+        dotnet test ${{ inputs.unitTestsProjectPath }} --configuration ${{ inputs.buildConfiguration }}
 
     - name: Run integration tests
       run: |
-        dotnet test {{ inputs.integrationTestsProjectPath }} --configuration {{ inputs.buildConfiguration }}
+        dotnet test ${{ inputs.integrationTestsProjectPath }} --configuration ${{ inputs.buildConfiguration }}
 
     - name: Publish .NET Project
       run: |
-        dotnet publish "{{ inputs.backendCsprojPath }}" --configuration "{{ inputs.buildConfiguration }}" --output "publish"
+        dotnet publish "${{ inputs.backendCsprojPath }}" --configuration "${{ inputs.buildConfiguration }}" --output "publish"
 
     - name: Drop Artifact
       uses: actions/upload-artifact@v3
