@@ -1,8 +1,6 @@
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using EventTriangleAPI.Authorization.BusinessLogic.Handlers;
-using EventTriangleAPI.Authorization.BusinessLogic.Interfaces;
-using EventTriangleAPI.Shared.Application.Abstractions;
 using EventTriangleAPI.Shared.DTO.Models;
 using Microsoft.OpenApi.Models;
 
@@ -44,8 +42,6 @@ builder.Services.AddScoped<GetTokenCommandHandler>();
 builder.Services.AddGrpc();
 
 builder.Services.AddHttpClient();
-
-builder.Services.AddScoped<IAzureAdService, AzureAdService>();
 
 var app = builder.Build();
 
