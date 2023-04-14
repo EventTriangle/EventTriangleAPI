@@ -1,0 +1,54 @@
+name: Build And Test Sender API
+on:
+  push:
+    branches:
+      - develop
+      - main
+    paths:
+      - src/sender/EventTriangleAPI.Sender.Application/**
+      - src/sender/EventTriangleAPI.Sender.BusinessLogic/**
+      - src/sender/EventTriangleAPI.Sender.Domain/**
+      - src/sender/EventTriangleAPI.Sender.IntegrationTests/**
+      - src/sender/EventTriangleAPI.Sender.Presentation/**
+      - src/sender/EventTriangleAPI.Sender.UnitTests/**
+      - .github/**
+
+  pull_request:
+    branches:
+      - develop
+      - main
+    paths:
+      - src/sender/EventTriangleAPI.Sender.Application/**
+      - src/sender/EventTriangleAPI.Sender.BusinessLogic/**
+      - src/sender/EventTriangleAPI.Sender.Domain/**
+      - src/sender/EventTriangleAPI.Sender.IntegrationTests/**
+      - src/sender/EventTriangleAPI.Sender.Presentation/**
+      - src/sender/EventTriangleAPI.Sender.UnitTests/**
+      - src/shared/EventTriangleAPI.Shared.DTO/**
+      - src/shared/EventTriangleAPI.Shared.Application/**
+      - .github/**
+
+  workflow_dispatch:
+
+jobs:
+  build-and-test-dotnet:
+    name: Sender Build
+    runs-on: ubuntu-latest
+    
+    env:
+      NUGET_PACKAGES: ${{ github.workspace }}/.github/nuget-packages
+    
+    steps:
+      - name: Fetch Sources
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Sender Build
+        uses: ./.github/actions/build-and-test
+        with:
+          backendCsprojPath: "src/sender/EventTriangleAPI.Sender.Presentation/EventTriangleAPI.Sender.Presentation.csproj"
+          unitTestsProjectPath: "src/sender/EventTriangleAPI.Sender.UnitTests"
+          integrationTestsProjectPath: "src/sender/EventTriangleAPI.Sender.IntegrationTests"
+          buildConfiguration: "Release"
+          serviceName: "sender-api"
