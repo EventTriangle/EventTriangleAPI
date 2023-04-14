@@ -34,22 +34,27 @@ runs:
 
     - name: Restore Nuget Packages
       run: dotnet restore --verbosity minimal
+      shell: bash
 
     - name: Build .NET Project
       run: |
         dotnet build --no-restore /p:ContinuousIntegrationBuild=true --configuration ${{ inputs.buildConfiguration }}
+      shell: bash
 
     - name: Run unit tests
       run: |
         dotnet test ${{ inputs.unitTestsProjectPath }} --configuration ${{ inputs.buildConfiguration }}
+      shell: bash
 
     - name: Run integration tests
       run: |
         dotnet test ${{ inputs.integrationTestsProjectPath }} --configuration ${{ inputs.buildConfiguration }}
+      shell: bash
 
     - name: Publish .NET Project
       run: |
         dotnet publish "${{ inputs.backendCsprojPath }}" --configuration "${{ inputs.buildConfiguration }}" --output "publish"
+      shell: bash
 
     - name: Drop Artifact
       uses: actions/upload-artifact@v3
