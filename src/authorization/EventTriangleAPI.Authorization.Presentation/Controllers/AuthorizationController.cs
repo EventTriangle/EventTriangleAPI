@@ -1,4 +1,5 @@
 using EventTriangleAPI.Authorization.BusinessLogic.Interfaces;
+using EventTriangleAPI.Authorization.Presentation.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EventTriangleAPI.Authorization.Presentation.Controllers;
@@ -14,12 +15,12 @@ public class AuthorizationController : ControllerBase
         _azureAdService = azureAdService;
     }
 
-    [HttpGet("get-token")]
+    [HttpGet("token")]
     public async Task<IActionResult> GetAuthorizationData([FromQuery] string code, [FromQuery] string codeVerifier)
     {
         var result = await _azureAdService.GetAccessAndIdTokensAsync(code, codeVerifier); 
 
-        return Ok(result);
+        return result.ToActionResult();
     }
     
     [HttpPost("refresh-token")]
@@ -27,6 +28,6 @@ public class AuthorizationController : ControllerBase
     {
         var result = await _azureAdService.RefreshAccessAndIdTokensAsync(refreshToken); 
 
-        return Ok(result);
+        return result.ToActionResult();
     }
 }
