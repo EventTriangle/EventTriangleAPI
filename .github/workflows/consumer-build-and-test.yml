@@ -5,11 +5,27 @@ on:
     branches:
       - develop
       - main
+    paths:
+      - src/consumer/EventTriangleAPI.Consumer.Application/**
+      - src/consumer/EventTriangleAPI.Consumer.BusinessLogic/**
+      - src/consumer/EventTriangleAPI.Consumer.Domain/**
+      - src/consumer/EventTriangleAPI.Consumer.IntegrationTests/**
+      - src/consumer/EventTriangleAPI.Consumer.Presentation/**
+      - src/consumer/EventTriangleAPI.Consumer.UnitTests/**
+      - .github/**
 
   pull_request:
     branches:
       - develop
       - main
+    paths:
+      - src/consumer/EventTriangleAPI.Consumer.Application/**
+      - src/consumer/EventTriangleAPI.Consumer.BusinessLogic/**
+      - src/consumer/EventTriangleAPI.Consumer.Domain/**
+      - src/consumer/EventTriangleAPI.Consumer.IntegrationTests/**
+      - src/consumer/EventTriangleAPI.Consumer.Presentation/**
+      - src/consumer/EventTriangleAPI.Consumer.UnitTests/**
+      - .github/**
 
   workflow_dispatch:
 
@@ -43,13 +59,13 @@ jobs:
         run: |
           dotnet build --no-restore /p:ContinuousIntegrationBuild=true --configuration Release
           
-      - name: Run integration tests
+      - name: Run unit tests
         run: |
-          dotnet test dotnet test src/consumer/EventTriangleAPI.Consumer.UnitTests/EventTriangleAPI.Consumer.UnitTests.csproj --configuration Release --no-build
+          dotnet test src/consumer/EventTriangleAPI.Consumer.UnitTests/EventTriangleAPI.Consumer.UnitTests.csproj --configuration Release --no-build
       
       - name: Run integration tests
         run: |
-          dotnet test dotnet test src/consumer/EventTriangleAPI.Consumer.IntegrationTests/EventTriangleAPI.Consumer.IntegrationTests.csproj --configuration Release --no-build
+          dotnet test src/consumer/EventTriangleAPI.Consumer.IntegrationTests/EventTriangleAPI.Consumer.IntegrationTests.csproj --configuration Release --no-build
       
       - name: Publish .NET Project
         run: |
