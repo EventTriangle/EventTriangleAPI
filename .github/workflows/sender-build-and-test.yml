@@ -32,20 +32,18 @@ on:
 
 jobs:
   build-and-test-dotnet:
-    name: Build, Test And Drop Artifact
+    name: Sender Build
     runs-on: ubuntu-latest
     
     env:
       NUGET_PACKAGES: ${{ github.workspace }}/.github/nuget-packages
     
     steps:
-      - name: Fetch Sources
-        uses: actions/checkout@v3
-
-      - name: Build and test
+      - name: Sender Build
         uses: ./.github/actions/build-and-test
         with:
           backendCsprojPath: "src/sender/EventTriangleAPI.Sender.Presentation/EventTriangleAPI.Sender.Presentation.csproj"
           unitTestsProjectPath: "src/sender/EventTriangleAPI.Sender.UnitTests"
           integrationTestsProjectPath: "src/sender/EventTriangleAPI.Sender.IntegrationTests"
           buildConfiguration: "Release"
+          serviceName: "sender-api"

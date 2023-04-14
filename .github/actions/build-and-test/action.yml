@@ -16,6 +16,10 @@ inputs:
   buildConfiguration:
     description: 'Build configuration (Release or Debug)'
     required: true
+  
+  serviceName:
+    description: 'Service name'
+    required: true
 
 runs:
   using: "composite"
@@ -30,7 +34,7 @@ runs:
       uses: gittools/actions/gitversion/setup@v0.10.2
       with:
         versionSpec: '5.x'
-        
+
     - name: Determine Version
       uses: gittools/actions/gitversion/execute@v0.10.2
 
@@ -51,26 +55,29 @@ runs:
 
     - name: Build .NET Project
       run: |
-        dotnet build --no-restore /p:ContinuousIntegrationBuild=true --configuration ${{ inputs.buildConfiguration }}
+        dotnet build --no-restore /p:ContinuousIntegrationBuild=true -c ${{ inputs.buildConfiguration }}
       shell: bash
 
     - name: Run unit tests
       run: |
-        dotnet test ${{ inputs.unitTestsProjectPath }} --configuration ${{ inputs.buildConfiguration }}
+        dotnet test ${{ inputs.unitTestsProjectPath }} -c ${{ inputs.buildConfiguration }} --no-build
       shell: bash
 
     - name: Run integration tests
       run: |
-        dotnet test ${{ inputs.integrationTestsProjectPath }} --configuration ${{ inputs.buildConfiguration }}
+        dotnet test ${{ inputs.integrationTestsProjectPath }} -c ${{ inputs.buildConfiguration }} --no-build
       shell: bash
 
     - name: Publish .NET Project
       run: |
-        dotnet publish "${{ inputs.backendCsprojPath }}" --configuration "${{ inputs.buildConfiguration }}" --output "publish"
+        dotnet publish "${{ inputs.backendCsprojPath }}" \
+          -c "${{ inputs.buildConfiguration }}" \
+          -p:Version="${{ env.FullSemVer }}" \
+          -o "publish"
       shell: bash
 
     - name: Drop Artifact
       uses: actions/upload-artifact@v3
       with:
-        name: 'drop'
+        name: '${{ inputs.serviceName }}-${{ env.FullSemVer }}'
         path: 'publish'
