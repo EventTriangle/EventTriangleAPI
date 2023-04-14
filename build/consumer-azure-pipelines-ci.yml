@@ -52,11 +52,12 @@ stages:
   - stage: 'Build_Test_Pack'
     displayName: 'Build Test and Drop Artifacts'
     jobs:
-      - template: templates/consumer-dotnet-build-job-template.yml
+      - template: templates/dotnet-build-job-template.yml
         parameters: 
           backendProjectPath: {{ variables.backendProjectPath }}
           buildConfiguration: {{ variables.buildConfiguration }}
-      - template: templates/consumer-dotnet-test-job-template.yml
+      - template: templates/dotnet-test-job-template.yml
         parameters: 
           buildConfiguration: {{ variables.buildConfiguration }}
           integrationTestsProjectPath: {{ variables.integrationTestsProjectPath }}
+          unitTestProjectPath: {{ variables.unitTestsProjectPath }}
