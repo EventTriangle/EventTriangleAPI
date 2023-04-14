@@ -67,12 +67,12 @@ runs:
       run: |
         dotnet publish "${{ inputs.backendCsprojPath }}" \
           -c "${{ inputs.buildConfiguration }}" \
-          -p:Version="$GITVERSION_FULLSEMVER" \
+          -p:Version="${{ env.GITVERSION_FULLSEMVER }}" \
           -o "publish"
       shell: bash
 
     - name: Drop Artifact
       uses: actions/upload-artifact@v3
       with:
-        name: '${{ inputs.serviceName }}-${{ env.FullSemVer }}'
+        name: '${{ inputs.serviceName }}-${{ env.GITVERSION_FULLSEMVER }}'
         path: 'publish'
