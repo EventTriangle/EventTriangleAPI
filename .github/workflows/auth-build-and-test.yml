@@ -7,6 +7,8 @@ on:
     paths:
       - src/sender/EventTriangleAPI.Authorization.BusinessLogic/**
       - src/sender/EventTriangleAPI.Authorization.Presentation/**
+      - src/shared/EventTriangleAPI.Shared.DTO/**
+      - src/shared/EventTriangleAPI.Shared.Application/**
       - .github/**
 
   pull_request:
@@ -16,6 +18,8 @@ on:
     paths:
       - src/sender/EventTriangleAPI.Authorization.BusinessLogic/**
       - src/sender/EventTriangleAPI.Authorization.Presentation/**
+      - src/shared/EventTriangleAPI.Shared.DTO/**
+      - src/shared/EventTriangleAPI.Shared.Application/**
       - .github/**
 
   workflow_dispatch:
