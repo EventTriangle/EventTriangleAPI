@@ -34,15 +34,12 @@ jobs:
   build-and-test-dotnet:
     name: Build Test Coverage
     runs-on: ubuntu-latest
-
-    env:
-      NUGET_PACKAGES: ${{ github.workspace }}/.github/nuget-packages
-
+    
     steps:
       - name: Build and test
         uses: ".github/templates/dotnet-build-and-test-job-template.yaml"
         with:
-          backendCsprojPath: 'src/sender/EventTriangleAPI.Sender.Presentation/EventTriangleAPI.Sender.Presentation.csproj'
-          unitTestsProjectPath: 'src/sender/EventTriangleAPI.Sender.UnitTests'
-          integrationTestsProjectPath: 'src/sender/EventTriangleAPI.Sender.IntegrationTests'
-          buildConfiguration: 'Release'
+          backendCsprojPath: "src/sender/EventTriangleAPI.Sender.Presentation/EventTriangleAPI.Sender.Presentation.csproj"
+          unitTestsProjectPath: "src/sender/EventTriangleAPI.Sender.UnitTests"
+          integrationTestsProjectPath: "src/sender/EventTriangleAPI.Sender.IntegrationTests"
+          buildConfiguration: "Release"
