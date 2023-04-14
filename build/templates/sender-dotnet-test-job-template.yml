@@ -1,4 +1,17 @@
 parameters:
+  - name: buildConfiguration
+    displayName: 'Build Configuration'
+    type: string
+    default: 'Release'
+    values:
+      - Release
+      - Debug
+
+  - name: integrationTestsProjectPath
+    displayName: 'Integration Tests Project Path'
+    type: string
+    default: './src/sender/EventTriangleAPI.Sender.IntegrationTests/EventTriangleAPI.Sender.IntegrationTests.csproj'
+
   - name: unitTestsProjectPath
     displayName: 'Unit Tests Project Path'
     type: string
@@ -21,27 +34,27 @@ jobs:
         displayName: 'Dotnet restore'
         inputs:
           command: 'restore'
-          projects: './src/sender/EventTriangleAPI.Sender.IntegrationTests/EventTriangleAPI.Sender.IntegrationTests.csproj'
+          projects: '${{ parameters.integrationTestsProjectPath }}'
           arguments: '--verbosity minimal'
 
       - task: DotNetCoreCLI@2
-        displayName: 'Dotnet build Release'
+        displayName: 'Dotnet build ${{ parameters.buildConfiguration }}'
         inputs:
           command: 'build'
-          projects: './src/sender/EventTriangleAPI.Sender.IntegrationTests/EventTriangleAPI.Sender.IntegrationTests.csproj'
-          arguments: '--configuration Release --no-restore'
+          projects: '${{ parameters.integrationTestsProjectPath }}'
+          arguments: '--configuration ${{ parameters.buildConfiguration }} --no-restore'
 
       - task: DotNetCoreCLI@2
         displayName: 'Run unit tests'
         inputs:
           command: 'test'
-          projects: './src/sender/EventTriangleAPI.Sender.UnitTests/MangoAPI.Sender.UnitTests.csproj'
+          projects: '${{ parameters.unitTestsProjectPath }}'
 
       - task: DotNetCoreCLI@2
         displayName: 'Run integration tests'
         inputs:
           command: 'test'
-          projects: './src/sender/EventTriangleAPI.Sender.IntegrationTests/EventTriangleAPI.Sender.IntegrationTests.csproj'
+          projects: '${{ parameters.integrationTestsProjectPath }}'
           arguments: '--no-restore'
 
       - task: PublishTestResults@2
