@@ -1,5 +1,4 @@
 using EventTriangleAPI.Authorization.BusinessLogic.Handlers;
-using EventTriangleAPI.Authorization.BusinessLogic.Interfaces;
 using EventTriangleAPI.Shared.Application.Extensions;
 using EventTriangleAPI.Shared.DTO.Commands;
 using EventTriangleAPI.Shared.DTO.Commands.Auth;
@@ -11,15 +10,13 @@ namespace EventTriangleAPI.Authorization.Presentation.Controllers;
 [ApiController]
 public class AuthorizationController : ControllerBase
 {
-    private readonly IAzureAdService _azureAdService;
     private readonly RefreshTokenCommandHandler _refreshTokenCommandHandler;
     private readonly GetTokenCommandHandler _getTokenCommandHandler;
 
-    public AuthorizationController(IAzureAdService azureAdService,
+    public AuthorizationController(
         RefreshTokenCommandHandler refreshTokenCommandHandler,
         GetTokenCommandHandler getTokenCommandHandler)
     {
-        _azureAdService = azureAdService;
         _refreshTokenCommandHandler = refreshTokenCommandHandler;
         _getTokenCommandHandler = getTokenCommandHandler;
     }
