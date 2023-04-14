@@ -4,8 +4,6 @@ using EventTriangleAPI.Authorization.BusinessLogic.Interfaces;
 using EventTriangleAPI.Authorization.BusinessLogic.Services;
 using EventTriangleAPI.Shared.DTO.Models;
 using Microsoft.OpenApi.Models;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,7 +35,7 @@ if (string.IsNullOrEmpty(secretString))
 
 azAdConfig.ClientSecret = secretString;
 
-builder.Services.AddScoped<AzureAdConfiguration>(_ => azAdConfig);
+builder.Services.AddScoped(_ => azAdConfig);
 
 builder.Services.AddGrpc();
 
@@ -45,23 +43,10 @@ builder.Services.AddHttpClient();
 
 builder.Services.AddScoped<IAzureAdService, AzureAdService>();
 
-var jsonSerializerSettings = new JsonSerializerSettings
-{
-    ContractResolver = new DefaultContractResolver
-    {
-        NamingStrategy = new SnakeCaseNamingStrategy()
-    }
-};
-
-builder.Services.AddScoped<JsonSerializerSettings>(_ => jsonSerializerSettings);
-
 var app = builder.Build();
 
 app.UseSwagger();
-app.UseSwaggerUI(c =>
-{
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "EventTriangle Authorization API V1");
-});
+app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "EventTriangle Authorization API V1"); });
 
 
 app.UseHttpsRedirection();

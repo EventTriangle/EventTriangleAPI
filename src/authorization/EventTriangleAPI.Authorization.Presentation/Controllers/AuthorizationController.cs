@@ -1,5 +1,5 @@
 using EventTriangleAPI.Authorization.BusinessLogic.Interfaces;
-using EventTriangleAPI.Authorization.Presentation.Extensions;
+using EventTriangleAPI.Shared.Application.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EventTriangleAPI.Authorization.Presentation.Controllers;
