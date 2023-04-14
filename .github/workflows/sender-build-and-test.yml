@@ -39,6 +39,11 @@ jobs:
       NUGET_PACKAGES: ${{ github.workspace }}/.github/nuget-packages
     
     steps:
+      - name: Fetch Sources
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
       - name: Sender Build
         uses: ./.github/actions/build-and-test
         with:

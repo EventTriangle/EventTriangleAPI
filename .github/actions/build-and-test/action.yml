@@ -25,11 +25,6 @@ runs:
   using: "composite"
 
   steps:
-    - name: Fetch Sources
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-
     - name: Install GitVersion
       uses: gittools/actions/gitversion/setup@v0.10.2
       with:
