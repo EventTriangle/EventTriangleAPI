@@ -3,6 +3,7 @@ using Azure.Security.KeyVault.Secrets;
 using EventTriangleAPI.Authorization.BusinessLogic.Interfaces;
 using EventTriangleAPI.Authorization.BusinessLogic.Services;
 using EventTriangleAPI.Shared.DTO.Models;
+using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
@@ -10,7 +11,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1",
+        new OpenApiInfo { Title = "EventTriangle Authorization API", Version = "v1" });
+});
 
 var azAdSection = builder.Configuration
     .GetSection("AzureAd");
@@ -53,7 +58,10 @@ builder.Services.AddScoped<JsonSerializerSettings>(_ => jsonSerializerSettings);
 var app = builder.Build();
 
 app.UseSwagger();
-app.UseSwaggerUI();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "EventTriangle Authorization API V1");
+});
 
 
 app.UseHttpsRedirection();

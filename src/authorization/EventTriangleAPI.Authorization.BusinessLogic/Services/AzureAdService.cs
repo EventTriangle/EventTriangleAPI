@@ -1,3 +1,4 @@
+using System.Net;
 using EventTriangleAPI.Authorization.BusinessLogic.Interfaces;
 using EventTriangleAPI.Shared.DTO.Models;
 using EventTriangleAPI.Shared.DTO.Responses;
@@ -25,7 +26,7 @@ public class AzureAdService : IAzureAdService
         _azureAdTokenUrl = $"{_azureAdConfiguration.Instance}{_azureAdConfiguration.TenantId}/oauth2/v2.0/token";
     }
 
-    public async Task<AzureAdAuthorizationDataResponse> GetAccessAndIdTokensAsync(string code, string codeVerifier)
+    public async Task<Result<AzureAdAuthorizationDataResponse>> GetAccessAndIdTokensAsync(string code, string codeVerifier)
     {
         var bodyDictionary = AccessTokenBody(
             code, codeVerifier,
@@ -37,10 +38,15 @@ public class AzureAdService : IAzureAdService
 
         var requestAzureAdAsync = await RequestAzureAdAsync(bodyDictionary, HttpMethod.Get);
 
+        if (!requestAzureAdAsync.IsSuccess)
+        {
+            return requestAzureAdAsync;
+        }
+        
         return requestAzureAdAsync;
     }
 
-    public async Task<AzureAdAuthorizationDataResponse> RefreshAccessAndIdTokensAsync(string refreshToken)
+    public async Task<Result<AzureAdAuthorizationDataResponse>> RefreshAccessAndIdTokensAsync(string refreshToken)
     {
         var bodyDictionary = RefreshTokenBody(
             refreshToken,
@@ -52,10 +58,15 @@ public class AzureAdService : IAzureAdService
 
         var requestAzureAdAsync = await RequestAzureAdAsync(bodyDictionary, HttpMethod.Post);
 
+        if (!requestAzureAdAsync.IsSuccess)
+        {
+            return requestAzureAdAsync;
+        }
+        
         return requestAzureAdAsync;
     }
 
-    private async Task<AzureAdAuthorizationDataResponse> RequestAzureAdAsync(
+    private async Task<Result<AzureAdAuthorizationDataResponse>> RequestAzureAdAsync(
         Dictionary<string, string> body,
         HttpMethod httpMethod)
 
@@ -66,11 +77,16 @@ public class AzureAdService : IAzureAdService
 
         var response = await _httpClient.SendAsync(httpRequest);
 
+        if (response.StatusCode != HttpStatusCode.OK)
+        {
+            return new Result<AzureAdAuthorizationDataResponse>("Authorization request failed");
+        } 
+        
         var json = await response.Content.ReadAsStringAsync();
 
         var result = JsonConvert.DeserializeObject<AzureAdAuthorizationDataResponse>(json, _jsonSerializerSettings);
 
-        return result;
+        return new Result<AzureAdAuthorizationDataResponse>(result);
     }
 
     private static Dictionary<string, string> AccessTokenBody(

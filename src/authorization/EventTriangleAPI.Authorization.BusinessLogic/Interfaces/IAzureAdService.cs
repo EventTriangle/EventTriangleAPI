@@ -4,7 +4,7 @@ namespace EventTriangleAPI.Authorization.BusinessLogic.Interfaces;
 
 public interface IAzureAdService
 {
-    Task<AzureAdAuthorizationDataResponse> GetAccessAndIdTokensAsync(string code, string codeVerifier);
+    Task<Result<AzureAdAuthorizationDataResponse>> GetAccessAndIdTokensAsync(string code, string codeVerifier);
 
-    Task<AzureAdAuthorizationDataResponse> RefreshAccessAndIdTokensAsync(string refreshToken);
+    Task<Result<AzureAdAuthorizationDataResponse>> RefreshAccessAndIdTokensAsync(string refreshToken);
 } 
