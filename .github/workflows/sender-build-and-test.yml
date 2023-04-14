@@ -42,7 +42,7 @@ jobs:
       - name: Build and test
         uses: ".github/templates/dotnet-build-and-test-job-template.yaml"
         with:
-          backendCsprojPath: src/sender/EventTriangleAPI.Sender.Presentation/EventTriangleAPI.Sender.Presentation.csproj
-          unitTestsProjectPath: src/sender/EventTriangleAPI.Sender.UnitTests
-          integrationTestsProjectPath: src/sender/EventTriangleAPI.Sender.IntegrationTests
-          buildConfiguration: Release
+          backendCsprojPath: 'src/sender/EventTriangleAPI.Sender.Presentation/EventTriangleAPI.Sender.Presentation.csproj'
+          unitTestsProjectPath: 'src/sender/EventTriangleAPI.Sender.UnitTests'
+          integrationTestsProjectPath: 'src/sender/EventTriangleAPI.Sender.IntegrationTests'
+          buildConfiguration: 'Release'

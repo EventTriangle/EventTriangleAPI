@@ -1,4 +1,4 @@
-name: Build and test
+name: 'Build and test'
 description: 'Build, test and drop artifact'
 inputs:
   backendCsprojPath:
