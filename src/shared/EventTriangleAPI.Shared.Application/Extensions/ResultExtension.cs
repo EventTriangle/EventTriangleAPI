@@ -1,13 +1,12 @@
 using EventTriangleAPI.Shared.DTO.Abstractions;
-using EventTriangleAPI.Shared.DTO.Responses;
 using EventTriangleAPI.Shared.DTO.Responses.Errors;
 using Microsoft.AspNetCore.Mvc;
 
-namespace EventTriangleAPI.Authorization.Presentation.Extensions;
+namespace EventTriangleAPI.Shared.Application.Extensions;
 
 public static class ResultExtension
 {
-    public static IActionResult ToActionResult<T>(this Result<T> result)
+    public static IActionResult ToActionResult<T>(this IResult<T, Error>result)
     {
         var objectResult = GenerateFromResponse(result);
 

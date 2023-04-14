@@ -1,27 +1,24 @@
 using System.Net;
+using System.Text.Json;
 using EventTriangleAPI.Authorization.BusinessLogic.Interfaces;
 using EventTriangleAPI.Shared.DTO.Models;
 using EventTriangleAPI.Shared.DTO.Responses;
 using EventTriangleAPI.Shared.DTO.Responses.Errors;
-using Newtonsoft.Json;
 
 namespace EventTriangleAPI.Authorization.BusinessLogic.Services;
 
 public class AzureAdService : IAzureAdService
 {
     private readonly HttpClient _httpClient;
-    private readonly JsonSerializerSettings _jsonSerializerSettings;
     private readonly AzureAdConfiguration _azureAdConfiguration;
 
     private readonly string _azureAdTokenUrl;
 
     public AzureAdService(
         HttpClient httpClient,
-        JsonSerializerSettings jsonSerializerSettings,
         AzureAdConfiguration azureAdConfiguration)
     {
         _httpClient = httpClient;
-        _jsonSerializerSettings = jsonSerializerSettings;
         _azureAdConfiguration = azureAdConfiguration;
 
         _azureAdTokenUrl = $"{_azureAdConfiguration.Instance}{_azureAdConfiguration.TenantId}/oauth2/v2.0/token";
@@ -77,8 +74,7 @@ public class AzureAdService : IAzureAdService
             return new Result<AzureAdAuthorizationDataResponse>(error);
         }
 
-        var azAdResponse =
-            JsonConvert.DeserializeObject<AzureAdAuthorizationDataResponse>(json, _jsonSerializerSettings);
+        var azAdResponse = JsonSerializer.Deserialize<AzureAdAuthorizationDataResponse>(json);
 
         var result = new Result<AzureAdAuthorizationDataResponse>(azAdResponse);
 
