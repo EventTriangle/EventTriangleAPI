@@ -2,20 +2,14 @@ parameters:
   - name: buildConfiguration
     displayName: 'Build Configuration'
     type: string
-    default: 'Release'
-    values:
-      - Release
-      - Debug
 
   - name: integrationTestsProjectPath
     displayName: 'Integration Tests Project Path'
     type: string
-    default: './src/sender/EventTriangleAPI.Sender.IntegrationTests/EventTriangleAPI.Sender.IntegrationTests.csproj'
 
   - name: unitTestsProjectPath
     displayName: 'Unit Tests Project Path'
     type: string
-    default: './src/sender/EventTriangleAPI.Sender.UnitTests/MangoAPI.Sender.UnitTests.csproj'
 
 jobs:
   - job: 'Build_Test_Dotnet'

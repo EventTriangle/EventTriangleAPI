@@ -2,15 +2,10 @@ parameters:
   - name: buildConfiguration
     displayName: 'Build Configuration'
     type: string
-    default: 'Release'
-    values:
-      - Release
-      - Debug
 
   - name: backendProjectPath
     displayName: 'Backend project path'
     type: string
-    default: './src/consumer/EventTriangleAPI.Consumer.Presentation'
 
 jobs:
   - job: 'Build_Pack'
