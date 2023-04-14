@@ -1,4 +1,4 @@
-using EventTriangleAPI.Authorization.BusinessLogic.Handlers;
+using EventTriangleAPI.Authorization.BusinessLogic.CommandHandlers;
 using EventTriangleAPI.Shared.Application.Extensions;
 using EventTriangleAPI.Shared.DTO.Commands;
 using EventTriangleAPI.Shared.DTO.Commands.Auth;
@@ -24,8 +24,8 @@ public class AuthorizationController : ControllerBase
     [HttpGet("token")]
     public async Task<IActionResult> GetAuthorizationData([FromQuery] string code, [FromQuery] string codeVerifier)
     {
-        var body = new GetAccessTokenBody(code, codeVerifier);
-        var command = new Command<GetAccessTokenBody>(body);
+        var body = new GetTokenBody(code, codeVerifier);
+        var command = new Command<GetTokenBody>(body);
         var result = await _getTokenCommandHandler.HandleAsync(command);
 
         return result.ToActionResult();
