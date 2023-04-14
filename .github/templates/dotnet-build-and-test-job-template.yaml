@@ -14,7 +14,7 @@ inputs:
     required: true
 
 runs:
-  using: "composite"
+  using: composite
   steps:
     - name: Fetch Sources
       uses: actions/checkout@v3
