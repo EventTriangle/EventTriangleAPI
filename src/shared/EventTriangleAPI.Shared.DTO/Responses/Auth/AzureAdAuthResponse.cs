@@ -1,8 +1,8 @@
 using System.Text.Json.Serialization;
 
-namespace EventTriangleAPI.Shared.DTO.Responses;
+namespace EventTriangleAPI.Shared.DTO.Responses.Auth;
 
-public class AzureAdAuthorizationDataResponse
+public class AzureAdAuthResponse
 {
     [JsonPropertyName("token_type")]
     public string TokenType { get; set; }

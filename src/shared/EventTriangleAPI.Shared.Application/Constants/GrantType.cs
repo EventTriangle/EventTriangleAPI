@@ -1,4 +1,4 @@
-namespace EventTriangleAPI.Authorization.BusinessLogic.Services;
+namespace EventTriangleAPI.Shared.Application.Constants;
 
 public static class GrantType
 {
