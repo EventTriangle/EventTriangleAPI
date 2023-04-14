@@ -23,9 +23,6 @@ runs:
     NUGET_PACKAGES: ${{ github.workspace }}/.github/nuget-packages
 
   steps:
-    - name: Fetch Sources
-      uses: actions/checkout@v3
-
     - name: Setup .NET 6.0 SDK
       uses: actions/setup-dotnet@v3
       with:

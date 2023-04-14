@@ -32,10 +32,13 @@ on:
 
 jobs:
   build-and-test-dotnet:
-    name: Build Test Coverage
+    name: Build, Test And Drop Artifact
     runs-on: ubuntu-latest
     
     steps:
+      - name: Fetch Sources
+        uses: actions/checkout@v3
+
       - name: Build and test
         uses: ./.github/actions/build-and-test
         with:
