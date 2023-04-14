@@ -1,24 +1,27 @@
+using System.Net;
+using EventTriangleAPI.Shared.DTO.Abstractions;
 using EventTriangleAPI.Shared.DTO.Responses.Errors;
 
 namespace EventTriangleAPI.Shared.DTO.Responses;
 
-public class Result<T>
+public class Result<TResponse> : IResult<TResponse, Error>
 {
-    public bool IsSuccess { get; set; }
-    
-    public T Value { get; set; }
-    
-    public Error Error { get; set; }
+    public TResponse Response { get; }
+    public Error Error { get; }
+    public bool IsSuccess { get; }
+    public HttpStatusCode StatusCode { get; }
 
-    public Result(T value)
+    public Result(TResponse response)
     {
-        Value = value;
+        Response = response;
         IsSuccess = true;
+        StatusCode = HttpStatusCode.OK;
     }
-    
-    public Result(string errorMessage)
+
+    public Result(Error error)
     {
-        Error = new Error(errorMessage);
-        IsSuccess = true;
+        Error = error;
+        IsSuccess = false;
+        StatusCode = HttpStatusCode.BadRequest;
     }
 }
