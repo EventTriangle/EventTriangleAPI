@@ -37,10 +37,22 @@ variables:
     value: 'Any CPU'
   - name: buildConfiguration
     value: 'Release'
+  - name: backendProjectPath
+    value: './src/consumer/EventTriangleAPI.Consumer.Presentation'
+  - name: integrationTestsProjectPath
+    value: './src/consumer/EventTriangleAPI.Consumer.IntegrationTests/EventTriangleAPI.Consumer.IntegrationTests.csproj'
+  - name: unitTestsProjectPath
+    value: './src/consumer/EventTriangleAPI.Consumer.UnitTests/MangoAPI.Consumer.UnitTests.csproj'
 
 stages:
   - stage: 'Build_Test_Pack'
     displayName: 'Build Test and Drop Artifacts'
     jobs:
       - template: templates/consumer-dotnet-build-job-template.yml
+        parameters: 
+          backendProjectPath: {{ variables.backendProjectPath }}
+          buildConfiguration: {{ variables.buildConfiguration }}
       - template: templates/consumer-dotnet-test-job-template.yml
+        parameters: 
+          buildConfiguration: {{ variables.buildConfiguration }}
+          integrationTestsProjectPath: {{ variables.integrationTestsProjectPath }}

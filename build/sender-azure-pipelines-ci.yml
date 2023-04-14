@@ -37,10 +37,22 @@ variables:
     value: 'Any CPU'
   - name: buildConfiguration
     value: 'Release'
+  - name: backendProjectPath
+    value: './src/sender/EventTriangleAPI.Sender.Presentation'
+  - name: integrationTestsProjectPath
+    value: './src/sender/EventTriangleAPI.Sender.IntegrationTests/EventTriangleAPI.Sender.IntegrationTests.csproj'
+  - name: unitTestsProjectPath
+    value: './src/sender/EventTriangleAPI.Sender.UnitTests/MangoAPI.Sender.UnitTests.csproj'
 
 stages:
   - stage: 'Build_Test_Pack'
     displayName: 'Build Test and Drop Artifacts'
     jobs:
       - template: templates/sender-dotnet-build-job-template.yml
+        parameters:
+          backendProjectPath: {{ variables.backendProjectPath }}
+          buildConfiguration: {{ variables.buildConfiguration }}
       - template: templates/sender-dotnet-test-job-template.yml
+        parameters:
+          buildConfiguration: {{ variables.buildConfiguration }}
+          integrationTestsProjectPath: {{ variables.integrationTestsProjectPath }}
