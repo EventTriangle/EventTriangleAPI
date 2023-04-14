@@ -38,7 +38,7 @@ jobs:
 
     steps:
       - name: Build and test
-        uses: ./.github/templates/
+        uses: ./.github/actions/build-and-test
         with:
           backendCsprojPath: "src/consumer/EventTriangleAPI.Consumer.Presentation/EventTriangleAPI.Consumer.Presentation.csproj"
           unitTestsProjectPath: "src/consumer/EventTriangleAPI.Consumer.UnitTests"
