@@ -69,7 +69,7 @@ jobs:
       
       - name: Publish .NET Project
         run: |
-          dotnet publish "MangoAPI.Presentation/MangoAPI.Presentation.csproj" --configuration "Release" --output "publish"
+          dotnet publish "src/consumer/EventTriangleAPI.Consumer.Presentation/EventTriangleAPI.Consumer.Presentation.csproj" --configuration "Release" --output "publish"
       
       - name: Drop Artifact
         uses: actions/upload-artifact@v3
