@@ -39,6 +39,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventTriangleAPI.Shared.DTO
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventTriangleAPI.Shared.Application", "src\shared\EventTriangleAPI.Shared.Application\EventTriangleAPI.Shared.Application.csproj", "{822EA33D-1900-4EB1-B873-A550D508D736}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "authorization", "authorization", "{31A58EF0-F272-4824-86FE-19473671C529}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventTriangleAPI.Authorization.Presentation", "src\authorization\EventTriangleAPI.Authorization.Presentation\EventTriangleAPI.Authorization.Presentation.csproj", "{5313BD9A-3FF2-4F51-A266-1433CC3D385C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventTriangleAPI.Authorization.BusinessLogic", "src\authorization\EventTriangleAPI.Authorization.BusinessLogic\EventTriangleAPI.Authorization.BusinessLogic.csproj", "{64A3731E-81E3-410D-AC53-1612503A2DE6}"
+EndProject
+
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{27588941-03BB-44BE-A36E-46D701BCDA6B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "actions", "actions", "{0B52F7D3-364C-4052-B104-48D83CA4DE3F}"
@@ -47,6 +54,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 	ProjectSection(SolutionItems) = preProject
 		.github\workflows\consumer-build-and-test.yml = .github\workflows\consumer-build-and-test.yml
 		.github\workflows\sender-build-and-test.yml = .github\workflows\sender-build-and-test.yml
+		.github\workflows\auth-build-and-test.yml = .github\workflows\auth-build-and-test.yml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build-and-test", "build-and-test", "{A659D97B-8FB1-40F8-A9FD-EB461CA889CA}"
@@ -89,6 +97,9 @@ Global
 		{A01E9D40-4DAE-46CA-8A0B-7FE3240D2CC0} = {00E00698-E256-44CB-A3B9-585C99CA5244}
 		{F0D0455F-B351-4E6B-BBFA-4113C95CF886} = {951C746E-7FC0-4254-9882-580149DE3FEE}
 		{822EA33D-1900-4EB1-B873-A550D508D736} = {951C746E-7FC0-4254-9882-580149DE3FEE}
+		{31A58EF0-F272-4824-86FE-19473671C529} = {B4042E24-7516-4341-B2CF-E8254E888696}
+		{5313BD9A-3FF2-4F51-A266-1433CC3D385C} = {31A58EF0-F272-4824-86FE-19473671C529}
+		{64A3731E-81E3-410D-AC53-1612503A2DE6} = {31A58EF0-F272-4824-86FE-19473671C529}
 		{0B52F7D3-364C-4052-B104-48D83CA4DE3F} = {27588941-03BB-44BE-A36E-46D701BCDA6B}
 		{2B2FBD65-5A00-4F92-8131-6EDF4697955C} = {27588941-03BB-44BE-A36E-46D701BCDA6B}
 		{A659D97B-8FB1-40F8-A9FD-EB461CA889CA} = {0B52F7D3-364C-4052-B104-48D83CA4DE3F}
@@ -150,5 +161,13 @@ Global
 		{822EA33D-1900-4EB1-B873-A550D508D736}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{822EA33D-1900-4EB1-B873-A550D508D736}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{822EA33D-1900-4EB1-B873-A550D508D736}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5313BD9A-3FF2-4F51-A266-1433CC3D385C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5313BD9A-3FF2-4F51-A266-1433CC3D385C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5313BD9A-3FF2-4F51-A266-1433CC3D385C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5313BD9A-3FF2-4F51-A266-1433CC3D385C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{64A3731E-81E3-410D-AC53-1612503A2DE6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{64A3731E-81E3-410D-AC53-1612503A2DE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{64A3731E-81E3-410D-AC53-1612503A2DE6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{64A3731E-81E3-410D-AC53-1612503A2DE6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
