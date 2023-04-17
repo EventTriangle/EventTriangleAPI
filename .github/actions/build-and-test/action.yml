@@ -1,0 +1,78 @@
+name: 'Build and test'
+description: 'Build, test and drop artifact'
+inputs:
+  backendCsprojPath:
+    description: '<API-name>.Presentation.csproj path'
+    required: true
+  
+  integrationTestsProjectPath:
+    description: 'Integration tests project path'
+    required: false
+  
+  unitTestsProjectPath:
+    description: 'Unit tests project path'
+    required: false
+  
+  buildConfiguration:
+    description: 'Build configuration (Release or Debug)'
+    required: true
+  
+  serviceName:
+    description: 'Service name'
+    required: true
+
+runs:
+  using: "composite"
+
+  steps:
+    - name: Install GitVersion
+      uses: gittools/actions/gitversion/setup@v0.10.2
+      with:
+        versionSpec: '5.x'
+
+    - name: Determine Version
+      uses: gittools/actions/gitversion/execute@v0.10.2
+
+    - name: Setup .NET 6.0 SDK
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 6.0.x
+
+    - name: NuGet Cache
+      uses: actions/cache@v3
+      with:
+        path: ${{ env.NUGET_PACKAGES }}
+        key: ${{ runner.os }}.nuget.${{ hashFiles('**/*.csproj') }}
+
+    - name: Restore Nuget Packages
+      run: dotnet restore --verbosity minimal
+      shell: bash
+
+    - name: Build .NET Project
+      run: |
+        dotnet build --no-restore /p:ContinuousIntegrationBuild=true -c ${{ inputs.buildConfiguration }}
+      shell: bash
+
+    - name: Run unit tests
+      run: |
+        dotnet test ${{ inputs.unitTestsProjectPath }} -c ${{ inputs.buildConfiguration }} --no-build
+      shell: bash
+
+    - name: Run integration tests
+      run: |
+        dotnet test ${{ inputs.integrationTestsProjectPath }} -c ${{ inputs.buildConfiguration }} --no-build
+      shell: bash
+
+    - name: Publish .NET Project
+      run: |
+        dotnet publish "${{ inputs.backendCsprojPath }}" \
+          -c "${{ inputs.buildConfiguration }}" \
+          -p:Version="${{ env.GITVERSION_FULLSEMVER }}" \
+          -o "publish"
+      shell: bash
+
+    - name: Drop Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: '${{ inputs.serviceName }}-${{ env.GITVERSION_FULLSEMVER }}'
+        path: 'publish'
