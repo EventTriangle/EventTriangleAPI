@@ -54,10 +54,10 @@ stages:
     jobs:
       - template: templates/dotnet-build-job-template.yml
         parameters: 
-          backendProjectPath: {{ variables.backendProjectPath }}
-          buildConfiguration: {{ variables.buildConfiguration }}
+          backendProjectPath: ${{ variables.backendProjectPath }}
+          buildConfiguration: ${{ variables.buildConfiguration }}
       - template: templates/dotnet-test-job-template.yml
         parameters: 
-          buildConfiguration: {{ variables.buildConfiguration }}
-          integrationTestsProjectPath: {{ variables.integrationTestsProjectPath }}
-          unitTestProjectPath: {{ variables.unitTestsProjectPath }}
+          buildConfiguration: ${{ variables.buildConfiguration }}
+          integrationTestsProjectPath: ${{ variables.integrationTestsProjectPath }}
+          unitTestProjectPath: ${{ variables.unitTestsProjectPath }}
