@@ -60,4 +60,4 @@ stages:
         parameters:
           buildConfiguration: ${{ variables.buildConfiguration }}
           integrationTestsProjectPath: ${{ variables.integrationTestsProjectPath }}
-          unitTestProjectPath: ${{ variables.unitTestsProjectPath }}
+          unitTestsProjectPath: ${{ variables.unitTestsProjectPath }}
