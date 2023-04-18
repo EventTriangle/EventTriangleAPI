@@ -1,0 +1,40 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - develop
+      - main
+  paths:
+    include:
+      - build
+      - src/authorization/EventTriangleAPI.Authorization.BusinessLogic
+      - src/authorization/EventTriangleAPI.Authorization.Presentation
+      - src/shared/EventTriangleAPI.Shared.Application
+      - src/shared/EventTriangleAPI.Shared.DTO
+
+pr:
+  branches:
+    include:
+      - develop
+      - main
+  paths:
+    include:
+      - build
+      - src/authorization/EventTriangleAPI.Authorization.BusinessLogic
+      - src/authorization/EventTriangleAPI.Authorization.Presentation
+      - src/shared/EventTriangleAPI.Shared.Application
+      - src/shared/EventTriangleAPI.Shared.DTO
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+stages:
+  - stage: 'Build_And_Test_AuthorizationAPI'
+    displayName: 'Build and Test Consumer API and Drop Artifacts'
+    jobs:
+      - template: templates/dotnet-build-and-test-job-template.yml
+        parameters:
+          buildConfiguration: 'Release'
+          backendProjectPath: './src/authorization/EventTriangleAPI.Authorization.Presentation'
+          integrationTestsProjectPath: './src/authorization/EventTriangleAPI.Authorization.IntegrationTests/EventTriangleAPI.Authorization.IntegrationTests.csproj'
+          unitTestsProjectPath: './src/authorization/EventTriangleAPI.Authorization.UnitTests/EventTriangleAPI.Authorization.UnitTests.csproj'
