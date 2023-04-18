@@ -49,14 +49,14 @@ jobs:
           arguments: '-c ${{ parameters.buildConfiguration }} --no-restore'
 
       - task: DotNetCoreCLI@2
-        condition: and(failed(), ne('${{ parameters.unitTestsProjectPath }}', ''))
+        condition: and(succeeded(), ne('${{ parameters.unitTestsProjectPath }}', ''))
         displayName: 'Run unit tests'
         inputs:
           command: 'test'
           projects: '${{ parameters.unitTestsProjectPath }}'
 
       - task: DotNetCoreCLI@2
-        condition: and(failed(), ne('${{ parameters.integrationTestsProjectPath }}', ''))
+        condition: and(succeeded(), ne('${{ parameters.integrationTestsProjectPath }}', ''))
         displayName: 'Run integration tests'
         inputs:
           command: 'test'
