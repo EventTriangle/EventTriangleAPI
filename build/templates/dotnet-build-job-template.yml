@@ -10,16 +10,6 @@ parameters:
 jobs:
   - job: 'Build_Pack'
     displayName: 'Build & Drop Artifact'
-    strategy:
-      matrix:
-        linux:
-          imageName: 'ubuntu-latest'
-        windows:
-          imageName: 'windows-latest'
-
-    pool:
-      vmImage: $(imageName)
-
     steps:
       - checkout: self
         fetchDepth: 0
