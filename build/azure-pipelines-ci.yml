@@ -57,7 +57,7 @@ variables:
     value: 'Release'
 
 stages:
-  - stage: 'Build_And_Test'
+  - stage: 'Build_And_Test_SenderAPI'
     displayName: 'Build and Test Sender API and Drop Artifacts'
     jobs:
       - template: templates/dotnet-build-and-test-job-template.yml
@@ -66,7 +66,7 @@ stages:
           backendProjectPath: './src/sender/EventTriangleAPI.Sender.Presentation'
           integrationTestsProjectPath: './src/sender/EventTriangleAPI.Sender.IntegrationTests/EventTriangleAPI.Sender.IntegrationTests.csproj'
           unitTestsProjectPath: './src/sender/EventTriangleAPI.Sender.UnitTests/EventTriangleAPI.Sender.UnitTests.csproj'
-  - stage: 'Build_And_Test'
+  - stage: 'Build_And_Test_ConsumerAPI'
     displayName: 'Build and Test Consumer API and Drop Artifacts'
     jobs:
       - template: templates/dotnet-build-and-test-job-template.yml
@@ -75,7 +75,7 @@ stages:
           backendProjectPath: './src/consumer/EventTriangleAPI.Consumer.Presentation'
           integrationTestsProjectPath: './src/consumer/EventTriangleAPI.Consumer.IntegrationTests/EventTriangleAPI.Consumer.IntegrationTests.csproj'
           unitTestsProjectPath: './src/consumer/EventTriangleAPI.Consumer.UnitTests/EventTriangleAPI.Consumer.UnitTests.csproj'
-  - stage: 'Build_And_Test'
+  - stage: 'Build_And_Test_AuthorizationAPI'
     displayName: 'Build and Test Consumer API and Drop Artifacts'
     jobs:
       - template: templates/dotnet-build-and-test-job-template.yml
