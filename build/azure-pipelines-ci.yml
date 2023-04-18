@@ -13,6 +13,14 @@ trigger:
       - src/consumer/EventTriangleAPI.Consumer.Presentation
       - src/consumer/EventTriangleAPI.Consumer.IntegrationTests
       - src/consumer/EventTriangleAPI.Consumer.UnitTests
+      - src/sender/EventTriangleAPI.Sender.Application
+      - src/sender/EventTriangleAPI.Sender.BusinessLogic
+      - src/sender/EventTriangleAPI.Sender.Domain
+      - src/sender/EventTriangleAPI.Sender.Presentation
+      - src/sender/EventTriangleAPI.Sender.IntegrationTests
+      - src/sender/EventTriangleAPI.Sender.UnitTests
+      - src/authorization/EventTriangleAPI.Authorization.BusinessLogic
+      - src/authorization/EventTriangleAPI.Authorization.Presentation
       - src/shared/EventTriangleAPI.Shared.Application
       - src/shared/EventTriangleAPI.Shared.DTO
 
@@ -30,6 +38,14 @@ pr:
       - src/consumer/EventTriangleAPI.Consumer.Presentation
       - src/consumer/EventTriangleAPI.Consumer.IntegrationTests
       - src/consumer/EventTriangleAPI.Consumer.UnitTests
+      - src/sender/EventTriangleAPI.Sender.Application
+      - src/sender/EventTriangleAPI.Sender.BusinessLogic
+      - src/sender/EventTriangleAPI.Sender.Domain
+      - src/sender/EventTriangleAPI.Sender.Presentation
+      - src/sender/EventTriangleAPI.Sender.IntegrationTests
+      - src/sender/EventTriangleAPI.Sender.UnitTests
+      - src/authorization/EventTriangleAPI.Authorization.BusinessLogic
+      - src/authorization/EventTriangleAPI.Authorization.Presentation
       - src/shared/EventTriangleAPI.Shared.Application
       - src/shared/EventTriangleAPI.Shared.DTO
 
