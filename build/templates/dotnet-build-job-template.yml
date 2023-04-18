@@ -24,7 +24,7 @@ jobs:
         displayName: 'Dotnet restore'
         inputs:
           command: 'restore'
-          projects: '${{ parameters.integrationTestsProjectPath }}'
+          projects: '${{ parameters.backendProjectPath }}'
           arguments: '--verbosity minimal'
 
       - task: DotNetCoreCLI@2
