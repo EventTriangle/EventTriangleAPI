@@ -1,0 +1,105 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - develop
+      - main
+  paths:
+    include:
+      - build
+      - src/consumer/EventTriangleAPI.Consumer.Application
+      - src/consumer/EventTriangleAPI.Consumer.BusinessLogic
+      - src/consumer/EventTriangleAPI.Consumer.Domain
+      - src/consumer/EventTriangleAPI.Consumer.Presentation
+      - src/consumer/EventTriangleAPI.Consumer.IntegrationTests
+      - src/consumer/EventTriangleAPI.Consumer.UnitTests
+      - src/shared/EventTriangleAPI.Shared.Application
+      - src/shared/EventTriangleAPI.Shared.DTO
+
+pr:
+  branches:
+    include:
+      - develop
+      - main
+  paths:
+    include:
+      - build
+      - src/consumer/EventTriangleAPI.Consumer.Application
+      - src/consumer/EventTriangleAPI.Consumer.BusinessLogic
+      - src/consumer/EventTriangleAPI.Consumer.Domain
+      - src/consumer/EventTriangleAPI.Consumer.Presentation
+      - src/consumer/EventTriangleAPI.Consumer.IntegrationTests
+      - src/consumer/EventTriangleAPI.Consumer.UnitTests
+      - src/shared/EventTriangleAPI.Shared.Application
+      - src/shared/EventTriangleAPI.Shared.DTO
+
+strategy:
+  matrix:
+    linux:
+      imageName: 'ubuntu-latest'
+    windows:
+      imageName: 'windows-latest'
+
+pool:
+  vmImage: $(imageName)
+
+variables:
+  - name: buildPlatform
+    value: 'Any CPU'
+  - name: buildConfiguration
+    value: 'Release'
+
+stages:
+  - stage: 'Build_And_Test_Consumer_API'
+    displayName: 'Build, Test Consumer API and Drop Artifacts'
+    variables:
+      - name: backendProjectPath
+        value: './src/consumer/EventTriangleAPI.Consumer.Presentation'
+      - name: integrationTestsProjectPath
+        value: './src/consumer/EventTriangleAPI.Consumer.IntegrationTests/EventTriangleAPI.Consumer.IntegrationTests.csproj'
+      - name: unitTestsProjectPath
+        value: './src/consumer/EventTriangleAPI.Consumer.UnitTests/MangoAPI.Consumer.UnitTests.csproj'
+
+    jobs:
+      - template: templates/dotnet-build-job-template.yml
+        parameters:
+          backendProjectPath: ${{ variables.backendProjectPath }}
+          buildConfiguration: ${{ variables.buildConfiguration }}
+      - template: templates/dotnet-test-job-template.yml
+        parameters:
+          buildConfiguration: ${{ variables.buildConfiguration }}
+          integrationTestsProjectPath: ${{ variables.integrationTestsProjectPath }}
+          unitTestsProjectPath: ${{ variables.unitTestsProjectPath }}
+
+  - stage: 'Build_And_Test_Sender_API'
+    displayName: 'Build, Test Sender API and Drop Artifacts'
+    variables:
+      - name: backendProjectPath
+        value: './src/sender/EventTriangleAPI.Sender.Presentation'
+      - name: integrationTestsProjectPath
+        value: './src/sender/EventTriangleAPI.Sender.IntegrationTests/EventTriangleAPI.Sender.IntegrationTests.csproj'
+      - name: unitTestsProjectPath
+        value: './src/sender/EventTriangleAPI.Sender.UnitTests/MangoAPI.Sender.UnitTests.csproj'
+
+    jobs:
+      - template: templates/sender-dotnet-build-job-template.yml
+        parameters:
+          backendProjectPath: ${{ variables.backendProjectPath }}
+          buildConfiguration: ${{ variables.buildConfiguration }}
+      - template: templates/sender-dotnet-test-job-template.yml
+        parameters:
+          buildConfiguration: ${{ variables.buildConfiguration }}
+          integrationTestsProjectPath: ${{ variables.integrationTestsProjectPath }}
+          unitTestsProjectPath: ${{ variables.unitTestsProjectPath }}
+
+  - stage: 'Build_And_Test_Authorization_API'
+    displayName: 'Build, Test Authorization API and Drop Artifacts'
+    variables:
+      - name: backendProjectPath
+        value: './src/authorization/EventTriangleAPI.Authorization.Presentation'
+
+    jobs:
+      - template: templates/dotnet-build-job-template.yml
+        parameters:
+          backendProjectPath: ${{ variables.backendProjectPath }}
+          buildConfiguration: ${{ variables.buildConfiguration }}
