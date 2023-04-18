@@ -50,7 +50,7 @@ pr:
       - src/shared/EventTriangleAPI.Shared.DTO
 
 pool:
-  vmImage: $(imageName)
+  vmImage: 'ubuntu-latest'
 
 variables:
   - name: buildPlatform
