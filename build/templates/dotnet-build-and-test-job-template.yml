@@ -3,6 +3,10 @@ parameters:
     displayName: 'Build Configuration'
     type: string
 
+  - name: backendProjectPath
+    displayName: 'Backend project path'
+    type: string
+
   - name: integrationTestsProjectPath
     displayName: 'Integration Tests Project Path'
     type: string
@@ -12,6 +16,47 @@ parameters:
     type: string
 
 jobs:
+  - job: 'Build_Pack'
+    displayName: 'Build & Drop Artifact'
+    steps:
+      - checkout: self
+        fetchDepth: 0
+
+      - task: UseDotNet@2
+        displayName: 'Install .NET 6.x SDK'
+        inputs:
+          packageType: sdk
+          version: 6.x
+
+      - task: DotNetCoreCLI@2
+        displayName: 'Dotnet restore'
+        inputs:
+          command: 'restore'
+          projects: '${{ parameters.backendProjectPath }}'
+          arguments: '--verbosity minimal'
+
+      - task: DotNetCoreCLI@2
+        displayName: 'Dotnet build ${{ parameters.buildConfiguration }}'
+        inputs:
+          command: 'build'
+          projects: '${{ parameters.backendProjectPath }}'
+          arguments: '-c ${{ parameters.buildConfiguration }} --no-restore'
+
+      - task: DotNetCoreCLI@2
+        displayName: 'Dotnet Publish'
+        inputs:
+          command: 'publish'
+          publishWebProjects: false
+          projects: '${{ parameters.backendProjectPath }}'
+          arguments: '-c ${{ parameters.buildConfiguration }} -o $(Build.ArtifactStagingDirectory)/${{ parameters.buildConfiguration }} --no-build'
+
+      - task: PublishBuildArtifacts@1
+        displayName: 'Publish Artifacts'
+        inputs:
+          PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+          ArtifactName: 'drop'
+          publishLocation: 'Container'
+
   - job: 'Build_Test_Dotnet'
     displayName: 'Build Test .NET'
     steps:

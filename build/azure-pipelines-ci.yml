@@ -53,59 +53,31 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  - name: buildPlatform
-    value: 'Any CPU'
   - name: buildConfiguration
     value: 'Release'
 
 stages:
-  - stage: 'Build_And_Test_Consumer_API'
-    displayName: 'Build Consumer API and Drop Artifacts'
-    variables:
-      - name: backendProjectPath
-        value: './src/consumer/EventTriangleAPI.Consumer.Presentation'
-      - name: integrationTestsProjectPath
-        value: './src/consumer/EventTriangleAPI.Consumer.IntegrationTests/EventTriangleAPI.Consumer.IntegrationTests.csproj'
-      - name: unitTestsProjectPath
-        value: './src/consumer/EventTriangleAPI.Consumer.UnitTests/EventTriangleAPI.Consumer.UnitTests.csproj'
+  - stage: 'Build_And_Test'
+    displayName: 'Build and Test Consumer, Sender and Authorization API and Drop Artifacts'
     jobs:
-      - template: templates/dotnet-build-job-template.yml
+      - template: templates/dotnet-build-and-test-job-template.yml
+        displayName: 'Build and Test Sender API'
         parameters:
           buildConfiguration: ${{ variables.buildConfiguration }}
-          backendProjectPath: ${{ variables.backendProjectPath }}
-      - template: templates/dotnet-test-job-template.yml
+          backendProjectPath: './src/sender/EventTriangleAPI.Sender.Presentation'
+          integrationTestsProjectPath: './src/sender/EventTriangleAPI.Sender.IntegrationTests/EventTriangleAPI.Sender.IntegrationTests.csproj'
+          unitTestsProjectPath: './src/sender/EventTriangleAPI.Sender.UnitTests/EventTriangleAPI.Sender.UnitTests.csproj'
+      - template: templates/dotnet-build-and-test-job-template.yml
+        displayName: 'Build and Test Consumer API'
         parameters:
           buildConfiguration: ${{ variables.buildConfiguration }}
-          integrationTestsProjectPath: ${{ variables.integrationTestsProjectPath }}
-          unitTestsProjectPath: ${{ variables.unitTestsProjectPath }}
-
-  - stage: 'Build_And_Test_Sender_API'
-    displayName: 'Build Sender API and Drop Artifacts'
-    variables:
-      - name: backendProjectPath
-        value: './src/sender/EventTriangleAPI.Sender.Presentation'
-      - name: integrationTestsProjectPath
-        value: './src/sender/EventTriangleAPI.Sender.IntegrationTests/EventTriangleAPI.Sender.IntegrationTests.csproj'
-      - name: unitTestsProjectPath
-        value: './src/sender/EventTriangleAPI.Sender.UnitTests/EventTriangleAPI.Sender.UnitTests.csproj'
-    jobs:
-      - template: templates/dotnet-build-job-template.yml
+          backendProjectPath: './src/consumer/EventTriangleAPI.Consumer.Presentation'
+          integrationTestsProjectPath: './src/consumer/EventTriangleAPI.Consumer.IntegrationTests/EventTriangleAPI.Consumer.IntegrationTests.csproj'
+          unitTestsProjectPath: './src/consumer/EventTriangleAPI.Consumer.UnitTests/EventTriangleAPI.Consumer.UnitTests.csproj'
+      - template: templates/dotnet-build-and-test-job-template.yml
+        displayName: 'Build and Test Authorization API'
         parameters:
           buildConfiguration: ${{ variables.buildConfiguration }}
-          backendProjectPath: ${{ variables.backendProjectPath }}
-      - template: templates/dotnet-test-job-template.yml
-        parameters:
-          buildConfiguration: ${{ variables.buildConfiguration }}
-          integrationTestsProjectPath: ${{ variables.integrationTestsProjectPath }}
-          unitTestsProjectPath: ${{ variables.unitTestsProjectPath }}
-
-  - stage: 'Build_Authorization_API'
-    displayName: 'Build Authorization API and Drop Artifacts'
-    variables:
-      - name: backendProjectPath
-        value: './src/authorization/EventTriangleAPI.Authorization.Presentation'
-    jobs:
-      - template: templates/dotnet-build-job-template.yml
-        parameters:
-          buildConfiguration: ${{ variables.buildConfiguration }}
-          backendProjectPath: ${{ variables.backendProjectPath }}
+          backendProjectPath: './src/authorization/EventTriangleAPI.Authorization.Presentation'
+          integrationTestsProjectPath: './src/authorization/EventTriangleAPI.Authorization.IntegrationTests/EventTriangleAPI.Authorization.IntegrationTests.csproj'
+          unitTestsProjectPath: './src/authorization/EventTriangleAPI.Authorization.UnitTests/EventTriangleAPI.Authorization.UnitTests.csproj'
