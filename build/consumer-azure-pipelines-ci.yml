@@ -1,0 +1,48 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - develop
+      - main
+  paths:
+    include:
+      - build
+      - src/consumer/EventTriangleAPI.Consumer.Application
+      - src/consumer/EventTriangleAPI.Consumer.BusinessLogic
+      - src/consumer/EventTriangleAPI.Consumer.Domain
+      - src/consumer/EventTriangleAPI.Consumer.Presentation
+      - src/consumer/EventTriangleAPI.Consumer.IntegrationTests
+      - src/consumer/EventTriangleAPI.Consumer.UnitTests
+      - src/shared/EventTriangleAPI.Shared.Application
+      - src/shared/EventTriangleAPI.Shared.DTO
+
+pr:
+  branches:
+    include:
+      - develop
+      - main
+  paths:
+    include:
+      - build
+      - src/consumer/EventTriangleAPI.Consumer.Application
+      - src/consumer/EventTriangleAPI.Consumer.BusinessLogic
+      - src/consumer/EventTriangleAPI.Consumer.Domain
+      - src/consumer/EventTriangleAPI.Consumer.Presentation
+      - src/consumer/EventTriangleAPI.Consumer.IntegrationTests
+      - src/consumer/EventTriangleAPI.Consumer.UnitTests
+      - src/shared/EventTriangleAPI.Shared.Application
+      - src/shared/EventTriangleAPI.Shared.DTO
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+stages:
+  - stage: 'Build_And_Test_ConsumerAPI'
+    displayName: 'Build and Test Consumer API and Drop Artifacts'
+    jobs:
+      - template: templates/dotnet-build-and-test-job-template.yml
+        parameters:
+          buildConfiguration: 'Release'
+          backendProjectPath: './src/consumer/EventTriangleAPI.Consumer.Presentation'
+          integrationTestsProjectPath: './src/consumer/EventTriangleAPI.Consumer.IntegrationTests/EventTriangleAPI.Consumer.IntegrationTests.csproj'
+          unitTestsProjectPath: './src/consumer/EventTriangleAPI.Consumer.UnitTests/EventTriangleAPI.Consumer.UnitTests.csproj'
