@@ -1,5 +1,3 @@
-using Azure.Identity;
-using Azure.Security.KeyVault.Secrets;
 using EventTriangleAPI.Authorization.BusinessLogic.CommandHandlers;
 using EventTriangleAPI.Authorization.Presentation.Constants;
 using EventTriangleAPI.Shared.DTO.Models;
