@@ -1,0 +1,84 @@
+@import "../../app.component.scss";
+
+:host {
+  position: relative;
+  display: flex;
+  grid-area: header;
+}
+
+.logo {
+  flex-shrink: 1;
+  position: absolute;
+  top: 30px;
+  left: 35px;
+  display: flex;
+}
+
+.logoSvg {
+  width: 26px;
+  height: 13;
+  stroke: $purple;
+  fill: white;
+  margin-top: 3px;
+}
+
+.logoName {
+  margin-left: 5px;
+  font-size: 18px;
+  font-weight: 700;
+  color: $purple;
+}
+
+.search {
+  position: relative;
+  display: flex;
+  width: 1146px;
+  height: 50px;
+  margin-top: 15px;
+  margin-left: 328px;
+}
+
+.searchInput {
+  width: 100%;
+  height: 100%;
+  outline: none;
+  border: none;
+  border-radius: 10px;
+  text-indent: 25px;
+  font-size: 18px;
+  font-weight: 700;
+  background-color: $grey;
+  color: $grey-p;
+
+  &::placeholder {
+    color: $light-grey-p;
+  }
+}
+
+.searchSvg {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  top: 9px;
+  right: 15px;
+  stroke: $light-grey-svg;
+}
+
+.profile {
+  display: flex;
+  position: absolute;
+  top: 17px;
+  right: 35px;
+}
+
+.fullName {
+  margin: 12px;
+  font-size: 18px;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 100%;
+  background-color: $purple;
+}

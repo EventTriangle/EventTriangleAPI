@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+
+* {
+	font-family: 'Arial', sans-serif;
+	box-sizing: border-box; 
+}
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+	font-family: 'Inter', sans-serif;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+
+body {
+  font-family: 'Inter', sans-serif;
+}
+
+.App {
+  width: 100vw;
+  height: 100vh;
+}
+
+$purple: #8A21DC;
+$grey: #F5F6F8;
+$grey-2: #E9EFF2;
+
+$green-60percent: rgba(0, 165, 0, 0.6);
+$purple-60percent: #8b21dc60;
+$red-60percent: #ec161660;
+
+$purple-20percent: #8b21dc20;
+
+$red-p: #D64C4C;
+$grey-p: #707782;
+$light-grey-p: #A3A5A7;
+
+$grey-svg: #707782;
+$light-grey-svg: #A3A5A7;
+$red-svg: #D64C4C;
+
+$purple-hover-button: #7f10d4;
