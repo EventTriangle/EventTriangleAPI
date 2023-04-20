@@ -3,7 +3,6 @@ using Azure.Security.KeyVault.Secrets;
 using EventTriangleAPI.Authorization.BusinessLogic.CommandHandlers;
 using EventTriangleAPI.Authorization.Presentation.Constants;
 using EventTriangleAPI.Shared.DTO.Models;
-using Microsoft.Extensions.FileProviders;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,20 +22,14 @@ var azAdSection = builder.Configuration
 
 var azAdConfig = azAdSection.Get<AzureAdConfiguration>();
 
-var keyVaultUrl = builder.Configuration["KeyVaultUrl"];
+var adClientSecret = Environment.GetEnvironmentVariable("EVENT_TRIANGLE_AD_CLIENT_SECRET");
 
-var client = new SecretClient(new Uri(keyVaultUrl), new DefaultAzureCredential());
-
-var clientSecret = await client.GetSecretAsync("AzureAppSecret");
-
-var secretString = clientSecret.Value.Value;
-
-if (string.IsNullOrEmpty(secretString))
+if (string.IsNullOrEmpty(adClientSecret))
 {
-    throw new ArgumentNullException(nameof(clientSecret));
+    throw new ArgumentNullException(nameof(adClientSecret));
 }
 
-azAdConfig.ClientSecret = secretString;
+azAdConfig.ClientSecret = adClientSecret;
 azAdConfig.AzureAdTokenUrl = $"{azAdConfig.Instance}/{azAdConfig.TenantId}/oauth2/v2.0/token";
 
 builder.Services.AddScoped(_ => azAdConfig);
@@ -65,12 +58,12 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.Map(SpaRouting.Transactions, builder => builder.UseSpa(spa => spa.Options.SourcePath = "/wwwroot"));
-app.Map(SpaRouting.Cards, builder => builder.UseSpa(spa => spa.Options.SourcePath = "/wwwroot"));
-app.Map(SpaRouting.Deposit, builder => builder.UseSpa(spa => spa.Options.SourcePath = "/wwwroot"));
-app.Map(SpaRouting.Contacts, builder => builder.UseSpa(spa => spa.Options.SourcePath = "/wwwroot"));
-app.Map(SpaRouting.Support, builder => builder.UseSpa(spa => spa.Options.SourcePath = "/wwwroot"));
-app.Map(SpaRouting.Tickets, builder => builder.UseSpa(spa => spa.Options.SourcePath = "/wwwroot"));
-app.Map(SpaRouting.Users, builder => builder.UseSpa(spa => spa.Options.SourcePath = "/wwwroot"));
+app.Map(SpaRouting.Transactions, config => config.UseSpa(spa => spa.Options.SourcePath = "/wwwroot"));
+app.Map(SpaRouting.Cards, config => config.UseSpa(spa => spa.Options.SourcePath = "/wwwroot"));
+app.Map(SpaRouting.Deposit, config => config.UseSpa(spa => spa.Options.SourcePath = "/wwwroot"));
+app.Map(SpaRouting.Contacts, config => config.UseSpa(spa => spa.Options.SourcePath = "/wwwroot"));
+app.Map(SpaRouting.Support, config => config.UseSpa(spa => spa.Options.SourcePath = "/wwwroot"));
+app.Map(SpaRouting.Tickets, config => config.UseSpa(spa => spa.Options.SourcePath = "/wwwroot"));
+app.Map(SpaRouting.Users, config => config.UseSpa(spa => spa.Options.SourcePath = "/wwwroot"));
 
 app.Run();
