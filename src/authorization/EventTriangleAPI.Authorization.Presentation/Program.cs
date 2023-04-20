@@ -1,6 +1,7 @@
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using EventTriangleAPI.Authorization.BusinessLogic.CommandHandlers;
+using EventTriangleAPI.Authorization.Presentation.Constants;
 using EventTriangleAPI.Shared.DTO.Models;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.OpenApi.Models;
@@ -64,12 +65,12 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.Map("/transactions", builder => builder.UseSpa(spa => spa.Options.SourcePath = "/wwwroot"));
-app.Map("/cards", builder => builder.UseSpa(spa => spa.Options.SourcePath = "/wwwroot"));
-app.Map("/deposit", builder => builder.UseSpa(spa => spa.Options.SourcePath = "/wwwroot"));
-app.Map("/contacts", builder => builder.UseSpa(spa => spa.Options.SourcePath = "/wwwroot"));
-app.Map("/support", builder => builder.UseSpa(spa => spa.Options.SourcePath = "/wwwroot"));
-app.Map("/tickets", builder => builder.UseSpa(spa => spa.Options.SourcePath = "/wwwroot"));
-app.Map("/users", builder => builder.UseSpa(spa => spa.Options.SourcePath = "/wwwroot"));
+app.Map(SpaRouting.Transactions, builder => builder.UseSpa(spa => spa.Options.SourcePath = "/wwwroot"));
+app.Map(SpaRouting.Cards, builder => builder.UseSpa(spa => spa.Options.SourcePath = "/wwwroot"));
+app.Map(SpaRouting.Deposit, builder => builder.UseSpa(spa => spa.Options.SourcePath = "/wwwroot"));
+app.Map(SpaRouting.Contacts, builder => builder.UseSpa(spa => spa.Options.SourcePath = "/wwwroot"));
+app.Map(SpaRouting.Support, builder => builder.UseSpa(spa => spa.Options.SourcePath = "/wwwroot"));
+app.Map(SpaRouting.Tickets, builder => builder.UseSpa(spa => spa.Options.SourcePath = "/wwwroot"));
+app.Map(SpaRouting.Users, builder => builder.UseSpa(spa => spa.Options.SourcePath = "/wwwroot"));
 
 app.Run();

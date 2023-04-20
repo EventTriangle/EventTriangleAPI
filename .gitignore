@@ -40,10 +40,6 @@ OpenSslWorkingDirectory/
 wwwroot/
 dist/
 
-# sonar scanner
-MangoAPI.Client/.scannerwork/*
-MangoAPI.Client/reports/*
-
 # Visual Studio 2015/2017 cache/options directory
 .vs/
 
@@ -363,4 +359,28 @@ healthchecksdb
 # code coverage temp
 coverage.opencover.xml
 
-MangoAPI.Client/.angular/*
+**/*.out-tsc
+**/*.bazel-out
+**/*.npm-debug.log
+**/*.yarn-error.log
+**/*.project
+**/*.classpath
+**/*.c9/
+**/*.launch
+**/*.settings/
+**/*.sublime-workspace
+**/*.vscode/*
+!**/*.vscode/settings.json
+!**/*.vscode/tasks.json
+!**/*.vscode/launch.json
+!**/*.vscode/extensions.json
+**/*.history/*
+**/*.angular/cache
+**/*.connect.lock
+**/*.coverage
+**/*.libpeerconnection.log
+**/*.testem.log
+**/*.typings
+**/*.DS_Store
+**/*.Thumbs.db
+
