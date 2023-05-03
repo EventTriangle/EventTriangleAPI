@@ -8,8 +8,15 @@ namespace EventTriangleAPI.Authorization.Presentation.Controllers;
 public class HomeController : Controller
 {
     [HttpGet("login")]
-    public IActionResult Login()
+    public async Task<IActionResult> Login()
     {
+        var authN = await HttpContext.AuthenticateAsync("appOidc");
+
+        if (authN.Succeeded)
+        {
+            return Redirect("/app/transactions");
+        }
+        
         return Challenge("appOidc");
     }
     

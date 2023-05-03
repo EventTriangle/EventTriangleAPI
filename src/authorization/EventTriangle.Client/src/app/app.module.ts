@@ -16,6 +16,7 @@ import { ContactsOutletComponent } from './components/contacts-outlet/contacts-o
 import { SupportOutletComponent } from './components/support-outlet/support-outlet.component';
 import { TicketsOutletComponent } from './components/tickets-outlet/tickets-outlet.component';
 import { UsersOutletComponent } from './components/users-outlet/users-outlet.component';
+import { APP_BASE_HREF } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,7 @@ import { UsersOutletComponent } from './components/users-outlet/users-outlet.com
     HttpClientModule,
     AngularSvgIconModule.forRoot(),
   ],
-  providers: [],
+  providers: [{provide: APP_BASE_HREF, useValue: "/app"}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
