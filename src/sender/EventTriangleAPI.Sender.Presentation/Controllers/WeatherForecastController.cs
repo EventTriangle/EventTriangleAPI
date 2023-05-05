@@ -39,7 +39,6 @@ public class WeatherForecastController : ControllerBase
     }
     
     [Authorize(Roles = "User, Admin")]
-    [Authorize]
     [HttpGet("user_and_admin")]
     public IEnumerable<WeatherForecast> GetForUserAndAdmin()
     {

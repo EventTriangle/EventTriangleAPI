@@ -56,19 +56,17 @@ builder.Services
     .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddOpenIdConnect("appOidc", options =>
     {
-        options.Authority = $"{azAdConfig.Instance}/{azAdConfig.TenantId}/";
+        options.Authority = $"{azAdConfig.Instance}/{azAdConfig.TenantId}/v2.0/";
         options.ClientId = azAdConfig.ClientId.ToString();
         options.ClientSecret = azAdConfig.ClientSecret;
         options.CallbackPath = new PathString("/authorization-redirect");
         options.ResponseType = "code";
         options.ResponseMode = "query";
         options.SaveTokens = true;
-        options.GetClaimsFromUserInfoEndpoint = true;
+        options.GetClaimsFromUserInfoEndpoint = false;
         options.RequireHttpsMetadata = false;
         options.Scope.Clear();
-        options.Scope.Add("EventTriangleLocalAuth.All");
-        options.Scope.Add("offline_access");
-        options.Scope.Add("openid");
+        options.Scope.Add(azAdConfig.Scopes);
         options.UseTokenLifetime = true;
     });
 
