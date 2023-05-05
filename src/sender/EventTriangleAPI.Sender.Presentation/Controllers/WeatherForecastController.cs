@@ -20,7 +20,8 @@ public class WeatherForecastController : ControllerBase
     {
         _logger = logger;
     }
-
+    
+    [Authorize]
     [HttpGet("all")]
     public IEnumerable<WeatherForecast> GetForAll()
     {

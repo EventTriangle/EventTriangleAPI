@@ -1,11 +1,7 @@
-using System.Net.Http.Headers;
 using EventTriangleAPI.Authorization.BusinessLogic.CommandHandlers;
 using EventTriangleAPI.Authorization.Presentation.Constants;
+using EventTriangleAPI.Authorization.Presentation.DependencyInjection;
 using EventTriangleAPI.Shared.DTO.Models;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.OpenApi.Models;
-using Yarp.ReverseProxy.Transforms;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,65 +17,23 @@ azAdConfig.AzureAdTokenUrl = $"{azAdConfig.Instance}/{azAdConfig.TenantId}/oauth
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1",
-        new OpenApiInfo { Title = "EventTriangle Authorization API", Version = "v1" });
-});
+builder.Services.ConfigureSwagger();
 builder.Services.AddSpaStaticFiles(config => { config.RootPath = "wwwroot"; });
 builder.Services.AddMvc();
-
-builder.Services.AddReverseProxy()
-    .LoadFromConfig(reverseProxySection)
-    .AddTransforms(transformBuilderContext =>
-    {
-        transformBuilderContext.AddRequestTransform(async transformContext =>
-        {
-            var authenticateResult = await transformContext.HttpContext.AuthenticateAsync("appOidc");
-            var accessToken = authenticateResult.Properties?.GetTokenValue("access_token");
-            transformContext.ProxyRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-        });
-    });
+builder.Services.ConfigureYarp(reverseProxySection);
+builder.Services.ConfigureCors(corsPolicyName, allowedHosts);
 
 if (string.IsNullOrEmpty(adClientSecret))
 {
     throw new ArgumentNullException(nameof(adClientSecret));
 }
 
-builder.Services
-    .AddAuthentication(options =>
-    {
-        options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-        options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-        options.DefaultChallengeScheme = "appOidc";
-    })
-    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddOpenIdConnect("appOidc", options =>
-    {
-        options.Authority = $"{azAdConfig.Instance}/{azAdConfig.TenantId}/v2.0/";
-        options.ClientId = azAdConfig.ClientId.ToString();
-        options.ClientSecret = azAdConfig.ClientSecret;
-        options.CallbackPath = new PathString("/authorization-redirect");
-        options.ResponseType = "code";
-        options.ResponseMode = "query";
-        options.SaveTokens = true;
-        options.GetClaimsFromUserInfoEndpoint = false;
-        options.RequireHttpsMetadata = false;
-        options.Scope.Clear();
-        options.Scope.Add(azAdConfig.Scopes);
-        options.UseTokenLifetime = true;
-    });
-
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy(corsPolicyName, corsPolicyBuilder =>
-    {
-        corsPolicyBuilder
-            .WithOrigins(allowedHosts)
-            .AllowAnyMethod()
-            .AllowAnyHeader();
-    });
-});
+builder.Services.AddAppAuthentication(
+    azAdConfig.Authority,
+    azAdConfig.ClientId.ToString(),
+    azAdConfig.ClientSecret,
+    azAdConfig.CallbackPath,
+    azAdConfig.Scopes);
 
 builder.Services.AddScoped(_ => azAdConfig);
 builder.Services.AddScoped<RefreshTokenCommandHandler>();
