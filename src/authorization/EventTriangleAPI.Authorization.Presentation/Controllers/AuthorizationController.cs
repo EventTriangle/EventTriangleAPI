@@ -1,4 +1,5 @@
 using EventTriangleAPI.Authorization.BusinessLogic.CommandHandlers;
+using EventTriangleAPI.Authorization.Presentation.Constants;
 using EventTriangleAPI.Shared.Application.Extensions;
 using EventTriangleAPI.Shared.DTO.Commands;
 using Microsoft.AspNetCore.Authentication;
@@ -25,28 +26,28 @@ public class AuthorizationController : ControllerBase
     [HttpGet("login")]
     public async Task<IActionResult> Login()
     {
-        var authN = await HttpContext.AuthenticateAsync("appOidc");
+        var authN = await HttpContext.AuthenticateAsync(AuthConstants.AppOidc);
 
         if (authN.Succeeded)
         {
-            return Redirect("/app/transactions");
+            return Redirect(SpaRouting.Transactions);
         }
         
-        return Challenge("appOidc");
+        return Challenge(AuthConstants.AppOidc);
     }
     
     [Authorize]
     [HttpGet("logout")]
     public IActionResult Logout()
     {
-        return SignOut("appOidc");
+        return SignOut(AuthConstants.AppOidc);
     }
 
     [AllowAnonymous]
     [HttpGet("isAuthenticated")]
     public async Task<IActionResult> IsAuthenticated()
     {
-        var authN = await HttpContext.AuthenticateAsync("appOidc");
+        var authN = await HttpContext.AuthenticateAsync(AuthConstants.AppOidc);
         return authN.Succeeded 
             ? Ok(new AuthNStatus(true))
             : Unauthorized(new AuthNStatus(false));

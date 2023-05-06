@@ -32,6 +32,7 @@ public static class AppAuthenticationDependencyInjection
                 options.SaveTokens = true;
                 options.GetClaimsFromUserInfoEndpoint = false;
                 options.RequireHttpsMetadata = false;
+                options.UsePkce = true;
                 options.Scope.Clear();
                 options.Scope.Add(scopes);
                 options.UseTokenLifetime = true;

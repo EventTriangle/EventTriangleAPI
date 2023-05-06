@@ -1,4 +1,5 @@
 using System.Net.Http.Headers;
+using EventTriangleAPI.Authorization.Presentation.Constants;
 using Microsoft.AspNetCore.Authentication;
 using Yarp.ReverseProxy.Transforms;
 
@@ -17,7 +18,7 @@ public static class YarpServices
             {
                 transformBuilderContext.AddRequestTransform(async transformContext =>
                 {
-                    var authenticateResult = await transformContext.HttpContext.AuthenticateAsync("appOidc");
+                    var authenticateResult = await transformContext.HttpContext.AuthenticateAsync(AuthConstants.AppOidc);
                     var accessToken = authenticateResult.Properties?.GetTokenValue("access_token");
                     transformContext.ProxyRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
                 });

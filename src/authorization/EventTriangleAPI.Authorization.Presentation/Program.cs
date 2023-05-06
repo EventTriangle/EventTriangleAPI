@@ -8,12 +8,10 @@ var builder = WebApplication.CreateBuilder(args);
 var azAdSection = builder.Configuration.GetSection("AzureAd");
 var azAdConfig = azAdSection.Get<AzureAdConfiguration>();
 var adClientSecret = Environment.GetEnvironmentVariable("EVENT_TRIANGLE_AD_CLIENT_SECRET");
-var corsPolicyName = "CorsPolicyName";
 var allowedHosts = builder.Configuration["AllowedHosts"];
 var reverseProxySection = builder.Configuration.GetSection("ReverseProxy");
 
 azAdConfig.ClientSecret = adClientSecret;
-azAdConfig.AzureAdTokenUrl = $"{azAdConfig.Instance}/{azAdConfig.TenantId}/oauth2/v2.0/token";
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -21,7 +19,7 @@ builder.Services.ConfigureSwagger();
 builder.Services.AddSpaStaticFiles(config => { config.RootPath = "wwwroot"; });
 builder.Services.AddMvc();
 builder.Services.ConfigureYarp(reverseProxySection);
-builder.Services.ConfigureCors(corsPolicyName, allowedHosts);
+builder.Services.ConfigureCors(allowedHosts);
 
 if (string.IsNullOrEmpty(adClientSecret))
 {
@@ -60,7 +58,7 @@ app.UseCookiePolicy(new CookiePolicyOptions
 
 app.UseRouting();
 
-app.UseCors(corsPolicyName);
+app.UseCors(CorsServices.CorsPolicyName);
 
 app.UseAuthentication();
 
