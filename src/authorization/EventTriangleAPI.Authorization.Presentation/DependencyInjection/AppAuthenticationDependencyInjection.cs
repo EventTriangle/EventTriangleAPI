@@ -36,6 +36,9 @@ public static class AppAuthenticationDependencyInjection
                 options.Scope.Clear();
                 options.Scope.Add(scopes);
                 options.UseTokenLifetime = true;
+                options.NonceCookie.SecurePolicy = CookieSecurePolicy.Always;
+                options.NonceCookie.SameSite = SameSiteMode.None;
+                options.NonceCookie.IsEssential = true;
             });
         
         return serviceCollection;

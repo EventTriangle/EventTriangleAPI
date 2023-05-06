@@ -20,6 +20,7 @@ builder.Services.AddSpaStaticFiles(config => { config.RootPath = "wwwroot"; });
 builder.Services.AddMvc();
 builder.Services.ConfigureYarp(reverseProxySection);
 builder.Services.ConfigureCors(allowedHosts);
+builder.Services.ConfigureSameSiteNoneCookiePolicy();
 
 if (string.IsNullOrEmpty(adClientSecret))
 {
@@ -51,10 +52,7 @@ app.UseStaticFiles();
 
 app.UseSpaStaticFiles();
 
-app.UseCookiePolicy(new CookiePolicyOptions
-{
-    MinimumSameSitePolicy = SameSiteMode.Lax
-});
+app.UseCookiePolicy();
 
 app.UseRouting();
 
