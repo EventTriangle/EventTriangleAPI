@@ -3,6 +3,7 @@ using EventTriangleAPI.Authorization.Presentation.Constants;
 using EventTriangleAPI.Shared.Application.Extensions;
 using EventTriangleAPI.Shared.DTO.Commands;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -38,8 +39,9 @@ public class AuthorizationController : ControllerBase
     
     [Authorize]
     [HttpGet("logout")]
-    public IActionResult Logout()
+    public async Task<IActionResult> Logout()
     {
+        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         return SignOut(AuthConstants.AppOidc);
     }
 
@@ -73,5 +75,5 @@ public class AuthorizationController : ControllerBase
         return result.ToActionResult();
     }
     
-    public record AuthNStatus(bool Authenticated);
+    private record AuthNStatus(bool Authenticated);
 }
