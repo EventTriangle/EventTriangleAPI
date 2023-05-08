@@ -4,11 +4,11 @@ using Microsoft.IdentityModel.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var configurationSection = builder.Configuration.GetSection("AzureAd");
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-var configurationSection = builder.Configuration.GetSection("AzureAd");
 
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -18,10 +18,8 @@ var app = builder.Build();
 
 IdentityModelEventSource.ShowPII = true;
 
-
 app.UseSwagger();
 app.UseSwaggerUI();
-
 
 app.UseHttpsRedirection();
 

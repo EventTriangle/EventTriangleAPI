@@ -20,7 +20,25 @@ public class WeatherForecastController : ControllerBase
     {
         _logger = logger;
     }
-
+    
+    [Authorize]
+    [HttpGet("all")]
+    public IEnumerable<WeatherForecast> GetForAll()
+    {
+        foreach (var item in HttpContext.Request.Headers)
+        {
+            Console.WriteLine($"{item.Key}: {item.Value}");
+        }
+        
+        return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+            {
+                Date = DateTime.Now.AddDays(index),
+                TemperatureC = Random.Shared.Next(-20, 55),
+                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
+            })
+            .ToArray();
+    }
+    
     [Authorize(Roles = "User, Admin")]
     [HttpGet("user_and_admin")]
     public IEnumerable<WeatherForecast> GetForUserAndAdmin()
@@ -38,6 +56,7 @@ public class WeatherForecastController : ControllerBase
     [HttpGet("admin")]
     public IEnumerable<WeatherForecast> GetForAdmin()
     {
+        var r = HttpContext;
         return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
                 Date = DateTime.Now.AddDays(index),
