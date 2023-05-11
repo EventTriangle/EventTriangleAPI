@@ -1,5 +1,5 @@
 using EventTriangleAPI.Authorization.BusinessLogic.CommandHandlers;
-using EventTriangleAPI.Authorization.Presentation.Constants;
+using EventTriangleAPI.Authorization.Domain.Constants;
 using EventTriangleAPI.Shared.Application.Extensions;
 using EventTriangleAPI.Shared.DTO.Commands;
 using Microsoft.AspNetCore.Authentication;

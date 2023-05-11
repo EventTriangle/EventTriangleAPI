@@ -9,8 +9,4 @@
       <ProjectReference Include="..\..\shared\EventTriangleAPI.Shared.Application\EventTriangleAPI.Shared.Application.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <PackageReference Include="FluentAssertions" Version="6.10.0" />
-    </ItemGroup>
-
 </Project>

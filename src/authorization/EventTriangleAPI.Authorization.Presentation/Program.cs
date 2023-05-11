@@ -1,15 +1,20 @@
 using EventTriangleAPI.Authorization.BusinessLogic.CommandHandlers;
-using EventTriangleAPI.Authorization.Presentation.Constants;
+using EventTriangleAPI.Authorization.BusinessLogic.Services;
+using EventTriangleAPI.Authorization.Domain.Constants;
+using EventTriangleAPI.Authorization.Persistence;
 using EventTriangleAPI.Authorization.Presentation.DependencyInjection;
 using EventTriangleAPI.Shared.DTO.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var azAdSection = builder.Configuration.GetSection("AzureAd");
+var azAdSection = builder.Configuration.GetSection(AppSettingsConstants.AzureAdSelection);
 var azAdConfig = azAdSection.Get<AzureAdConfiguration>();
 var adClientSecret = Environment.GetEnvironmentVariable("EVENT_TRIANGLE_AD_CLIENT_SECRET");
-var allowedHosts = builder.Configuration["AllowedHosts"];
-var reverseProxySection = builder.Configuration.GetSection("ReverseProxy");
+var allowedHosts = builder.Configuration[AppSettingsConstants.AllowedHosts];
+var reverseProxySection = builder.Configuration.GetSection(AppSettingsConstants.ReverseProxySelection);
+var databaseConnectionString = builder.Configuration[AppSettingsConstants.DatabaseConnectionString];
 
 azAdConfig.ClientSecret = adClientSecret;
 
@@ -18,6 +23,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.ConfigureSwagger();
 builder.Services.AddSpaStaticFiles(config => { config.RootPath = "wwwroot"; });
 builder.Services.AddMvc();
+builder.Services.AddDatabaseServices(databaseConnectionString);
 builder.Services.ConfigureYarp(reverseProxySection);
 builder.Services.ConfigureCors(allowedHosts);
 builder.Services.ConfigureSameSiteNoneCookiePolicy();
@@ -40,6 +46,11 @@ builder.Services.AddScoped<GetTokenCommandHandler>();
 
 builder.Services.AddGrpc();
 builder.Services.AddHttpClient();
+
+builder.Services.AddSingleton<ITicketStore, TicketStore>();
+builder.Services
+     .AddOptions<CookieAuthenticationOptions>(CookieAuthenticationDefaults.AuthenticationScheme)
+     .Configure<ITicketStore>((o, ticketStore) => o.SessionStore = ticketStore);
 
 var app = builder.Build();
 
@@ -67,6 +78,8 @@ app.UseEndpoints(options =>
     options.MapReverseProxy();
     options.MapControllers();    
 });
+
+app.MigrateDatabase();
 
 app.Map(SpaRouting.Transactions, config => config.UseSpa(spa => spa.Options.SourcePath = "/wwwroot"));
 app.Map(SpaRouting.Cards, config => config.UseSpa(spa => spa.Options.SourcePath = "/wwwroot"));

@@ -1,4 +1,4 @@
-namespace EventTriangleAPI.Authorization.Presentation.Constants;
+namespace EventTriangleAPI.Authorization.Domain.Constants;
 
 public static class AuthConstants
 {

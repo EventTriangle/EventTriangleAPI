@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EventTriangleAPI.Authorization.BusinessLogic\EventTriangleAPI.Authorization.BusinessLogic.csproj" />
+    <ProjectReference Include="..\EventTriangleAPI.Authorization.Persistence\EventTriangleAPI.Authorization.Persistence.csproj" />
   </ItemGroup>
 
   <ItemGroup>

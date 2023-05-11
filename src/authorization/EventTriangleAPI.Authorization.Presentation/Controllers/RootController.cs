@@ -1,4 +1,4 @@
-using EventTriangleAPI.Authorization.Presentation.Constants;
+using EventTriangleAPI.Authorization.Domain.Constants;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EventTriangleAPI.Authorization.Presentation.Controllers;

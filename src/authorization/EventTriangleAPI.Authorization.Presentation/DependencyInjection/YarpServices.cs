@@ -1,5 +1,5 @@
 using System.Net.Http.Headers;
-using EventTriangleAPI.Authorization.Presentation.Constants;
+using EventTriangleAPI.Authorization.Domain.Constants;
 using Microsoft.AspNetCore.Authentication;
 using Yarp.ReverseProxy.Transforms;
 
