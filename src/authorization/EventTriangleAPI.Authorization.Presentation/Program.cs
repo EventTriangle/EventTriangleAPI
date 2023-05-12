@@ -1,9 +1,7 @@
 using EventTriangleAPI.Authorization.BusinessLogic.CommandHandlers;
-using EventTriangleAPI.Authorization.BusinessLogic.Services;
 using EventTriangleAPI.Authorization.Domain.Constants;
 using EventTriangleAPI.Authorization.Presentation.DependencyInjection;
 using EventTriangleAPI.Shared.DTO.Models;
-using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
