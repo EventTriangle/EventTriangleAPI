@@ -1,11 +1,9 @@
 using EventTriangleAPI.Authorization.BusinessLogic.CommandHandlers;
 using EventTriangleAPI.Authorization.BusinessLogic.Services;
 using EventTriangleAPI.Authorization.Domain.Constants;
-using EventTriangleAPI.Authorization.Persistence;
 using EventTriangleAPI.Authorization.Presentation.DependencyInjection;
 using EventTriangleAPI.Shared.DTO.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,10 +45,7 @@ builder.Services.AddScoped<GetTokenCommandHandler>();
 builder.Services.AddGrpc();
 builder.Services.AddHttpClient();
 
-builder.Services.AddSingleton<ITicketStore, TicketStore>();
-builder.Services
-     .AddOptions<CookieAuthenticationOptions>(CookieAuthenticationDefaults.AuthenticationScheme)
-     .Configure<ITicketStore>((o, ticketStore) => o.SessionStore = ticketStore);
+builder.Services.AddTicketStore();
 
 var app = builder.Build();
 

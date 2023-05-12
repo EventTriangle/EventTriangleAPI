@@ -1,16 +1,13 @@
 using System.IdentityModel.Tokens.Jwt;
-using EventTriangleAPI.Authorization.Domain.Constants;
 using EventTriangleAPI.Authorization.Domain.Entities;
 using EventTriangleAPI.Authorization.Persistence;
 using EventTriangleAPI.Shared.Application.Constants;
-using EventTriangleAPI.Shared.Application.Services;
 using EventTriangleAPI.Shared.DTO.Models;
 using IdentityModel.Client;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Configuration;
 
 namespace EventTriangleAPI.Authorization.BusinessLogic.Services;
 
@@ -22,27 +19,18 @@ public class TicketStore : ITicketStore
     private readonly AzureAdConfiguration _azureAdConfiguration;
     private readonly IMemoryCache _memoryCache;
 
-    public TicketStore()
+    public TicketStore(
+        DatabaseContext context,
+        TicketSerializer ticketSerializer,
+        HttpClient httpClient,
+        AzureAdConfiguration azureAdConfiguration,
+        IMemoryCache memoryCache)
     {
-        var appSettingsService = new AppSettingsService();
-        var appSettingsPath = appSettingsService.GetAppSettingsPathAuthorization();
-        var configuration = new ConfigurationBuilder()
-            .AddJsonFile(appSettingsPath)
-            .Build();
-     
-        var azAdSection = configuration.GetSection(AppSettingsConstants.AzureAdSelection);
-        _azureAdConfiguration = azAdSection.Get<AzureAdConfiguration>();
-        
-        var adClientSecret = Environment.GetEnvironmentVariable("EVENT_TRIANGLE_AD_CLIENT_SECRET");
-        _azureAdConfiguration.ClientSecret = adClientSecret;        
-        
-        var dbContextOptions = new DbContextOptionsBuilder<DatabaseContext>()
-                .UseNpgsql(configuration[AppSettingsConstants.DatabaseConnectionString]).Options;
-        
-        _context = new DatabaseContext(dbContextOptions);
-        _ticketSerializer = new TicketSerializer();
-        _httpClient = new HttpClient();
-        _memoryCache = new MemoryCache(new MemoryCacheOptions());
+        _context = context;
+        _ticketSerializer = ticketSerializer;
+        _httpClient = httpClient;
+        _azureAdConfiguration = azureAdConfiguration;
+        _memoryCache = memoryCache;
     }
 
     public async Task<string> StoreAsync(AuthenticationTicket ticket)
@@ -155,18 +143,18 @@ public class TicketStore : ITicketStore
         
         var deserializedTicket = _ticketSerializer.Deserialize(ticket.Value);
 
-        // var memoryCacheEntryOptions = new MemoryCacheEntryOptions()
-        //     .SetSlidingExpiration(TimeSpan.FromSeconds(30))
-        //     .SetAbsoluteExpiration(TimeSpan.FromSeconds(3600));
-        //     
-        // _memoryCache.Set(key, ticket, memoryCacheEntryOptions);
+        var memoryCacheEntryOptions = new MemoryCacheEntryOptions()
+            .SetSlidingExpiration(TimeSpan.FromSeconds(30))
+            .SetAbsoluteExpiration(TimeSpan.FromSeconds(3600));
+            
+        _memoryCache.Set(key, ticket, memoryCacheEntryOptions);
         
         return deserializedTicket;
     }
 
     public async Task RemoveAsync(string key)
     {
-        var userSession = await _context.UserSessions.AsNoTracking().FirstAsync(x => x.Id == new Guid(key));
+        var userSession = await _context.UserSessions.FirstAsync(x => x.Id == new Guid(key));
         _context.UserSessions.Remove(userSession);
         await _context.SaveChangesAsync();
     }
