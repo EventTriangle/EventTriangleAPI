@@ -1,7 +1,9 @@
 using EventTriangleAPI.Authorization.BusinessLogic.CommandHandlers;
 using EventTriangleAPI.Authorization.Domain.Constants;
+using EventTriangleAPI.Authorization.Persistence;
 using EventTriangleAPI.Authorization.Presentation.DependencyInjection;
 using EventTriangleAPI.Shared.DTO.Models;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,10 +21,13 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.ConfigureSwagger();
 builder.Services.AddSpaStaticFiles(config => { config.RootPath = "wwwroot"; });
 builder.Services.AddMvc();
-builder.Services.AddDatabaseServices(databaseConnectionString);
 builder.Services.ConfigureYarp(reverseProxySection);
 builder.Services.ConfigureCors(allowedHosts);
 builder.Services.ConfigureSameSiteNoneCookiePolicy();
+builder.Services.AddDbContext<DatabaseContext>(options =>
+{
+    options.UseNpgsql(databaseConnectionString);
+});
 
 if (string.IsNullOrEmpty(adClientSecret))
 {

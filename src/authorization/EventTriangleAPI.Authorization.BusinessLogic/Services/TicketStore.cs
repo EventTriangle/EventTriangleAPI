@@ -1,5 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
+using EventTriangleAPI.Authorization.Domain.Constants;
 using EventTriangleAPI.Authorization.Domain.Entities;
+using EventTriangleAPI.Authorization.Domain.Exceptions;
 using EventTriangleAPI.Authorization.Persistence;
 using EventTriangleAPI.Shared.Application.Constants;
 using EventTriangleAPI.Shared.DTO.Models;
@@ -8,6 +10,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using static IdentityModel.OidcConstants;
 
 namespace EventTriangleAPI.Authorization.BusinessLogic.Services;
 
@@ -18,6 +21,7 @@ public class TicketStore : ITicketStore
     private readonly HttpClient _httpClient;
     private readonly AzureAdConfiguration _azureAdConfiguration;
     private readonly IMemoryCache _memoryCache;
+    private readonly MemoryCacheEntryOptions _memoryCacheEntryOptions;
 
     public TicketStore(
         DatabaseContext context,
@@ -31,20 +35,24 @@ public class TicketStore : ITicketStore
         _httpClient = httpClient;
         _azureAdConfiguration = azureAdConfiguration;
         _memoryCache = memoryCache;
+        
+        _memoryCacheEntryOptions = new MemoryCacheEntryOptions()
+            .SetSlidingExpiration(TimeSpan.FromSeconds(30))
+            .SetAbsoluteExpiration(TimeSpan.FromSeconds(3600));
     }
 
     public async Task<string> StoreAsync(AuthenticationTicket ticket)
     {
-        var idToken = ticket.Properties.GetTokenValue("id_token");
+        var idToken = ticket.Properties.GetTokenValue(TokenTypes.IdentityToken);
         var handler = new JwtSecurityTokenHandler();
         var decodeToken = handler.ReadToken(idToken) as JwtSecurityToken;
 
         if (decodeToken == null)
         {
-            throw new Exception("Read token error");
+            throw new StoreException("Read token error");
         }
         
-        var sessionId = decodeToken.Claims.First(x => x.Type == "sid").Value;
+        var sessionId = decodeToken.Claims.First(x => x.Type == ClaimsConstants.Sid).Value;
 
         await RenewAsync(sessionId, ticket);
         return sessionId;
@@ -55,16 +63,16 @@ public class TicketStore : ITicketStore
         var userSession = await _context.UserSessions.FirstOrDefaultAsync(x => x.Id == new Guid(key));
         
         var ticketExpiresUtc = ticket.Properties.ExpiresUtc;
-        var refreshToken = ticket.Properties.GetTokenValue("refresh_token");
+        var refreshToken = ticket.Properties.GetTokenValue(TokenTypes.RefreshToken);
         
         if (ticketExpiresUtc.HasValue == false)
         {
-            throw new Exception("Ticket ExpiresUtc value does not exist");
+            throw new StoreException("Ticket ExpiresUtc value does not exist");
         }
 
         if (refreshToken == null)
         {
-            throw new Exception("Refresh token does not exist");
+            throw new StoreException("Refresh token does not exist");
         }
 
         if (DateTimeOffset.UtcNow > ticketExpiresUtc.Value && userSession != null)
@@ -87,9 +95,9 @@ public class TicketStore : ITicketStore
                 return;
             }
             
-            ticket.Properties.UpdateTokenValue("access_token", response.AccessToken);
-            ticket.Properties.UpdateTokenValue("refresh_token", response.RefreshToken);
-            ticket.Properties.UpdateTokenValue("id_token", response.IdentityToken);
+            ticket.Properties.UpdateTokenValue(TokenTypes.AccessToken, response.AccessToken);
+            ticket.Properties.UpdateTokenValue(TokenTypes.RefreshToken, response.RefreshToken);
+            ticket.Properties.UpdateTokenValue(TokenTypes.IdentityToken, response.IdentityToken);
             
             var serializedTicket = _ticketSerializer.Serialize(ticket);
             
@@ -109,12 +117,8 @@ public class TicketStore : ITicketStore
 
             _context.UserSessions.Add(newUserSession);
             await _context.SaveChangesAsync();
-
-            var memoryCacheEntryOptions = new MemoryCacheEntryOptions()
-                .SetSlidingExpiration(TimeSpan.FromSeconds(30))
-                .SetAbsoluteExpiration(TimeSpan.FromSeconds(3600));
             
-            _memoryCache.Set(key, ticket, memoryCacheEntryOptions);
+            _memoryCache.Set(key, ticket, _memoryCacheEntryOptions);
         }
     }
 
@@ -142,12 +146,8 @@ public class TicketStore : ITicketStore
         }
         
         var deserializedTicket = _ticketSerializer.Deserialize(ticket.Value);
-
-        var memoryCacheEntryOptions = new MemoryCacheEntryOptions()
-            .SetSlidingExpiration(TimeSpan.FromSeconds(30))
-            .SetAbsoluteExpiration(TimeSpan.FromSeconds(3600));
             
-        _memoryCache.Set(key, ticket, memoryCacheEntryOptions);
+        _memoryCache.Set(key, ticket, _memoryCacheEntryOptions);
         
         return deserializedTicket;
     }
