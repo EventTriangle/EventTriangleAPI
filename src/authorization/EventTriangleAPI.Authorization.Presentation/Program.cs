@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 var azAdSection = builder.Configuration.GetSection(AppSettingsConstants.AzureAdSelection);
 var azAdConfig = azAdSection.Get<AzureAdConfiguration>();
-var adClientSecret = Environment.GetEnvironmentVariable("EVENT_TRIANGLE_AD_CLIENT_SECRET");
+var adClientSecret = Environment.GetEnvironmentVariable(AppSettingsConstants.AdSecretKey);
 var allowedHosts = builder.Configuration[AppSettingsConstants.AllowedHosts];
 var reverseProxySection = builder.Configuration.GetSection(AppSettingsConstants.ReverseProxySelection);
 var databaseConnectionString = builder.Configuration[AppSettingsConstants.DatabaseConnectionString];
@@ -21,6 +21,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.ConfigureSwagger();
 builder.Services.AddSpaStaticFiles(config => { config.RootPath = "wwwroot"; });
 builder.Services.AddMvc();
+builder.Services.AddMemoryCache();
 builder.Services.ConfigureYarp(reverseProxySection);
 builder.Services.ConfigureCors(allowedHosts);
 builder.Services.ConfigureSameSiteNoneCookiePolicy();

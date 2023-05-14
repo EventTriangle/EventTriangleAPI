@@ -71,8 +71,8 @@ runs:
           -o "publish"
       shell: bash
 
-    - name: Drop Artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: '${{ inputs.serviceName }}-${{ env.GITVERSION_FULLSEMVER }}'
-        path: 'publish'
+#    - name: Drop Artifact
+#      uses: actions/upload-artifact@v3
+#      with:
+#        name: '${{ inputs.serviceName }}-${{ env.GITVERSION_FULLSEMVER }}'
+#        path: 'publish'

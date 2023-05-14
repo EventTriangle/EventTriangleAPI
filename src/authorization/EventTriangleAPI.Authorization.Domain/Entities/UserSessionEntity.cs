@@ -22,15 +22,12 @@ public class UserSessionEntity
     public void UpdateValue(byte[] value)
     {
         Value = value;
+        UpdatedAt = DateTimeOffset.UtcNow;
     }
     
     public void UpdateExpiresAt(DateTimeOffset expiresAt)
     {
         ExpiresAt = expiresAt;
-    }
-    
-    public void UpdateUpdatedAt(DateTimeOffset updatedAt)
-    {
-        UpdatedAt = updatedAt;
+        UpdatedAt = DateTimeOffset.UtcNow;
     }
 }

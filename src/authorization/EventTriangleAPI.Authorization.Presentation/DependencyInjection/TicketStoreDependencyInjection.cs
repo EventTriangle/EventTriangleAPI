@@ -24,7 +24,7 @@ public static class TicketStoreDependencyInjection
         var azureAdConfiguration = azAdSection.Get<AzureAdConfiguration>();
         var adClientSecret = Environment.GetEnvironmentVariable("EVENT_TRIANGLE_AD_CLIENT_SECRET");
         azureAdConfiguration.ClientSecret = adClientSecret;
-
+        
         var ticketStore = new TicketStore(dbContext, ticketSerializer, httpClient, azureAdConfiguration, memoryCache);
         
         serviceCollection.AddSingleton<ITicketStore, TicketStore>(_ => ticketStore);
