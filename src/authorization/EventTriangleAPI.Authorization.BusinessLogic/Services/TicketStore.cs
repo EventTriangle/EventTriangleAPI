@@ -63,7 +63,7 @@ public class TicketStore : ITicketStore
         }
         
         var sessionId = decodeToken.Claims.First(x => x.Type == ClaimsConstants.Sid).Value;
-        var userSession = await _context.UserSessions.FirstOrDefaultAsync();
+        var userSession = await _context.UserSessions.FirstOrDefaultAsync(x => x.Id == new Guid(sessionId));
 
         if (userSession != null)
         {
