@@ -36,7 +36,6 @@
 
 .cardList {
   display: grid;
-  // grid-template-columns: auto auto auto;
   grid-template-columns: repeat(auto-fill, 290px);
   width: 100%;
   column-gap: 50px;
@@ -67,18 +66,11 @@
   left: 22px;
 }
 
-.cardItemCvv {
-  position: absolute;
-  font-size: 16px;
-  top: 114px;
-  left: 100px;
-}
-
 .cardItemExpiryDate {
   position: absolute;
   font-size: 16px;
-  top: 114px;
-  left: 180px;
+  top: 147px;
+  right: 22px;
 }
 
 .cardItemFullName {

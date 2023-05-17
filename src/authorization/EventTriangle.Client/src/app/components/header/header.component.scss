@@ -15,17 +15,19 @@
   top: 30px;
   left: 35px;
   display: flex;
+  text-decoration: none;
 }
 
 .logoSvg {
   width: 26px;
-  height: 13;
+  height: 13px;
   stroke: $purple;
   fill: white;
   margin-top: 3px;
 }
 
 .logoName {
+  padding-top: 1px;
   margin-left: 5px;
   font-size: 18px;
   font-weight: 700;
