@@ -90,11 +90,13 @@
 
 .userInfo {
   display: flex;
-  width: 600px;
+  width: 100%;
+  min-width: 490px;
+  max-width: 650px;
   height: 246px;
   background-color: white;
   border-radius: 10px;
-  margin-left: 52px;
+  margin-left: 30px;
 }
 
 .userInfoAvatar {
