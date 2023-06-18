@@ -4,6 +4,7 @@ using EventTriangleAPI.Authorization.Persistence;
 using EventTriangleAPI.Authorization.Presentation.DependencyInjection;
 using EventTriangleAPI.Shared.DTO.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,7 +22,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.ConfigureSwagger();
 builder.Services.AddSpaStaticFiles(config => { config.RootPath = "wwwroot"; });
 builder.Services.AddMvc();
-builder.Services.AddMemoryCache();
 builder.Services.ConfigureYarp(reverseProxySection);
 builder.Services.ConfigureCors(allowedHosts);
 builder.Services.ConfigureSameSiteNoneCookiePolicy();
@@ -29,6 +29,8 @@ builder.Services.AddDbContext<DatabaseContext>(options =>
 {
     options.UseNpgsql(databaseConnectionString);
 });
+
+builder.Services.AddHostedServices();
 
 if (string.IsNullOrEmpty(adClientSecret))
 {
@@ -41,6 +43,8 @@ builder.Services.AddAppAuthentication(
     azAdConfig.ClientSecret,
     azAdConfig.CallbackPath,
     azAdConfig.Scopes);
+
+builder.Services.AddSingleton<IMemoryCache>(_ => new MemoryCache(new MemoryCacheOptions()));
 
 builder.Services.AddScoped(_ => azAdConfig);
 builder.Services.AddScoped<RefreshTokenCommandHandler>();

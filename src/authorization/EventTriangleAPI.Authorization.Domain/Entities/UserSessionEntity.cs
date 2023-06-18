@@ -9,6 +9,8 @@ public class UserSessionEntity
     public DateTimeOffset ExpiresAt { get; private set; }
 
     public DateTimeOffset UpdatedAt { get; private set; } = DateTimeOffset.UtcNow;
+
+    public DateTimeOffset DateOfLastAccess { get; set; } = DateTimeOffset.UtcNow;
     
     public byte[] Value { get; private set; }
 
@@ -28,6 +30,12 @@ public class UserSessionEntity
     public void UpdateExpiresAt(DateTimeOffset expiresAt)
     {
         ExpiresAt = expiresAt;
+        UpdatedAt = DateTimeOffset.UtcNow;
+    }
+
+    public void UpdateDateOfLastAccess()
+    {
+        DateOfLastAccess = DateTimeOffset.UtcNow;
         UpdatedAt = DateTimeOffset.UtcNow;
     }
 }

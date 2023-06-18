@@ -39,7 +39,7 @@ public class TicketStore : ITicketStore
 
         _memoryCacheEntryOptions = new MemoryCacheEntryOptions()
             .SetSlidingExpiration(TimeSpan.FromSeconds(15))
-            .SetAbsoluteExpiration(TimeSpan.FromSeconds(300));
+            .SetAbsoluteExpiration(TimeSpan.FromSeconds(100));
     }
 
     public async Task<string> StoreAsync(AuthenticationTicket ticket)
@@ -109,53 +109,43 @@ public class TicketStore : ITicketStore
         return sessionId;
     }
 
-    public async Task RenewAsync(string key, AuthenticationTicket ticket)
+    public async Task RenewAsync(string key, AuthenticationTicket authenticationTicket)
     {
-        var ticketExpiresUtc = ticket.Properties.ExpiresUtc;
+        var userSession = await _context.UserSessions.FirstOrDefaultAsync(x => x.Id == new Guid(key));
 
-        if (ticketExpiresUtc.HasValue == false)
+        if (userSession == null)
         {
-            throw new StoreException("Ticket ExpiresUtc value does not exist");
+            throw new StoreException("UserSession does not exist");
         }
         
-        if (DateTimeOffset.UtcNow < ticketExpiresUtc.Value)
+        var deserializedTicket = _ticketSerializer.Deserialize(userSession.Value);
+
+        if (deserializedTicket == null)
         {
-            _memoryCache.Set(key, ticket, _memoryCacheEntryOptions);
+            throw new StoreException("Deserialization ticket error");
+        }
+        
+        var refreshToken = deserializedTicket.Properties.GetTokenValue(TokenTypes.RefreshToken);
+
+        var response = await RequestRefreshTokenAsync(refreshToken);
+            
+        if (response.AccessToken == null || response.RefreshToken == null || response.IdentityToken == null)
+        {
+            await RemoveAsync(key);
             return;
         }
-        
-        var userSession = await _context.UserSessions.FirstOrDefaultAsync(x => x.Id == new Guid(key));
-        var refreshToken = ticket.Properties.GetTokenValue(TokenTypes.RefreshToken);
-
-        if (refreshToken == null)
-        {
-            throw new StoreException("Refresh token does not exist");
-        }
-
-        if (userSession != null)
-        {
-            var response = await RequestRefreshTokenAsync(refreshToken);
             
-            if (response.AccessToken == null || response.RefreshToken == null || response.IdentityToken == null)
-            {
-                await RemoveAsync(key);
-                return;
-            }
+        deserializedTicket.Properties.UpdateTokenValue(TokenTypes.AccessToken, response.AccessToken);
+        deserializedTicket.Properties.UpdateTokenValue(TokenTypes.RefreshToken, response.RefreshToken);
+        deserializedTicket.Properties.UpdateTokenValue(TokenTypes.IdentityToken, response.IdentityToken);
             
-            ticket.Properties.UpdateTokenValue(TokenTypes.AccessToken, response.AccessToken);
-            ticket.Properties.UpdateTokenValue(TokenTypes.RefreshToken, response.RefreshToken);
-            ticket.Properties.UpdateTokenValue(TokenTypes.IdentityToken, response.IdentityToken);
+        var serializedTicket = _ticketSerializer.Serialize(deserializedTicket);
             
-            var serializedTicket = _ticketSerializer.Serialize(ticket);
+        userSession.UpdateValue(serializedTicket);
+        userSession.UpdateExpiresAt(userSession.ExpiresAt.AddSeconds(response.ExpiresIn));
             
-            userSession.UpdateValue(serializedTicket);
-            userSession.UpdateExpiresAt(userSession.ExpiresAt.AddSeconds(response.ExpiresIn));
-            
-            _context.UserSessions.Update(userSession);
-            await _context.SaveChangesAsync();
-        }
-        
-        _memoryCache.Set(key, ticket, _memoryCacheEntryOptions);
+        _context.UserSessions.Update(userSession);
+        await _context.SaveChangesAsync();
     }
 
     public async Task<AuthenticationTicket> RetrieveAsync(string key)
@@ -206,10 +196,14 @@ public class TicketStore : ITicketStore
         
             userSession.UpdateValue(serializedTicket);
             userSession.UpdateExpiresAt(userSession.ExpiresAt.AddSeconds(response.ExpiresIn));
-            
-            _context.UserSessions.Update(userSession);
-            await _context.SaveChangesAsync();
         }
+        
+        userSession.UpdateDateOfLastAccess();
+        _context.UserSessions.Update(userSession);
+        
+        await _context.SaveChangesAsync();
+            
+        _memoryCache.Set(key, deserializedTicket, _memoryCacheEntryOptions);
         
         return deserializedTicket;
     }
@@ -217,6 +211,9 @@ public class TicketStore : ITicketStore
     public async Task RemoveAsync(string key)
     {
         var userSession = await _context.UserSessions.FirstAsync(x => x.Id == new Guid(key));
+        
+        if (userSession == null) return;
+        
         _context.UserSessions.Remove(userSession);
         await _context.SaveChangesAsync();
     }
