@@ -195,7 +195,7 @@ public class TicketStore : ITicketStore
             var serializedTicket = _ticketSerializer.Serialize(deserializedTicket);
         
             userSession.UpdateValue(serializedTicket);
-            userSession.UpdateExpiresAt(userSession.ExpiresAt.AddSeconds(response.ExpiresIn));
+            userSession.UpdateExpiresAt(DateTimeOffset.UtcNow.AddSeconds(response.ExpiresIn));
         }
         
         userSession.UpdateDateOfLastAccess();
