@@ -22,7 +22,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\shared\EventTriangleAPI.Shared.Application\EventTriangleAPI.Shared.Application.csproj" />
-      <ProjectReference Include="..\EventTriangleAPI.Sender.Domain\EventTriangleAPI.Sender.Domain.csproj" />
     </ItemGroup>
 
 </Project>

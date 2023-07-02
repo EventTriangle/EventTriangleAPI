@@ -1,15 +1,19 @@
 using EventTriangleAPI.Authorization.BusinessLogic.CommandHandlers;
-using EventTriangleAPI.Authorization.Presentation.Constants;
+using EventTriangleAPI.Authorization.Domain.Constants;
+using EventTriangleAPI.Authorization.Persistence;
 using EventTriangleAPI.Authorization.Presentation.DependencyInjection;
 using EventTriangleAPI.Shared.DTO.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var azAdSection = builder.Configuration.GetSection("AzureAd");
+var azAdSection = builder.Configuration.GetSection(AppSettingsConstants.AzureAdSelection);
 var azAdConfig = azAdSection.Get<AzureAdConfiguration>();
-var adClientSecret = Environment.GetEnvironmentVariable("EVENT_TRIANGLE_AD_CLIENT_SECRET");
-var allowedHosts = builder.Configuration["AllowedHosts"];
-var reverseProxySection = builder.Configuration.GetSection("ReverseProxy");
+var adClientSecret = Environment.GetEnvironmentVariable(AppSettingsConstants.AdSecretKey);
+var allowedHosts = builder.Configuration[AppSettingsConstants.AllowedHosts];
+var reverseProxySection = builder.Configuration.GetSection(AppSettingsConstants.ReverseProxySelection);
+var databaseConnectionString = builder.Configuration[AppSettingsConstants.DatabaseConnectionString];
 
 azAdConfig.ClientSecret = adClientSecret;
 
@@ -21,6 +25,12 @@ builder.Services.AddMvc();
 builder.Services.ConfigureYarp(reverseProxySection);
 builder.Services.ConfigureCors(allowedHosts);
 builder.Services.ConfigureSameSiteNoneCookiePolicy();
+builder.Services.AddDbContext<DatabaseContext>(options =>
+{
+    options.UseNpgsql(databaseConnectionString);
+});
+
+builder.Services.AddHostedServices();
 
 if (string.IsNullOrEmpty(adClientSecret))
 {
@@ -34,12 +44,16 @@ builder.Services.AddAppAuthentication(
     azAdConfig.CallbackPath,
     azAdConfig.Scopes);
 
+builder.Services.AddSingleton<IMemoryCache>(_ => new MemoryCache(new MemoryCacheOptions()));
+
 builder.Services.AddScoped(_ => azAdConfig);
 builder.Services.AddScoped<RefreshTokenCommandHandler>();
 builder.Services.AddScoped<GetTokenCommandHandler>();
 
 builder.Services.AddGrpc();
 builder.Services.AddHttpClient();
+
+builder.Services.AddTicketStore();
 
 var app = builder.Build();
 
@@ -67,6 +81,8 @@ app.UseEndpoints(options =>
     options.MapReverseProxy();
     options.MapControllers();    
 });
+
+app.MigrateDatabase();
 
 app.Map(SpaRouting.Transactions, config => config.UseSpa(spa => spa.Options.SourcePath = "/wwwroot"));
 app.Map(SpaRouting.Cards, config => config.UseSpa(spa => spa.Options.SourcePath = "/wwwroot"));

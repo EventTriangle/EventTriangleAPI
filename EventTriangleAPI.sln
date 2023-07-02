@@ -83,6 +83,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "templates", "templates", "{
 		build\templates\dotnet-build-and-test-job-template.yml = build\templates\dotnet-build-and-test-job-template.yml
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventTriangleAPI.Authorization.Persistence", "src\authorization\EventTriangleAPI.Authorization.Persistence\EventTriangleAPI.Authorization.Persistence.csproj", "{3A1E7606-C1A4-4AB9-B102-2938403F2B68}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventTriangleAPI.Authorization.Domain", "src\authorization\EventTriangleAPI.Authorization.Domain\EventTriangleAPI.Authorization.Domain.csproj", "{045CAF02-F951-4FCF-9D5F-62A6121628CB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventTriangleAPI.Authorization.UnitTests", "src\authorization\EventTriangleAPI.Authorization.UnitTests\EventTriangleAPI.Authorization.UnitTests.csproj", "{8E82DD46-9A8A-4617-8172-92B42FFB3B95}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -116,6 +122,9 @@ Global
 		{2B2FBD65-5A00-4F92-8131-6EDF4697955C} = {27588941-03BB-44BE-A36E-46D701BCDA6B}
 		{A659D97B-8FB1-40F8-A9FD-EB461CA889CA} = {0B52F7D3-364C-4052-B104-48D83CA4DE3F}
 		{6DB9FB17-BC40-4F7A-9425-65E9EF7C0303} = {29CCAA4D-33CB-406F-BB10-9BD1641BBEF0}
+		{3A1E7606-C1A4-4AB9-B102-2938403F2B68} = {31A58EF0-F272-4824-86FE-19473671C529}
+		{045CAF02-F951-4FCF-9D5F-62A6121628CB} = {31A58EF0-F272-4824-86FE-19473671C529}
+		{8E82DD46-9A8A-4617-8172-92B42FFB3B95} = {31A58EF0-F272-4824-86FE-19473671C529}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{79E9143C-B2A4-48A9-AE74-07E15B7247FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -182,5 +191,17 @@ Global
 		{64A3731E-81E3-410D-AC53-1612503A2DE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{64A3731E-81E3-410D-AC53-1612503A2DE6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{64A3731E-81E3-410D-AC53-1612503A2DE6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A1E7606-C1A4-4AB9-B102-2938403F2B68}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A1E7606-C1A4-4AB9-B102-2938403F2B68}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A1E7606-C1A4-4AB9-B102-2938403F2B68}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A1E7606-C1A4-4AB9-B102-2938403F2B68}.Release|Any CPU.Build.0 = Release|Any CPU
+		{045CAF02-F951-4FCF-9D5F-62A6121628CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{045CAF02-F951-4FCF-9D5F-62A6121628CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{045CAF02-F951-4FCF-9D5F-62A6121628CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{045CAF02-F951-4FCF-9D5F-62A6121628CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E82DD46-9A8A-4617-8172-92B42FFB3B95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E82DD46-9A8A-4617-8172-92B42FFB3B95}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E82DD46-9A8A-4617-8172-92B42FFB3B95}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E82DD46-9A8A-4617-8172-92B42FFB3B95}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

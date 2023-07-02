@@ -1,7 +1,8 @@
 using System.Net.Http.Headers;
-using EventTriangleAPI.Authorization.Presentation.Constants;
+using EventTriangleAPI.Authorization.Domain.Constants;
 using Microsoft.AspNetCore.Authentication;
 using Yarp.ReverseProxy.Transforms;
+using static IdentityModel.OidcConstants;
 
 namespace EventTriangleAPI.Authorization.Presentation.DependencyInjection;
 
@@ -19,7 +20,7 @@ public static class YarpServices
                 transformBuilderContext.AddRequestTransform(async transformContext =>
                 {
                     var authenticateResult = await transformContext.HttpContext.AuthenticateAsync(AuthConstants.AppOidc);
-                    var accessToken = authenticateResult.Properties?.GetTokenValue("access_token");
+                    var accessToken = authenticateResult.Properties?.GetTokenValue(TokenTypes.AccessToken);
                     transformContext.ProxyRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
                 });
             });

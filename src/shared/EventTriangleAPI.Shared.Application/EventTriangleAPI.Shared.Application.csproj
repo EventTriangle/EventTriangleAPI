@@ -6,6 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="FluentAssertions" Version="6.11.0" />
       <PackageReference Include="Google.Protobuf" Version="3.22.1" />
       <PackageReference Include="Grpc.AspNetCore" Version="2.52.0" />
       <PackageReference Include="Grpc.Net.Client" Version="2.52.0" />
@@ -13,6 +14,8 @@
       <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.15" />
       <PackageReference Include="Microsoft.Identity.Web" Version="2.7.0" />
       <PackageReference Include="Microsoft.Identity.Web.UI" Version="2.7.0" />
+      <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.8" />
+      <PackageReference Include="Uuids" Version="2.0.0" />
     </ItemGroup>
 
     <ItemGroup>
