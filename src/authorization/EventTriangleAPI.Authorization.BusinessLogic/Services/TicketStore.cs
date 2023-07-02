@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using EventTriangleAPI.Authorization.Domain.Constants;
 using EventTriangleAPI.Authorization.Domain.Entities;
+using EventTriangleAPI.Authorization.Domain.Enums;
 using EventTriangleAPI.Authorization.Domain.Exceptions;
 using EventTriangleAPI.Authorization.Persistence;
 using EventTriangleAPI.Shared.Application.Constants;
@@ -44,15 +45,20 @@ public class TicketStore : ITicketStore
 
     public async Task<string> StoreAsync(AuthenticationTicket ticket)
     {
+        var sub = ticket.Principal.Claims.First(x => x.Type == "sub").Value;
+        var role = ticket.Principal.Claims.First(x => x.Type == "roles").Value;
+        
         var idToken = ticket.Properties.GetTokenValue(TokenTypes.IdentityToken);
         var accessToken = ticket.Properties.GetTokenValue(TokenTypes.AccessToken);
         var refreshToken = ticket.Properties.GetTokenValue(TokenTypes.RefreshToken);
         
         var handler = new JwtSecurityTokenHandler();
-        var decodeToken = handler.ReadToken(idToken) as JwtSecurityToken;
+        
+        var decodeIdToken = handler.ReadToken(idToken) as JwtSecurityToken;
+        var decodeAccessToken = handler.ReadToken(accessToken) as JwtSecurityToken;
         var ticketExpiresUtc = ticket.Properties.ExpiresUtc;
         
-        if (decodeToken == null)
+        if (decodeIdToken == null || decodeAccessToken == null)
         {
             throw new StoreException("Read token error");
         }
@@ -61,8 +67,8 @@ public class TicketStore : ITicketStore
         {
             throw new StoreException("Ticket ExpiresUtc value does not exist");
         }
-        
-        var sessionId = decodeToken.Claims.First(x => x.Type == ClaimsConstants.Sid).Value;
+
+        var sessionId = decodeIdToken.Claims.First(x => x.Type == ClaimsConstants.Sid).Value;
         var userSession = await _context.UserSessions.FirstOrDefaultAsync(x => x.Id == new Guid(sessionId));
 
         if (userSession != null)
@@ -98,14 +104,29 @@ public class TicketStore : ITicketStore
         {
             var serializedTicket = _ticketSerializer.Serialize(ticket);
             
-            var newUserSession = new UserSessionEntity(new Guid(sessionId), ticketExpiresUtc.Value, serializedTicket);
+            var user = await _context.User.AsNoTracking().FirstOrDefaultAsync(x => x.Sub == sub);
 
-            _context.UserSessions.Add(newUserSession);
+            if (user == null)
+            {
+                var username = decodeAccessToken.Claims.First(x => x.Type == "name").Value;
+                var userRole = (UserRole)Enum.Parse(typeof(UserRole), role);
+
+                var newUser = new UserEntity(sub, username, userRole, UserStatus.Active);
+                var newUserSession = new UserSessionEntity(new Guid(sessionId), ticketExpiresUtc.Value, serializedTicket, newUser.Id);
+
+                _context.User.Add(newUser);
+                _context.UserSessions.Add(newUserSession);
+            }
+            else
+            {
+                var newUserSession = new UserSessionEntity(new Guid(sessionId), ticketExpiresUtc.Value, serializedTicket, user.Id);
+                _context.UserSessions.Add(newUserSession);
+            }
+         
             await _context.SaveChangesAsync();
-            
             _memoryCache.Set(sessionId, ticket, _memoryCacheEntryOptions);
         }
-        
+
         return sessionId;
     }
 
@@ -156,8 +177,8 @@ public class TicketStore : ITicketStore
         {
             return memoryCacheTicket;
         }
-        
-        var userSession = await _context.UserSessions.AsNoTracking().FirstOrDefaultAsync(x => x.Id == new Guid(key));
+     
+        var userSession = await _context.UserSessions.FirstOrDefaultAsync(x => x.Id == new Guid(key));
 
         if (userSession == null)
         {

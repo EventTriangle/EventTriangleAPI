@@ -32,6 +32,7 @@ public class RefreshBackgroundService : IHostedService
         while (!cancellationToken.IsCancellationRequested)
         {
             var expiringUserSessions = await _context.UserSessions
+                .AsNoTracking()
                 .Where(x => (x.ExpiresAt > DateTimeOffset.UtcNow &&
                              x.ExpiresAt < DateTimeOffset.UtcNow.AddMinutes(5)) ||
                             x.ExpiresAt < DateTimeOffset.UtcNow)
@@ -50,7 +51,7 @@ public class RefreshBackgroundService : IHostedService
                 }
                 
                 await _ticketStore.RenewAsync(userSession.Id.ToString(), null);
-            }
+            }   
 
             await Task.Delay(TimeSpan.FromMinutes(10), cancellationToken);
         }

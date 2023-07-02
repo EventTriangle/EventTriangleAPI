@@ -13,12 +13,17 @@ public class UserSessionEntity
     public DateTimeOffset DateOfLastAccess { get; set; } = DateTimeOffset.UtcNow;
     
     public byte[] Value { get; private set; }
+    
+    public Guid UserId { get; set; }
+    
+    public UserEntity User { get; set; }
 
-    public UserSessionEntity(Guid id, DateTimeOffset expiresAt, byte[] value)
+    public UserSessionEntity(Guid id, DateTimeOffset expiresAt, byte[] value, Guid userId)
     {
         Id = id;
         ExpiresAt = expiresAt;
         Value = value;
+        UserId = userId;
     }
 
     public void UpdateValue(byte[] value)

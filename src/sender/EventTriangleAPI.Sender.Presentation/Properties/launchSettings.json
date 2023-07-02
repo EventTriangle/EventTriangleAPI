@@ -12,7 +12,7 @@
     "EventTriangleAPI.Sender.Presentation": {
       "commandName": "Project",
       "dotnetRunMessages": true,
-      "launchBrowser": true,
+      "launchBrowser": false,
       "launchUrl": "swagger",
       "applicationUrl": "https://localhost:7002;http://localhost:5029",
       "environmentVariables": {
