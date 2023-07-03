@@ -1,18 +1,53 @@
+@import "../../app.component.scss";
+
 .layout {
-    display: flex;
-    width: 100%;
-    height: 100%;
-  }
-  
-  .layoutContainer {
-    display: grid;
-    grid-template-areas:
+  display: flex;
+  width: 100%;
+  height: 100vh;
+}
+
+.layoutContainer {
+  display: grid;
+  grid-template-areas:
     "header header header"
     "navbar main main";
-    grid-template-rows: 80px auto;
-    grid-template-columns: 328px auto;
-    width: 100%;
-    height: 100vh;
-    z-index: 2;
-    background-color: white;
+  grid-template-rows: 80px auto;
+  grid-template-columns: 328px auto;
+  width: 100%;
+  height: 100vh;
+  z-index: 2;
+  background-color: white;
+}
+
+.loader {
+  margin: auto;
+  width: 350px;
+  height: 4.8px;
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+}
+
+.loader::after {
+  content: '';
+  width: 96px;
+  height: 4.8px;
+  background: $purple;
+  position: absolute;
+  top: 0;
+  left: 0;
+  box-sizing: border-box;
+  animation: hitZak 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes hitZak {
+  0% {
+    left: 0;
+    transform: translateX(-1%);
   }
+
+  100% {
+    left: 100%;
+    transform: translateX(-99%);
+  }
+}

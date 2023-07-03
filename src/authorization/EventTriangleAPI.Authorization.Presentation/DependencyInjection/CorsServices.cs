@@ -11,9 +11,11 @@ public static class CorsServices
             options.AddPolicy(CorsPolicyName, corsPolicyBuilder =>
             {
                 corsPolicyBuilder
-                    .WithOrigins(allowedHosts)
                     .AllowAnyMethod()
-                    .AllowAnyHeader();
+                    .AllowAnyHeader()
+                    .SetIsOriginAllowed(_ => true)
+                    .AllowCredentials()
+                    .Build();
             });
         });
 

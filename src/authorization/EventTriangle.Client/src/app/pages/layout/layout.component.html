@@ -1,7 +1,12 @@
 <div class="layout">
-    <div class="layoutContainer">
-        <app-header></app-header>
-        <app-navbar></app-navbar>
-        <app-main></app-main>
-    </div>
+    <ng-container *ngIf="isAuthenticated">
+        <div class="layoutContainer">
+            <app-header></app-header>
+            <app-navbar></app-navbar>
+            <app-main></app-main>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="!isAuthenticated">
+        <span class="loader"></span>
+    </ng-container>
 </div>
