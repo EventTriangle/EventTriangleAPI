@@ -13,4 +13,6 @@ public class AppSettingsConstants
     public const string AdSecretKey = "EVENT_TRIANGLE_AD_CLIENT_SECRET";
 
     public const string DevFrontendUrl = "DevFrontendUrl";
+
+    public const string AllowedOrigins = "AllowedOrigins";
 }

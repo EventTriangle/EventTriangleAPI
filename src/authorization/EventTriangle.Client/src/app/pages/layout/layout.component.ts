@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { AuthorizationApiService } from 'src/app/services/api/authorization-api.service';
-import { IIsAuthenticatedResponse } from 'src/app/types/responses/IIsAuthenticatedResponse';
 
 @Component({
   selector: 'app-layout',

@@ -4,18 +4,17 @@ public static class CorsServices
 {
     public const string CorsPolicyName = "CorsPolicyName"; 
     
-    public static IServiceCollection ConfigureCors(this IServiceCollection serviceCollection, string allowedHosts)
+    public static IServiceCollection ConfigureCors(this IServiceCollection serviceCollection, string[] allowedOrigins)
     {
         serviceCollection.AddCors(options =>
         {
             options.AddPolicy(CorsPolicyName, corsPolicyBuilder =>
             {
                 corsPolicyBuilder
+                    .WithOrigins(allowedOrigins)
                     .AllowAnyMethod()
-                    .AllowAnyHeader()
-                    .SetIsOriginAllowed(_ => true)
                     .AllowCredentials()
-                    .Build();
+                    .AllowAnyHeader();
             });
         });
 
