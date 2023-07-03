@@ -15,23 +15,32 @@ public class AuthorizationController : ControllerBase
 {
     private readonly RefreshTokenCommandHandler _refreshTokenCommandHandler;
     private readonly GetTokenCommandHandler _getTokenCommandHandler;
+    private readonly IHostEnvironment  _hostEnvironment;
+    private readonly IConfiguration _configuration;
 
     public AuthorizationController(
         RefreshTokenCommandHandler refreshTokenCommandHandler,
-        GetTokenCommandHandler getTokenCommandHandler)
+        GetTokenCommandHandler getTokenCommandHandler, 
+        IHostEnvironment hostEnvironment, 
+        IConfiguration configuration)
     {
         _refreshTokenCommandHandler = refreshTokenCommandHandler;
         _getTokenCommandHandler = getTokenCommandHandler;
+        _hostEnvironment = hostEnvironment;
+        _configuration = configuration;
     }
 
     [HttpGet("login")]
     public async Task<IActionResult> Login()
     {
         var authN = await HttpContext.AuthenticateAsync(AuthConstants.AppOidc);
-
+        var devFrontendUrl = _configuration[AppSettingsConstants.DevFrontendUrl];
+        
         if (authN.Succeeded)
         {
-            return Redirect(SpaRouting.Transactions);
+            return _hostEnvironment.IsDevelopment() ? 
+                Redirect(devFrontendUrl + SpaRouting.Transactions) 
+                : Redirect(SpaRouting.Transactions);
         }
         
         return Challenge(AuthConstants.AppOidc);

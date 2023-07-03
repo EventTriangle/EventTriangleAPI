@@ -1,11 +1,11 @@
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LayoutComponent } from './pages/layout/layout.component';
 import { HeaderComponent } from './components/header/header.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { MainComponent } from './components/main/main.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
@@ -17,6 +17,20 @@ import { SupportOutletComponent } from './components/support-outlet/support-outl
 import { TicketsOutletComponent } from './components/tickets-outlet/tickets-outlet.component';
 import { UsersOutletComponent } from './components/users-outlet/users-outlet.component';
 import { APP_BASE_HREF } from '@angular/common';
+
+const initializeAppFactory = (): Promise<void> => {
+  const configUrl = 'assets/config/config.json';
+  const key = 'baseUrl';
+
+  return fetch(configUrl, {
+    method: 'GET'
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      localStorage.setItem(key, data.baseUrl);
+    });
+};
+
 
 @NgModule({
   declarations: [
@@ -39,7 +53,17 @@ import { APP_BASE_HREF } from '@angular/common';
     HttpClientModule,
     AngularSvgIconModule.forRoot(),
   ],
-  providers: [{provide: APP_BASE_HREF, useValue: "/app"}],
+  providers: [
+    {
+      provide: APP_BASE_HREF,
+      useValue: "/app"
+    },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: () => initializeAppFactory,
+      deps: [HttpClient],
+      multi: true
+    }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

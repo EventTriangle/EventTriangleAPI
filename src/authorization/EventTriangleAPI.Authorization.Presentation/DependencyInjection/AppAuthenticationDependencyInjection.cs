@@ -13,7 +13,8 @@ public static class AppAuthenticationDependencyInjection
         string clientId,
         string clientSecret,
         string callbackPath,
-        string scopes)
+        string scopes,
+        bool isDevelopment)
     {
         serviceCollection
             .AddAuthentication(options =>
@@ -24,6 +25,11 @@ public static class AppAuthenticationDependencyInjection
             })
             .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
             {
+                if (isDevelopment)
+                {
+                    options.Cookie.SameSite = SameSiteMode.None;
+                }
+                
                 options.Cookie.IsEssential = true;
                 options.Cookie.MaxAge = TimeSpan.FromDays(2);
             })

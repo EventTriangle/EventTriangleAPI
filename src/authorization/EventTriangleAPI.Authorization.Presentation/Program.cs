@@ -11,9 +11,10 @@ var builder = WebApplication.CreateBuilder(args);
 var azAdSection = builder.Configuration.GetSection(AppSettingsConstants.AzureAdSelection);
 var azAdConfig = azAdSection.Get<AzureAdConfiguration>();
 var adClientSecret = Environment.GetEnvironmentVariable(AppSettingsConstants.AdSecretKey);
-var allowedHosts = builder.Configuration[AppSettingsConstants.AllowedHosts];
 var reverseProxySection = builder.Configuration.GetSection(AppSettingsConstants.ReverseProxySelection);
 var databaseConnectionString = builder.Configuration[AppSettingsConstants.DatabaseConnectionString];
+
+var allowOrigins = builder.Configuration.GetSection(AppSettingsConstants.AllowedOrigins).Get<string[]>();
 
 azAdConfig.ClientSecret = adClientSecret;
 
@@ -23,7 +24,7 @@ builder.Services.ConfigureSwagger();
 builder.Services.AddSpaStaticFiles(config => { config.RootPath = "wwwroot"; });
 builder.Services.AddMvc();
 builder.Services.ConfigureYarp(reverseProxySection);
-builder.Services.ConfigureCors(allowedHosts);
+builder.Services.ConfigureCors(allowOrigins);
 builder.Services.ConfigureSameSiteNoneCookiePolicy();
 builder.Services.AddDbContext<DatabaseContext>(options =>
 {
@@ -42,7 +43,8 @@ builder.Services.AddAppAuthentication(
     azAdConfig.ClientId.ToString(),
     azAdConfig.ClientSecret,
     azAdConfig.CallbackPath,
-    azAdConfig.Scopes);
+    azAdConfig.Scopes,
+    builder.Environment.IsDevelopment());
 
 builder.Services.AddSingleton<IMemoryCache>(_ => new MemoryCache(new MemoryCacheOptions()));
 

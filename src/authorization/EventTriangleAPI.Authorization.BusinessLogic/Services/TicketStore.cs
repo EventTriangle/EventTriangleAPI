@@ -231,7 +231,7 @@ public class TicketStore : ITicketStore
 
     public async Task RemoveAsync(string key)
     {
-        var userSession = await _context.UserSessions.FirstAsync(x => x.Id == new Guid(key));
+        var userSession = await _context.UserSessions.FirstOrDefaultAsync(x => x.Id == new Guid(key));
         
         if (userSession == null) return;
         
