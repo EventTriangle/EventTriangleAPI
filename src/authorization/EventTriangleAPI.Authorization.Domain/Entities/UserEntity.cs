@@ -11,8 +11,6 @@ public class UserEntity
     
     public string Username { get; set; }
     
-    public decimal Balance { get; set; }
-    
     public UserRole Role { get; set; }
     
     public UserStatus Status { get; set; }
