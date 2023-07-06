@@ -28,9 +28,6 @@ namespace EventTriangleAPI.Authorization.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<decimal>("Balance")
-                        .HasColumnType("numeric");
-
                     b.Property<int>("Role")
                         .HasColumnType("integer");
 

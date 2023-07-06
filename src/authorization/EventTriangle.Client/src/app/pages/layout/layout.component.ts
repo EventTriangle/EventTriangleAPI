@@ -1,4 +1,3 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { AuthorizationApiService } from 'src/app/services/api/authorization-api.service';
 
@@ -9,7 +8,6 @@ import { AuthorizationApiService } from 'src/app/services/api/authorization-api.
 })
 export class LayoutComponent implements OnInit {
   constructor(
-    private httpClient: HttpClient,
     private authorozationApiService: AuthorizationApiService) { }
 
   public isAuthenticated = false;

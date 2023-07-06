@@ -1,34 +1,13 @@
 <div class="cardsInfo">
   <div class="cardsInfoContainer">
-    <p class="title">Cards</p>
+    <span class="titleSpan">
+      <p class="title">Cards</p>
+      <svg-icon src="../../../assets/svg/credit-card.svg" class="titleCardSvg" />
+    </span>
     <p class="overview">An overview of cards</p>
-    <div class="cardList">
-      <div class="cardItem">
-        <p class="cardItemTitle">Master Card</p>
-        <p class="cardItemNumbers">4234 4333 6324 4254</p>
-        <p class="cardItemExpiryDate">12/12</p>
-        <p class="cardItemFullName">W. Callhoun</p>
-      </div>
-      <div class="cardItem">
-        <p class="cardItemTitle">Visa</p>
-        <p class="cardItemNumbers">4234 4333 6324 4254</p>
-        <p class="cardItemExpiryDate">12/12</p>
-        <p class="cardItemFullName">W. Callhoun</p>
-      </div>
-      <div class="cardItem">
-        <p class="cardItemTitle">Master Card</p>
-        <p class="cardItemNumbers">4234 4333 6324 4254</p>
-        <p class="cardItemExpiryDate">12/12</p>
-        <p class="cardItemFullName">W. Callhoun</p>
-      </div>
-      <div class="cardItem">
-        <p class="cardItemTitle">Master Card</p>
-        <p class="cardItemNumbers">4234 4333 6324 4254</p>
-        <p class="cardItemExpiryDate">12/12</p>
-        <p class="cardItemFullName">W. Callhoun</p>
-      </div>
-      <div class="cardItem">
-        <p class="cardItemTitle">Master Card</p>
+    <div class="cardList" [@cardListAnimation]>
+      <div *ngFor="let card of cards" class="cardItem">
+        <p class="cardItemTitle">{{card == 1 ? 'Master Card' : 'Visa'}}</p>
         <p class="cardItemNumbers">4234 4333 6324 4254</p>
         <p class="cardItemExpiryDate">12/12</p>
         <p class="cardItemFullName">W. Callhoun</p>
