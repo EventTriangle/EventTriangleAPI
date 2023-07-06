@@ -9,80 +9,8 @@
       <input type="text" class="searchInput" placeholder="Search Users" />
       <svg-icon src="../../../assets/svg/search.svg" class="searchSvg" />
     </div>
-    <div class="userList">
-      <div class="userItem">
-        <p class="userItemUsername">
-          Username: Levis Farrell
-        </p>
-        <p class="userItemBalance">
-          Balance: $100
-        </p>
-        <p class="userItemRole">
-          Role: User
-        </p>
-        <p class="userItemStatus">
-          <span>Status:</span>
-          <select class="userItemStatusSelect">
-            <option value="Active">Active</option>
-            <option value="Suspended">Suspended</option>
-          </select>
-        </p>
-      </div>
-      <div class="userItem">
-        <p class="userItemUsername">
-          Username: Levis Farrell
-        </p>
-        <p class="userItemBalance">
-          Balance: $100
-        </p>
-        <p class="userItemRole">
-          Role: User
-        </p>
-        <p class="userItemStatus">
-          <span>Status:</span>
-          <select class="userItemStatusSelect">
-            <option value="Active">Active</option>
-            <option value="Suspended">Suspended</option>
-          </select>
-        </p>
-      </div>
-      <div class="userItem">
-        <p class="userItemUsername">
-          Username: Levis Farrell
-        </p>
-        <p class="userItemBalance">
-          Balance: $100
-        </p>
-        <p class="userItemRole">
-          Role: User
-        </p>
-        <p class="userItemStatus">
-          <span>Status:</span>
-          <select class="userItemStatusSelect">
-            <option value="Active">Active</option>
-            <option value="Suspended">Suspended</option>
-          </select>
-        </p>
-      </div>
-      <div class="userItem">
-        <p class="userItemUsername">
-          Username: Levis Farrell
-        </p>
-        <p class="userItemBalance">
-          Balance: $100
-        </p>
-        <p class="userItemRole">
-          Role: User
-        </p>
-        <p class="userItemStatus">
-          <span>Status:</span>
-          <select class="userItemStatusSelect">
-            <option value="Active">Active</option>
-            <option value="Suspended">Suspended</option>
-          </select>
-        </p>
-      </div>
-      <div class="userItem">
+    <div class="userList" [@userListAnimation]>
+      <div *ngFor="let user of users" class="userItem">
         <p class="userItemUsername">
           Username: Levis Farrell
         </p>

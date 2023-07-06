@@ -30,10 +30,10 @@
       <input type="text" class="searchTransactionsInput" placeholder="Search Transactions" />
       <svg-icon src="../../../assets/svg/search.svg" class="searchSvg" />
     </div>
-    <div class="transactionList">
-      <div class="transactionItemToMe">
+    <div class="transactionList" [@transactionItemAnimation]>
+      <div *ngFor="let transaction of transactions" class="{{transaction === 1 ? 'transactionItemToMe' : transaction === 2 ? 'transactionItemFromMe' : 'transactionItemRollbacked'}}">
         <svg-icon src="../../../assets/svg/transaction.svg" class="transactionSvg" />
-        <div class="transactionItemToMeInfo">
+        <div class="{{transaction === 1 ? 'transactionItemToMeInfo' : transaction === 2 ? 'transactionItemFromMeInfo' : 'transactionItemRollbackedInfo'}}">
           <p class="transactionItemFrom">
             From: Sender
           </p>
@@ -48,74 +48,91 @@
           </p>
         </div>
       </div>
-      <div class="transactionItemFromMe">
-        <svg-icon src="../../../assets/svg/transaction.svg" class="transactionSvg" />
-        <div class="transactionItemFromMeInfo">
-          <p class="transactionItemFrom">
-            From: Sender
-          </p>
-          <p class="transactionItemTo">
-            To: Receiver
-          </p>
-          <p class="transactionItemAmount">
-            Amount: $150
-          </p>
-          <p class="transactionItemDate">
-            15:27 02/04/2023
-          </p>
-        </div>
-      </div>
-      <div class="transactionItemRollbacked">
-        <svg-icon src="../../../assets/svg/transaction.svg" class="transactionSvg" />
-        <div class="transactionItemRollbackedInfo">
-          <p class="transactionItemFrom">
-            From: Sender
-          </p>
-          <p class="transactionItemTo">
-            To: Receiver
-          </p>
-          <p class="transactionItemAmount">
-            Amount: $150
-          </p>
-          <p class="transactionItemDate">
-            15:27 02/04/2023
-          </p>
-        </div>
-      </div>
-      <div class="transactionItemFromMe">
-        <svg-icon src="../../../assets/svg/transaction.svg" class="transactionSvg" />
-        <div class="transactionItemFromMeInfo">
-          <p class="transactionItemFrom">
-            From: Sender
-          </p>
-          <p class="transactionItemTo">
-            To: Receiver
-          </p>
-          <p class="transactionItemAmount">
-            Amount: $150
-          </p>
-          <p class="transactionItemDate">
-            15:27 02/04/2023
-          </p>
-        </div>
-      </div>
-      <div class="transactionItemFromMe">
-        <svg-icon src="../../../assets/svg/transaction.svg" class="transactionSvg" />
-        <div class="transactionItemFromMeInfo">
-          <p class="transactionItemFrom">
-            From: Sender
-          </p>
-          <p class="transactionItemTo">
-            To: Receiver
-          </p>
-          <p class="transactionItemAmount">
-            Amount: $150
-          </p>
-          <p class="transactionItemDate">
-            15:27 02/04/2023
-          </p>
-        </div>
-      </div>
+<!--      <div class="transactionItemToMe">-->
+<!--        <svg-icon src="../../../assets/svg/transaction.svg" class="transactionSvg" />-->
+<!--        <div class="transactionItemToMeInfo">-->
+<!--          <p class="transactionItemFrom">-->
+<!--            From: Sender-->
+<!--          </p>-->
+<!--          <p class="transactionItemTo">-->
+<!--            To: Receiver-->
+<!--          </p>-->
+<!--          <p class="transactionItemAmount">-->
+<!--            Amount: $150-->
+<!--          </p>-->
+<!--          <p class="transactionItemDate">-->
+<!--            15:27 02/04/2023-->
+<!--          </p>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="transactionItemFromMe">-->
+<!--        <svg-icon src="../../../assets/svg/transaction.svg" class="transactionSvg" />-->
+<!--        <div class="transactionItemFromMeInfo">-->
+<!--          <p class="transactionItemFrom">-->
+<!--            From: Sender-->
+<!--          </p>-->
+<!--          <p class="transactionItemTo">-->
+<!--            To: Receiver-->
+<!--          </p>-->
+<!--          <p class="transactionItemAmount">-->
+<!--            Amount: $150-->
+<!--          </p>-->
+<!--          <p class="transactionItemDate">-->
+<!--            15:27 02/04/2023-->
+<!--          </p>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="transactionItemRollbacked">-->
+<!--        <svg-icon src="../../../assets/svg/transaction.svg" class="transactionSvg" />-->
+<!--        <div class="transactionItemRollbackedInfo">-->
+<!--          <p class="transactionItemFrom">-->
+<!--            From: Sender-->
+<!--          </p>-->
+<!--          <p class="transactionItemTo">-->
+<!--            To: Receiver-->
+<!--          </p>-->
+<!--          <p class="transactionItemAmount">-->
+<!--            Amount: $150-->
+<!--          </p>-->
+<!--          <p class="transactionItemDate">-->
+<!--            15:27 02/04/2023-->
+<!--          </p>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="transactionItemFromMe">-->
+<!--        <svg-icon src="../../../assets/svg/transaction.svg" class="transactionSvg" />-->
+<!--        <div class="transactionItemFromMeInfo">-->
+<!--          <p class="transactionItemFrom">-->
+<!--            From: Sender-->
+<!--          </p>-->
+<!--          <p class="transactionItemTo">-->
+<!--            To: Receiver-->
+<!--          </p>-->
+<!--          <p class="transactionItemAmount">-->
+<!--            Amount: $150-->
+<!--          </p>-->
+<!--          <p class="transactionItemDate">-->
+<!--            15:27 02/04/2023-->
+<!--          </p>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="transactionItemFromMe">-->
+<!--        <svg-icon src="../../../assets/svg/transaction.svg" class="transactionSvg" />-->
+<!--        <div class="transactionItemFromMeInfo">-->
+<!--          <p class="transactionItemFrom">-->
+<!--            From: Sender-->
+<!--          </p>-->
+<!--          <p class="transactionItemTo">-->
+<!--            To: Receiver-->
+<!--          </p>-->
+<!--          <p class="transactionItemAmount">-->
+<!--            Amount: $150-->
+<!--          </p>-->
+<!--          <p class="transactionItemDate">-->
+<!--            15:27 02/04/2023-->
+<!--          </p>-->
+<!--        </div>-->
+<!--      </div>-->
     </div>
   </div>
 </div>

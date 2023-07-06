@@ -1,10 +1,27 @@
-import { Component } from '@angular/core';
+import { Component, AfterViewInit } from '@angular/core';
+import {animate, query, stagger, state, style, transition, trigger} from "@angular/animations";
 
 @Component({
   selector: 'app-transactions-outlet',
   templateUrl: './transactions-outlet.component.html',
-  styleUrls: ['./transactions-outlet.component.scss']
+  styleUrls: ['./transactions-outlet.component.scss'],
+  animations: [
+    trigger('walletAnimation', [
+      transition(':enter', [
+        style({ opacity: 0}),
+        animate('.5s', style({opacity: 1}))
+      ])
+    ]),
+    trigger('transactionItemAnimation', [
+      transition(':enter', [
+        query(':enter', style({ transform: 'translateY(-5px)', opacity: 0 }), { optional: true }),
+        query(':enter', stagger('50ms', [
+          animate('200ms', style({ transform: 'translateY(0)', opacity: 1 }))
+        ]), { optional: true })
+      ])
+    ]),
+  ]
 })
 export class TransactionsOutletComponent {
-
+  transactions = [1, 1, 2, 3, 2];
 }
