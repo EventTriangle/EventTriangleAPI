@@ -5,21 +5,34 @@ namespace EventTriangleAPI.Consumer.Domain.Entities;
 
 public class TransactionEntity
 {
-    public Guid Id { get; set; } = Uuid.NewMySqlOptimized().ToGuidByteLayout();
+    public Guid Id { get; private set; } = Uuid.NewMySqlOptimized().ToGuidByteLayout();
     
-    public string From { get; set; }
+    public string From { get; private set; }
     
-    public string To { get; set; }
+    public string To { get; private set; }
     
-    public Guid FromWalletId { get; set; }
+    public Guid FromWalletId { get; private set; }
     
-    public Guid ToWalletId { get; set; }
+    public WalletEntity FromWallet { get; private set; }
     
-    public decimal Amount { get; set; }
+    public Guid ToWalletId { get; private set; }
     
-    public TransactionState TransactionState { get; set; }
+    public WalletEntity ToWallet { get; private set; }
     
-    public TransactionType TransactionType { get; set; }
+    public decimal Amount { get; private set; }
 
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public TransactionState TransactionState { get; private set; } = TransactionState.Completed;
+    
+    public TransactionType TransactionType { get; private set; }
+
+    public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
+
+    public TransactionEntity(string from, string to, Guid fromWalletId, Guid toWalletId, TransactionType transactionType)
+    {
+        From = from;
+        To = to;
+        FromWalletId = fromWalletId;
+        ToWalletId = toWalletId;
+        TransactionType = transactionType;
+    }
 }
