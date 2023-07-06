@@ -1,5 +1,5 @@
 using EventTriangleAPI.Consumer.Domain.Entities.Validation;
-using EventTriangleAPI.Consumer.Domain.Enums;
+using EventTriangleAPI.Shared.Application.Enums;
 using FluentValidation;
 using Uuids;
 

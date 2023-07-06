@@ -1,4 +1,4 @@
-namespace EventTriangleAPI.Consumer.Domain.Enums;
+namespace EventTriangleAPI.Shared.Application.Enums;
 
 public enum PaymentNetwork
 {

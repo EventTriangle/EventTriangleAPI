@@ -1,4 +1,4 @@
-using EventTriangleAPI.Consumer.Domain.Enums;
+using EventTriangleAPI.Shared.Application.Enums;
 using Uuids;
 
 namespace EventTriangleAPI.Consumer.Domain.Entities;
