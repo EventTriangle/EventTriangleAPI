@@ -1,4 +1,6 @@
+using EventTriangleAPI.Sender.Domain.Entities.Validation;
 using EventTriangleAPI.Shared.Application.Enums;
+using FluentValidation;
 using Uuids;
 
 namespace EventTriangleAPI.Sender.Domain.Entities;
@@ -16,4 +18,14 @@ public class TransactionEventEntity
     public TransactionType TransactionType { get; private set; }
 
     public DateTime CreateAt { get; private set; } = DateTime.UtcNow;
+
+    public TransactionEventEntity(string from, string to, decimal amount, TransactionType transactionType)
+    {
+        From = from;
+        To = to;
+        Amount = amount;
+        TransactionType = transactionType;
+        
+        new TransactionEventEntityValidator().ValidateAndThrow(this);
+    }
 }
