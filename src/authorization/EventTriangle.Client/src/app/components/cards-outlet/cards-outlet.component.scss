@@ -21,10 +21,25 @@
   margin-right: 48px;
 }
 
+.titleSpan {
+  display: flex;
+}
+
 .title {
   font-weight: 700;
   font-size: 40px;
   margin-bottom: 12px;
+}
+
+.titleCardSvg {
+  width: 35px;
+  height: 35px;
+  margin-top: 3px;
+  margin-left: 10px;
+
+  path {
+    fill: black;
+}
 }
 
 .overview {
@@ -44,7 +59,7 @@
 
 .cardItem {
   position: relative;
-  width: 314px;
+  width: 290px;
   height: 183px;
   background-color: $purple;
   border-radius: 10px;

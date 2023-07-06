@@ -3,7 +3,7 @@
 :host {
   display: grid;
   grid-template-areas:
-  "maininfo rightbar";
+    "maininfo rightbar";
   grid-template-columns: auto 446px;
   width: 100%;
   width: 100%;
@@ -23,10 +23,25 @@
   margin-right: 48px;
 }
 
+.titleSpan {
+  display: flex;
+}
+
 .title {
   font-weight: 700;
   font-size: 40px;
   margin-bottom: 12px;
+}
+
+.titleContactsSvg {
+  width: 35px;
+  height: 35px;
+  margin-top: 2px;
+  margin-left: 10px;
+
+  path {
+    stroke: black;
+  }
 }
 
 .overview {

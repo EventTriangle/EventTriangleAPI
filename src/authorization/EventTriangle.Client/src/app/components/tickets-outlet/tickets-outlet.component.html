@@ -1,6 +1,9 @@
 <div class="ticketsInfo">
   <div class="ticketsInfoContainer">
-    <p class="title">Tickets</p>
+    <span class="titleSpan">
+      <p class="title">Tickets</p>
+      <svg-icon src="../../../assets/svg/ticket.svg" class="titleTicketsSvg" />
+    </span>
     <p class="overview">An overview of tickets</p>
     <div class="ticketList">
       <div class="ticketItem">
@@ -23,7 +26,8 @@
         <p class="ticketItemResponseToUser">
           Response to user
         </p>
-        <textarea class="ticketItemResponseToUserTextarea" placeholder="Write Response">Hello, your transaction is cancelled</textarea>
+        <textarea class="ticketItemResponseToUserTextarea"
+          placeholder="Write Response">Hello, your transaction is cancelled</textarea>
         <button class="ticketItemOkButton">
           Ok
         </button>
