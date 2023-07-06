@@ -10,14 +10,14 @@ export class LayoutComponent implements OnInit {
   constructor(
     private authorozationApiService: AuthorizationApiService) { }
 
-  public isAuthenticated = true;
+  public isAuthenticated = false;
 
   public ngOnInit(): void {
-    // const request = this.authorozationApiService.getIsAuthenticated();
+    const request = this.authorozationApiService.getIsAuthenticated();
 
-    // request.subscribe({
-    //   next: (res) => this.isAuthenticated = res.authenticated,
-    //   error: _ => window.location.href = this.authorozationApiService.getLoginPathForRedirection()
-    // });
+    request.subscribe({
+      next: (res) => this.isAuthenticated = res.authenticated,
+      error: _ => window.location.href = this.authorozationApiService.getLoginPathForRedirection()
+    });
   }
 }
