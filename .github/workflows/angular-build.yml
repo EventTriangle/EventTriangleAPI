@@ -53,8 +53,8 @@ jobs:
         working-directory: './src/authorization/EventTriangle.Client'
         run: npm run build
         
-      - name: 'Drop artifact'
-        uses: actions/upload-artifact@v3
-        with:
-          name: 'client-build-${{ matrix.environment }}'
-          path: './src/authorization/EventTriangle.Client/build'
+#      - name: 'Drop artifact'
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: 'client-build-${{ matrix.environment }}'
+#          path: './src/authorization/EventTriangle.Client/build'
