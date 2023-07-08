@@ -18,16 +18,15 @@ pr:
     include:
       - build
       - src/authorization/EventTriangle.Client
-
-pool:
-  vmImage: 'ubuntu-latest'
   
 stages:
-  - stage: 'Build'
-    displayName: "Build"
+  - stage: 'Build Angular'
+    displayName: "Build Angular"
     jobs: 
-      - job: 'Build_Angular'
-        displayName: 'Build Angular'
+      - job: 'Build_Angular_Linux'
+        displayName: 'Build Angular Linux'
+        pool:
+          vmImage: 'ubuntu-latest'
         steps:
           - checkout: self
             fetchDepth: 0
@@ -45,3 +44,26 @@ stages:
           - script: |
               npm run build
             workingDirectory: './src/authorization/EventTriangle.Client'
+
+      - job: 'Build_Angular_Windows'
+        displayName: 'Build Angular Windows'
+        pool:
+          vmImage: 'windows-latest'
+        steps:
+          - checkout: self
+            fetchDepth: 0
+
+          - task: NodeTool@0
+            displayName: 'Install Node.js'
+            inputs:
+              versionSpec: '18.x'
+
+          - task: Npm@1
+            inputs:
+              command: 'ci'
+              workingDir: './src/authorization/EventTriangle.Client'
+
+          - script: |
+              npm run build
+            workingDirectory: './src/authorization/EventTriangle.Client'
+        
