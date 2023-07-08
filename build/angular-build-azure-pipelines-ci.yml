@@ -20,7 +20,7 @@ pr:
       - src/authorization/EventTriangle.Client
   
 stages:
-  - stage: 'Build Angular'
+  - stage: 'Build_Angular'
     displayName: "Build Angular"
     jobs: 
       - job: 'Build_Angular_Linux'
