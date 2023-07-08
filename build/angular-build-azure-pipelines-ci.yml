@@ -1,0 +1,45 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - main
+      - develop
+  paths:
+    include:
+      - build
+      - src/authorization/EventTriangle.Client
+
+pr:
+  branches:
+    include:
+      - main
+      - develop
+  paths:
+    - build
+    - src/authorization/EventTriangle.Client
+
+pool:
+  vmImage: 'ubuntu-latest'
+  
+stages:
+  - stage: 'Build'
+    displayName: "Build"
+    jobs: 
+      - job: 'Build_Angular'
+        displayName: 'Build Angular'
+        steps:
+          - checkout: self
+            fetchDepth: 0
+          
+          - task: NodeTool@0
+            displayName: 'Install Node.js'
+            inputs:
+              versionSpec: '18.x'
+              
+          - script: |
+              npm install
+            displayName: 'npm install'
+              
+          - script: |
+              npm run build
+            workingDirectory: './src/authorization/EventTriangle.Client'
