@@ -43,6 +43,7 @@ stages:
               
           - script: |
               npm run build
+            displayName: "Build Angular Project"
             workingDirectory: './src/authorization/EventTriangle.Client'
 
       - job: 'Build_Angular_Windows'
@@ -65,5 +66,6 @@ stages:
 
           - script: |
               npm run build
+            displayName: "Build Angular Project"
             workingDirectory: './src/authorization/EventTriangle.Client'
         
