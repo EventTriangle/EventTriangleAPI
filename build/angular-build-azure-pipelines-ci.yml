@@ -37,9 +37,10 @@ stages:
             inputs:
               versionSpec: '18.x'
               
-          - script: |
-              npm install
-            displayName: 'npm install'
+          - task: Npm@1
+            inputs: 
+              command: 'ci'
+              workingDir: './src/authorization/EventTriangle.Client'
               
           - script: |
               npm run build
