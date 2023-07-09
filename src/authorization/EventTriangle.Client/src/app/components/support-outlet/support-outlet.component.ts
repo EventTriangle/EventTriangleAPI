@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {animate, style, transition, trigger} from "@angular/animations";
+import { animate, style, transition, trigger } from "@angular/animations";
 
 @Component({
   selector: 'app-support-outlet',
@@ -8,8 +8,14 @@ import {animate, style, transition, trigger} from "@angular/animations";
   animations: [
     trigger("supportTicketListAnimation", [
       transition(":enter", [
-        style({transform: 'translateY(-10px)', opacity: 0}),
-        animate(".3s", style({transform: 'translateY(0)', opacity: 1}))
+        style({ transform: 'translateY(-10px)', opacity: 0 }),
+        animate(".3s", style({ transform: 'translateY(0)', opacity: 1 }))
+      ])
+    ]),
+    trigger('rightBarAnimation', [
+      transition(':enter', [
+        style({ transform: 'translateY(10px)', opacity: 0 }),
+        animate('.25s', style({ transform: 'translateY(0px)', opacity: 1 }))
       ])
     ])
   ]
