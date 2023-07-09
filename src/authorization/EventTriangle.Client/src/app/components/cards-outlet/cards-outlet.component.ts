@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {animate, query, stagger, style, transition, trigger} from "@angular/animations";
+import { animate, query, stagger, style, transition, trigger } from "@angular/animations";
 
 @Component({
   selector: 'app-cards-outlet',
@@ -12,6 +12,12 @@ import {animate, query, stagger, style, transition, trigger} from "@angular/anim
         query(':enter', stagger('100ms', [
           animate('200ms', style({ transform: 'translateY(0)', opacity: 1 }))
         ]), { optional: true })
+      ])
+    ]),
+    trigger('rightBarAnimation', [
+      transition(':enter', [
+        style({ transform: 'translateY(10px)', opacity: 0 }),
+        animate('.25s', style({ transform: 'translateY(0px)', opacity: 1 }))
       ])
     ])
   ]

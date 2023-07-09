@@ -20,6 +20,12 @@ import {animate, query, stagger, state, style, transition, trigger} from "@angul
         ]), { optional: true })
       ])
     ]),
+    trigger('rightBarAnimation', [
+      transition(':enter', [
+        style({ transform: 'translateY(10px)', opacity: 0 }),
+        animate('.25s', style({ transform: 'translateY(0px)', opacity: 1 }))
+      ])
+    ])
   ]
 })
 export class TransactionsOutletComponent {

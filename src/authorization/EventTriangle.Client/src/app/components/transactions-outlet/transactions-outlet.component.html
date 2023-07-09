@@ -31,9 +31,11 @@
       <svg-icon src="../../../assets/svg/search.svg" class="searchSvg" />
     </div>
     <div class="transactionList" [@transactionItemAnimation]>
-      <div *ngFor="let transaction of transactions" class="{{transaction === 1 ? 'transactionItemToMe' : transaction === 2 ? 'transactionItemFromMe' : 'transactionItemRollbacked'}}">
+      <div *ngFor="let transaction of transactions"
+        class="{{transaction === 1 ? 'transactionItemToMe' : transaction === 2 ? 'transactionItemFromMe' : 'transactionItemRollbacked'}}">
         <svg-icon src="../../../assets/svg/transaction.svg" class="transactionSvg" />
-        <div class="{{transaction === 1 ? 'transactionItemToMeInfo' : transaction === 2 ? 'transactionItemFromMeInfo' : 'transactionItemRollbackedInfo'}}">
+        <div
+          class="{{transaction === 1 ? 'transactionItemToMeInfo' : transaction === 2 ? 'transactionItemFromMeInfo' : 'transactionItemRollbackedInfo'}}">
           <p class="transactionItemFrom">
             From: Sender
           </p>
@@ -53,11 +55,13 @@
 </div>
 <div class="createNewTransaction">
   <div class="createNewTransactionContainer">
-    <p class="createNewTransactionTitle">
-      Create New Transaction
-    </p>
-    <input type="text" class="createNewTransactionToInput" placeholder="To: Receiver" />
-    <input type="text" class="createNewTransactionAmountInput" placeholder="Amount: $0" />
-    <button class="createNewTransactionOkButton">Ok</button>
+    <div [@rightBarAnimation]>
+      <p class="createNewTransactionTitle">
+        Create New Transaction
+      </p>
+      <input type="text" class="createNewTransactionToInput" placeholder="To: Receiver" />
+      <input type="text" class="createNewTransactionAmountInput" placeholder="Amount: $0" />
+      <button class="createNewTransactionOkButton">Ok</button>
+    </div>
   </div>
 </div>
