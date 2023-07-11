@@ -1,0 +1,60 @@
+name: Angular Build
+
+on: 
+  push:
+    branches:
+      - main
+      - develop
+  pull_request: 
+    branches: [ develop ]
+  workflow_dispatch:
+
+env: 
+  CI: false
+  
+jobs:
+  angular-build:
+    name: Angular Build
+    runs-on: ${{ matrix.environment }}
+    strategy: 
+      matrix:
+        environment:
+          - ubuntu-latest
+          - windows-latest
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@v3
+        
+      - name: 'Setup Node.js 18.x'
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+          cache: 'npm'
+          cache-dependency-path: 'src/authorization/EventTriangle.Client/package-lock.json'
+      
+      - name: 'Setup Typescript 4.9.5'
+        run: npm install -g typescript@4.9.5
+        
+      - name: 'Print current node version'
+        run: node -v
+        
+      - name: "Print current npm version"
+        run: npm -v
+        
+      - name: "Npm ci"
+        working-directory: './src/authorization/EventTriangle.Client'
+        run: npm ci 
+        
+      - name: 'Compile TS files'
+        working-directory: './src/authorization/EventTriangle.Client' 
+        run: tsc -p tsconfig.json
+        
+      - name: 'Npm run build'
+        working-directory: './src/authorization/EventTriangle.Client'
+        run: npm run build
+        
+#      - name: 'Drop artifact'
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: 'client-build-${{ matrix.environment }}'
+#          path: './src/authorization/EventTriangle.Client/build'
