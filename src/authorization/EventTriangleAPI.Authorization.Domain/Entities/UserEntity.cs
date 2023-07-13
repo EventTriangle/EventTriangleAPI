@@ -1,13 +1,12 @@
 using EventTriangleAPI.Authorization.Domain.Entities.Validation;
 using EventTriangleAPI.Authorization.Domain.Enums;
 using FluentValidation;
-using Uuids;
 
 namespace EventTriangleAPI.Authorization.Domain.Entities;
 
 public class UserEntity
 {
-    public Guid Id { get; private set; } = Uuid.NewMySqlOptimized().ToGuidByteLayout();
+    public Guid Id { get; private set; }
     
     public string Sub { get; private set; }
     
@@ -21,6 +20,7 @@ public class UserEntity
 
     public UserEntity(string sub, string username, UserRole role, UserStatus status)
     {
+        Id = Guid.NewGuid();
         Sub = sub;
         Username = username;
         Role = role;

@@ -1,11 +1,10 @@
 using EventTriangleAPI.Shared.Application.Enums;
-using Uuids;
 
 namespace EventTriangleAPI.Consumer.Domain.Entities;
 
 public class TransactionEntity
 {
-    public Guid Id { get; private set; } = Uuid.NewMySqlOptimized().ToGuidByteLayout();
+    public Guid Id { get; private set; }
     
     public string From { get; private set; }
     

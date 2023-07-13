@@ -1,13 +1,12 @@
 using EventTriangleAPI.Sender.Domain.Entities.Validation;
 using EventTriangleAPI.Shared.Application.Enums;
 using FluentValidation;
-using Uuids;
 
 namespace EventTriangleAPI.Sender.Domain.Entities;
 
-public class TransactionEventEntity
+public class TransactionCreatedEvent
 {
-    public Guid Id { get; private set; } = Uuid.NewMySqlOptimized().ToGuidByteLayout();
+    public Guid Id { get; private set; }
     
     public string From { get; private set; }
     
@@ -17,15 +16,17 @@ public class TransactionEventEntity
     
     public TransactionType TransactionType { get; private set; }
 
-    public DateTime CreateAt { get; private set; } = DateTime.UtcNow;
+    public DateTime CreateAt { get; private set; }
 
-    public TransactionEventEntity(string from, string to, decimal amount, TransactionType transactionType)
+    public TransactionCreatedEvent(string from, string to, decimal amount, TransactionType transactionType)
     {
+        Id = Guid.NewGuid();
         From = from;
         To = to;
         Amount = amount;
         TransactionType = transactionType;
+        CreateAt = DateTime.UtcNow;
         
-        new TransactionEventEntityValidator().ValidateAndThrow(this);
+        new TransactionCreatedEventValidator().ValidateAndThrow(this);
     }
 }

@@ -1,13 +1,12 @@
 using EventTriangleAPI.Consumer.Domain.Entities.Validation;
 using EventTriangleAPI.Shared.Application.Enums;
 using FluentValidation;
-using Uuids;
 
 namespace EventTriangleAPI.Consumer.Domain.Entities;
 
 public class CreditCardEntity
 {
-    public Guid Id { get; private set; } = Uuid.NewMySqlOptimized().ToGuidByteLayout();
+    public Guid Id { get; private set; }
     
     public Guid UserId { get; private set; }
 
@@ -21,6 +20,7 @@ public class CreditCardEntity
 
     public CreditCardEntity(Guid userId, string holderName, string cardNumber, string cvv, PaymentNetwork paymentNetwork)
     {
+        Id = Guid.NewGuid();
         UserId = userId;
         HolderName = holderName;
         CardNumber = cardNumber;
