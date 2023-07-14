@@ -3,20 +3,20 @@ using FluentValidation;
 
 namespace EventTriangleAPI.Sender.Domain.Entities;
 
-public class UserUnsuspendedEvent
+public class TransactionRollBackedEvent
 {
     public Guid Id { get; private set; }
     
-    public Guid UserId { get; private set; }
+    public Guid TransactionId { get; private set; }
     
     public DateTime CreatedAt { get; private set; }
 
-    public UserUnsuspendedEvent(Guid userId)
+    public TransactionRollBackedEvent(Guid transactionId)
     {
         Id = Guid.NewGuid();
-        UserId = userId;
+        TransactionId = transactionId;
         CreatedAt = DateTime.UtcNow;
         
-        new UserUnsuspendedEventValidator().ValidateAndThrow(this);
+        new TransactionRollBackedEventValidator().ValidateAndThrow(this);
     }
 }

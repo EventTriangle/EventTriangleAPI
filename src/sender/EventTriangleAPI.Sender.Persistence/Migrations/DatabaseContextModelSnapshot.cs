@@ -22,34 +22,51 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("EventTriangleAPI.Sender.Domain.Entities.ContactEventEntity", b =>
+            modelBuilder.Entity("EventTriangleAPI.Sender.Domain.Entities.ContactCreatedEvent", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<int>("ContactEventType")
-                        .HasColumnType("integer");
-
                     b.Property<Guid>("ContactId")
                         .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
-                    b.ToTable("ContactEvents");
+                    b.ToTable("ContactCreatedEvents");
                 });
 
-            modelBuilder.Entity("EventTriangleAPI.Sender.Domain.Entities.CreditCardEventEntity", b =>
+            modelBuilder.Entity("EventTriangleAPI.Sender.Domain.Entities.ContactDeletedEvent", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<int>("CardEventType")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("ContactId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ContactDeletedEvents");
+                });
+
+            modelBuilder.Entity("EventTriangleAPI.Sender.Domain.Entities.CreditCardAddedEvent", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
 
                     b.Property<Guid>("CardId")
                         .HasColumnType("uuid");
@@ -57,7 +74,13 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
                     b.Property<string>("CardNumber")
                         .HasColumnType("text");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("Cvv")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Expiration")
                         .HasColumnType("text");
 
                     b.Property<string>("HolderName")
@@ -71,20 +94,75 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CreditCardEvents");
+                    b.ToTable("CreditCardAddedEvents");
                 });
 
-            modelBuilder.Entity("EventTriangleAPI.Sender.Domain.Entities.SupportTicketEventEntity", b =>
+            modelBuilder.Entity("EventTriangleAPI.Sender.Domain.Entities.CreditCardChangedEvent", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<string>("TicketReason")
+                    b.Property<Guid>("CardId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("CardNumber")
                         .HasColumnType("text");
 
-                    b.Property<int>("TicketStatus")
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Cvv")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Expiration")
+                        .HasColumnType("text");
+
+                    b.Property<string>("HolderName")
+                        .HasColumnType("text");
+
+                    b.Property<int>("PaymentNetwork")
                         .HasColumnType("integer");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CreditCardChangedEvents");
+                });
+
+            modelBuilder.Entity("EventTriangleAPI.Sender.Domain.Entities.CreditCardDeletedEvent", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CardId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CreditCardDeletedEvents");
+                });
+
+            modelBuilder.Entity("EventTriangleAPI.Sender.Domain.Entities.SupportTicketOpenedEvent", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("TicketReason")
+                        .HasColumnType("text");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
@@ -97,10 +175,30 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SupportTicketEvents");
+                    b.ToTable("SupportTicketOpenedEvents");
                 });
 
-            modelBuilder.Entity("EventTriangleAPI.Sender.Domain.Entities.TransactionEventEntity", b =>
+            modelBuilder.Entity("EventTriangleAPI.Sender.Domain.Entities.SupportTicketResolvedEvent", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("TicketId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("TicketJustification")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SupportTicketResolvedEvents");
+                });
+
+            modelBuilder.Entity("EventTriangleAPI.Sender.Domain.Entities.TransactionCreatedEvent", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -123,10 +221,10 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TransactionEventEntities");
+                    b.ToTable("TransactionCreatedEvents");
                 });
 
-            modelBuilder.Entity("EventTriangleAPI.Sender.Domain.Entities.UserEventEntity", b =>
+            modelBuilder.Entity("EventTriangleAPI.Sender.Domain.Entities.TransactionRollBackedEvent", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -135,15 +233,83 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("UserEventType")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("TransactionId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TransactionRollBackedEvents");
+                });
+
+            modelBuilder.Entity("EventTriangleAPI.Sender.Domain.Entities.UserCreatedEvent", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
-                    b.ToTable("UserEventEntities");
+                    b.ToTable("UserCreatedEvents");
+                });
+
+            modelBuilder.Entity("EventTriangleAPI.Sender.Domain.Entities.UserNotSuspendedEvent", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserNotSuspendedEvents");
+                });
+
+            modelBuilder.Entity("EventTriangleAPI.Sender.Domain.Entities.UserRoleUpdatedEvent", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("UserRole")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserRoleUpdatedEvents");
+                });
+
+            modelBuilder.Entity("EventTriangleAPI.Sender.Domain.Entities.UserSuspendedEvent", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserSuspendedEvents");
                 });
 #pragma warning restore 612, 618
         }

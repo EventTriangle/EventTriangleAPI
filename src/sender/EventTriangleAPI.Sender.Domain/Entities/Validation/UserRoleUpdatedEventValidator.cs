@@ -2,9 +2,9 @@ using FluentValidation;
 
 namespace EventTriangleAPI.Sender.Domain.Entities.Validation;
 
-public class UserUnsuspendedEventValidator : AbstractValidator<UserUnsuspendedEvent>
+public class UserRoleUpdatedEventValidator : AbstractValidator<UserRoleUpdatedEvent>
 {
-    public UserUnsuspendedEventValidator()
+    public UserRoleUpdatedEventValidator()
     {
         RuleFor(x => x.Id).NotEmpty();
         RuleFor(x => x.UserId).NotEmpty();
