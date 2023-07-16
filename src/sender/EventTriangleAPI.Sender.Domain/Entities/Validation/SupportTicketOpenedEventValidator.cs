@@ -10,7 +10,7 @@ public class SupportTicketOpenedEventValidator : AbstractValidator<SupportTicket
         RuleFor(x => x.UserId).NotEmpty();
         RuleFor(x => x.Username).NotEmpty();
         RuleFor(x => x.WalletId).NotEmpty();
-        RuleFor(x => x.TicketReason).Length(1, 300);
+        RuleFor(x => x.TicketReason).NotEmpty().Length(1, 300);
         RuleFor(x => x.CreatedAt).NotEmpty();
     }
 }

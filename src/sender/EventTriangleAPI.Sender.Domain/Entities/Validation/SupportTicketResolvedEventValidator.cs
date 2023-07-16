@@ -8,7 +8,7 @@ public class SupportTicketResolvedEventValidator : AbstractValidator<SupportTick
     {
         RuleFor(x => x.Id).NotEmpty();
         RuleFor(x => x.TicketId).NotEmpty();
-        RuleFor(x => x.TicketJustification).Length(1, 300);
+        RuleFor(x => x.TicketJustification).NotEmpty().Length(1, 300);
         RuleFor(x => x.CreatedAt).NotEmpty();
     }     
 }
