@@ -10,7 +10,7 @@ public class CreditCardChangedEvent
     
     public Guid CardId { get; private set; }
     
-    public Guid UserId { get; private set; }
+    public string UserId { get; private set; }
     
     public string HolderName { get; private set; }
     
@@ -26,7 +26,7 @@ public class CreditCardChangedEvent
     
     public CreditCardChangedEvent(
         Guid cardId, 
-        Guid userId, 
+        string userId, 
         string holderName, 
         string cardNumber,
         string cvv,

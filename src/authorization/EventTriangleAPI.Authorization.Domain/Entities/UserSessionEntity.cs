@@ -17,11 +17,11 @@ public class UserSessionEntity
     
     public byte[] Value { get; private set; }
     
-    public Guid UserId { get; private set; }
+    public string UserId { get; private set; }
     
     public UserEntity User { get; private set; }
 
-    public UserSessionEntity(Guid id, DateTimeOffset expiresAt, byte[] value, Guid userId)
+    public UserSessionEntity(Guid id, DateTimeOffset expiresAt, byte[] value, string userId)
     {
         Id = id;
         ExpiresAt = expiresAt;

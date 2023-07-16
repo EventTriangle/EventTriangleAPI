@@ -3,7 +3,7 @@ using EventTriangleAPI.Shared.Application.Enums;
 namespace EventTriangleAPI.Sender.BusinessLogic.CommandHandlers;
 
 public record AttachCreditCardToAccountBody(
-    string UserSub,
+    string UserId,
     string HolderName,
     string CardNumber,
     string Expiration,

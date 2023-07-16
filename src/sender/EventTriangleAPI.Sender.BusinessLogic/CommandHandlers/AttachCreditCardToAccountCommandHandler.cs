@@ -20,7 +20,7 @@ public class AttachCreditCardToAccountCommandHandler : ICommandHandler<AttachCre
     {
         var creditCardAddedEvent = new CreditCardAddedEvent(
             cardId: Guid.NewGuid(),
-            userId: Guid.NewGuid(),
+            userId: command.Body.UserId,
             command.Body.HolderName,
             command.Body.CardNumber,
             command.Body.Cvv,

@@ -10,18 +10,15 @@ namespace EventTriangleAPI.Authorization.Persistence.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "User",
+                name: "Users",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Sub = table.Column<string>(type: "text", nullable: true),
-                    Username = table.Column<string>(type: "text", nullable: false),
-                    Role = table.Column<int>(type: "integer", nullable: false),
-                    Status = table.Column<int>(type: "integer", nullable: false)
+                    Id = table.Column<string>(type: "text", nullable: false),
+                    Username = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_User", x => x.Id);
+                    table.PrimaryKey("PK_Users", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -34,24 +31,18 @@ namespace EventTriangleAPI.Authorization.Persistence.Migrations
                     UpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     DateOfLastAccess = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     Value = table.Column<byte[]>(type: "bytea", nullable: false),
-                    UserId = table.Column<Guid>(type: "uuid", nullable: false)
+                    UserId = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_UserSessions", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_UserSessions_User_UserId",
+                        name: "FK_UserSessions_Users_UserId",
                         column: x => x.UserId,
-                        principalTable: "User",
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_User_Sub",
-                table: "User",
-                column: "Sub",
-                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserSessions_UserId",
@@ -65,7 +56,7 @@ namespace EventTriangleAPI.Authorization.Persistence.Migrations
                 name: "UserSessions");
 
             migrationBuilder.DropTable(
-                name: "User");
+                name: "Users");
         }
     }
 }

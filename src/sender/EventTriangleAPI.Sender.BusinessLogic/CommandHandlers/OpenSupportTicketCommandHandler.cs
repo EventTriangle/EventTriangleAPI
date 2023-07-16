@@ -19,7 +19,7 @@ public class OpenSupportTicketCommandHandler : ICommandHandler<OpenSupportTicket
     public async Task<IResult<string, Error>> HandleAsync(ICommand<OpenSupportTicketBody> command)
     {
         var supportTicketOpenedEvent = new SupportTicketOpenedEvent(
-            command.Body.RequesterId,
+            command.Body.UserId,
             command.Body.Username,
             command.Body.WalletId,
             command.Body.TicketReason);

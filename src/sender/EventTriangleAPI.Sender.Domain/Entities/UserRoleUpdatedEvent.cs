@@ -6,15 +6,15 @@ namespace EventTriangleAPI.Sender.Domain.Entities;
 
 public class UserRoleUpdatedEvent
 {
-    public Guid Id { get; set; }
+    public Guid Id { get; private set; }
     
-    public Guid UserId { get; set; }
+    public string UserId { get; private set; }
     
-    public UserRole UserRole { get; set; }
+    public UserRole UserRole { get; private set; }
     
-    public DateTime CreatedAt { get; set; }
+    public DateTime CreatedAt { get; private set; }
 
-    public UserRoleUpdatedEvent(Guid userId, UserRole userRole)
+    public UserRoleUpdatedEvent(string userId, UserRole userRole)
     {
         Id = Guid.NewGuid();
         UserId = userId;

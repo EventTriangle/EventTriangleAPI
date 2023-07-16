@@ -18,7 +18,7 @@ public class DeleteCreditCardCommandHandler : ICommandHandler<DeleteCreditCardBo
 
     public async Task<IResult<string, Error>> HandleAsync(ICommand<DeleteCreditCardBody> command)
     {
-        var creditCardDeletedEvent = new CreditCardDeletedEvent(command.Body.RequesterId, command.Body.CardId);
+        var creditCardDeletedEvent = new CreditCardDeletedEvent(command.Body.UserId, command.Body.CardId);
 
         _context.CreditCardDeletedEvents.Add(creditCardDeletedEvent);
         await _context.SaveChangesAsync();

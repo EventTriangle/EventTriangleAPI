@@ -7,13 +7,13 @@ public class ContactCreatedEvent
 {
     public Guid Id { get; private set; }
 
-    public Guid UserId { get; private set; }
+    public string UserId { get; private set; }
 
-    public Guid ContactId { get; private set; }
+    public string ContactId { get; private set; }
 
     public DateTime CreatedAt { get; private set; }
     
-    public ContactCreatedEvent(Guid userId, Guid contactId)
+    public ContactCreatedEvent(string userId, string contactId)
     {
         Id = Guid.NewGuid();
         UserId = userId;

@@ -18,7 +18,7 @@ public class AddContactCommandHandler : ICommandHandler<AddContactBody, string>
 
     public async Task<IResult<string, Error>> HandleAsync(ICommand<AddContactBody> command)
     {
-        var contactCreatedEvent = new ContactCreatedEvent(command.Body.RequesterId, command.Body.ContactId);
+        var contactCreatedEvent = new ContactCreatedEvent(command.Body.UserId, command.Body.ContactId);
 
         _context.ContactCreatedEvents.Add(contactCreatedEvent);
         await _context.SaveChangesAsync();

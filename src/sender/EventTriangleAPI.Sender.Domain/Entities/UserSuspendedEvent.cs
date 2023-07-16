@@ -7,11 +7,11 @@ public class UserSuspendedEvent
 {
     public Guid Id { get; private set; }
     
-    public Guid UserId { get; private set; }
+    public string UserId { get; private set; }
     
     public DateTime CreatedAt { get; private set; }
 
-    public UserSuspendedEvent(Guid userId)
+    public UserSuspendedEvent(string userId)
     {
         Id = Guid.NewGuid();
         UserId = userId;

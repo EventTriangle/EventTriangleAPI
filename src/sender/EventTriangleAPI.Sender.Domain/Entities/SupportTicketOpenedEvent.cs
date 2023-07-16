@@ -7,7 +7,7 @@ public class SupportTicketOpenedEvent
 {
     public Guid Id { get; private set; }
     
-    public Guid UserId { get; private set; }
+    public string UserId { get; private set; }
     
     public string Username { get; private set; }
     
@@ -17,7 +17,7 @@ public class SupportTicketOpenedEvent
     
     public DateTime CreatedAt { get; private set; }
 
-    public SupportTicketOpenedEvent(Guid userId, string username, Guid walletId, string ticketReason)
+    public SupportTicketOpenedEvent(string userId, string username, Guid walletId, string ticketReason)
     {
         Id = Guid.NewGuid();
         UserId = userId;

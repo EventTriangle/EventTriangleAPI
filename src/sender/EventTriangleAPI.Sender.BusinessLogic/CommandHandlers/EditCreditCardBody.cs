@@ -3,7 +3,7 @@ using EventTriangleAPI.Shared.Application.Enums;
 namespace EventTriangleAPI.Sender.BusinessLogic.CommandHandlers;
 
 public record EditCreditCardBody(
-    Guid RequesterId,
+    string UserId,
     Guid CardId,
     string HolderName,
     string CardNumber,
