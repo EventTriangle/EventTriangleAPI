@@ -7,7 +7,7 @@ using EventTriangleAPI.Shared.DTO.Responses.Errors;
 
 namespace EventTriangleAPI.Sender.BusinessLogic.CommandHandlers;
 
-public class NotSuspendUserCommandHandler : ICommandHandler<NotSuspendUserBody, string>
+public class NotSuspendUserCommandHandler : ICommandHandler<NotSuspendUserBody, UserNotSuspendedEvent>
 {
     private readonly DatabaseContext _context;
 
@@ -16,7 +16,7 @@ public class NotSuspendUserCommandHandler : ICommandHandler<NotSuspendUserBody, 
         _context = context;
     }
 
-    public async Task<IResult<string, Error>> HandleAsync(ICommand<NotSuspendUserBody> command)
+    public async Task<IResult<UserNotSuspendedEvent, Error>> HandleAsync(ICommand<NotSuspendUserBody> command)
     {
         var userNotSuspendedEvent = new UserNotSuspendedEvent(command.Body.UserId);
 
@@ -25,6 +25,6 @@ public class NotSuspendUserCommandHandler : ICommandHandler<NotSuspendUserBody, 
         
         new MockOrder().Send(userNotSuspendedEvent);
         
-        return new Result<string>("");
+        return new Result<UserNotSuspendedEvent>(userNotSuspendedEvent);
     }
 }

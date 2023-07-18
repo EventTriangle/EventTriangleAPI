@@ -7,7 +7,7 @@ using EventTriangleAPI.Shared.DTO.Responses.Errors;
 
 namespace EventTriangleAPI.Sender.BusinessLogic.CommandHandlers;
 
-public class UpdateUserRoleCommandHandler : ICommandHandler<UpdateUserRoleBody, string>
+public class UpdateUserRoleCommandHandler : ICommandHandler<UpdateUserRoleBody, UserRoleUpdatedEvent>
 {
     private readonly DatabaseContext _context;
 
@@ -16,7 +16,7 @@ public class UpdateUserRoleCommandHandler : ICommandHandler<UpdateUserRoleBody, 
         _context = context;
     }
 
-    public async Task<IResult<string, Error>> HandleAsync(ICommand<UpdateUserRoleBody> command)
+    public async Task<IResult<UserRoleUpdatedEvent, Error>> HandleAsync(ICommand<UpdateUserRoleBody> command)
     {
         var userRoleUpdatedEvent = new UserRoleUpdatedEvent(command.Body.UserId, command.Body.UserRole);
 
@@ -25,6 +25,6 @@ public class UpdateUserRoleCommandHandler : ICommandHandler<UpdateUserRoleBody, 
 
         new MockOrder().Send(userRoleUpdatedEvent);
         
-        return new Result<string>("");
+        return new Result<UserRoleUpdatedEvent>(userRoleUpdatedEvent);
     }
 }

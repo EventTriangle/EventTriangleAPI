@@ -7,7 +7,7 @@ using EventTriangleAPI.Shared.DTO.Responses.Errors;
 
 namespace EventTriangleAPI.Sender.BusinessLogic.CommandHandlers;
 
-public class AttachCreditCardToAccountCommandHandler : ICommandHandler<AttachCreditCardToAccountBody, string>
+public class AttachCreditCardToAccountCommandHandler : ICommandHandler<AttachCreditCardToAccountBody, CreditCardAddedEvent>
 {
     private readonly DatabaseContext _context;
 
@@ -16,7 +16,7 @@ public class AttachCreditCardToAccountCommandHandler : ICommandHandler<AttachCre
         _context = context;
     }
 
-    public async Task<IResult<string, Error>> HandleAsync(ICommand<AttachCreditCardToAccountBody> command)
+    public async Task<IResult<CreditCardAddedEvent, Error>> HandleAsync(ICommand<AttachCreditCardToAccountBody> command)
     {
         var creditCardAddedEvent = new CreditCardAddedEvent(
             cardId: Guid.NewGuid(),
@@ -32,6 +32,6 @@ public class AttachCreditCardToAccountCommandHandler : ICommandHandler<AttachCre
         
         new MockOrder().Send(creditCardAddedEvent);
         
-        return new Result<string>("");
+        return new Result<CreditCardAddedEvent>(creditCardAddedEvent);
     }
 }

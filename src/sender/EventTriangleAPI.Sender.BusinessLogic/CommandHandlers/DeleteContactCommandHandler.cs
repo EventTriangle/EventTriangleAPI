@@ -7,7 +7,7 @@ using EventTriangleAPI.Shared.DTO.Responses.Errors;
 
 namespace EventTriangleAPI.Sender.BusinessLogic.CommandHandlers;
 
-public class DeleteContactCommandHandler : ICommandHandler<DeleteContactBody, string>
+public class DeleteContactCommandHandler : ICommandHandler<DeleteContactBody, ContactDeletedEvent>
 {
     private readonly DatabaseContext _context;
 
@@ -16,7 +16,7 @@ public class DeleteContactCommandHandler : ICommandHandler<DeleteContactBody, st
         _context = context;
     }
 
-    public async Task<IResult<string, Error>> HandleAsync(ICommand<DeleteContactBody> command)
+    public async Task<IResult<ContactDeletedEvent, Error>> HandleAsync(ICommand<DeleteContactBody> command)
     {
         var contactDeletedEvent = new ContactDeletedEvent(command.Body.UserId, command.Body.ContactId);
 
@@ -25,6 +25,6 @@ public class DeleteContactCommandHandler : ICommandHandler<DeleteContactBody, st
         
         new MockOrder().Send(contactDeletedEvent);
 
-        return new Result<string>("");
+        return new Result<ContactDeletedEvent>(contactDeletedEvent);
     }
 }

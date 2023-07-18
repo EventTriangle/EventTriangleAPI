@@ -7,7 +7,7 @@ using EventTriangleAPI.Shared.DTO.Responses.Errors;
 
 namespace EventTriangleAPI.Sender.BusinessLogic.CommandHandlers;
 
-public class OpenSupportTicketCommandHandler : ICommandHandler<OpenSupportTicketBody, string>
+public class OpenSupportTicketCommandHandler : ICommandHandler<OpenSupportTicketBody, SupportTicketOpenedEvent>
 {
     private readonly DatabaseContext _context;
 
@@ -16,7 +16,7 @@ public class OpenSupportTicketCommandHandler : ICommandHandler<OpenSupportTicket
         _context = context;
     }
 
-    public async Task<IResult<string, Error>> HandleAsync(ICommand<OpenSupportTicketBody> command)
+    public async Task<IResult<SupportTicketOpenedEvent, Error>> HandleAsync(ICommand<OpenSupportTicketBody> command)
     {
         var supportTicketOpenedEvent = new SupportTicketOpenedEvent(
             command.Body.UserId,
@@ -27,6 +27,6 @@ public class OpenSupportTicketCommandHandler : ICommandHandler<OpenSupportTicket
         _context.SupportTicketOpenedEvents.Add(supportTicketOpenedEvent);
         await _context.SaveChangesAsync();
 
-        return new Result<string>("");
+        return new Result<SupportTicketOpenedEvent>(supportTicketOpenedEvent);
     }
 }

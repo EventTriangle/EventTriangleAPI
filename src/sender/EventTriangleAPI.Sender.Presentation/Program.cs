@@ -1,5 +1,6 @@
 using EventTriangleAPI.Sender.Domain.Constants;
 using EventTriangleAPI.Sender.Persistence;
+using EventTriangleAPI.Sender.Presentation.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
@@ -17,6 +18,7 @@ builder.Services.AddDbContext<DatabaseContext>(options =>
 {
     options.UseNpgsql(databaseConnectionString);
 });
+builder.Services.AddCommandHandlers();
 
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
