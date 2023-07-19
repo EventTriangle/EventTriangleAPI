@@ -23,10 +23,10 @@ inputs:
     description: 'Service name'
     required: true
     
-  databaseContainerName:
+  creatingDatabase:
     description: 'Creating database in docker container'
     required: false
-    default: ''
+    default: 'false'
 
 runs:
   using: "composite"
@@ -61,15 +61,14 @@ runs:
       shell: bash
 
     - name: Start PostgreSQL container
-      if: ${{ inputs.databaseContainerName != '' }}
+      if: ${{ inputs.databaseContainerName == 'true' }}
       run: |
-        docker run --name ${{ inputs.databaseContainerName }} -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres:latest
+        docker run --name pgsql-db -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres:latest
       shell: bash
 
     - name: Wait for database to be ready
-      if: ${{ inputs.databaseContainerName != '' }}
-      working-directory: ./.github/workflows
-      run: pwsh ./wait_postgres_database.ps1
+      if: ${{ inputs.databaseContainerName == 'true' }}
+      run: pwsh ./scripts/wait_postgres_database.ps1
       shell: bash
 
     - name: Run unit tests
