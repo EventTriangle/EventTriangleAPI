@@ -45,3 +45,4 @@ jobs:
           buildConfiguration: "Release"
           serviceName: "auth-api"
           unitTestsProjectPath: "src/authorization/EventTriangleAPI.Authorization.UnitTests"
+          creatingDatabase: 'true'
