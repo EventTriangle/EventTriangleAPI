@@ -44,3 +44,4 @@ jobs:
           backendCsprojPath: "src/authorization/EventTriangleAPI.Authorization.Presentation/EventTriangleAPI.Authorization.Presentation.csproj"
           buildConfiguration: "Release"
           serviceName: "auth-api"
+          unitTestsProjectPath: "src/authorization/EventTriangleAPI.Authorization.UnitTests"

@@ -8,10 +8,12 @@ inputs:
   integrationTestsProjectPath:
     description: 'Integration tests project path'
     required: false
+    default: ''
   
   unitTestsProjectPath:
     description: 'Unit tests project path'
     required: false
+    default: ''
   
   buildConfiguration:
     description: 'Build configuration (Release or Debug)'
@@ -53,6 +55,11 @@ runs:
       run: dotnet restore --verbosity minimal
       shell: bash
 
+    - name: Build .NET Project
+      run: |
+        dotnet build --no-restore /p:ContinuousIntegrationBuild=true -c ${{ inputs.buildConfiguration }}
+      shell: bash
+
     - name: Start PostgreSQL container
       if: ${{ inputs.databaseContainerName != '' }}
       run: |
@@ -65,17 +72,14 @@ runs:
       run: pwsh ./wait_postgres_database.ps1
       shell: bash
 
-    - name: Build .NET Project
-      run: |
-        dotnet build --no-restore /p:ContinuousIntegrationBuild=true -c ${{ inputs.buildConfiguration }}
-      shell: bash
-
     - name: Run unit tests
+      if: ${{ inputs.unitTestsProjectPath != '' }}
       run: |
         dotnet test ${{ inputs.unitTestsProjectPath }} -c ${{ inputs.buildConfiguration }} --no-build
       shell: bash
 
     - name: Run integration tests
+      if: ${{ inputs.integrationTestsProjectPath != '' }}
       run: |
         dotnet test ${{ inputs.integrationTestsProjectPath }} -c ${{ inputs.buildConfiguration }} --no-build
       shell: bash
