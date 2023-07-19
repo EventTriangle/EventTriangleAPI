@@ -61,13 +61,13 @@ runs:
       shell: bash
 
     - name: Start PostgreSQL container
-      if: ${{ inputs.databaseContainerName == 'true' }}
+      if: ${{ inputs.creatingDatabase == 'true' }}
       run: |
         docker run --name pgsql-db -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres:latest
       shell: bash
 
     - name: Wait for database to be ready
-      if: ${{ inputs.databaseContainerName == 'true' }}
+      if: ${{ inputs.creatingDatabase == 'true' }}
       run: pwsh ./scripts/wait_postgres_database.ps1
       shell: bash
 
