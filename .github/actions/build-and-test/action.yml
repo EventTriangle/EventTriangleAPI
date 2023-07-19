@@ -20,6 +20,11 @@ inputs:
   serviceName:
     description: 'Service name'
     required: true
+    
+  databaseContainerName:
+    description: 'Creating database in docker container'
+    required: false
+    default: ''
 
 runs:
   using: "composite"
@@ -46,6 +51,18 @@ runs:
 
     - name: Restore Nuget Packages
       run: dotnet restore --verbosity minimal
+      shell: bash
+
+    - name: Start PostgreSQL container
+      if: ${{ inputs.databaseContainerName != '' }}
+      run: |
+        docker run --name ${{ inputs.databaseContainerName }} -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres:latest
+      shell: bash
+
+    - name: Wait for database to be ready
+      if: ${{ inputs.databaseContainerName != '' }}
+      working-directory: ./.github/workflows
+      run: pwsh ./wait_postgres_database.ps1
       shell: bash
 
     - name: Build .NET Project

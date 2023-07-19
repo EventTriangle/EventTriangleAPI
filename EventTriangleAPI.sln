@@ -56,6 +56,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 		.github\workflows\sender-build-and-test.yml = .github\workflows\sender-build-and-test.yml
 		.github\workflows\auth-build-and-test.yml = .github\workflows\auth-build-and-test.yml
 		.github\workflows\angular-build.yml = .github\workflows\angular-build.yml
+		.github\workflows\wait_postgres_database.ps1 = .github\workflows\wait_postgres_database.ps1
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build-and-test", "build-and-test", "{A659D97B-8FB1-40F8-A9FD-EB461CA889CA}"
