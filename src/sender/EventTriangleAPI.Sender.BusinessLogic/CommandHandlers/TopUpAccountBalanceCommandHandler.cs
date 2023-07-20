@@ -7,7 +7,7 @@ using EventTriangleAPI.Shared.DTO.Responses.Errors;
 
 namespace EventTriangleAPI.Sender.BusinessLogic.CommandHandlers;
 
-public class TopUpAccountBalanceCommandHandler : ICommandHandler<TopUpAccountBalanceBody, TransactionCreatedEvent>
+public class TopUpAccountBalanceCommandHandler : ICommandHandler<TopUpAccountBalanceCommand, TransactionCreatedEvent>
 {
     private readonly DatabaseContext _context;
 
@@ -16,13 +16,13 @@ public class TopUpAccountBalanceCommandHandler : ICommandHandler<TopUpAccountBal
         _context = context;
     }
 
-    public async Task<IResult<TransactionCreatedEvent, Error>> HandleAsync(ICommand<TopUpAccountBalanceBody> command)
+    public async Task<IResult<TransactionCreatedEvent, Error>> HandleAsync(TopUpAccountBalanceCommand command)
     {
         var transactionCreatedEvent = new TransactionCreatedEvent(
-            command.Body.From,
-            command.Body.To,
-            command.Body.Amount,
-            command.Body.TransactionType);
+            command.From,
+            command.To,
+            command.Amount,
+            command.TransactionType);
 
         _context.TransactionCreatedEvents.Add(transactionCreatedEvent);
         await _context.SaveChangesAsync();

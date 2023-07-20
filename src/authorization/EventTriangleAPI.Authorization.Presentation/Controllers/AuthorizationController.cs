@@ -1,7 +1,6 @@
 using EventTriangleAPI.Authorization.BusinessLogic.CommandHandlers;
 using EventTriangleAPI.Authorization.Domain.Constants;
 using EventTriangleAPI.Shared.Application.Extensions;
-using EventTriangleAPI.Shared.DTO.Commands;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -67,8 +66,7 @@ public class AuthorizationController : ControllerBase
     [HttpGet("token")]
     public async Task<IActionResult> GetAuthorizationData([FromQuery] string code, [FromQuery] string codeVerifier)
     {
-        var body = new GetTokenBody(code, codeVerifier);
-        var command = new Command<GetTokenBody>(body);
+        var command = new GetTokenCommand(code, codeVerifier);
         var result = await _getTokenCommandHandler.HandleAsync(command);
 
         return result.ToActionResult();
@@ -77,8 +75,7 @@ public class AuthorizationController : ControllerBase
     [HttpPost("token")]
     public async Task<IActionResult> GetRefreshData([FromQuery] string refreshToken)
     {
-        var body = new RefreshTokenBody(refreshToken);
-        var command = new Command<RefreshTokenBody>(body);
+        var command = new RefreshTokenCommand(refreshToken);
         var result = await _refreshTokenCommandHandler.HandleAsync(command);
 
         return result.ToActionResult();

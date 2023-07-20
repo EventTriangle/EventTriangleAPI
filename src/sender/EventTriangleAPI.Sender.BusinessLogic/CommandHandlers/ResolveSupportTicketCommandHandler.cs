@@ -7,7 +7,7 @@ using EventTriangleAPI.Shared.DTO.Responses.Errors;
 
 namespace EventTriangleAPI.Sender.BusinessLogic.CommandHandlers;
 
-public class ResolveSupportTicketCommandHandler : ICommandHandler<ResolveSupportTicketBody, SupportTicketResolvedEvent>
+public class ResolveSupportTicketCommandHandler : ICommandHandler<ResolveSupportTicketCommand, SupportTicketResolvedEvent>
 {
     private readonly DatabaseContext _context;
 
@@ -16,11 +16,11 @@ public class ResolveSupportTicketCommandHandler : ICommandHandler<ResolveSupport
         _context = context;
     }
 
-    public async Task<IResult<SupportTicketResolvedEvent, Error>> HandleAsync(ICommand<ResolveSupportTicketBody> command)
+    public async Task<IResult<SupportTicketResolvedEvent, Error>> HandleAsync(ResolveSupportTicketCommand command)
     {
         var supportTicketResolvedEvent = new SupportTicketResolvedEvent(
-            command.Body.TicketId, 
-            command.Body.TicketJustification);
+            command.TicketId, 
+            command.TicketJustification);
 
         _context.SupportTicketResolvedEvents.Add(supportTicketResolvedEvent);
         await _context.SaveChangesAsync();

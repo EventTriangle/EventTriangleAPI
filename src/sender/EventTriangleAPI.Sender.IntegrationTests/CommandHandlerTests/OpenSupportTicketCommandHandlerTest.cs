@@ -1,5 +1,4 @@
 using EventTriangleAPI.Sender.BusinessLogic.CommandHandlers;
-using EventTriangleAPI.Shared.DTO.Commands;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
@@ -11,12 +10,11 @@ public class OpenSupportTicketCommandHandlerTest : IntegrationTestBase, IIntegra
     [Fact]
     public async Task Test()
     {
-        var body = new OpenSupportTicketBody(
+        var command = new OpenSupportTicketCommand(
             Guid.NewGuid().ToString(),
             Guid.NewGuid().ToString(),
             Guid.NewGuid(),
             Guid.NewGuid().ToString());
-        var command = new Command<OpenSupportTicketBody>(body);
         
         var result = await OpenSupportTicketCommandHandler.HandleAsync(command);
 

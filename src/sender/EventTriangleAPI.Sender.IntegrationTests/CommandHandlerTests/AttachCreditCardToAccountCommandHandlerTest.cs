@@ -1,6 +1,5 @@
 using EventTriangleAPI.Sender.BusinessLogic.CommandHandlers;
 using EventTriangleAPI.Shared.Application.Enums;
-using EventTriangleAPI.Shared.DTO.Commands;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
@@ -12,15 +11,13 @@ public class AttachCreditCardToAccountCommandHandlerTest : IntegrationTestBase, 
     [Fact]
     public async Task Test()
     {
-        var body = new AttachCreditCardToAccountBody(
+        var command = new AttachCreditCardToAccountCommand(
             Guid.NewGuid().ToString(),
             Guid.NewGuid().ToString(),
             new string('1', 16),
             "12/12",
             "123",
             PaymentNetwork.MasterCard);
-        
-        var command = new Command<AttachCreditCardToAccountBody>(body);
         
         var result = await AttachCreditCardToAccountCommandHandler.HandleAsync(command);
 

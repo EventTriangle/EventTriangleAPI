@@ -7,7 +7,7 @@ using EventTriangleAPI.Shared.DTO.Responses.Errors;
 
 namespace EventTriangleAPI.Sender.BusinessLogic.CommandHandlers;
 
-public class NotSuspendUserCommandHandler : ICommandHandler<NotSuspendUserBody, UserNotSuspendedEvent>
+public class NotSuspendUserCommandHandler : ICommandHandler<NotSuspendUserCommand, UserNotSuspendedEvent>
 {
     private readonly DatabaseContext _context;
 
@@ -16,9 +16,9 @@ public class NotSuspendUserCommandHandler : ICommandHandler<NotSuspendUserBody, 
         _context = context;
     }
 
-    public async Task<IResult<UserNotSuspendedEvent, Error>> HandleAsync(ICommand<NotSuspendUserBody> command)
+    public async Task<IResult<UserNotSuspendedEvent, Error>> HandleAsync(NotSuspendUserCommand command)
     {
-        var userNotSuspendedEvent = new UserNotSuspendedEvent(command.Body.UserId);
+        var userNotSuspendedEvent = new UserNotSuspendedEvent(command.UserId);
 
         _context.UserNotSuspendedEvents.Add(userNotSuspendedEvent);
         await _context.SaveChangesAsync();

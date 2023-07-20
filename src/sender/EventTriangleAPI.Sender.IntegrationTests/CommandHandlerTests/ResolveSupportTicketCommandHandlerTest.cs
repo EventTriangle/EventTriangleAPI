@@ -1,5 +1,4 @@
 using EventTriangleAPI.Sender.BusinessLogic.CommandHandlers;
-using EventTriangleAPI.Shared.DTO.Commands;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
@@ -11,8 +10,7 @@ public class ResolveSupportTicketCommandHandlerTest : IntegrationTestBase, IInte
     [Fact]
     public async Task Test()
     {
-        var body = new ResolveSupportTicketBody(Guid.NewGuid(), Guid.NewGuid().ToString());
-        var command = new Command<ResolveSupportTicketBody>(body);
+        var command = new ResolveSupportTicketCommand(Guid.NewGuid(), Guid.NewGuid().ToString());
         
         var result = await ResolveSupportTicketCommandHandler.HandleAsync(command);
 

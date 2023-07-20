@@ -1,5 +1,4 @@
 using EventTriangleAPI.Sender.BusinessLogic.CommandHandlers;
-using EventTriangleAPI.Shared.DTO.Commands;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
@@ -11,8 +10,7 @@ public class DeleteCreditCardCommandHandlerTest : IntegrationTestBase, IIntegrat
     [Fact]
     public async Task Test()
     {
-        var body = new DeleteCreditCardBody(Guid.NewGuid().ToString(), Guid.NewGuid());
-        var command = new Command<DeleteCreditCardBody>(body);
+        var command = new DeleteCreditCardCommand(Guid.NewGuid().ToString(), Guid.NewGuid());
         
         var result = await DeleteCreditCardCommandHandler.HandleAsync(command);
 

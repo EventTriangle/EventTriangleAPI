@@ -7,7 +7,7 @@ using EventTriangleAPI.Shared.DTO.Responses.Errors;
 
 namespace EventTriangleAPI.Sender.BusinessLogic.CommandHandlers;
 
-public class RollBackTransactionCommandHandler : ICommandHandler<RollBackTransactionBody, TransactionRollBackedEvent>
+public class RollBackTransactionCommandHandler : ICommandHandler<RollBackTransactionCommand, TransactionRollBackedEvent>
 {
     private readonly DatabaseContext _context;
 
@@ -16,9 +16,9 @@ public class RollBackTransactionCommandHandler : ICommandHandler<RollBackTransac
         _context = context;
     }
 
-    public async Task<IResult<TransactionRollBackedEvent, Error>> HandleAsync(ICommand<RollBackTransactionBody> command)
+    public async Task<IResult<TransactionRollBackedEvent, Error>> HandleAsync(RollBackTransactionCommand command)
     {
-        var transactionRollBackedEvent = new TransactionRollBackedEvent(command.Body.TransactionId);
+        var transactionRollBackedEvent = new TransactionRollBackedEvent(command.TransactionId);
 
         _context.TransactionRollBackedEvents.Add(transactionRollBackedEvent);
         await _context.SaveChangesAsync();

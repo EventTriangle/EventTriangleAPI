@@ -1,5 +1,4 @@
 using EventTriangleAPI.Sender.BusinessLogic.CommandHandlers;
-using EventTriangleAPI.Shared.DTO.Commands;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
@@ -11,8 +10,7 @@ public class RollBackTransactionCommandHandlerTest : IntegrationTestBase, IInteg
     [Fact]
     public async Task Test()
     {
-        var body = new RollBackTransactionBody(Guid.NewGuid());
-        var command = new Command<RollBackTransactionBody>(body);
+        var command = new RollBackTransactionCommand(Guid.NewGuid());
         
         var result = await RollBackTransactionCommandHandler.HandleAsync(command);
 
