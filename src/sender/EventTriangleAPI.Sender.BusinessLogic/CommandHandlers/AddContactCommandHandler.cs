@@ -7,7 +7,7 @@ using EventTriangleAPI.Shared.DTO.Responses.Errors;
 
 namespace EventTriangleAPI.Sender.BusinessLogic.CommandHandlers;
 
-public class AddContactCommandHandler : ICommandHandler<AddContactBody, ContactCreatedEvent>
+public class AddContactCommandHandler : ICommandHandler<AddContactCommand, ContactCreatedEvent>
 {
     private readonly DatabaseContext _context;
 
@@ -16,9 +16,9 @@ public class AddContactCommandHandler : ICommandHandler<AddContactBody, ContactC
         _context = context;
     }
 
-    public async Task<IResult<ContactCreatedEvent, Error>> HandleAsync(ICommand<AddContactBody> command)
+    public async Task<IResult<ContactCreatedEvent, Error>> HandleAsync(AddContactCommand command)
     {
-        var contactCreatedEvent = new ContactCreatedEvent(command.Body.UserId, command.Body.ContactId);
+        var contactCreatedEvent = new ContactCreatedEvent(command.UserId, command.ContactId);
 
         _context.ContactCreatedEvents.Add(contactCreatedEvent);
         await _context.SaveChangesAsync();

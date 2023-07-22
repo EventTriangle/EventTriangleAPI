@@ -1,5 +1,4 @@
 using EventTriangleAPI.Sender.BusinessLogic.CommandHandlers;
-using EventTriangleAPI.Shared.DTO.Commands;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
@@ -11,8 +10,7 @@ public class NotSuspendUserCommandHandlerTest : IntegrationTestBase, IIntegratio
     [Fact]
     public async Task Test()
     {
-        var body = new NotSuspendUserBody(Guid.NewGuid().ToString());
-        var command = new Command<NotSuspendUserBody>(body);
+        var command = new NotSuspendUserCommand(Guid.NewGuid().ToString());
         
         var result = await NotSuspendUserCommandHandler.HandleAsync(command);
 

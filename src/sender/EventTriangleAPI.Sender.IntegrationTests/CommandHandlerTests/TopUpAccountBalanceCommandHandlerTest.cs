@@ -1,6 +1,5 @@
 using EventTriangleAPI.Sender.BusinessLogic.CommandHandlers;
 using EventTriangleAPI.Shared.Application.Enums;
-using EventTriangleAPI.Shared.DTO.Commands;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
@@ -12,12 +11,11 @@ public class TopUpAccountBalanceCommandHandlerTest : IntegrationTestBase, IInteg
     [Fact]
     public async Task Test()
     {
-        var body = new TopUpAccountBalanceBody(
+        var command = new TopUpAccountBalanceCommand(
             Guid.NewGuid().ToString(),
             Guid.NewGuid().ToString(),
             300,
             TransactionType.FromCardToUser);
-        var command = new Command<TopUpAccountBalanceBody>(body);
         
         var result = await TopUpAccountBalanceCommandHandler.HandleAsync(command);
 

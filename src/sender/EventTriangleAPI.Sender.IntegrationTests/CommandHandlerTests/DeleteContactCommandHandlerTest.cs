@@ -1,5 +1,4 @@
 using EventTriangleAPI.Sender.BusinessLogic.CommandHandlers;
-using EventTriangleAPI.Shared.DTO.Commands;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
@@ -11,8 +10,7 @@ public class DeleteContactCommandHandlerTest : IntegrationTestBase, IIntegration
     [Fact]
     public async Task Test()
     {
-        var body = new DeleteContactBody(Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
-        var command = new Command<DeleteContactBody>(body);
+        var command = new DeleteContactCommand(Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
         
         var result = await DeleteContactCommandHandler.HandleAsync(command);
 

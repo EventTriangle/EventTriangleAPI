@@ -1,5 +1,4 @@
 using EventTriangleAPI.Sender.BusinessLogic.CommandHandlers;
-using EventTriangleAPI.Shared.DTO.Commands;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
@@ -11,8 +10,7 @@ public class AddContactCommandHandlerTest : IntegrationTestBase, IIntegrationTes
     [Fact]
     public async Task Test()
     {
-        var body = new AddContactBody(Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
-        var command = new Command<AddContactBody>(body);
+        var command = new AddContactCommand(Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
         
         var result = await AddContactCommandHandler.HandleAsync(command);
 

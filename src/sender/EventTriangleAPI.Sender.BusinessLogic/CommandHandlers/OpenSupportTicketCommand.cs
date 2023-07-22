@@ -1,7 +1,9 @@
+using EventTriangleAPI.Shared.DTO.Abstractions;
+
 namespace EventTriangleAPI.Sender.BusinessLogic.CommandHandlers;
 
-public record OpenSupportTicketBody(
+public record OpenSupportTicketCommand(
     string UserId, 
     string Username,
     Guid WalletId,
-    string TicketReason);
+    string TicketReason) : ICommand;

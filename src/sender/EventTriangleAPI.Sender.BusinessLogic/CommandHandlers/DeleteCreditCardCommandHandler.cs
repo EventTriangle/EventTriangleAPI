@@ -7,7 +7,7 @@ using EventTriangleAPI.Shared.DTO.Responses.Errors;
 
 namespace EventTriangleAPI.Sender.BusinessLogic.CommandHandlers;
 
-public class DeleteCreditCardCommandHandler : ICommandHandler<DeleteCreditCardBody, CreditCardDeletedEvent>
+public class DeleteCreditCardCommandHandler : ICommandHandler<DeleteCreditCardCommand, CreditCardDeletedEvent>
 {
     private readonly DatabaseContext _context;
 
@@ -16,9 +16,9 @@ public class DeleteCreditCardCommandHandler : ICommandHandler<DeleteCreditCardBo
         _context = context;
     }
 
-    public async Task<IResult<CreditCardDeletedEvent, Error>> HandleAsync(ICommand<DeleteCreditCardBody> command)
+    public async Task<IResult<CreditCardDeletedEvent, Error>> HandleAsync(DeleteCreditCardCommand command)
     {
-        var creditCardDeletedEvent = new CreditCardDeletedEvent(command.Body.UserId, command.Body.CardId);
+        var creditCardDeletedEvent = new CreditCardDeletedEvent(command.UserId, command.CardId);
 
         _context.CreditCardDeletedEvents.Add(creditCardDeletedEvent);
         await _context.SaveChangesAsync();
