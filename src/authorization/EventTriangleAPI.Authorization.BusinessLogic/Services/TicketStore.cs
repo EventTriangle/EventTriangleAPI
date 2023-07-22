@@ -1,10 +1,10 @@
 using System.IdentityModel.Tokens.Jwt;
 using EventTriangleAPI.Authorization.Domain.Constants;
 using EventTriangleAPI.Authorization.Domain.Entities;
-using EventTriangleAPI.Authorization.Domain.Enums;
 using EventTriangleAPI.Authorization.Domain.Exceptions;
 using EventTriangleAPI.Authorization.Persistence;
 using EventTriangleAPI.Shared.Application.Constants;
+using EventTriangleAPI.Shared.Application.Enums;
 using EventTriangleAPI.Shared.DTO.Models;
 using IdentityModel.Client;
 using Microsoft.AspNetCore.Authentication;
@@ -104,17 +104,17 @@ public class TicketStore : ITicketStore
         {
             var serializedTicket = _ticketSerializer.Serialize(ticket);
             
-            var user = await _context.User.AsNoTracking().FirstOrDefaultAsync(x => x.Sub == sub);
+            var user = await _context.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == sub);
 
             if (user == null)
             {
                 var username = decodeAccessToken.Claims.First(x => x.Type == "name").Value;
                 var userRole = (UserRole)Enum.Parse(typeof(UserRole), role);
 
-                var newUser = new UserEntity(sub, username, userRole, UserStatus.Active);
+                var newUser = new UserEntity(sub, username);
                 var newUserSession = new UserSessionEntity(new Guid(sessionId), ticketExpiresUtc.Value, serializedTicket, newUser.Id);
 
-                _context.User.Add(newUser);
+                _context.Users.Add(newUser);
                 _context.UserSessions.Add(newUserSession);
             }
             else

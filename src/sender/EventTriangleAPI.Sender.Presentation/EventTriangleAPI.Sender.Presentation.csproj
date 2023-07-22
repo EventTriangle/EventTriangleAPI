@@ -10,6 +10,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\EventTriangleAPI.Sender.BusinessLogic\EventTriangleAPI.Sender.BusinessLogic.csproj" />
       <ProjectReference Include="..\EventTriangleAPI.Sender.Domain\EventTriangleAPI.Sender.Domain.csproj" />
     </ItemGroup>
 

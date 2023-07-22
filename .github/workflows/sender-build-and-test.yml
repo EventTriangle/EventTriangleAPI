@@ -52,3 +52,4 @@ jobs:
           integrationTestsProjectPath: "src/sender/EventTriangleAPI.Sender.IntegrationTests"
           buildConfiguration: "Release"
           serviceName: "sender-api"
+          creatingDatabase: "true"

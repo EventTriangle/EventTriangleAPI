@@ -36,3 +36,4 @@ stages:
         parameters:
           buildConfiguration: 'Release'
           backendProjectPath: './src/authorization/EventTriangleAPI.Authorization.Presentation'
+          unitTestsProjectPath: './src/sender/EventTriangleAPI.Sender.UnitTests/EventTriangleAPI.Authorization.UnitTests.csproj'

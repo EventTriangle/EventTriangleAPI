@@ -46,3 +46,4 @@ stages:
           backendProjectPath: './src/sender/EventTriangleAPI.Sender.Presentation'
           integrationTestsProjectPath: './src/sender/EventTriangleAPI.Sender.IntegrationTests/EventTriangleAPI.Sender.IntegrationTests.csproj'
           unitTestsProjectPath: './src/sender/EventTriangleAPI.Sender.UnitTests/EventTriangleAPI.Sender.UnitTests.csproj'
+          creatingDatabase: true

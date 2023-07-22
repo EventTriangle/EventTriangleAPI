@@ -24,17 +24,7 @@ namespace EventTriangleAPI.Authorization.Persistence.Migrations
 
             modelBuilder.Entity("EventTriangleAPI.Authorization.Domain.Entities.UserEntity", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<int>("Role")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Sub")
+                    b.Property<string>("Id")
                         .HasColumnType("text");
 
                     b.Property<string>("Username")
@@ -43,10 +33,7 @@ namespace EventTriangleAPI.Authorization.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Sub")
-                        .IsUnique();
-
-                    b.ToTable("User");
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("EventTriangleAPI.Authorization.Domain.Entities.UserSessionEntity", b =>
@@ -67,8 +54,8 @@ namespace EventTriangleAPI.Authorization.Persistence.Migrations
                     b.Property<DateTimeOffset>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
+                    b.Property<string>("UserId")
+                        .HasColumnType("text");
 
                     b.Property<byte[]>("Value")
                         .IsRequired()
@@ -86,8 +73,7 @@ namespace EventTriangleAPI.Authorization.Persistence.Migrations
                     b.HasOne("EventTriangleAPI.Authorization.Domain.Entities.UserEntity", "User")
                         .WithMany("UserSessionEntities")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("User");
                 });

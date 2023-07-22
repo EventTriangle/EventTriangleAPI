@@ -10,7 +10,7 @@ using EventTriangleAPI.Shared.DTO.Responses.Errors;
 
 namespace EventTriangleAPI.Authorization.BusinessLogic.CommandHandlers;
 
-public class GetTokenCommandHandler : ICommandHandler<GetTokenBody, AzureAdAuthResponse>
+public class GetTokenCommandHandler : ICommandHandler<GetTokenCommand, AzureAdAuthResponse>
 {
     private readonly HttpClient _httpClient;
     private readonly AzureAdConfiguration _azureAdConfiguration;
@@ -23,11 +23,11 @@ public class GetTokenCommandHandler : ICommandHandler<GetTokenBody, AzureAdAuthR
         _azureAdConfiguration = azureAdConfiguration;
     }
 
-    public async Task<IResult<AzureAdAuthResponse, Error>> HandleAsync(ICommand<GetTokenBody> command)
+    public async Task<IResult<AzureAdAuthResponse, Error>> HandleAsync(GetTokenCommand command)
     {
         var bodyDictionary = AccessTokenBody(
-            command.Body.Code,
-            command.Body.CodeVerifier,
+            command.Code,
+            command.CodeVerifier,
             _azureAdConfiguration.ClientId,
             _azureAdConfiguration.Scopes,
             _azureAdConfiguration.ClientSecret,

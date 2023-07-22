@@ -5,4 +5,9 @@
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\EventTriangleAPI.Sender.Application\EventTriangleAPI.Sender.Application.csproj" />
+      <ProjectReference Include="..\EventTriangleAPI.Sender.Persistence\EventTriangleAPI.Sender.Persistence.csproj" />
+    </ItemGroup>
+
 </Project>

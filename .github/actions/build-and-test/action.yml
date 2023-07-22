@@ -8,10 +8,12 @@ inputs:
   integrationTestsProjectPath:
     description: 'Integration tests project path'
     required: false
+    default: ''
   
   unitTestsProjectPath:
     description: 'Unit tests project path'
     required: false
+    default: ''
   
   buildConfiguration:
     description: 'Build configuration (Release or Debug)'
@@ -20,6 +22,11 @@ inputs:
   serviceName:
     description: 'Service name'
     required: true
+    
+  creatingDatabase:
+    description: 'Creating database in docker container'
+    required: false
+    default: 'false'
 
 runs:
   using: "composite"
@@ -53,12 +60,25 @@ runs:
         dotnet build --no-restore /p:ContinuousIntegrationBuild=true -c ${{ inputs.buildConfiguration }}
       shell: bash
 
+    - name: Start PostgreSQL container
+      if: ${{ inputs.creatingDatabase != 'false' }}
+      run: |
+        docker run --name pgsql-db -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres:latest
+      shell: bash
+
+    - name: Wait for database to be ready
+      if: ${{ inputs.creatingDatabase != 'false' }}
+      run: pwsh ./scripts/wait_postgres_database.ps1
+      shell: bash
+
     - name: Run unit tests
+      if: ${{ inputs.unitTestsProjectPath != '' }}
       run: |
         dotnet test ${{ inputs.unitTestsProjectPath }} -c ${{ inputs.buildConfiguration }} --no-build
       shell: bash
 
     - name: Run integration tests
+      if: ${{ inputs.integrationTestsProjectPath != '' }}
       run: |
         dotnet test ${{ inputs.integrationTestsProjectPath }} -c ${{ inputs.buildConfiguration }} --no-build
       shell: bash

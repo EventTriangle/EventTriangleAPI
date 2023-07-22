@@ -1,6 +1,6 @@
 namespace EventTriangleAPI.Shared.DTO.Abstractions;
 
-public interface ICommand<out TBody>
+public interface ICommand
 {
-    public TBody Body { get; }
+    
 }

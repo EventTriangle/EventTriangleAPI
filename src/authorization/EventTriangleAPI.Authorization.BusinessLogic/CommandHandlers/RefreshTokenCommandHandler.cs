@@ -11,7 +11,7 @@ using EventTriangleAPI.Shared.DTO.Responses.Errors;
 namespace EventTriangleAPI.Authorization.BusinessLogic.CommandHandlers;
 
 public class
-    RefreshTokenCommandHandler : ICommandHandler<RefreshTokenBody, AzureAdAuthResponse>
+    RefreshTokenCommandHandler : ICommandHandler<RefreshTokenCommand, AzureAdAuthResponse>
 {
     private readonly HttpClient _httpClient;
     private readonly AzureAdConfiguration _azureAdConfiguration;
@@ -24,10 +24,10 @@ public class
         _azureAdConfiguration = azureAdConfiguration;
     }
 
-    public async Task<IResult<AzureAdAuthResponse, Error>> HandleAsync(ICommand<RefreshTokenBody> command)
+    public async Task<IResult<AzureAdAuthResponse, Error>> HandleAsync(RefreshTokenCommand command)
     {
         var bodyDictionary = RefreshTokenBody(
-            command.Body.RefreshToken,
+            command.RefreshToken,
             _azureAdConfiguration.ClientId,
             _azureAdConfiguration.Scopes,
             _azureAdConfiguration.ClientSecret,

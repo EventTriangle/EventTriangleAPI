@@ -1,13 +1,12 @@
 using EventTriangleAPI.Consumer.Domain.Entities.Validation;
 using EventTriangleAPI.Shared.Application.Enums;
 using FluentValidation;
-using Uuids;
 
 namespace EventTriangleAPI.Consumer.Domain.Entities;
 
 public class SupportTicketEntity
 {
-    public Guid Id { get; private set; } = Uuid.NewMySqlOptimized().ToGuidByteLayout();
+    public Guid Id { get; private set; }
 
     public Guid UserId { get; private set; }
 
@@ -21,6 +20,7 @@ public class SupportTicketEntity
 
     public SupportTicketEntity(Guid userId, Guid walletId, string ticketReason)
     {
+        Id = Guid.NewGuid();
         UserId = userId;
         WalletId = walletId;
         TicketReason = ticketReason;
