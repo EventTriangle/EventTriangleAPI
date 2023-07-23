@@ -1,7 +1,7 @@
 using System.Net;
 using System.Text.Json;
 using EventTriangleAPI.Shared.Application.Abstractions;
-using EventTriangleAPI.Shared.Application.Constants;
+using EventTriangleAPI.Shared.Domain.Constants;
 using EventTriangleAPI.Shared.DTO.Abstractions;
 using EventTriangleAPI.Shared.DTO.Models;
 using EventTriangleAPI.Shared.DTO.Responses;

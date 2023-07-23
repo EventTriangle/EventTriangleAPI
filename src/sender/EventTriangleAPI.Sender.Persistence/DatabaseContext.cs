@@ -1,4 +1,4 @@
-using EventTriangleAPI.Sender.Domain.Entities;
+using EventTriangleAPI.Shared.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace EventTriangleAPI.Sender.Persistence;

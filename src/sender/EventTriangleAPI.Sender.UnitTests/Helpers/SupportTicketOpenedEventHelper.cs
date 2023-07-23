@@ -1,4 +1,4 @@
-using EventTriangleAPI.Sender.Domain.Entities;
+using EventTriangleAPI.Shared.Domain.Entities;
 
 namespace EventTriangleAPI.Sender.UnitTests.Helpers;
 
