@@ -1,6 +1,6 @@
 using EventTriangleAPI.Sender.Persistence;
 using EventTriangleAPI.Shared.Application.Abstractions;
-using EventTriangleAPI.Shared.Domain.Entities;
+using EventTriangleAPI.Shared.Domain.Events;
 using EventTriangleAPI.Shared.DTO.Abstractions;
 using EventTriangleAPI.Shared.DTO.Responses;
 using EventTriangleAPI.Shared.DTO.Responses.Errors;

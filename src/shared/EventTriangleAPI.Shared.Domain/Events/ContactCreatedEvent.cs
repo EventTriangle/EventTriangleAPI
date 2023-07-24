@@ -1,9 +1,9 @@
-using EventTriangleAPI.Shared.Domain.Entities.Validation;
+using EventTriangleAPI.Shared.Domain.Events.Validation;
 using FluentValidation;
 
-namespace EventTriangleAPI.Shared.Domain.Entities;
+namespace EventTriangleAPI.Shared.Domain.Events;
 
-public class ContactDeletedEvent
+public class ContactCreatedEvent
 {
     public Guid Id { get; private set; }
 
@@ -13,13 +13,13 @@ public class ContactDeletedEvent
 
     public DateTime CreatedAt { get; private set; }
     
-    public ContactDeletedEvent(string userId, string contactId)
+    public ContactCreatedEvent(string userId, string contactId)
     {
         Id = Guid.NewGuid();
         UserId = userId;
         ContactId = contactId;
         CreatedAt = DateTime.UtcNow;
         
-        new ContactDeletedEventValidator().ValidateAndThrow(this);
+        new ContactCreatedEventValidator().ValidateAndThrow(this);
     }
 }

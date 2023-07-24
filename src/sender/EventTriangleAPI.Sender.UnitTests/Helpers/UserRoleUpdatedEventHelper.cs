@@ -1,5 +1,5 @@
-using EventTriangleAPI.Shared.Domain.Entities;
 using EventTriangleAPI.Shared.Domain.Enums;
+using EventTriangleAPI.Shared.Domain.Events;
 
 namespace EventTriangleAPI.Sender.UnitTests.Helpers;
 

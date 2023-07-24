@@ -1,8 +1,8 @@
-using EventTriangleAPI.Shared.Domain.Entities.Validation;
 using EventTriangleAPI.Shared.Domain.Enums;
+using EventTriangleAPI.Shared.Domain.Events.Validation;
 using FluentValidation;
 
-namespace EventTriangleAPI.Shared.Domain.Entities;
+namespace EventTriangleAPI.Shared.Domain.Events;
 
 public class UserCreatedEvent
 {

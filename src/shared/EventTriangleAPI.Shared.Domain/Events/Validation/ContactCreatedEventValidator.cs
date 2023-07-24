@@ -1,10 +1,10 @@
 using FluentValidation;
 
-namespace EventTriangleAPI.Shared.Domain.Entities.Validation;
+namespace EventTriangleAPI.Shared.Domain.Events.Validation;
 
-public class ContactDeletedEventValidator : AbstractValidator<ContactDeletedEvent>
+public class ContactCreatedEventValidator : AbstractValidator<ContactCreatedEvent>
 {
-    public ContactDeletedEventValidator()
+    public ContactCreatedEventValidator()
     {
         RuleFor(x => x.Id).NotEmpty();
         RuleFor(x => x.UserId).NotEmpty();

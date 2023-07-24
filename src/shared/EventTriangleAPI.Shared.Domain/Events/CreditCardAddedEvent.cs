@@ -1,10 +1,10 @@
-using EventTriangleAPI.Shared.Domain.Entities.Validation;
 using EventTriangleAPI.Shared.Domain.Enums;
+using EventTriangleAPI.Shared.Domain.Events.Validation;
 using FluentValidation;
 
-namespace EventTriangleAPI.Shared.Domain.Entities;
+namespace EventTriangleAPI.Shared.Domain.Events;
 
-public class CreditCardChangedEvent
+public class CreditCardAddedEvent
 {
     public Guid Id { get; private set; }
     
@@ -23,8 +23,8 @@ public class CreditCardChangedEvent
     public PaymentNetwork PaymentNetwork { get; private set;  }
     
     public DateTime CreatedAt { get; private set;  }
-    
-    public CreditCardChangedEvent(
+
+    public CreditCardAddedEvent(
         Guid cardId, 
         string userId, 
         string holderName, 
@@ -43,6 +43,6 @@ public class CreditCardChangedEvent
         Expiration = expiration;
         CreatedAt = DateTime.UtcNow;
 
-        new CreditCardChangedEventValidator().ValidateAndThrow(this);
+        new CreditCardAddedEventValidator().ValidateAndThrow(this);
     }
 }

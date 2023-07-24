@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace EventTriangleAPI.Shared.Domain.Entities.Validation;
+namespace EventTriangleAPI.Shared.Domain.Events.Validation;
 
 public class SupportTicketResolvedEventValidator : AbstractValidator<SupportTicketResolvedEvent>
 {
