@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace EventTriangleAPI.Sender.Persistence.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20230716081819_Initialize")]
-    partial class Initialize
+    [Migration("20230724052345_Inialize")]
+    partial class Inialize
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -24,7 +24,7 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("EventTriangleAPI.Sender.Domain.Entities.ContactCreatedEvent", b =>
+            modelBuilder.Entity("EventTriangleAPI.Shared.Domain.Events.ContactCreatedEvent", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -44,7 +44,7 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
                     b.ToTable("ContactCreatedEvents");
                 });
 
-            modelBuilder.Entity("EventTriangleAPI.Sender.Domain.Entities.ContactDeletedEvent", b =>
+            modelBuilder.Entity("EventTriangleAPI.Shared.Domain.Events.ContactDeletedEvent", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -64,7 +64,7 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
                     b.ToTable("ContactDeletedEvents");
                 });
 
-            modelBuilder.Entity("EventTriangleAPI.Sender.Domain.Entities.CreditCardAddedEvent", b =>
+            modelBuilder.Entity("EventTriangleAPI.Shared.Domain.Events.CreditCardAddedEvent", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -99,7 +99,7 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
                     b.ToTable("CreditCardAddedEvents");
                 });
 
-            modelBuilder.Entity("EventTriangleAPI.Sender.Domain.Entities.CreditCardChangedEvent", b =>
+            modelBuilder.Entity("EventTriangleAPI.Shared.Domain.Events.CreditCardChangedEvent", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -134,7 +134,7 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
                     b.ToTable("CreditCardChangedEvents");
                 });
 
-            modelBuilder.Entity("EventTriangleAPI.Sender.Domain.Entities.CreditCardDeletedEvent", b =>
+            modelBuilder.Entity("EventTriangleAPI.Shared.Domain.Events.CreditCardDeletedEvent", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -154,7 +154,7 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
                     b.ToTable("CreditCardDeletedEvents");
                 });
 
-            modelBuilder.Entity("EventTriangleAPI.Sender.Domain.Entities.SupportTicketOpenedEvent", b =>
+            modelBuilder.Entity("EventTriangleAPI.Shared.Domain.Events.SupportTicketOpenedEvent", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -180,7 +180,7 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
                     b.ToTable("SupportTicketOpenedEvents");
                 });
 
-            modelBuilder.Entity("EventTriangleAPI.Sender.Domain.Entities.SupportTicketResolvedEvent", b =>
+            modelBuilder.Entity("EventTriangleAPI.Shared.Domain.Events.SupportTicketResolvedEvent", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -200,7 +200,7 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
                     b.ToTable("SupportTicketResolvedEvents");
                 });
 
-            modelBuilder.Entity("EventTriangleAPI.Sender.Domain.Entities.TransactionCreatedEvent", b =>
+            modelBuilder.Entity("EventTriangleAPI.Shared.Domain.Events.TransactionCreatedEvent", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -226,7 +226,7 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
                     b.ToTable("TransactionCreatedEvents");
                 });
 
-            modelBuilder.Entity("EventTriangleAPI.Sender.Domain.Entities.TransactionRollBackedEvent", b =>
+            modelBuilder.Entity("EventTriangleAPI.Shared.Domain.Events.TransactionRollBackedEvent", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -243,7 +243,7 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
                     b.ToTable("TransactionRollBackedEvents");
                 });
 
-            modelBuilder.Entity("EventTriangleAPI.Sender.Domain.Entities.UserCreatedEvent", b =>
+            modelBuilder.Entity("EventTriangleAPI.Shared.Domain.Events.UserCreatedEvent", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -255,12 +255,18 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("text");
 
+                    b.Property<int>("UserRole")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UserStatus")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
                     b.ToTable("UserCreatedEvents");
                 });
 
-            modelBuilder.Entity("EventTriangleAPI.Sender.Domain.Entities.UserNotSuspendedEvent", b =>
+            modelBuilder.Entity("EventTriangleAPI.Shared.Domain.Events.UserNotSuspendedEvent", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -277,7 +283,7 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
                     b.ToTable("UserNotSuspendedEvents");
                 });
 
-            modelBuilder.Entity("EventTriangleAPI.Sender.Domain.Entities.UserRoleUpdatedEvent", b =>
+            modelBuilder.Entity("EventTriangleAPI.Shared.Domain.Events.UserRoleUpdatedEvent", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -297,7 +303,7 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
                     b.ToTable("UserRoleUpdatedEvents");
                 });
 
-            modelBuilder.Entity("EventTriangleAPI.Sender.Domain.Entities.UserSuspendedEvent", b =>
+            modelBuilder.Entity("EventTriangleAPI.Shared.Domain.Events.UserSuspendedEvent", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()

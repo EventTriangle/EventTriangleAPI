@@ -3,15 +3,19 @@ using EventTriangleAPI.Authorization.Domain.Constants;
 using EventTriangleAPI.Authorization.Domain.Entities;
 using EventTriangleAPI.Authorization.Domain.Exceptions;
 using EventTriangleAPI.Authorization.Persistence;
+using EventTriangleAPI.Sender.Domain.Proto;
 using EventTriangleAPI.Shared.Domain.Constants;
 using EventTriangleAPI.Shared.Domain.Enums;
 using EventTriangleAPI.Shared.DTO.Models;
+using Google.Protobuf.WellKnownTypes;
+using Grpc.Net.Client;
 using IdentityModel.Client;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using static IdentityModel.OidcConstants;
+using Enum = System.Enum;
 using TokenResponse = IdentityModel.Client.TokenResponse;
 
 namespace EventTriangleAPI.Authorization.BusinessLogic.Services;
@@ -25,6 +29,8 @@ public class TicketStore : ITicketStore
     private readonly IMemoryCache _memoryCache;
     private readonly MemoryCacheEntryOptions _memoryCacheEntryOptions;
 
+    private readonly User.UserClient _client;
+    
     public TicketStore(
         DatabaseContext context,
         TicketSerializer ticketSerializer,
@@ -41,6 +47,9 @@ public class TicketStore : ITicketStore
         _memoryCacheEntryOptions = new MemoryCacheEntryOptions()
             .SetSlidingExpiration(TimeSpan.FromSeconds(15))
             .SetAbsoluteExpiration(TimeSpan.FromSeconds(100));
+        
+        var channel = GrpcChannel.ForAddress("https://localhost:7002");
+        _client = new User.UserClient(channel);
     }
 
     public async Task<string> StoreAsync(AuthenticationTicket ticket)
@@ -116,6 +125,21 @@ public class TicketStore : ITicketStore
 
                 _context.Users.Add(newUser);
                 _context.UserSessions.Add(newUserSession);
+
+                var createUserRequest = new CreateUserRequest
+                {
+                    UserId = newUser.Id, 
+                    UserRole = (GrpcUserRole)userRole, 
+                    UserStatus = GrpcUserStatus.Active, 
+                    CreatedAt = DateTime.UtcNow.ToTimestamp()
+                };
+
+                var result = await _client.CreateUserAsync(createUserRequest);
+
+                if (!result.WasUserCreated)
+                {
+                    throw new Exception("Error when creating a user");
+                }
             }
             else
             {
