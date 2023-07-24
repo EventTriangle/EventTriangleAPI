@@ -1,4 +1,5 @@
 using EventTriangleAPI.Sender.Domain.Entities.Validation;
+using EventTriangleAPI.Shared.DTO.Messages;
 using FluentValidation;
 
 namespace EventTriangleAPI.Sender.Domain.Entities;
@@ -18,5 +19,10 @@ public class UserSuspendedEvent
         CreatedAt = DateTime.UtcNow;
         
         new UserSuspendedEventValidator().ValidateAndThrow(this);
+    }
+
+    public UserSuspendedEventMessage CreateEventMessage()
+    {
+        return new UserSuspendedEventMessage(Id, UserId, CreatedAt);
     }
 }

@@ -1,4 +1,5 @@
 using EventTriangleAPI.Sender.Domain.Entities.Validation;
+using EventTriangleAPI.Shared.DTO.Messages;
 using FluentValidation;
 
 namespace EventTriangleAPI.Sender.Domain.Entities;
@@ -21,5 +22,10 @@ public class ContactCreatedEvent
         CreatedAt = DateTime.UtcNow;
         
         new ContactCreatedEventValidator().ValidateAndThrow(this);
+    }
+
+    public ContactCreatedEventMessage CreateEventMessage()
+    {
+        return new ContactCreatedEventMessage(Id, UserId, ContactId, CreatedAt);
     }
 }

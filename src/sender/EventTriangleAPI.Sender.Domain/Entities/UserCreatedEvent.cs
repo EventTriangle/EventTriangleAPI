@@ -1,6 +1,7 @@
 using EventTriangleAPI.Authorization.Domain.Enums;
 using EventTriangleAPI.Sender.Domain.Entities.Validation;
 using EventTriangleAPI.Shared.Application.Enums;
+using EventTriangleAPI.Shared.DTO.Messages;
 using FluentValidation;
 
 namespace EventTriangleAPI.Sender.Domain.Entities;
@@ -26,5 +27,10 @@ public class UserCreatedEvent
         CreatedAt = DateTime.UtcNow;
         
         new UserCreatedEventValidator().ValidateAndThrow(this);
+    }
+
+    public UserCreatedEventMessage CreateEventMessage()
+    {
+        return new UserCreatedEventMessage(Id, UserId, UserRole, UserStatus, CreatedAt);
     }
 }
