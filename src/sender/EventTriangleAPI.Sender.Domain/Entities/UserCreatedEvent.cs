@@ -1,6 +1,5 @@
-using EventTriangleAPI.Authorization.Domain.Enums;
 using EventTriangleAPI.Sender.Domain.Entities.Validation;
-using EventTriangleAPI.Shared.Application.Enums;
+using EventTriangleAPI.Shared.DTO.Enums;
 using EventTriangleAPI.Shared.DTO.Messages;
 using FluentValidation;
 

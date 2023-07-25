@@ -1,7 +1,7 @@
-namespace EventTriangleAPI.Authorization.Domain.Enums;
+namespace EventTriangleAPI.Shared.DTO.Enums;
 
 public enum UserStatus
 {
-    Active = 1,
-    Suspended = 2
+    Active = 0,
+    Suspended = 1
 }
