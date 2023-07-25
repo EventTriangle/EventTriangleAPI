@@ -1,3 +1,4 @@
+using EventTriangleAPI.Sender.BusinessLogic.GrpcServices;
 using EventTriangleAPI.Sender.Domain.Constants;
 using EventTriangleAPI.Sender.Persistence;
 using EventTriangleAPI.Sender.Presentation.DependencyInjection;
@@ -19,6 +20,7 @@ builder.Services.AddDbContext<DatabaseContext>(options =>
     options.UseNpgsql(databaseConnectionString);
 });
 builder.Services.AddCommandHandlers();
+builder.Services.AddGrpc();
 
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -38,5 +40,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapGrpcService<UserGrpcService>();
 
 app.Run();

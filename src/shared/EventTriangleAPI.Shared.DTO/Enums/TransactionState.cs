@@ -1,4 +1,4 @@
-namespace EventTriangleAPI.Shared.Application.Enums;
+namespace EventTriangleAPI.Shared.DTO.Enums;
 
 public enum TransactionState
 {

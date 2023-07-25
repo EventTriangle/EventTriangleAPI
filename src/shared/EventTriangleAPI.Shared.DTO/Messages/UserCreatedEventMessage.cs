@@ -1,5 +1,4 @@
-using EventTriangleAPI.Authorization.Domain.Enums;
-using EventTriangleAPI.Shared.Application.Enums;
+using EventTriangleAPI.Shared.DTO.Enums;
 
 namespace EventTriangleAPI.Shared.DTO.Messages;
 

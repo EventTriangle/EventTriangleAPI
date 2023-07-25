@@ -1,5 +1,5 @@
 using EventTriangleAPI.Sender.BusinessLogic.CommandHandlers;
-using EventTriangleAPI.Shared.Application.Enums;
+using EventTriangleAPI.Shared.DTO.Enums;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Xunit;

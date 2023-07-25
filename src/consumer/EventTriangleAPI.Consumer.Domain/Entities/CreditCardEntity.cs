@@ -1,5 +1,5 @@
 using EventTriangleAPI.Consumer.Domain.Entities.Validation;
-using EventTriangleAPI.Shared.Application.Enums;
+using EventTriangleAPI.Shared.DTO.Enums;
 using FluentValidation;
 
 namespace EventTriangleAPI.Consumer.Domain.Entities;
