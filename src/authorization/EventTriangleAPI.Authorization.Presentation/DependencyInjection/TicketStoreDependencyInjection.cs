@@ -15,7 +15,6 @@ public static class TicketStoreDependencyInjection
         var serviceProvider = serviceCollection.BuildServiceProvider();
         
         var configuration = serviceProvider.GetService<IConfiguration>();
-        var dbContext = serviceProvider.GetService<DatabaseContext>();
         var ticketSerializer = new TicketSerializer();
         var httpClient = new HttpClient();
         var memoryCache = serviceProvider.GetService<IMemoryCache>();
@@ -25,7 +24,7 @@ public static class TicketStoreDependencyInjection
         var adClientSecret = Environment.GetEnvironmentVariable(AppSettingsConstants.AdSecretKey);
         azureAdConfiguration.ClientSecret = adClientSecret;
         
-        var ticketStore = new TicketStore(dbContext, ticketSerializer, httpClient, azureAdConfiguration, memoryCache);
+        var ticketStore = new TicketStore(serviceProvider, ticketSerializer, httpClient, azureAdConfiguration, memoryCache);
         
         serviceCollection.AddSingleton<ITicketStore, TicketStore>(_ => ticketStore);
         serviceCollection
