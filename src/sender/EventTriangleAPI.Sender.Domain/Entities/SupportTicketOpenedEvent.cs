@@ -1,4 +1,5 @@
 using EventTriangleAPI.Sender.Domain.Entities.Validation;
+using EventTriangleAPI.Shared.DTO.Messages;
 using FluentValidation;
 
 namespace EventTriangleAPI.Sender.Domain.Entities;
@@ -27,5 +28,10 @@ public class SupportTicketOpenedEvent
         CreatedAt = DateTime.UtcNow;
         
         new SupportTicketOpenedEventValidator().ValidateAndThrow(this);
+    }
+
+    public SupportTicketOpenedEventMessage CreateEventMessage()
+    {
+        return new SupportTicketOpenedEventMessage(Id, UserId, Username, WalletId, TicketReason, CreatedAt);
     }
 }

@@ -1,5 +1,5 @@
-using EventTriangleAPI.Shared.Application.Enums;
 using EventTriangleAPI.Shared.DTO.Abstractions;
+using EventTriangleAPI.Shared.DTO.Enums;
 
 namespace EventTriangleAPI.Sender.BusinessLogic.CommandHandlers;
 

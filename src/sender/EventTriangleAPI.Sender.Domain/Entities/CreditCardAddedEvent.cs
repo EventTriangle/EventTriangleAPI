@@ -1,5 +1,6 @@
 using EventTriangleAPI.Sender.Domain.Entities.Validation;
-using EventTriangleAPI.Shared.Application.Enums;
+using EventTriangleAPI.Shared.DTO.Enums;
+using EventTriangleAPI.Shared.DTO.Messages;
 using FluentValidation;
 
 namespace EventTriangleAPI.Sender.Domain.Entities;
@@ -44,5 +45,10 @@ public class CreditCardAddedEvent
         CreatedAt = DateTime.UtcNow;
 
         new CreditCardAddedEventValidator().ValidateAndThrow(this);
+    }
+
+    public CreditCardAddedEventMessage CreateEventMessage()
+    {
+        return new CreditCardAddedEventMessage(Id, CardId, UserId, HolderName, CardNumber, Cvv, Expiration, PaymentNetwork, CreatedAt);
     }
 }

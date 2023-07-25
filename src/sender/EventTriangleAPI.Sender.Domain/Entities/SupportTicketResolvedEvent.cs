@@ -1,4 +1,5 @@
 using EventTriangleAPI.Sender.Domain.Entities.Validation;
+using EventTriangleAPI.Shared.DTO.Messages;
 using FluentValidation;
 
 namespace EventTriangleAPI.Sender.Domain.Entities;
@@ -21,5 +22,10 @@ public class SupportTicketResolvedEvent
         CreatedAt = DateTime.UtcNow;
         
         new SupportTicketResolvedEventValidator().ValidateAndThrow(this);
+    }
+
+    public SupportTicketResolvedEventMessage CreateEventMessage()
+    {
+        return new SupportTicketResolvedEventMessage(Id, TicketId, TicketJustification, CreatedAt);
     }
 }

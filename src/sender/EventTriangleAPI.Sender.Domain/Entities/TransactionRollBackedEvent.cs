@@ -1,4 +1,5 @@
 using EventTriangleAPI.Sender.Domain.Entities.Validation;
+using EventTriangleAPI.Shared.DTO.Messages;
 using FluentValidation;
 
 namespace EventTriangleAPI.Sender.Domain.Entities;
@@ -18,5 +19,10 @@ public class TransactionRollBackedEvent
         CreatedAt = DateTime.UtcNow;
         
         new TransactionRollBackedEventValidator().ValidateAndThrow(this);
+    }
+
+    public TransactionRollBackedEventMessage CreateEventMessage()
+    {
+        return new TransactionRollBackedEventMessage(Id, TransactionId, CreatedAt);
     }
 }

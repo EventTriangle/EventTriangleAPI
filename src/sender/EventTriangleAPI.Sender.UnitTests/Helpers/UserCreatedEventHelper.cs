@@ -1,6 +1,5 @@
-using EventTriangleAPI.Authorization.Domain.Enums;
 using EventTriangleAPI.Sender.Domain.Entities;
-using EventTriangleAPI.Shared.Application.Enums;
+using EventTriangleAPI.Shared.DTO.Enums;
 
 namespace EventTriangleAPI.Sender.UnitTests.Helpers;
 

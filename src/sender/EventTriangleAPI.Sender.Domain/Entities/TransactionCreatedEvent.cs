@@ -1,5 +1,6 @@
 using EventTriangleAPI.Sender.Domain.Entities.Validation;
-using EventTriangleAPI.Shared.Application.Enums;
+using EventTriangleAPI.Shared.DTO.Enums;
+using EventTriangleAPI.Shared.DTO.Messages;
 using FluentValidation;
 
 namespace EventTriangleAPI.Sender.Domain.Entities;
@@ -16,7 +17,7 @@ public class TransactionCreatedEvent
     
     public TransactionType TransactionType { get; private set; }
 
-    public DateTime CreateAt { get; private set; }
+    public DateTime CreatedAt { get; private set; }
 
     public TransactionCreatedEvent(string from, string to, decimal amount, TransactionType transactionType)
     {
@@ -25,8 +26,13 @@ public class TransactionCreatedEvent
         To = to;
         Amount = amount;
         TransactionType = transactionType;
-        CreateAt = DateTime.UtcNow;
+        CreatedAt = DateTime.UtcNow;
         
         new TransactionCreatedEventValidator().ValidateAndThrow(this);
+    }
+
+    public TransactionCreatedEventMessage CreateEventMessage()
+    {
+        return new TransactionCreatedEventMessage(Id, From, To, Amount, TransactionType, CreatedAt);
     }
 }

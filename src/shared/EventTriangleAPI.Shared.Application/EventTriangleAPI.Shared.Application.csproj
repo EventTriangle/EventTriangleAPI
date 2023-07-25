@@ -8,9 +8,13 @@
     <ItemGroup>
       <PackageReference Include="FluentAssertions" Version="6.11.0" />
       <PackageReference Include="FluentValidation" Version="11.6.0" />
-      <PackageReference Include="Google.Protobuf" Version="3.22.1" />
-      <PackageReference Include="Grpc.AspNetCore" Version="2.52.0" />
-      <PackageReference Include="Grpc.Net.Client" Version="2.52.0" />
+      <PackageReference Include="Google.Protobuf" Version="3.23.4" />
+      <PackageReference Include="Grpc.AspNetCore" Version="2.55.0" />
+      <PackageReference Include="Grpc.Net.Client" Version="2.55.0" />
+      <PackageReference Include="Grpc.Tools" Version="2.56.2">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
       <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.15" />
       <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.15" />
       <PackageReference Include="Microsoft.Identity.Web" Version="2.7.0" />
@@ -20,6 +24,11 @@
 
     <ItemGroup>
       <ProjectReference Include="..\EventTriangleAPI.Shared.DTO\EventTriangleAPI.Shared.DTO.csproj" />
+    </ItemGroup>
+
+
+    <ItemGroup>
+        <Protobuf Include="Proto\*" GrpcServices="Both" />
     </ItemGroup>
     
 </Project>

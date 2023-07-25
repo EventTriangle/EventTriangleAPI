@@ -1,4 +1,5 @@
 using EventTriangleAPI.Sender.Domain.Entities.Validation;
+using EventTriangleAPI.Shared.DTO.Messages;
 using FluentValidation;
 
 namespace EventTriangleAPI.Sender.Domain.Entities;
@@ -21,5 +22,10 @@ public class ContactDeletedEvent
         CreatedAt = DateTime.UtcNow;
         
         new ContactDeletedEventValidator().ValidateAndThrow(this);
+    }
+
+    public ContactDeletedEventMessage CreateEventMessage()
+    {
+        return new ContactDeletedEventMessage(Id, UserId, ContactId, CreatedAt);
     }
 }
