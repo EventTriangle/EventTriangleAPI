@@ -26,7 +26,7 @@ public static class HostedServicesDependencyInjection
         azureAdConfiguration.ClientSecret = adClientSecret;
 
         var tickerStore = new TicketStore(
-            databaseContext,
+            serviceProvider,
             tickerSerializer,
             httpClient,
             azureAdConfiguration,

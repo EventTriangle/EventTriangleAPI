@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.DependencyInjection;
 using static IdentityModel.OidcConstants;
 using Enum = System.Enum;
 using TokenResponse = IdentityModel.Client.TokenResponse;
@@ -22,7 +23,7 @@ namespace EventTriangleAPI.Authorization.BusinessLogic.Services;
 
 public class TicketStore : ITicketStore
 {
-    private readonly DatabaseContext _context;
+    private readonly IServiceProvider _serviceProvider;
     private readonly TicketSerializer _ticketSerializer;
     private readonly HttpClient _httpClient;
     private readonly AzureAdConfiguration _azureAdConfiguration;
@@ -32,13 +33,13 @@ public class TicketStore : ITicketStore
     private readonly User.UserClient _userClient;
     
     public TicketStore(
-        DatabaseContext context,
+        IServiceProvider serviceProvider,
         TicketSerializer ticketSerializer,
         HttpClient httpClient,
         AzureAdConfiguration azureAdConfiguration,
         IMemoryCache memoryCache)
     {
-        _context = context;
+        _serviceProvider = serviceProvider;
         _ticketSerializer = ticketSerializer;
         _httpClient = httpClient;
         _azureAdConfiguration = azureAdConfiguration;
@@ -54,6 +55,9 @@ public class TicketStore : ITicketStore
 
     public async Task<string> StoreAsync(AuthenticationTicket ticket)
     {
+        using var scope = _serviceProvider.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
+        
         var sub = ticket.Principal.Claims.First(x => x.Type == "sub").Value;
         var role = ticket.Principal.Claims.First(x => x.Type == "roles").Value;
         
@@ -78,7 +82,7 @@ public class TicketStore : ITicketStore
         }
 
         var sessionId = decodeIdToken.Claims.First(x => x.Type == ClaimsConstants.Sid).Value;
-        var userSession = await _context.UserSessions.FirstOrDefaultAsync(x => x.Id == new Guid(sessionId));
+        var userSession = await context.UserSessions.FirstOrDefaultAsync(x => x.Id == new Guid(sessionId));
 
         if (userSession != null)
         {
@@ -103,8 +107,8 @@ public class TicketStore : ITicketStore
             userSession.UpdateValue(serializedTicket);
             userSession.UpdateExpiresAt(ticketExpiresUtc.Value);
 
-            _context.UserSessions.Update(userSession);
-            await _context.SaveChangesAsync();
+            context.UserSessions.Update(userSession);
+            await context.SaveChangesAsync();
             
             _memoryCache.Set(sessionId, ticket, _memoryCacheEntryOptions);
         }
@@ -113,7 +117,7 @@ public class TicketStore : ITicketStore
         {
             var serializedTicket = _ticketSerializer.Serialize(ticket);
             
-            var user = await _context.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == sub);
+            var user = await context.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == sub);
 
             if (user == null)
             {
@@ -123,8 +127,8 @@ public class TicketStore : ITicketStore
                 var newUser = new UserEntity(sub, username);
                 var newUserSession = new UserSessionEntity(new Guid(sessionId), ticketExpiresUtc.Value, serializedTicket, newUser.Id);
 
-                _context.Users.Add(newUser);
-                _context.UserSessions.Add(newUserSession);
+                context.Users.Add(newUser);
+                context.UserSessions.Add(newUserSession);
                 
                 var createUserRequest = new CreateUserRequest
                 {
@@ -144,10 +148,10 @@ public class TicketStore : ITicketStore
             else
             {
                 var newUserSession = new UserSessionEntity(new Guid(sessionId), ticketExpiresUtc.Value, serializedTicket, user.Id);
-                _context.UserSessions.Add(newUserSession);
+                context.UserSessions.Add(newUserSession);
             }
          
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
             _memoryCache.Set(sessionId, ticket, _memoryCacheEntryOptions);
         }
 
@@ -156,7 +160,10 @@ public class TicketStore : ITicketStore
 
     public async Task RenewAsync(string key, AuthenticationTicket authenticationTicket)
     {
-        var userSession = await _context.UserSessions.FirstOrDefaultAsync(x => x.Id == new Guid(key));
+        using var scope = _serviceProvider.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
+        
+        var userSession = await context.UserSessions.FirstOrDefaultAsync(x => x.Id == new Guid(key));
 
         if (userSession == null)
         {
@@ -189,12 +196,15 @@ public class TicketStore : ITicketStore
         userSession.UpdateValue(serializedTicket);
         userSession.UpdateExpiresAt(userSession.ExpiresAt.AddSeconds(response.ExpiresIn));
             
-        _context.UserSessions.Update(userSession);
-        await _context.SaveChangesAsync();
+        context.UserSessions.Update(userSession);
+        await context.SaveChangesAsync();
     }
 
     public async Task<AuthenticationTicket> RetrieveAsync(string key)
     {
+        using var scope = _serviceProvider.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
+        
         var isMemoryCacheTicketExist = _memoryCache.TryGetValue(key, out AuthenticationTicket memoryCacheTicket);
         
         if (isMemoryCacheTicketExist)
@@ -202,7 +212,7 @@ public class TicketStore : ITicketStore
             return memoryCacheTicket;
         }
      
-        var userSession = await _context.UserSessions.FirstOrDefaultAsync(x => x.Id == new Guid(key));
+        var userSession = await context.UserSessions.FirstOrDefaultAsync(x => x.Id == new Guid(key));
 
         if (userSession == null)
         {
@@ -244,9 +254,9 @@ public class TicketStore : ITicketStore
         }
         
         userSession.UpdateDateOfLastAccess();
-        _context.UserSessions.Update(userSession);
+        context.UserSessions.Update(userSession);
         
-        await _context.SaveChangesAsync();
+        await context.SaveChangesAsync();
             
         _memoryCache.Set(key, deserializedTicket, _memoryCacheEntryOptions);
         
@@ -255,12 +265,15 @@ public class TicketStore : ITicketStore
 
     public async Task RemoveAsync(string key)
     {
-        var userSession = await _context.UserSessions.FirstOrDefaultAsync(x => x.Id == new Guid(key));
+        using var scope = _serviceProvider.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
+        
+        var userSession = await context.UserSessions.FirstOrDefaultAsync(x => x.Id == new Guid(key));
         
         if (userSession == null) return;
         
-        _context.UserSessions.Remove(userSession);
-        await _context.SaveChangesAsync();
+        context.UserSessions.Remove(userSession);
+        await context.SaveChangesAsync();
     }
 
     private async Task<TokenResponse> RequestRefreshTokenAsync(string refreshToken)

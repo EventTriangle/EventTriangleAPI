@@ -31,8 +31,6 @@ builder.Services.AddDbContext<DatabaseContext>(options =>
     options.UseNpgsql(databaseConnectionString);
 });
 
-builder.Services.AddHostedServices();
-
 if (string.IsNullOrEmpty(adClientSecret))
 {
     throw new ArgumentNullException(nameof(adClientSecret));
@@ -56,6 +54,7 @@ builder.Services.AddGrpc();
 builder.Services.AddHttpClient();
 
 builder.Services.AddTicketStore();
+builder.Services.AddHostedServices();
 
 var app = builder.Build();
 
