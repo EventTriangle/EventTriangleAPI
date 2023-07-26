@@ -1,5 +1,4 @@
 using EventTriangleAPI.Sender.Domain.Constants;
-using EventTriangleAPI.Shared.Application.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
@@ -12,11 +11,9 @@ public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<DatabaseCo
     {
         var options = new DbContextOptionsBuilder<DatabaseContext>();
 
-        var appSettingsService = new AppSettingsService();
-        var appSettingsPath = appSettingsService.GetAppSettingsPathSender();
-
         var configuration = new ConfigurationBuilder()
-            .AddJsonFile(appSettingsPath)
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json")
             .Build();
 
         var databaseConnectionString = configuration[AppSettingsConstants.DatabaseConnectionString];

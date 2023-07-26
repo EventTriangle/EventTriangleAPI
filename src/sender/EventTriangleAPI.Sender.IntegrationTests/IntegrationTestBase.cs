@@ -2,7 +2,6 @@ using EventTriangleAPI.Sender.BusinessLogic.CommandHandlers;
 using EventTriangleAPI.Sender.Domain.Constants;
 using EventTriangleAPI.Sender.IntegrationTests.Configuration;
 using EventTriangleAPI.Sender.Persistence;
-using EventTriangleAPI.Shared.Application.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,7 +12,6 @@ namespace EventTriangleAPI.Sender.IntegrationTests;
 [Collection("Sequential")]
 public class IntegrationTestBase : IAsyncLifetime
 {
-    private readonly AppSettingsService _appSettingsService = new();
     private readonly SenderStartup _senderStartup = new();
     protected readonly DatabaseContext DatabaseContextFixture;
 
@@ -32,10 +30,9 @@ public class IntegrationTestBase : IAsyncLifetime
     
     protected IntegrationTestBase()
     {
-        var appSettingsPath = _appSettingsService.GetAppSettingsPathSender();
-
         var configuration = new ConfigurationBuilder()
-            .AddJsonFile(appSettingsPath)
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json")
             .Build();
 
         var databaseConnectionString = configuration[AppSettingsConstants.DatabaseConnectionStringIntegrationTests];

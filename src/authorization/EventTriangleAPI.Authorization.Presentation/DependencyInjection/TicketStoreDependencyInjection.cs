@@ -1,6 +1,5 @@
 using EventTriangleAPI.Authorization.BusinessLogic.Services;
 using EventTriangleAPI.Authorization.Domain.Constants;
-using EventTriangleAPI.Authorization.Persistence;
 using EventTriangleAPI.Shared.DTO.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
