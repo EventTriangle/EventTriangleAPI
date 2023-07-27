@@ -17,7 +17,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventTriangleAPI.Consumer.D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventTriangleAPI.Consumer.Application", "src\consumer\EventTriangleAPI.Consumer.Application\EventTriangleAPI.Consumer.Application.csproj", "{22F7E762-E658-41D7-81D6-E455C4EE6827}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventTriangleAPI.Consumer.BusinessLoginc", "src\consumer\EventTriangleAPI.Consumer.BusinessLoginc\EventTriangleAPI.Consumer.BusinessLoginc.csproj", "{B98750A1-6478-4C81-937B-AD0AE69109FD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventTriangleAPI.Consumer.BusinessLogic", "src\consumer\EventTriangleAPI.Consumer.BusinessLogic\EventTriangleAPI.Consumer.BusinessLogic.csproj", "{B98750A1-6478-4C81-937B-AD0AE69109FD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventTriangleAPI.Consumer.UnitTests", "src\consumer\EventTriangleAPI.Consumer.UnitTests\EventTriangleAPI.Consumer.UnitTests.csproj", "{57FE0F15-1D7A-490D-A6F2-3501B5A3F0AD}"
 EndProject
