@@ -1,4 +1,5 @@
 using EventTriangleAPI.Consumer.BusinessLogic.Consumers;
+using EventTriangleAPI.Shared.DTO.Models;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Identity.Web;
@@ -11,6 +12,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var configurationSection = builder.Configuration.GetSection("AzureAd");
+var rabbitMqConfiguration = builder.Configuration.GetSection("RabbitMqConfiguration").Get<RabbitMqConfiguration>();
 
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -22,10 +24,10 @@ builder.Services.AddMassTransit(config =>
     
     config.UsingRabbitMq((ctx, cfg) =>
     {
-        cfg.Host("localhost", h =>
+        cfg.Host(rabbitMqConfiguration.Host, h =>
         {
-            h.Username("guest");
-            h.Password("guest");
+            h.Username(rabbitMqConfiguration.Username);
+            h.Password(rabbitMqConfiguration.Password);
         });
         
         cfg.ReceiveEndpoint("event-queue", c => { c.Consumer<EventConsumer>(); });
