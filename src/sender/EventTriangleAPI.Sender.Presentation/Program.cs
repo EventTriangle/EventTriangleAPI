@@ -2,6 +2,8 @@ using EventTriangleAPI.Sender.BusinessLogic.GrpcServices;
 using EventTriangleAPI.Sender.Domain.Constants;
 using EventTriangleAPI.Sender.Persistence;
 using EventTriangleAPI.Sender.Presentation.DependencyInjection;
+using EventTriangleAPI.Shared.DTO.Models;
+using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
@@ -11,6 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 var configurationSection = builder.Configuration.GetSection("AzureAd");
 var databaseConnectionString = builder.Configuration[AppSettingsConstants.DatabaseConnectionString];
+var rabbitMqConfiguration = builder.Configuration.GetSection("RabbitMqConfiguration").Get<RabbitMqConfiguration>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -25,6 +28,18 @@ builder.Services.AddGrpc();
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddMicrosoftIdentityWebApi(configurationSection);
+
+builder.Services.AddMassTransit(config =>
+{
+    config.UsingRabbitMq((ctx, cfg) =>
+    {
+        cfg.Host(rabbitMqConfiguration.Host, h =>
+        {
+            h.Username(rabbitMqConfiguration.Username);
+            h.Password(rabbitMqConfiguration.Password);
+        });
+    });
+});
 
 var app = builder.Build();
 
