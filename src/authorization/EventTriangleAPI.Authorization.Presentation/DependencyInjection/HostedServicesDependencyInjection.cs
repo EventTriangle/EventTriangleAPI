@@ -14,6 +14,7 @@ public static class HostedServicesDependencyInjection
         var serviceProvider = serviceCollection.BuildServiceProvider();
         
         var configuration = serviceProvider.GetService<IConfiguration>();
+        var serviceScopeFactory = serviceProvider.GetService<IServiceScopeFactory>();
         var databaseContext = serviceProvider.GetService<DatabaseContext>();
         var memoryCache = serviceProvider.GetService<IMemoryCache>();
         
@@ -26,7 +27,7 @@ public static class HostedServicesDependencyInjection
         azureAdConfiguration.ClientSecret = adClientSecret;
 
         var tickerStore = new TicketStore(
-            serviceProvider,
+            serviceScopeFactory,
             tickerSerializer,
             httpClient,
             azureAdConfiguration,

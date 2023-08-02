@@ -23,7 +23,7 @@ namespace EventTriangleAPI.Authorization.BusinessLogic.Services;
 
 public class TicketStore : ITicketStore
 {
-    private readonly IServiceProvider _serviceProvider;
+    private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly TicketSerializer _ticketSerializer;
     private readonly HttpClient _httpClient;
     private readonly AzureAdConfiguration _azureAdConfiguration;
@@ -33,13 +33,13 @@ public class TicketStore : ITicketStore
     private readonly User.UserClient _userClient;
     
     public TicketStore(
-        IServiceProvider serviceProvider,
+        IServiceScopeFactory serviceScopeFactory,
         TicketSerializer ticketSerializer,
         HttpClient httpClient,
         AzureAdConfiguration azureAdConfiguration,
         IMemoryCache memoryCache)
     {
-        _serviceProvider = serviceProvider;
+        _serviceScopeFactory = serviceScopeFactory;
         _ticketSerializer = ticketSerializer;
         _httpClient = httpClient;
         _azureAdConfiguration = azureAdConfiguration;
@@ -55,7 +55,7 @@ public class TicketStore : ITicketStore
 
     public async Task<string> StoreAsync(AuthenticationTicket ticket)
     {
-        using var scope = _serviceProvider.CreateScope();
+        using var scope = _serviceScopeFactory.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
         
         var sub = ticket.Principal.Claims.First(x => x.Type == "sub").Value;
@@ -160,7 +160,7 @@ public class TicketStore : ITicketStore
 
     public async Task RenewAsync(string key, AuthenticationTicket authenticationTicket)
     {
-        using var scope = _serviceProvider.CreateScope();
+        using var scope = _serviceScopeFactory.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
         
         var userSession = await context.UserSessions.FirstOrDefaultAsync(x => x.Id == new Guid(key));
@@ -202,7 +202,7 @@ public class TicketStore : ITicketStore
 
     public async Task<AuthenticationTicket> RetrieveAsync(string key)
     {
-        using var scope = _serviceProvider.CreateScope();
+        using var scope = _serviceScopeFactory.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
         
         var isMemoryCacheTicketExist = _memoryCache.TryGetValue(key, out AuthenticationTicket memoryCacheTicket);
@@ -265,7 +265,7 @@ public class TicketStore : ITicketStore
 
     public async Task RemoveAsync(string key)
     {
-        using var scope = _serviceProvider.CreateScope();
+        using var scope = _serviceScopeFactory.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
         
         var userSession = await context.UserSessions.FirstOrDefaultAsync(x => x.Id == new Guid(key));
