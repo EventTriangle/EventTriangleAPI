@@ -5,17 +5,18 @@ namespace EventTriangleAPI.Consumer.Domain.Entities;
 
 public class ContactEntity
 {
-    public Guid Id { get; private set; }
+    public string UserId { get; private set; }
     
-    public Guid UserId { get; private set; }
+    public UserEntity User { get; private set; }
     
-    public Guid ContactId { get; private set; }
+    public string ContactId { get; private set; }
+
+    public UserEntity Contact { get; private set; }
     
     public string ContactUsername { get; private set; }
 
-    public ContactEntity(Guid userId, Guid contactId, string contactUsername)
+    public ContactEntity(string userId, string contactId, string contactUsername)
     {
-        Id = Guid.NewGuid();
         UserId = userId;
         ContactId = contactId;
         ContactUsername = contactUsername;

@@ -6,32 +6,28 @@ public class TransactionEntity
 {
     public Guid Id { get; private set; }
     
-    public string From { get; private set; }
+    public string FromUserId { get; private set; }
     
-    public string To { get; private set; }
+    public UserEntity FromUser { get; private set; }
     
-    public Guid FromWalletId { get; private set; }
+    public string ToUserId { get; private set; }
     
-    public WalletEntity FromWallet { get; private set; }
-    
-    public Guid ToWalletId { get; private set; }
-    
-    public WalletEntity ToWallet { get; private set; }
+    public UserEntity ToUser { get; private set; }
     
     public decimal Amount { get; private set; }
 
-    public TransactionState TransactionState { get; private set; } = TransactionState.Completed;
+    public TransactionState TransactionState { get; private set; }
     
     public TransactionType TransactionType { get; private set; }
 
-    public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; private set; }
 
-    public TransactionEntity(string from, string to, Guid fromWalletId, Guid toWalletId, TransactionType transactionType)
+    public TransactionEntity(string fromUserId, string toUserId, TransactionType transactionType)
     {
-        From = from;
-        To = to;
-        FromWalletId = fromWalletId;
-        ToWalletId = toWalletId;
+        FromUserId = fromUserId;
+        ToUserId = toUserId;
+        TransactionState = TransactionState.Completed;
         TransactionType = transactionType;
+        CreatedAt = DateTime.UtcNow;
     }
 }

@@ -7,6 +7,5 @@ public class WalletEntityValidator : AbstractValidator<WalletEntity>
     public WalletEntityValidator()
     {
         RuleFor(x => x.Id).NotEmpty();
-        RuleFor(x => x.UserId).NotEmpty();
     }
 }
