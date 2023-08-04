@@ -21,7 +21,7 @@ public class DatabaseContext : DbContext
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<UserEntity>().Property(x => x.Id).IsRequired();
-        modelBuilder.Entity<UserEntity>().Property(x => x.Username).IsRequired();
+        modelBuilder.Entity<UserEntity>().Property(x => x.Email).IsRequired();
         
         modelBuilder.Entity<UserSessionEntity>().Property(x => x.Id).IsRequired();
         modelBuilder.Entity<UserSessionEntity>().Property(x => x.ExpiresAt).IsRequired();

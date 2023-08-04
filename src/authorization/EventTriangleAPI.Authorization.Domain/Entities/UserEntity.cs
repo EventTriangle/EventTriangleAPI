@@ -7,14 +7,14 @@ public class UserEntity
 {
     public string Id { get; private set; }
     
-    public string Username { get; private set; }
+    public string Email { get; private set; }
     
     public List<UserSessionEntity> UserSessionEntities { get; private set; } = new();
 
-    public UserEntity(string id, string username)
+    public UserEntity(string id, string email)
     {
         Id = id;
-        Username = username;
+        Email = email;
         
         new UserEntityValidator().ValidateAndThrow(this);
     }

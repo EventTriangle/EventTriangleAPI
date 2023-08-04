@@ -154,6 +154,7 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     UserId = table.Column<string>(type: "text", nullable: true),
+                    Email = table.Column<string>(type: "text", nullable: true),
                     UserRole = table.Column<int>(type: "integer", nullable: false),
                     UserStatus = table.Column<int>(type: "integer", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)

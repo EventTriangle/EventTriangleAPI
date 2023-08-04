@@ -121,10 +121,10 @@ public class TicketStore : ITicketStore
 
             if (user == null)
             {
-                var username = decodeAccessToken.Claims.First(x => x.Type == "name").Value;
+                var email = decodeAccessToken.Claims.First(x => x.Type == "unique_name").Value;
                 var userRole = (UserRole)Enum.Parse(typeof(UserRole), role);
 
-                var newUser = new UserEntity(sub, username);
+                var newUser = new UserEntity(sub, email);
                 var newUserSession = new UserSessionEntity(new Guid(sessionId), ticketExpiresUtc.Value, serializedTicket, newUser.Id);
 
                 context.Users.Add(newUser);
@@ -132,7 +132,8 @@ public class TicketStore : ITicketStore
                 
                 var createUserRequest = new CreateUserRequest
                 {
-                    UserId = newUser.Id, 
+                    UserId = newUser.Id,
+                    Email = email,
                     UserRole = (GrpcUserRole)userRole, 
                     UserStatus = GrpcUserStatus.Active, 
                     CreatedAt = DateTime.UtcNow.ToTimestamp()
