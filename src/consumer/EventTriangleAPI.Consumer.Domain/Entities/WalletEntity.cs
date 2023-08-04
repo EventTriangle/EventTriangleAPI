@@ -7,7 +7,7 @@ public class WalletEntity
 {
     public Guid Id { get; private set; }
     
-    public Guid UserId { get; private set; }
+    public UserEntity User { get; private set; }
     
     public decimal Balance { get; private set; }
 
@@ -15,9 +15,8 @@ public class WalletEntity
     
     public TransactionEntity LastTransaction { get; private set; }
 
-    public WalletEntity(Guid userId, decimal balance)
+    public WalletEntity(decimal balance)
     {
-        UserId = userId;
         Balance = balance;
         
         new WalletEntityValidator().ValidateAndThrow(this);

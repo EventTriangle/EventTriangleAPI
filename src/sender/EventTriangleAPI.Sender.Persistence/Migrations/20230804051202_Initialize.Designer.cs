@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace EventTriangleAPI.Sender.Persistence.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20230724133823_Initialize")]
+    [Migration("20230804051202_Initialize")]
     partial class Initialize
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

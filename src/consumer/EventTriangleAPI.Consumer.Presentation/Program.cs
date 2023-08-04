@@ -1,18 +1,26 @@
 using EventTriangleAPI.Consumer.BusinessLogic.Consumers;
+using EventTriangleAPI.Consumer.Domain.Constants;
+using EventTriangleAPI.Consumer.Persistence;
 using EventTriangleAPI.Shared.DTO.Models;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
 using Microsoft.IdentityModel.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var configurationSection = builder.Configuration.GetSection("AzureAd");
+var rabbitMqConfiguration = builder.Configuration.GetSection("RabbitMqConfiguration").Get<RabbitMqConfiguration>();
+var databaseConnectionString = builder.Configuration[AppSettingsConstants.DatabaseConnectionString];
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-var configurationSection = builder.Configuration.GetSection("AzureAd");
-var rabbitMqConfiguration = builder.Configuration.GetSection("RabbitMqConfiguration").Get<RabbitMqConfiguration>();
+builder.Services.AddDbContext<DatabaseContext>(options =>
+{
+    options.UseNpgsql(databaseConnectionString);
+});
 
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

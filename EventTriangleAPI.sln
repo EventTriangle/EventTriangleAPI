@@ -93,6 +93,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventTriangleAPI.Authorizat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventTriangleAPI.Sender.Persistence", "src\sender\EventTriangleAPI.Sender.Persistence\EventTriangleAPI.Sender.Persistence.csproj", "{BE66A8AC-5DAC-4225-B81A-095A4EA95158}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventTriangleAPI.Consumer.Persistence", "src\consumer\EventTriangleAPI.Consumer.Persistence\EventTriangleAPI.Consumer.Persistence.csproj", "{AC3AA5A4-B6DE-48FB-A7E2-55145AEC8785}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -130,6 +132,7 @@ Global
 		{045CAF02-F951-4FCF-9D5F-62A6121628CB} = {31A58EF0-F272-4824-86FE-19473671C529}
 		{8E82DD46-9A8A-4617-8172-92B42FFB3B95} = {31A58EF0-F272-4824-86FE-19473671C529}
 		{BE66A8AC-5DAC-4225-B81A-095A4EA95158} = {00E00698-E256-44CB-A3B9-585C99CA5244}
+		{AC3AA5A4-B6DE-48FB-A7E2-55145AEC8785} = {317E2931-3CB0-4893-9D5F-DD41A959CBEF}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{79E9143C-B2A4-48A9-AE74-07E15B7247FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -212,5 +215,9 @@ Global
 		{BE66A8AC-5DAC-4225-B81A-095A4EA95158}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BE66A8AC-5DAC-4225-B81A-095A4EA95158}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BE66A8AC-5DAC-4225-B81A-095A4EA95158}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC3AA5A4-B6DE-48FB-A7E2-55145AEC8785}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC3AA5A4-B6DE-48FB-A7E2-55145AEC8785}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC3AA5A4-B6DE-48FB-A7E2-55145AEC8785}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC3AA5A4-B6DE-48FB-A7E2-55145AEC8785}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

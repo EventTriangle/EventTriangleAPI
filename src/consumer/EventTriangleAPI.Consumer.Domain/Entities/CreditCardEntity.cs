@@ -8,17 +8,19 @@ public class CreditCardEntity
 {
     public Guid Id { get; private set; }
     
-    public Guid UserId { get; private set; }
+    public string UserId { get; private set; }
 
+    public UserEntity User { get; private set; }
+    
     public string HolderName { get; private set; }
 
     public string CardNumber { get; private set; }
     
     public string Cvv { get; private set; }
     
-    public PaymentNetwork PaymentNetwork { get; set; }
+    public PaymentNetwork PaymentNetwork { get; private set; }
 
-    public CreditCardEntity(Guid userId, string holderName, string cardNumber, string cvv, PaymentNetwork paymentNetwork)
+    public CreditCardEntity(string userId, string holderName, string cardNumber, string cvv, PaymentNetwork paymentNetwork)
     {
         Id = Guid.NewGuid();
         UserId = userId;
