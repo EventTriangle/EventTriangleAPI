@@ -10,9 +10,10 @@ service User {
 
 message CreateUserRequest {
   string userId = 1;
-  GrpcUserRole userRole = 2;
-  GrpcUserStatus userStatus = 3;
-  google.protobuf.Timestamp createdAt = 4;
+  string email = 2;
+  GrpcUserRole userRole = 3;
+  GrpcUserStatus userStatus = 4;
+  google.protobuf.Timestamp createdAt = 5;
 }
 
 message CreateUserReply {

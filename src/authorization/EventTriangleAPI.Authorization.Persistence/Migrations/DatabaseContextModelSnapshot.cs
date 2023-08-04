@@ -27,7 +27,7 @@ namespace EventTriangleAPI.Authorization.Persistence.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("text");
 
-                    b.Property<string>("Username")
+                    b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("text");
 

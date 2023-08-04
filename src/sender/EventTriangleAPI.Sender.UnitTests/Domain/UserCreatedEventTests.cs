@@ -24,4 +24,15 @@ public class UserCreatedEventTests
 
         createUserCreatedEvent.Should().ThrowExactly<ValidationException>();
     }
+    
+    [Theory]
+    [InlineData("")]
+    [InlineData(null)]
+    [InlineData("1234")]
+    public void TestThrowWithEmail(string email)
+    {
+        var createUserCreatedEvent = () => UserCreatedEventHelper.CreateWithEmail(email);
+
+        createUserCreatedEvent.Should().ThrowExactly<ValidationException>();
+    }
 }

@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace EventTriangleAPI.Authorization.Persistence.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20230716071859_Initialize")]
+    [Migration("20230804064756_Initialize")]
     partial class Initialize
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -29,7 +29,7 @@ namespace EventTriangleAPI.Authorization.Persistence.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("text");
 
-                    b.Property<string>("Username")
+                    b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("text");
 

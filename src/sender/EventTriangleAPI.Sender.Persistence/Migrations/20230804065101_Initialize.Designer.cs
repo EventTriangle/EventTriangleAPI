@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace EventTriangleAPI.Sender.Persistence.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20230804051202_Initialize")]
+    [Migration("20230804065101_Initialize")]
     partial class Initialize
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -251,6 +251,9 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("text");
 
                     b.Property<string>("UserId")
                         .HasColumnType("text");

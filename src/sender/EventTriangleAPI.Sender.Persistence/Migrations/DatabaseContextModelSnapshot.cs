@@ -250,6 +250,9 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("Email")
+                        .HasColumnType("text");
+
                     b.Property<string>("UserId")
                         .HasColumnType("text");
 

@@ -11,16 +11,19 @@ public class UserCreatedEvent
     
     public string UserId { get; private set; }
     
+    public string Email { get; private set; }
+    
     public UserRole UserRole { get; private set; }
     
     public UserStatus UserStatus { get; private set; }
     
     public DateTime CreatedAt { get; private set; }
 
-    public UserCreatedEvent(string userId, UserRole userRole, UserStatus userStatus)
+    public UserCreatedEvent(string userId, string email, UserRole userRole, UserStatus userStatus)
     {
         Id = Guid.NewGuid();
         UserId = userId;
+        Email = email;
         UserRole = userRole;
         UserStatus = userStatus;
         CreatedAt = DateTime.UtcNow;
@@ -30,6 +33,6 @@ public class UserCreatedEvent
 
     public UserCreatedEventMessage CreateEventMessage()
     {
-        return new UserCreatedEventMessage(Id, UserId, UserRole, UserStatus, CreatedAt);
+        return new UserCreatedEventMessage(Id, UserId, Email, UserRole, UserStatus, CreatedAt);
     }
 }

@@ -20,10 +20,11 @@ public class UserGrpcService : User.UserBase
         try
         {
             var userCreatedEvent = new UserCreatedEvent(
-                request.UserId, 
+                request.UserId,
+                request.Email,
                 (UserRole)request.UserRole, 
                 (UserStatus)request.UserStatus);
-
+            
             _context.UserCreatedEvents.Add(userCreatedEvent);
             await _context.SaveChangesAsync();
 
