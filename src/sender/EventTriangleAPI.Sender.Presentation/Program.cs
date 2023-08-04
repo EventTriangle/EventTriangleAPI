@@ -11,9 +11,9 @@ using Microsoft.IdentityModel.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var configurationSection = builder.Configuration.GetSection("AzureAd");
+var configurationSection = builder.Configuration.GetSection(AppSettingsConstants.AzureAd);
 var databaseConnectionString = builder.Configuration[AppSettingsConstants.DatabaseConnectionString];
-var rabbitMqConfiguration = builder.Configuration.GetSection("RabbitMqConfiguration").Get<RabbitMqConfiguration>();
+var rabbitMqConfiguration = builder.Configuration.GetSection(AppSettingsConstants.RabbitMqConfiguration).Get<RabbitMqConfiguration>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

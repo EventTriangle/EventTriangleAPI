@@ -26,7 +26,12 @@ public static class HostedServicesDependencyInjection
         var adClientSecret = Environment.GetEnvironmentVariable(AppSettingsConstants.AdSecretKey);
         azureAdConfiguration.ClientSecret = adClientSecret;
 
+        var grpcChannelAddresses = configuration
+            .GetSection(AppSettingsConstants.GrpcChannelAddresses)
+            .Get<GrpcChannelAddresses>();
+
         var tickerStore = new TicketStore(
+            grpcChannelAddresses.SenderAddress,
             serviceScopeFactory,
             tickerSerializer,
             httpClient,
