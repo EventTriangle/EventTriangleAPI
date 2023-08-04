@@ -15,4 +15,6 @@ public class AppSettingsConstants
     public const string DevFrontendUrl = "DevFrontendUrl";
 
     public const string AllowedOrigins = "AllowedOrigins";
+
+    public const string GrpcChannelAddresses = "GrpcChannelAddresses";
 }

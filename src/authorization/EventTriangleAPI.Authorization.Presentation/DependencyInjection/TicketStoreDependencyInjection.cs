@@ -23,8 +23,18 @@ public static class TicketStoreDependencyInjection
         var azureAdConfiguration = azAdSection.Get<AzureAdConfiguration>();
         var adClientSecret = Environment.GetEnvironmentVariable(AppSettingsConstants.AdSecretKey);
         azureAdConfiguration.ClientSecret = adClientSecret;
-        
-        var ticketStore = new TicketStore(serviceScopeFactory, ticketSerializer, httpClient, azureAdConfiguration, memoryCache);
+
+        var grpcChannelAddresses = configuration
+            .GetSection(AppSettingsConstants.GrpcChannelAddresses)
+            .Get<GrpcChannelAddresses>();
+
+        var ticketStore = new TicketStore(
+            grpcChannelAddresses.SenderAddress,
+            serviceScopeFactory, 
+            ticketSerializer,
+            httpClient,
+            azureAdConfiguration,
+            memoryCache);
         
         serviceCollection.AddSingleton<ITicketStore, TicketStore>(_ => ticketStore);
         serviceCollection

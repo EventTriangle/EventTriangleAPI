@@ -33,6 +33,7 @@ public class TicketStore : ITicketStore
     private readonly User.UserClient _userClient;
     
     public TicketStore(
+        string userGrpcChannelAddress,
         IServiceScopeFactory serviceScopeFactory,
         TicketSerializer ticketSerializer,
         HttpClient httpClient,
@@ -49,7 +50,7 @@ public class TicketStore : ITicketStore
             .SetSlidingExpiration(TimeSpan.FromSeconds(15))
             .SetAbsoluteExpiration(TimeSpan.FromSeconds(100));
         
-        var channel = GrpcChannel.ForAddress("https://localhost:7002");
+        var channel = GrpcChannel.ForAddress(userGrpcChannelAddress);
         _userClient = new User.UserClient(channel);
     }
 
