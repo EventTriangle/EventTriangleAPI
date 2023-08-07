@@ -14,9 +14,9 @@ public class RollBackTransactionCommandHandlerTest : IntegrationTestBase, IInteg
         
         var result = await RollBackTransactionCommandHandler.HandleAsync(command);
 
-        var addContactEvent = 
+        var transactionRollBackedEvent = 
             await DatabaseContextFixture.TransactionRollBackedEvents.FirstOrDefaultAsync(x => x.Id == result.Response.Id);
 
-        addContactEvent.Should().NotBeNull();
+        transactionRollBackedEvent.Should().NotBeNull();
     }
 }

@@ -11,7 +11,8 @@ public class EventConsumer :
     IConsumer<CreditCardDeletedEventMessage>,
     IConsumer<SupportTicketOpenedEventMessage>,
     IConsumer<SupportTicketResolvedEventMessage>,
-    IConsumer<TransactionCreatedEventMessage>,
+    IConsumer<TransactionCardToUserCreatedEventMessage>,
+    IConsumer<TransactionUserToUserCreatedEventMessage>,
     IConsumer<TransactionRollBackedEventMessage>,
     IConsumer<UserCreatedEventMessage>,
     IConsumer<UserNotSuspendedEventMessage>,
@@ -53,11 +54,16 @@ public class EventConsumer :
         throw new NotImplementedException();
     }
 
-    public Task Consume(ConsumeContext<TransactionCreatedEventMessage> context)
+    public Task Consume(ConsumeContext<TransactionCardToUserCreatedEventMessage> context)
     {
         throw new NotImplementedException();
     }
 
+    public Task Consume(ConsumeContext<TransactionUserToUserCreatedEventMessage> context)
+    {
+        throw new NotImplementedException();
+    }
+    
     public Task Consume(ConsumeContext<TransactionRollBackedEventMessage> context)
     {
         throw new NotImplementedException();

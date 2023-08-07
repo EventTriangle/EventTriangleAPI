@@ -15,9 +15,9 @@ public class UpdateUserRoleCommandHandlerTest : IntegrationTestBase, IIntegratio
         
         var result = await UpdateUserRoleCommandHandler.HandleAsync(command);
 
-        var addContactEvent = 
+        var userRoleUpdatedEvent = 
             await DatabaseContextFixture.UserRoleUpdatedEvents.FirstOrDefaultAsync(x => x.Id == result.Response.Id);
 
-        addContactEvent.Should().NotBeNull();
+        userRoleUpdatedEvent.Should().NotBeNull();
     }
 }

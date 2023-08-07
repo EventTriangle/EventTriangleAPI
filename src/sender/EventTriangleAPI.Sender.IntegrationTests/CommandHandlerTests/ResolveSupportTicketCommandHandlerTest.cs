@@ -14,9 +14,9 @@ public class ResolveSupportTicketCommandHandlerTest : IntegrationTestBase, IInte
         
         var result = await ResolveSupportTicketCommandHandler.HandleAsync(command);
 
-        var addContactEvent = 
+        var supportTicketResolvedEvent = 
             await DatabaseContextFixture.SupportTicketResolvedEvents.FirstOrDefaultAsync(x => x.Id == result.Response.Id);
 
-        addContactEvent.Should().NotBeNull();
+        supportTicketResolvedEvent.Should().NotBeNull();
     }
 }

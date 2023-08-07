@@ -14,9 +14,9 @@ public class DeleteContactCommandHandlerTest : IntegrationTestBase, IIntegration
         
         var result = await DeleteContactCommandHandler.HandleAsync(command);
 
-        var addContactEvent = 
+        var contactDeletedEvent = 
             await DatabaseContextFixture.ContactDeletedEvents.FirstOrDefaultAsync(x => x.Id == result.Response.Id);
 
-        addContactEvent.Should().NotBeNull();
+        contactDeletedEvent.Should().NotBeNull();
     }
 }

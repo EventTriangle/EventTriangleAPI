@@ -27,6 +27,7 @@ public class IntegrationTestBase : IAsyncLifetime
     protected readonly SuspendUserCommandHandler SuspendUserCommandHandler;
     protected readonly TopUpAccountBalanceCommandHandler TopUpAccountBalanceCommandHandler;
     protected readonly UpdateUserRoleCommandHandler UpdateUserRoleCommandHandler;
+    protected readonly CreateTransactionUserToUserCommandHandler CreateTransactionUserToUserCommandHandler;
     
     protected IntegrationTestBase()
     {
@@ -54,6 +55,7 @@ public class IntegrationTestBase : IAsyncLifetime
         SuspendUserCommandHandler = serviceProvider.GetRequiredService<SuspendUserCommandHandler>();
         TopUpAccountBalanceCommandHandler = serviceProvider.GetRequiredService<TopUpAccountBalanceCommandHandler>();
         UpdateUserRoleCommandHandler = serviceProvider.GetRequiredService<UpdateUserRoleCommandHandler>();
+        CreateTransactionUserToUserCommandHandler = serviceProvider.GetRequiredService<CreateTransactionUserToUserCommandHandler>();
     }
     
     public async Task InitializeAsync()
@@ -67,7 +69,8 @@ public class IntegrationTestBase : IAsyncLifetime
                            "TRUNCATE TABLE \"CreditCardDeletedEvents\" CASCADE;" +
                            "TRUNCATE TABLE \"SupportTicketOpenedEvents\" CASCADE;" +
                            "TRUNCATE TABLE \"SupportTicketResolvedEvents\" CASCADE;" +
-                           "TRUNCATE TABLE \"TransactionCreatedEvents\" CASCADE;" +
+                           "TRUNCATE TABLE \"TransactionCardToUserCreatedEvents\" CASCADE;" +
+                           "TRUNCATE TABLE \"TransactionUserToUserCreatedEvents\" CASCADE;" +
                            "TRUNCATE TABLE \"TransactionRollBackedEvents\" CASCADE;" +
                            "TRUNCATE TABLE \"UserCreatedEvents\" CASCADE;" +
                            "TRUNCATE TABLE \"UserSuspendedEvents\" CASCADE;" +

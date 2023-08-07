@@ -14,9 +14,9 @@ public class DeleteCreditCardCommandHandlerTest : IntegrationTestBase, IIntegrat
         
         var result = await DeleteCreditCardCommandHandler.HandleAsync(command);
 
-        var addContactEvent = 
+        var creditCardDeletedEvent = 
             await DatabaseContextFixture.CreditCardDeletedEvents.FirstOrDefaultAsync(x => x.Id == result.Response.Id);
 
-        addContactEvent.Should().NotBeNull();
+        creditCardDeletedEvent.Should().NotBeNull();
     }
 }

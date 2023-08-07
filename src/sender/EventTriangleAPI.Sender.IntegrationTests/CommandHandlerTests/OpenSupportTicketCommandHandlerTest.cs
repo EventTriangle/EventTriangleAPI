@@ -18,9 +18,9 @@ public class OpenSupportTicketCommandHandlerTest : IntegrationTestBase, IIntegra
         
         var result = await OpenSupportTicketCommandHandler.HandleAsync(command);
 
-        var addContactEvent = 
+        var supportTicketOpenedEvent = 
             await DatabaseContextFixture.SupportTicketOpenedEvents.FirstOrDefaultAsync(x => x.Id == result.Response.Id);
 
-        addContactEvent.Should().NotBeNull();
+        supportTicketOpenedEvent.Should().NotBeNull();
     }
 }

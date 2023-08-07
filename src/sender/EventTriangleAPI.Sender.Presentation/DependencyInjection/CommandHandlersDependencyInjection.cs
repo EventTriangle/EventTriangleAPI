@@ -18,6 +18,7 @@ public static class CommandHandlersDependencyInjection
         serviceCollection.AddScoped<SuspendUserCommandHandler>();
         serviceCollection.AddScoped<TopUpAccountBalanceCommandHandler>();
         serviceCollection.AddScoped<UpdateUserRoleCommandHandler>();
+        serviceCollection.AddScoped<CreateTransactionUserToUserCommandHandler>();
         
         return serviceCollection;
     }

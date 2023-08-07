@@ -21,9 +21,9 @@ public class AttachCreditCardToAccountCommandHandlerTest : IntegrationTestBase, 
         
         var result = await AttachCreditCardToAccountCommandHandler.HandleAsync(command);
 
-        var addContactEvent = 
+        var creditCardAttachedEvent = 
             await DatabaseContextFixture.CreditCardAddedEvents.FirstOrDefaultAsync(x => x.Id == result.Response.Id);
 
-        addContactEvent.Should().NotBeNull();
+        creditCardAttachedEvent.Should().NotBeNull();
     }
 }

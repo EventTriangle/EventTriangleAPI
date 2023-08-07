@@ -22,9 +22,9 @@ public class EditCreditCardCommandHandlerTest : IntegrationTestBase, IIntegratio
         
         var result = await EditCreditCardCommandHandler.HandleAsync(command);
 
-        var addContactEvent = 
+        var creditCardChangedEvent = 
             await DatabaseContextFixture.CreditCardChangedEvents.FirstOrDefaultAsync(x => x.Id == result.Response.Id);
 
-        addContactEvent.Should().NotBeNull();
+        creditCardChangedEvent.Should().NotBeNull();
     }
 }
