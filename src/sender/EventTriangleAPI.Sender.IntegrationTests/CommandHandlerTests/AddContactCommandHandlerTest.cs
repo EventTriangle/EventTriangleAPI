@@ -14,9 +14,9 @@ public class AddContactCommandHandlerTest : IntegrationTestBase, IIntegrationTes
         
         var result = await AddContactCommandHandler.HandleAsync(command);
 
-        var addContactEvent = 
+        var contactAddedEvent = 
             await DatabaseContextFixture.ContactCreatedEvents.FirstOrDefaultAsync(x => x.Id == result.Response.Id);
 
-        addContactEvent.Should().NotBeNull();
+        contactAddedEvent.Should().NotBeNull();
     }
 }

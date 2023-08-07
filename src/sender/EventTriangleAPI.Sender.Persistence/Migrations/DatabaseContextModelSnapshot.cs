@@ -198,7 +198,7 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
                     b.ToTable("SupportTicketResolvedEvents");
                 });
 
-            modelBuilder.Entity("EventTriangleAPI.Sender.Domain.Entities.TransactionCreatedEvent", b =>
+            modelBuilder.Entity("EventTriangleAPI.Sender.Domain.Entities.TransactionCardToUserCreatedEvent", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -210,18 +210,15 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("From")
-                        .HasColumnType("text");
+                    b.Property<Guid>("CreditCardId")
+                        .HasColumnType("uuid");
 
-                    b.Property<string>("To")
+                    b.Property<string>("ToUserId")
                         .HasColumnType("text");
-
-                    b.Property<int>("TransactionType")
-                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
-                    b.ToTable("TransactionCreatedEvents");
+                    b.ToTable("TransactionCardToUserCreatedEvents");
                 });
 
             modelBuilder.Entity("EventTriangleAPI.Sender.Domain.Entities.TransactionRollBackedEvent", b =>
@@ -239,6 +236,29 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("TransactionRollBackedEvents");
+                });
+
+            modelBuilder.Entity("EventTriangleAPI.Sender.Domain.Entities.TransactionUserToUserCreatedEvent", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("numeric");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("FromUserId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ToUserId")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TransactionUserToUserCreatedEvents");
                 });
 
             modelBuilder.Entity("EventTriangleAPI.Sender.Domain.Entities.UserCreatedEvent", b =>

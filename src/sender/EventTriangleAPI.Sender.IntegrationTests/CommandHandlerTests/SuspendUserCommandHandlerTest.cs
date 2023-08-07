@@ -14,9 +14,9 @@ public class SuspendUserCommandHandlerTest : IntegrationTestBase, IIntegrationTe
         
         var result = await SuspendUserCommandHandler.HandleAsync(command);
 
-        var addContactEvent = 
+        var userSuspendedEvent = 
             await DatabaseContextFixture.UserSuspendedEvents.FirstOrDefaultAsync(x => x.Id == result.Response.Id);
 
-        addContactEvent.Should().NotBeNull();
+        userSuspendedEvent.Should().NotBeNull();
     }
 }

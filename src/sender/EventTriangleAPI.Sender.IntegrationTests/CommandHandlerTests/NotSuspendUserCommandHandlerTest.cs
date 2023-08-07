@@ -14,9 +14,9 @@ public class NotSuspendUserCommandHandlerTest : IntegrationTestBase, IIntegratio
         
         var result = await NotSuspendUserCommandHandler.HandleAsync(command);
 
-        var addContactEvent = 
+        var userNotSuspendedEvent = 
             await DatabaseContextFixture.UserNotSuspendedEvents.FirstOrDefaultAsync(x => x.Id == result.Response.Id);
 
-        addContactEvent.Should().NotBeNull();
+        userNotSuspendedEvent.Should().NotBeNull();
     }
 }

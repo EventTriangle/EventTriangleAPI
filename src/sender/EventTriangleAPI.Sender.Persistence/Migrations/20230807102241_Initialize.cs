@@ -120,19 +120,18 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "TransactionCreatedEvents",
+                name: "TransactionCardToUserCreatedEvents",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    From = table.Column<string>(type: "text", nullable: true),
-                    To = table.Column<string>(type: "text", nullable: true),
+                    CreditCardId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ToUserId = table.Column<string>(type: "text", nullable: true),
                     Amount = table.Column<decimal>(type: "numeric", nullable: false),
-                    TransactionType = table.Column<int>(type: "integer", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TransactionCreatedEvents", x => x.Id);
+                    table.PrimaryKey("PK_TransactionCardToUserCreatedEvents", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -146,6 +145,21 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_TransactionRollBackedEvents", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TransactionUserToUserCreatedEvents",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    FromUserId = table.Column<string>(type: "text", nullable: true),
+                    ToUserId = table.Column<string>(type: "text", nullable: true),
+                    Amount = table.Column<decimal>(type: "numeric", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TransactionUserToUserCreatedEvents", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -229,10 +243,13 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
                 name: "SupportTicketResolvedEvents");
 
             migrationBuilder.DropTable(
-                name: "TransactionCreatedEvents");
+                name: "TransactionCardToUserCreatedEvents");
 
             migrationBuilder.DropTable(
                 name: "TransactionRollBackedEvents");
+
+            migrationBuilder.DropTable(
+                name: "TransactionUserToUserCreatedEvents");
 
             migrationBuilder.DropTable(
                 name: "UserCreatedEvents");

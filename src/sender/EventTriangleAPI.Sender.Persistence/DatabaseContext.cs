@@ -12,7 +12,8 @@ public class DatabaseContext : DbContext
     public DbSet<CreditCardDeletedEvent> CreditCardDeletedEvents { get; set; }
     public DbSet<SupportTicketOpenedEvent> SupportTicketOpenedEvents { get; set; }
     public DbSet<SupportTicketResolvedEvent> SupportTicketResolvedEvents { get; set; }
-    public DbSet<TransactionCreatedEvent> TransactionCreatedEvents { get; set; }
+    public DbSet<TransactionCardToUserCreatedEvent> TransactionCardToUserCreatedEvents { get; set; }
+    public DbSet<TransactionUserToUserCreatedEvent> TransactionUserToUserCreatedEvents { get; set; }
     public DbSet<TransactionRollBackedEvent> TransactionRollBackedEvents { get; set; }
     public DbSet<UserCreatedEvent> UserCreatedEvents { get; set; }
     public DbSet<UserSuspendedEvent> UserSuspendedEvents { get; set; }
