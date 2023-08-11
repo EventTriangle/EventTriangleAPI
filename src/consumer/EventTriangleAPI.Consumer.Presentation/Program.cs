@@ -38,7 +38,10 @@ builder.Services.AddMassTransit(config =>
             h.Password(rabbitMqConfiguration.Password);
         });
         
-        cfg.ReceiveEndpoint("event-queue", c => { c.Consumer<EventConsumer>(); });
+        cfg.ReceiveEndpoint("event-queue", c =>
+        {
+            c.ConfigureConsumer<EventConsumer>(ctx);
+        });
     });
 });
 

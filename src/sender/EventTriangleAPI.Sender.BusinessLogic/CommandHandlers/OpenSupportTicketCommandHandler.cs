@@ -20,7 +20,6 @@ public class OpenSupportTicketCommandHandler : ICommandHandler<OpenSupportTicket
     {
         var supportTicketOpenedEvent = new SupportTicketOpenedEvent(
             command.UserId,
-            command.Username,
             command.WalletId,
             command.TicketReason);
 

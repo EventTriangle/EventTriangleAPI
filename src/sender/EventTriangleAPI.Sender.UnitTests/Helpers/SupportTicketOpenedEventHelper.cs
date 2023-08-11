@@ -10,7 +10,6 @@ public static class SupportTicketOpenedEventHelper
     {
         return new SupportTicketOpenedEvent(
             Guid.NewGuid().ToString(),
-            Guid.NewGuid().ToString(),
             Guid.NewGuid(),
             TicketReason);
     }
@@ -19,16 +18,6 @@ public static class SupportTicketOpenedEventHelper
     {
         return new SupportTicketOpenedEvent(
             userId,
-            Guid.NewGuid().ToString(),
-            Guid.NewGuid(),
-            TicketReason);
-    }
-    
-    public static SupportTicketOpenedEvent CreateWithUsername(string username)
-    {
-        return new SupportTicketOpenedEvent(
-            Guid.NewGuid().ToString(),
-            username,
             Guid.NewGuid(),
             TicketReason);
     }
@@ -37,7 +26,6 @@ public static class SupportTicketOpenedEventHelper
     {
         return new SupportTicketOpenedEvent(
             Guid.NewGuid().ToString(),
-            Guid.NewGuid().ToString(),
             walletId,
             TicketReason);
     }
@@ -45,7 +33,6 @@ public static class SupportTicketOpenedEventHelper
     public static SupportTicketOpenedEvent CreateWithTicketReason(string ticketReason)
     {
         return new SupportTicketOpenedEvent(
-            Guid.NewGuid().ToString(),
             Guid.NewGuid().ToString(),
             Guid.NewGuid(),
             ticketReason);

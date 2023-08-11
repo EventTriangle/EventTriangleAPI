@@ -31,4 +31,32 @@ public class CreditCardEntity
         
         new CreditCardEntityValidator().ValidateAndThrow(this);
     }
+
+    public void UpdateHolderName(string holderName)
+    {
+        HolderName = holderName;
+        
+        new CreditCardEntityValidator().ValidateAndThrow(this);
+    }
+    
+    public void UpdateCardNumber(string cardNumber)
+    {
+        CardNumber = CardNumber;
+        
+        new CreditCardEntityValidator().ValidateAndThrow(this);
+    }
+    
+    public void UpdateCvv(string cvv)
+    {
+        Cvv = cvv;
+        
+        new CreditCardEntityValidator().ValidateAndThrow(this);
+    }
+    
+    public void UpdatePaymentNetwork(PaymentNetwork paymentNetwork)
+    {
+        PaymentNetwork = paymentNetwork;
+        
+        new CreditCardEntityValidator().ValidateAndThrow(this);
+    }
 }
