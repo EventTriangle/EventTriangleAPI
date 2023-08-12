@@ -12,31 +12,17 @@ public static class CreditCardAddedEventHelper
     public static CreditCardAddedEvent CreateSuccess()
     {
         return new CreditCardAddedEvent(
-            Guid.NewGuid(),
             Guid.NewGuid().ToString(),
             Guid.NewGuid().ToString(),
             CardNumber,
             Cvv,
             Expiration,
             PaymentNetwork.MasterCard);
-    } 
-    
-    public static CreditCardAddedEvent CreateWithCardId(Guid cardId)
-    {
-        return new CreditCardAddedEvent(
-            cardId,
-            Guid.NewGuid().ToString(),
-            Guid.NewGuid().ToString(),
-            CardNumber,
-            Cvv,
-            Expiration,
-            PaymentNetwork.MasterCard);
-    } 
-    
+    }
+
     public static CreditCardAddedEvent CreateWithUserId(string userId)
     {
         return new CreditCardAddedEvent(
-            Guid.NewGuid(),
             userId,
             Guid.NewGuid().ToString(),
             CardNumber,
@@ -48,7 +34,6 @@ public static class CreditCardAddedEventHelper
     public static CreditCardAddedEvent CreateWithHolderName(string holderName)
     {
         return new CreditCardAddedEvent(
-            Guid.NewGuid(),
             Guid.NewGuid().ToString(),
             holderName,
             CardNumber,
@@ -60,7 +45,6 @@ public static class CreditCardAddedEventHelper
     public static CreditCardAddedEvent CreateWithCardNumber(string cardNumber)
     {
         return new CreditCardAddedEvent(
-            Guid.NewGuid(),
             Guid.NewGuid().ToString(),
             Guid.NewGuid().ToString(),
             cardNumber,
@@ -72,7 +56,6 @@ public static class CreditCardAddedEventHelper
     public static CreditCardAddedEvent CreateWithCvv(string cvv)
     {
         return new CreditCardAddedEvent(
-            Guid.NewGuid(),
             Guid.NewGuid().ToString(),
             Guid.NewGuid().ToString(),
             CardNumber,
@@ -84,7 +67,6 @@ public static class CreditCardAddedEventHelper
     public static CreditCardAddedEvent CreateWithExpiration(string expiration)
     {
         return new CreditCardAddedEvent(
-            Guid.NewGuid(),
             Guid.NewGuid().ToString(),
             Guid.NewGuid().ToString(),
             CardNumber,

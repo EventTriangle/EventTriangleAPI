@@ -10,41 +10,15 @@ namespace EventTriangleAPI.Consumer.Persistence.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "UserEntities",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "text", nullable: false),
-                    UserRole = table.Column<int>(type: "integer", nullable: false),
-                    UserStatus = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserEntities", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "ContactEntities",
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "text", nullable: false),
-                    ContactId = table.Column<string>(type: "text", nullable: false),
-                    ContactUsername = table.Column<string>(type: "text", nullable: true)
+                    ContactId = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ContactEntities", x => new { x.UserId, x.ContactId });
-                    table.ForeignKey(
-                        name: "FK_ContactEntities_UserEntities_ContactId",
-                        column: x => x.ContactId,
-                        principalTable: "UserEntities",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ContactEntities_UserEntities_UserId",
-                        column: x => x.UserId,
-                        principalTable: "UserEntities",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -56,17 +30,28 @@ namespace EventTriangleAPI.Consumer.Persistence.Migrations
                     HolderName = table.Column<string>(type: "text", nullable: true),
                     CardNumber = table.Column<string>(type: "text", nullable: true),
                     Cvv = table.Column<string>(type: "text", nullable: true),
+                    Expiration = table.Column<string>(type: "text", nullable: true),
                     PaymentNetwork = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_CreditCardEntities", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_CreditCardEntities_UserEntities_UserId",
-                        column: x => x.UserId,
-                        principalTable: "UserEntities",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SupportTicketEntities",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<string>(type: "text", nullable: true),
+                    WalletId = table.Column<Guid>(type: "uuid", nullable: false),
+                    TicketReason = table.Column<string>(type: "text", nullable: true),
+                    TicketJustification = table.Column<string>(type: "text", nullable: true),
+                    TicketStatus = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SupportTicketEntities", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -84,16 +69,6 @@ namespace EventTriangleAPI.Consumer.Persistence.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_TransactionEntities", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_TransactionEntities_UserEntities_FromUserId",
-                        column: x => x.FromUserId,
-                        principalTable: "UserEntities",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_TransactionEntities_UserEntities_ToUserId",
-                        column: x => x.ToUserId,
-                        principalTable: "UserEntities",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -101,7 +76,6 @@ namespace EventTriangleAPI.Consumer.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    UserId = table.Column<string>(type: "text", nullable: true),
                     Balance = table.Column<decimal>(type: "numeric", nullable: false),
                     LastTransactionId = table.Column<Guid>(type: "uuid", nullable: true)
                 },
@@ -113,36 +87,23 @@ namespace EventTriangleAPI.Consumer.Persistence.Migrations
                         column: x => x.LastTransactionId,
                         principalTable: "TransactionEntities",
                         principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_WalletEntities_UserEntities_UserId",
-                        column: x => x.UserId,
-                        principalTable: "UserEntities",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "SupportTicketEntities",
+                name: "UserEntities",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    UserId = table.Column<string>(type: "text", nullable: true),
-                    WalletId = table.Column<Guid>(type: "uuid", nullable: false),
-                    TicketReason = table.Column<string>(type: "text", nullable: true),
-                    TicketJustification = table.Column<string>(type: "text", nullable: true),
-                    TicketStatus = table.Column<int>(type: "integer", nullable: false)
+                    Id = table.Column<string>(type: "text", nullable: false),
+                    Email = table.Column<string>(type: "text", nullable: true),
+                    UserRole = table.Column<int>(type: "integer", nullable: false),
+                    UserStatus = table.Column<int>(type: "integer", nullable: false),
+                    WalletId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SupportTicketEntities", x => x.Id);
+                    table.PrimaryKey("PK_UserEntities", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_SupportTicketEntities_UserEntities_UserId",
-                        column: x => x.UserId,
-                        principalTable: "UserEntities",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_SupportTicketEntities_WalletEntities_WalletId",
+                        name: "FK_UserEntities_WalletEntities_WalletId",
                         column: x => x.WalletId,
                         principalTable: "WalletEntities",
                         principalColumn: "Id",
@@ -180,19 +141,81 @@ namespace EventTriangleAPI.Consumer.Persistence.Migrations
                 column: "ToUserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_UserEntities_WalletId",
+                table: "UserEntities",
+                column: "WalletId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_WalletEntities_LastTransactionId",
                 table: "WalletEntities",
                 column: "LastTransactionId");
 
-            migrationBuilder.CreateIndex(
-                name: "IX_WalletEntities_UserId",
-                table: "WalletEntities",
+            migrationBuilder.AddForeignKey(
+                name: "FK_ContactEntities_UserEntities_ContactId",
+                table: "ContactEntities",
+                column: "ContactId",
+                principalTable: "UserEntities",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_ContactEntities_UserEntities_UserId",
+                table: "ContactEntities",
                 column: "UserId",
-                unique: true);
+                principalTable: "UserEntities",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_CreditCardEntities_UserEntities_UserId",
+                table: "CreditCardEntities",
+                column: "UserId",
+                principalTable: "UserEntities",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_SupportTicketEntities_UserEntities_UserId",
+                table: "SupportTicketEntities",
+                column: "UserId",
+                principalTable: "UserEntities",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_SupportTicketEntities_WalletEntities_WalletId",
+                table: "SupportTicketEntities",
+                column: "WalletId",
+                principalTable: "WalletEntities",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_TransactionEntities_UserEntities_FromUserId",
+                table: "TransactionEntities",
+                column: "FromUserId",
+                principalTable: "UserEntities",
+                principalColumn: "Id");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_TransactionEntities_UserEntities_ToUserId",
+                table: "TransactionEntities",
+                column: "ToUserId",
+                principalTable: "UserEntities",
+                principalColumn: "Id");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_TransactionEntities_UserEntities_FromUserId",
+                table: "TransactionEntities");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_TransactionEntities_UserEntities_ToUserId",
+                table: "TransactionEntities");
+
             migrationBuilder.DropTable(
                 name: "ContactEntities");
 
@@ -203,13 +226,13 @@ namespace EventTriangleAPI.Consumer.Persistence.Migrations
                 name: "SupportTicketEntities");
 
             migrationBuilder.DropTable(
+                name: "UserEntities");
+
+            migrationBuilder.DropTable(
                 name: "WalletEntities");
 
             migrationBuilder.DropTable(
                 name: "TransactionEntities");
-
-            migrationBuilder.DropTable(
-                name: "UserEntities");
         }
     }
 }

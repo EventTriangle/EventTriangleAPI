@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace EventTriangleAPI.Consumer.Persistence.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20230804051853_Initialize")]
+    [Migration("20230812135109_Initialize")]
     partial class Initialize
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,9 +32,6 @@ namespace EventTriangleAPI.Consumer.Persistence.Migrations
                     b.Property<string>("ContactId")
                         .HasColumnType("text");
 
-                    b.Property<string>("ContactUsername")
-                        .HasColumnType("text");
-
                     b.HasKey("UserId", "ContactId");
 
                     b.HasIndex("ContactId");
@@ -52,6 +49,9 @@ namespace EventTriangleAPI.Consumer.Persistence.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Cvv")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Expiration")
                         .HasColumnType("text");
 
                     b.Property<string>("HolderName")
@@ -138,13 +138,22 @@ namespace EventTriangleAPI.Consumer.Persistence.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("text");
 
+                    b.Property<string>("Email")
+                        .HasColumnType("text");
+
                     b.Property<int>("UserRole")
                         .HasColumnType("integer");
 
                     b.Property<int>("UserStatus")
                         .HasColumnType("integer");
 
+                    b.Property<Guid>("WalletId")
+                        .HasColumnType("uuid");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("WalletId")
+                        .IsUnique();
 
                     b.ToTable("UserEntities");
                 });
@@ -161,15 +170,9 @@ namespace EventTriangleAPI.Consumer.Persistence.Migrations
                     b.Property<Guid?>("LastTransactionId")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("text");
-
                     b.HasKey("Id");
 
                     b.HasIndex("LastTransactionId");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
 
                     b.ToTable("WalletEntities");
                 });
@@ -236,27 +239,34 @@ namespace EventTriangleAPI.Consumer.Persistence.Migrations
                     b.Navigation("ToUser");
                 });
 
+            modelBuilder.Entity("EventTriangleAPI.Consumer.Domain.Entities.UserEntity", b =>
+                {
+                    b.HasOne("EventTriangleAPI.Consumer.Domain.Entities.WalletEntity", "Wallet")
+                        .WithOne("User")
+                        .HasForeignKey("EventTriangleAPI.Consumer.Domain.Entities.UserEntity", "WalletId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Wallet");
+                });
+
             modelBuilder.Entity("EventTriangleAPI.Consumer.Domain.Entities.WalletEntity", b =>
                 {
                     b.HasOne("EventTriangleAPI.Consumer.Domain.Entities.TransactionEntity", "LastTransaction")
                         .WithMany()
                         .HasForeignKey("LastTransactionId");
 
-                    b.HasOne("EventTriangleAPI.Consumer.Domain.Entities.UserEntity", "User")
-                        .WithOne("Wallet")
-                        .HasForeignKey("EventTriangleAPI.Consumer.Domain.Entities.WalletEntity", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.Navigation("LastTransaction");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("EventTriangleAPI.Consumer.Domain.Entities.UserEntity", b =>
                 {
                     b.Navigation("Contacts");
+                });
 
-                    b.Navigation("Wallet");
+            modelBuilder.Entity("EventTriangleAPI.Consumer.Domain.Entities.WalletEntity", b =>
+                {
+                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }

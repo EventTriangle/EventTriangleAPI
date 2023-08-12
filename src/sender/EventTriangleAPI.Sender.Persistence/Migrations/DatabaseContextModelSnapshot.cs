@@ -68,9 +68,6 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("CardId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("CardNumber")
                         .HasColumnType("text");
 
@@ -165,9 +162,6 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("UserId")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Username")
                         .HasColumnType("text");
 
                     b.Property<Guid>("WalletId")

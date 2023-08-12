@@ -42,7 +42,6 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    CardId = table.Column<Guid>(type: "uuid", nullable: false),
                     UserId = table.Column<string>(type: "text", nullable: true),
                     HolderName = table.Column<string>(type: "text", nullable: true),
                     CardNumber = table.Column<string>(type: "text", nullable: true),
@@ -95,7 +94,6 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     UserId = table.Column<string>(type: "text", nullable: true),
-                    Username = table.Column<string>(type: "text", nullable: true),
                     WalletId = table.Column<Guid>(type: "uuid", nullable: false),
                     TicketReason = table.Column<string>(type: "text", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)

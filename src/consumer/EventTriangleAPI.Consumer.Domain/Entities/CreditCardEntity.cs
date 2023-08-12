@@ -18,15 +18,18 @@ public class CreditCardEntity
     
     public string Cvv { get; private set; }
     
+    public string Expiration { get; private set; }
+    
     public PaymentNetwork PaymentNetwork { get; private set; }
 
-    public CreditCardEntity(string userId, string holderName, string cardNumber, string cvv, PaymentNetwork paymentNetwork)
+    public CreditCardEntity(string userId, string holderName, string cardNumber, string cvv, string expiration, PaymentNetwork paymentNetwork)
     {
         Id = Guid.NewGuid();
         UserId = userId;
         HolderName = holderName;
         CardNumber = cardNumber;
         Cvv = cvv;
+        Expiration = expiration;
         PaymentNetwork = paymentNetwork;
         
         new CreditCardEntityValidator().ValidateAndThrow(this);
@@ -41,7 +44,7 @@ public class CreditCardEntity
     
     public void UpdateCardNumber(string cardNumber)
     {
-        CardNumber = CardNumber;
+        CardNumber = cardNumber;
         
         new CreditCardEntityValidator().ValidateAndThrow(this);
     }
@@ -49,6 +52,13 @@ public class CreditCardEntity
     public void UpdateCvv(string cvv)
     {
         Cvv = cvv;
+        
+        new CreditCardEntityValidator().ValidateAndThrow(this);
+    }
+
+    public void UpdateExpiration(string expiration)
+    {
+        Expiration = expiration;
         
         new CreditCardEntityValidator().ValidateAndThrow(this);
     }

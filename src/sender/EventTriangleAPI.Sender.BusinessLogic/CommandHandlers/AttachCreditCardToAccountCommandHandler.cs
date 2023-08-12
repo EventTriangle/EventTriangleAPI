@@ -19,7 +19,6 @@ public class AttachCreditCardToAccountCommandHandler : ICommandHandler<AttachCre
     public async Task<IResult<CreditCardAddedEvent, Error>> HandleAsync(AttachCreditCardToAccountCommand command)
     {
         var creditCardAddedEvent = new CreditCardAddedEvent(
-            cardId: Guid.NewGuid(),
             userId: command.UserId,
             command.HolderName,
             command.CardNumber,

@@ -9,8 +9,6 @@ public class CreditCardAddedEvent
 {
     public Guid Id { get; private set; }
     
-    public Guid CardId { get; private set; }
-    
     public string UserId { get; private set; }
     
     public string HolderName { get; private set; }
@@ -26,7 +24,6 @@ public class CreditCardAddedEvent
     public DateTime CreatedAt { get; private set;  }
 
     public CreditCardAddedEvent(
-        Guid cardId, 
         string userId, 
         string holderName, 
         string cardNumber,
@@ -35,7 +32,6 @@ public class CreditCardAddedEvent
         PaymentNetwork paymentNetwork)
     {
         Id = Guid.NewGuid();
-        CardId = cardId;
         UserId = userId;
         HolderName = holderName;
         CardNumber = cardNumber;
@@ -49,6 +45,6 @@ public class CreditCardAddedEvent
 
     public CreditCardAddedEventMessage CreateEventMessage()
     {
-        return new CreditCardAddedEventMessage(Id, CardId, UserId, HolderName, CardNumber, Cvv, Expiration, PaymentNetwork, CreatedAt);
+        return new CreditCardAddedEventMessage(Id, UserId, HolderName, CardNumber, Cvv, Expiration, PaymentNetwork, CreatedAt);
     }
 }
