@@ -26,6 +26,7 @@ public class TransactionEntity
 
     public TransactionEntity(string fromUserId, string toUserId, decimal amount, TransactionType transactionType)
     {
+        Id = Guid.NewGuid();
         FromUserId = fromUserId;
         ToUserId = toUserId;
         Amount = amount;

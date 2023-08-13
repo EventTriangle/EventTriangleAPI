@@ -17,6 +17,7 @@ public class WalletEntity
 
     public WalletEntity(decimal balance)
     {
+        Id = Guid.NewGuid();
         Balance = balance;
         
         new WalletEntityValidator().ValidateAndThrow(this);
