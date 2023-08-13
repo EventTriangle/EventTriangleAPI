@@ -24,7 +24,7 @@ public class DeleteCreditCardCommandHandler : ICommandHandler<DeleteCreditCardCo
 
         if (creditCard == null)
         {
-            throw new NotImplementedException();
+            return new Result<CreditCardEntity>(new DbEntityNotFoundError("Credit card not found"));
         }
 
         _context.CreditCardEntities.Remove(creditCard);

@@ -24,7 +24,7 @@ public class SuspendUserCommandHandler : ICommandHandler<SuspendUserCommand, Use
         
         if (user == null)
         {
-            throw new NotImplementedException();
+            return new Result<UserEntity>(new DbEntityNotFoundError("User not found"));
         }
         
         user.UpdateUserStatus(UserStatus.Suspended);

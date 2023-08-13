@@ -24,7 +24,7 @@ public class DeleteContactCommandHandler : ICommandHandler<DeleteContactCommand,
 
         if (contact == null)
         {
-            throw new NotImplementedException();
+            return new Result<ContactEntity>(new DbEntityNotFoundError("Contact not found"));
         }
 
         _context.ContactEntities.Remove(contact);

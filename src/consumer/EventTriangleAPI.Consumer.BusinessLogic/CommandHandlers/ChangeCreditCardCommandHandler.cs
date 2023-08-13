@@ -24,7 +24,7 @@ public class ChangeCreditCardCommandHandler : ICommandHandler<ChangeCreditCardCo
 
         if (creditCard == null)
         {
-            throw new NotImplementedException();
+            return new Result<CreditCardEntity>(new DbEntityNotFoundError("Credit card not found"));
         }
 
         creditCard.UpdateHolderName(command.HolderName);

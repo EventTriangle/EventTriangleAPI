@@ -25,7 +25,7 @@ public class ResolveSupportTicketCommandHandler : ICommandHandler<ResolveSupport
 
         if (supportTicket == null)
         {
-            throw new NotImplementedException();
+            return new Result<SupportTicketEntity>(new DbEntityNotFoundError("Support ticket not found"));
         }
         
         supportTicket.UpdateTicketJustification(command.TicketJustification);

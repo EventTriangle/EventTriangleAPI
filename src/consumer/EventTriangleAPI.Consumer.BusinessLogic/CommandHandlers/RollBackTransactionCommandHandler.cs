@@ -24,7 +24,7 @@ public class RollBackTransactionCommandHandler : ICommandHandler<RollBackTransac
 
         if (transaction == null)
         {
-            throw new NotImplementedException();
+            return new Result<TransactionEntity>(new DbEntityNotFoundError("Transaction ticket not found"));
         }
         
         transaction.UpdateTransactionState(TransactionState.RolledBack);

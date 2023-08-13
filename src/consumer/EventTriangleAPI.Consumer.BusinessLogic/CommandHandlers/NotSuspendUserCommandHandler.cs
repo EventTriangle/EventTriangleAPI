@@ -1,6 +1,7 @@
 using EventTriangleAPI.Consumer.Domain.Entities;
 using EventTriangleAPI.Consumer.Persistence;
 using EventTriangleAPI.Shared.Application.Abstractions;
+using EventTriangleAPI.Shared.Application.Proto;
 using EventTriangleAPI.Shared.DTO.Abstractions;
 using EventTriangleAPI.Shared.DTO.Enums;
 using EventTriangleAPI.Shared.DTO.Responses;
@@ -24,7 +25,7 @@ public class NotSuspendUserCommandHandler : ICommandHandler<NotSuspendUserComman
 
         if (user == null)
         {
-            throw new NotImplementedException();
+            return new Result<UserEntity>(new DbEntityNotFoundError("User not found"));
         }
         
         user.UpdateUserStatus(UserStatus.Active);

@@ -23,7 +23,7 @@ public class UpdateUserRoleCommandHandler : ICommandHandler<UpdateUserRoleComman
         
         if (user == null)
         {
-            throw new NotImplementedException();
+            return new Result<UserEntity>(new DbEntityNotFoundError("User not found"));
         }
         
         user.UpdateUserRole(command.UserRole);
