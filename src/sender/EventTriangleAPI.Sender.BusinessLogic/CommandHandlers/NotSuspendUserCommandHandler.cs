@@ -18,7 +18,7 @@ public class NotSuspendUserCommandHandler : ICommandHandler<NotSuspendUserComman
 
     public async Task<IResult<UserNotSuspendedEvent, Error>> HandleAsync(NotSuspendUserCommand command)
     {
-        var userNotSuspendedEvent = new UserNotSuspendedEvent(command.UserId);
+        var userNotSuspendedEvent = new UserNotSuspendedEvent(command.RequesterId, command.UserId);
 
         _context.UserNotSuspendedEvents.Add(userNotSuspendedEvent);
         await _context.SaveChangesAsync();

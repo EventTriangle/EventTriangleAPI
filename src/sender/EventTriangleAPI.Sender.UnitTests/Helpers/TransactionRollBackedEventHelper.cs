@@ -6,11 +6,11 @@ public static class TransactionRollBackedEventHelper
 {
     public static TransactionRollBackedEvent CreateSuccess()
     {
-        return new TransactionRollBackedEvent(Guid.NewGuid());
+        return new TransactionRollBackedEvent(Guid.NewGuid().ToString(),Guid.NewGuid());
     }
     
     public static TransactionRollBackedEvent CreateWithTransactionId(Guid transactionId)
     {
-        return new TransactionRollBackedEvent(transactionId);
+        return new TransactionRollBackedEvent(Guid.NewGuid().ToString(), transactionId);
     }
 }

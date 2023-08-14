@@ -10,7 +10,7 @@ public class SuspendUserCommandHandlerTest : IntegrationTestBase, IIntegrationTe
     [Fact]
     public async Task Test()
     {
-        var command = new SuspendUserCommand(Guid.NewGuid().ToString());
+        var command = new SuspendUserCommand(Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
         
         var result = await SuspendUserCommandHandler.HandleAsync(command);
 

@@ -7,7 +7,7 @@ public class TransactionUserToUserCreatedEventValidator : AbstractValidator<Tran
     public TransactionUserToUserCreatedEventValidator()
     {
         RuleFor(x => x.Id).NotEmpty();
-        RuleFor(x => x.FromUserId).NotEmpty();
+        RuleFor(x => x.RequesterId).NotEmpty();
         RuleFor(x => x.ToUserId).NotEmpty();
         RuleFor(x => x.Amount).Must(x => x > 0);
     }

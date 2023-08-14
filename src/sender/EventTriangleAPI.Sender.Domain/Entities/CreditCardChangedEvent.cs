@@ -11,7 +11,7 @@ public class CreditCardChangedEvent
     
     public Guid CardId { get; private set; }
     
-    public string UserId { get; private set; }
+    public string RequesterId { get; private set; }
     
     public string HolderName { get; private set; }
     
@@ -27,7 +27,7 @@ public class CreditCardChangedEvent
     
     public CreditCardChangedEvent(
         Guid cardId, 
-        string userId, 
+        string requesterId, 
         string holderName, 
         string cardNumber,
         string cvv,
@@ -36,7 +36,7 @@ public class CreditCardChangedEvent
     {
         Id = Guid.NewGuid();
         CardId = cardId;
-        UserId = userId;
+        RequesterId = requesterId;
         HolderName = holderName;
         CardNumber = cardNumber;
         Cvv = cvv;
@@ -49,6 +49,6 @@ public class CreditCardChangedEvent
     
     public CreditCardChangedEventMessage CreateEventMessage()
     {
-        return new CreditCardChangedEventMessage(Id, CardId, UserId, HolderName, CardNumber, Cvv, Expiration, PaymentNetwork, CreatedAt);
+        return new CreditCardChangedEventMessage(Id, CardId, RequesterId, HolderName, CardNumber, Cvv, Expiration, PaymentNetwork, CreatedAt);
     }
 }

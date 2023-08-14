@@ -18,7 +18,7 @@ public class RollBackTransactionCommandHandler : ICommandHandler<RollBackTransac
 
     public async Task<IResult<TransactionRollBackedEvent, Error>> HandleAsync(RollBackTransactionCommand command)
     {
-        var transactionRollBackedEvent = new TransactionRollBackedEvent(command.TransactionId);
+        var transactionRollBackedEvent = new TransactionRollBackedEvent(command.RequesterId, command.TransactionId);
 
         _context.TransactionRollBackedEvents.Add(transactionRollBackedEvent);
         await _context.SaveChangesAsync();

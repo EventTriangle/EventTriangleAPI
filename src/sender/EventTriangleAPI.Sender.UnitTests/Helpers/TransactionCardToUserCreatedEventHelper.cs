@@ -9,32 +9,32 @@ public static class TransactionCardToUserCreatedEventHelper
     public static TransactionCardToUserCreatedEvent CreateSuccess()
     {
         return new TransactionCardToUserCreatedEvent(
-            Guid.NewGuid(),
             Guid.NewGuid().ToString(),
+            Guid.NewGuid(),
             Amount);
     }
     
     public static TransactionCardToUserCreatedEvent CreateWithCreditCardId(Guid creditCardId)
     {
         return new TransactionCardToUserCreatedEvent(
-            creditCardId,
             Guid.NewGuid().ToString(),
+            creditCardId,
             Amount);
     }
     
     public static TransactionCardToUserCreatedEvent CreateWithToUserId(string toUserId)
     {
         return new TransactionCardToUserCreatedEvent(
-            Guid.NewGuid(),
             toUserId,
+            Guid.NewGuid(),
             Amount);
     }
     
     public static TransactionCardToUserCreatedEvent CreateWithAmount(decimal amount)
     {
         return new TransactionCardToUserCreatedEvent(
-            Guid.NewGuid(),
             Guid.NewGuid().ToString(),
+            Guid.NewGuid(),
             amount);
     }
 }

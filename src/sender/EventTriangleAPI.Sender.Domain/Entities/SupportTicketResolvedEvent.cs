@@ -8,15 +8,18 @@ public class SupportTicketResolvedEvent
 {
     public Guid Id { get; private set; }
     
+    public string RequesterId { get; private set; }
+    
     public Guid TicketId { get; private set; }
     
     public string TicketJustification { get; private set; }
     
     public DateTime CreatedAt { get; private set; }
 
-    public SupportTicketResolvedEvent(Guid ticketId, string ticketJustification)
+    public SupportTicketResolvedEvent(string requesterId, Guid ticketId, string ticketJustification)
     {
         Id = Guid.NewGuid();
+        RequesterId = requesterId;
         TicketId = ticketId;
         TicketJustification = ticketJustification;
         CreatedAt = DateTime.UtcNow;
@@ -26,6 +29,6 @@ public class SupportTicketResolvedEvent
 
     public SupportTicketResolvedEventMessage CreateEventMessage()
     {
-        return new SupportTicketResolvedEventMessage(Id, TicketId, TicketJustification, CreatedAt);
+        return new SupportTicketResolvedEventMessage(Id, RequesterId, TicketId, TicketJustification, CreatedAt);
     }
 }

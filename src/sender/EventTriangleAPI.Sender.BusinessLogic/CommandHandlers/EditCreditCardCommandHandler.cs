@@ -20,7 +20,7 @@ public class EditCreditCardCommandHandler : ICommandHandler<EditCreditCardComman
     {
         var creditCardChangedEvent = new CreditCardChangedEvent(
             command.CardId,
-            command.UserId,
+            command.RequesterId,
             command.HolderName,
             command.CardNumber,
             command.Cvv,

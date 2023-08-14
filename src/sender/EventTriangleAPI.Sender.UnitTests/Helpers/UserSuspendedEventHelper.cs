@@ -6,11 +6,11 @@ public class UserSuspendedEventHelper
 {
     public static UserSuspendedEvent CreateSuccess()
     {
-        return new UserSuspendedEvent(Guid.NewGuid().ToString());
+        return new UserSuspendedEvent(Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
     }
     
     public static UserSuspendedEvent CreateWithUserId(string userId)
     {
-        return new UserSuspendedEvent(userId);
+        return new UserSuspendedEvent(Guid.NewGuid().ToString(), userId);
     }
 }

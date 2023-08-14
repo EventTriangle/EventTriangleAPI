@@ -19,8 +19,8 @@ public class TopUpAccountBalanceCommandHandler : ICommandHandler<TopUpAccountBal
     public async Task<IResult<TransactionCardToUserCreatedEvent, Error>> HandleAsync(TopUpAccountBalanceCommand command)
     {
         var transactionCreatedEvent = new TransactionCardToUserCreatedEvent(
+            command.RequesterId,
             command.CreditCardId,
-            command.ToUserId,
             command.Amount);
 
         _context.TransactionCardToUserCreatedEvents.Add(transactionCreatedEvent);
