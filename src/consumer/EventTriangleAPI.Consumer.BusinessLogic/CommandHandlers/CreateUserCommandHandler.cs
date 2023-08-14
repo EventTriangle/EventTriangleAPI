@@ -19,12 +19,12 @@ public class CreateUserCommandHandler : ICommandHandler<CreateUserCommand, UserE
     public async Task<IResult<UserEntity, Error>> HandleAsync(CreateUserCommand command)
     {
         var wallet = new WalletEntity(0);
-        var user = new UserEntity(command.UserId, command.Email, wallet.Id, command.UserRole, command.UserStatus);
+        var newUser = new UserEntity(command.UserId, command.Email, wallet.Id, command.UserRole, command.UserStatus);
 
         _context.WalletEntities.Add(wallet);
-        _context.UserEntities.Add(user);
+        _context.UserEntities.Add(newUser);
         await _context.SaveChangesAsync();
 
-        return new Result<UserEntity>(user);
+        return new Result<UserEntity>(newUser);
     }
 }

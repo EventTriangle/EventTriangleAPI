@@ -22,4 +22,11 @@ public class WalletEntity
         
         new WalletEntityValidator().ValidateAndThrow(this);
     }
+
+    public void UpdateBalance(decimal balance)
+    {
+        Balance = balance;
+        
+        new WalletEntityValidator().ValidateAndThrow(this);
+    }
 }

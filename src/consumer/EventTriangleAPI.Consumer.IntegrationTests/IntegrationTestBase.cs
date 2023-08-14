@@ -9,6 +9,7 @@ using Xunit;
 
 namespace EventTriangleAPI.Consumer.IntegrationTests;
 
+[Collection("Sequential")]
 public class IntegrationTestBase : IAsyncLifetime
 {
     private readonly ConsumerStartup _consumerStartup = new();

@@ -20,7 +20,9 @@ public class CreateTransactionCardToUserCommandHandler : ICommandHandler<CreateT
 
     public async Task<IResult<TransactionEntity, Error>> HandleAsync(CreateTransactionCardToUserCommand command)
     {
-        var user = await _context.UserEntities.FirstOrDefaultAsync(x => x.Id == command.ToUserId);
+        var user = await _context.UserEntities
+            .Include(x => x.Wallet)
+            .FirstOrDefaultAsync(x => x.Id == command.ToUserId);
 
         if (user == null)
         {
@@ -40,7 +42,11 @@ public class CreateTransactionCardToUserCommandHandler : ICommandHandler<CreateT
             command.Amount, 
             TransactionType.FromCardToUser);
 
+        user.Wallet.UpdateBalance(user.Wallet.Balance + command.Amount);
+        
         _context.TransactionEntities.Add(transaction);
+        _context.WalletEntities.Update(user.Wallet);
+        
         await _context.SaveChangesAsync();
 
         return new Result<TransactionEntity>(transaction);

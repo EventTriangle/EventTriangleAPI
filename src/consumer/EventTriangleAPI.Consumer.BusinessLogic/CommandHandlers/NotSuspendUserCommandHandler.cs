@@ -1,7 +1,6 @@
 using EventTriangleAPI.Consumer.Domain.Entities;
 using EventTriangleAPI.Consumer.Persistence;
 using EventTriangleAPI.Shared.Application.Abstractions;
-using EventTriangleAPI.Shared.Application.Proto;
 using EventTriangleAPI.Shared.DTO.Abstractions;
 using EventTriangleAPI.Shared.DTO.Enums;
 using EventTriangleAPI.Shared.DTO.Responses;

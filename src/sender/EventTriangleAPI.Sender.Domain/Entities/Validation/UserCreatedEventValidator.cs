@@ -1,4 +1,3 @@
-using System.Text.RegularExpressions;
 using EventTriangleAPI.Shared.Application.PredicateValidators;
 using FluentValidation;
 
