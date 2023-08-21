@@ -12,15 +12,9 @@ public class AddCreditCardTestThrowBadRequest : IntegrationTestBase
     [Fact]
     public async Task TestAddingTheSameCreditCardAgain()
     {
-        var dima = await CreateUserCommandHandler.HandleAsync(CommandHelper.CreateUserDimaCommand());
+        var dima = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
 
-        var addCreditCardCommand = new AddCreditCardCommand(
-            dima.Response.Id,
-            "Dima",
-            "1234567890123456",
-            "123",
-            "04/12",
-            PaymentNetwork.MasterCard);
+        var addCreditCardCommand = AddCreditCardCommandHelper.CreateCreditCardCommand(dima.Response.Id);
 
          await AddCreditCardCommandHandler.HandleAsync(addCreditCardCommand);
 

@@ -1,4 +1,5 @@
 using EventTriangleAPI.Consumer.BusinessLogic.CommandHandlers;
+using EventTriangleAPI.Consumer.IntegrationTests.Helpers;
 using EventTriangleAPI.Shared.DTO.Enums;
 using EventTriangleAPI.Shared.DTO.Responses;
 using FluentAssertions;
@@ -11,13 +12,7 @@ public class AddCreditCardTestThrowEntityNotFound : IntegrationTestBase
     [Fact]
     public async Task TestRequesterNotFound()
     {
-        var addCreditCardCommand = new AddCreditCardCommand(
-            Guid.NewGuid().ToString(),
-            "Dima",
-            "1234567890123456",
-            "123",
-            "04/12",
-            PaymentNetwork.MasterCard);
+        var addCreditCardCommand = AddCreditCardCommandHelper.CreateCreditCardCommand(Guid.NewGuid().ToString());
 
         var addCreditCardResult = await AddCreditCardCommandHandler.HandleAsync(addCreditCardCommand);
 

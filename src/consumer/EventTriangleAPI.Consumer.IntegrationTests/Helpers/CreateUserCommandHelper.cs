@@ -3,7 +3,7 @@ using EventTriangleAPI.Shared.DTO.Enums;
 
 namespace EventTriangleAPI.Consumer.IntegrationTests.Helpers;
 
-public static class CommandHelper
+public static class CreateUserCommandHelper
 {
     private const string DimaEmail = "dima@gmail.com";
     private const string AliceEmail = "alice@gmail.com";

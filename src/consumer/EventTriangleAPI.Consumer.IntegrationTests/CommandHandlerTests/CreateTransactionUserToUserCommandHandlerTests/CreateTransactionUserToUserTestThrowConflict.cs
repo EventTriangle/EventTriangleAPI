@@ -12,16 +12,10 @@ public class CreateTransactionUserToUserTestThrowConflict : IntegrationTestBase
     [Fact]
     public async Task TestTransactionAmountGreaterThanBalance()
     {
-        var dima = await CreateUserCommandHandler.HandleAsync(CommandHelper.CreateUserDimaCommand());
-        var alice = await CreateUserCommandHandler.HandleAsync(CommandHelper.CreateUserAliceCommand());
+        var dima = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
+        var alice = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserAliceCommand());
         
-        var addCreditCardForDimaCommand = new AddCreditCardCommand(
-            dima.Response.Id,
-            "Dima",
-            "1234567890123456",
-            "123",
-            "04/12",
-            PaymentNetwork.MasterCard);
+        var addCreditCardForDimaCommand = AddCreditCardCommandHelper.CreateCreditCardCommand(dima.Response.Id);
 
         var addCreditCardForDimaResult = await AddCreditCardCommandHandler.HandleAsync(addCreditCardForDimaCommand);
 

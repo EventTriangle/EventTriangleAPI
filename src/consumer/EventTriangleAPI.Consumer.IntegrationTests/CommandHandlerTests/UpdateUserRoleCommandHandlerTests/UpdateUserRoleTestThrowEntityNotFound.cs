@@ -12,7 +12,7 @@ public class UpdateUserRoleTestThrowEntityNotFound : IntegrationTestBase
     [Fact]
     public async void TestRequesterNotFound()
     {
-        var alice = await CreateUserCommandHandler.HandleAsync(CommandHelper.CreateUserAliceCommand());
+        var alice = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserAliceCommand());
 
         var updateUserRoleCommand = new UpdateUserRoleCommand(Guid.NewGuid().ToString(), alice.Response.Id, UserRole.Admin);
 
@@ -24,7 +24,7 @@ public class UpdateUserRoleTestThrowEntityNotFound : IntegrationTestBase
     [Fact]
     public async void TestUserNotFound()
     {
-        var dima = await CreateUserCommandHandler.HandleAsync(CommandHelper.CreateUserDimaCommand());
+        var dima = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
 
         var updateUserRoleCommand = new UpdateUserRoleCommand(dima.Response.Id, Guid.NewGuid().ToString(), UserRole.Admin);
 

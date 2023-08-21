@@ -12,16 +12,10 @@ public class AddCreditCardTestSuccess : IntegrationTestBase
     [Fact]
     public async Task TestSuccess()
     {
-        var dima = await CreateUserCommandHandler.HandleAsync(CommandHelper.CreateUserDimaCommand());
+        var dima = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
 
-        var addCreditCardCommand = new AddCreditCardCommand(
-            dima.Response.Id,
-            "Dima",
-            "1234567890123456",
-            "123",
-            "04/12",
-            PaymentNetwork.MasterCard);
-
+        var addCreditCardCommand = AddCreditCardCommandHelper.CreateCreditCardCommand(dima.Response.Id);
+        
         var addCreditCardResult = await AddCreditCardCommandHandler.HandleAsync(addCreditCardCommand);
 
         var creditCard = await DatabaseContextFixture.CreditCardEntities

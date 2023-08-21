@@ -11,7 +11,7 @@ public class CreateTransactionUserToUserTestThrowEntityNotFound : IntegrationTes
     [Fact]
     public async Task TestRequesterNotFound()
     {
-        var alice = await CreateUserCommandHandler.HandleAsync(CommandHelper.CreateUserAliceCommand());
+        var alice = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserAliceCommand());
         
         var createTransactionUserToUserByNobodyCommand = new CreateTransactionUserToUserCommand(
             Guid.NewGuid().ToString(),
@@ -27,7 +27,7 @@ public class CreateTransactionUserToUserTestThrowEntityNotFound : IntegrationTes
     [Fact]
     public async Task TestUserNotFound()
     {
-        var dima = await CreateUserCommandHandler.HandleAsync(CommandHelper.CreateUserDimaCommand());
+        var dima = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
 
         var createTransactionUserToUserForNobodyCommand = new CreateTransactionUserToUserCommand(
             dima.Response.Id,

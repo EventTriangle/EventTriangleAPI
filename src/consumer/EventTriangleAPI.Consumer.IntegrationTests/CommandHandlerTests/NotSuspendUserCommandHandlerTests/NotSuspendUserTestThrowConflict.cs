@@ -11,8 +11,8 @@ public class NotSuspendUserTestThrowConflict : IntegrationTestBase
     [Fact]
     public async Task TestRequesterIsNotAdmin()
     {
-        var bob = await CreateUserCommandHandler.HandleAsync(CommandHelper.CreateUserBobCommand());
-        var alice = await CreateUserCommandHandler.HandleAsync(CommandHelper.CreateUserAliceCommand());
+        var bob = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserBobCommand());
+        var alice = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserAliceCommand());
         
         var notSuspendUserCommand = new NotSuspendUserCommand(bob.Response.Id, alice.Response.Id);
 

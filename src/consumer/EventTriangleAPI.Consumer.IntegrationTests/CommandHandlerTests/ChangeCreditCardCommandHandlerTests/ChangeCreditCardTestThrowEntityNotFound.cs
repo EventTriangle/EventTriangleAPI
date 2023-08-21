@@ -12,7 +12,7 @@ public class ChangeCreditCardTestThrowEntityNotFound : IntegrationTestBase
     [Fact]
     public async Task TestCreditCardNotFound()
     {
-        var dima = await CreateUserCommandHandler.HandleAsync(CommandHelper.CreateUserDimaCommand());
+        var dima = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
 
         var changeCreditCardCommand = new ChangeCreditCardCommand(
             Guid.NewGuid(),

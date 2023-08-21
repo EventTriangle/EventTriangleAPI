@@ -9,7 +9,7 @@ public class ResolveSupportTicketTestThrowEntityNotFound : IntegrationTestBase
     [Fact]
     public async Task TestRequesterNotFound()
     {
-        var alice = await CreateUserCommandHandler.HandleAsync(CommandHelper.CreateUserAliceCommand());
+        var alice = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserAliceCommand());
         
         var openSupportTicketCommand = new OpenSupportTicketCommand(
             alice.Response.Id,
@@ -29,7 +29,7 @@ public class ResolveSupportTicketTestThrowEntityNotFound : IntegrationTestBase
     [Fact]
     public async Task TestSupportTicketNotFound()
     {
-        var dima = await CreateUserCommandHandler.HandleAsync(CommandHelper.CreateUserDimaCommand());
+        var dima = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
         
         var resolveSupportTicketCommand =  new ResolveSupportTicketCommand(
             dima.Response.Id, 

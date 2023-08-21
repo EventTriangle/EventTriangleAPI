@@ -12,16 +12,10 @@ public class RollBackTransactionTestThrowConflict : IntegrationTestBase
     [Fact]
     public async Task TestRequesterIsNotAdmin()
     {
-        var alice = await CreateUserCommandHandler.HandleAsync(CommandHelper.CreateUserAliceCommand());
-        var bob = await CreateUserCommandHandler.HandleAsync(CommandHelper.CreateUserBobCommand());
+        var alice = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserAliceCommand());
+        var bob = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserBobCommand());
 
-        var addCreditCardCommand = new AddCreditCardCommand(
-            bob.Response.Id,
-            "Bob",
-            "1111222233334444",
-            "123",
-            "12/11",
-            PaymentNetwork.Visa);
+        var addCreditCardCommand = AddCreditCardCommandHelper.CreateCreditCardCommand(bob.Response.Id);
 
         var addCreditCardResult = await AddCreditCardCommandHandler.HandleAsync(addCreditCardCommand);
         

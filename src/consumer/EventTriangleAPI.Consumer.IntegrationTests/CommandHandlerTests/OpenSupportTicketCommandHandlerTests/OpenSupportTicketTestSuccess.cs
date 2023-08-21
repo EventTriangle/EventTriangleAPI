@@ -11,7 +11,7 @@ public class OpenSupportTicketTestSuccess : IntegrationTestBase
     [Fact]
     public async Task TestSuccess()
     {
-        var alice = await CreateUserCommandHandler.HandleAsync(CommandHelper.CreateUserAliceCommand());
+        var alice = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserAliceCommand());
 
         var openSupportTicketCommand = new OpenSupportTicketCommand(
             alice.Response.Id,

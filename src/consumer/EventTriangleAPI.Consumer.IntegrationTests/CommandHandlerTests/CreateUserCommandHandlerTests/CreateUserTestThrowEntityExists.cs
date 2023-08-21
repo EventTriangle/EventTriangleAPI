@@ -10,7 +10,7 @@ public class CreateUserTestThrowEntityExists : IntegrationTestBase
     [Fact]
     public async Task TestUserAlreadyExists()
     {
-        var createUserCommand = CommandHelper.CreateUserDimaCommand();
+        var createUserCommand = CreateUserCommandHelper.CreateUserDimaCommand();
         
         await CreateUserCommandHandler.HandleAsync(createUserCommand);
         

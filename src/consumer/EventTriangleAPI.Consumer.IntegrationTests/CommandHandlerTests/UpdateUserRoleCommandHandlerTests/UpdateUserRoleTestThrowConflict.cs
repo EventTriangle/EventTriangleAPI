@@ -12,8 +12,8 @@ public class UpdateUserRoleTestThrowConflict : IntegrationTestBase
     [Fact]
     public async void TestConflict()
     {
-        var bob = await CreateUserCommandHandler.HandleAsync(CommandHelper.CreateUserBobCommand());
-        var alice = await CreateUserCommandHandler.HandleAsync(CommandHelper.CreateUserAliceCommand());
+        var bob = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserBobCommand());
+        var alice = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserAliceCommand());
 
         var updateUserRoleCommand = new UpdateUserRoleCommand(bob.Response.Id, alice.Response.Id, UserRole.Admin);
 

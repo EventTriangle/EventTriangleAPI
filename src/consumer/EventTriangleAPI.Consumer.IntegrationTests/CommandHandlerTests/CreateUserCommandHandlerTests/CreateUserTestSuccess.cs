@@ -10,7 +10,7 @@ public class CreateUserTestSuccess : IntegrationTestBase
     [Fact]
     public async Task TestSuccess()
     {
-        var createUserCommand = CommandHelper.CreateUserDimaCommand();
+        var createUserCommand = CreateUserCommandHelper.CreateUserDimaCommand();
 
         await CreateUserCommandHandler.HandleAsync(createUserCommand);
 

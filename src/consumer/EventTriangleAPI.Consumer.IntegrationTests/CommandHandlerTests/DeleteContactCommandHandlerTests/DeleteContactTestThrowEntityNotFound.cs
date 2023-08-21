@@ -11,7 +11,7 @@ public class DeleteContactTestThrowEntityNotFound : IntegrationTestBase
     [Fact]
     public async Task TestRequesterNotFound()
     {
-        var alice = await CreateUserCommandHandler.HandleAsync(CommandHelper.CreateUserAliceCommand());
+        var alice = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserAliceCommand());
 
         var deleteContactByNobodyCommand = new DeleteContactCommand(Guid.NewGuid().ToString(), alice.Response.Id);
 
@@ -23,7 +23,7 @@ public class DeleteContactTestThrowEntityNotFound : IntegrationTestBase
     [Fact]
     public async Task TestContactNotFound()
     {
-        var dima = await CreateUserCommandHandler.HandleAsync(CommandHelper.CreateUserDimaCommand());
+        var dima = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
 
         var deleteContactWithNobodyCommand = new DeleteContactCommand(dima.Response.Id, Guid.NewGuid().ToString());
 

@@ -11,7 +11,7 @@ public class OpenSupportTicketTestThrowEntityNotFound : IntegrationTestBase
     [Fact]
     public async Task TestRequesterNotFound()
     {
-        var alice = await CreateUserCommandHandler.HandleAsync(CommandHelper.CreateUserAliceCommand());
+        var alice = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserAliceCommand());
 
         var openSupportTicketCommand = new OpenSupportTicketCommand(
             Guid.NewGuid().ToString(),
@@ -26,7 +26,7 @@ public class OpenSupportTicketTestThrowEntityNotFound : IntegrationTestBase
     [Fact]
     public async Task TestWalletNotFound()
     {
-        var alice = await CreateUserCommandHandler.HandleAsync(CommandHelper.CreateUserAliceCommand());
+        var alice = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserAliceCommand());
 
         var openSupportTicketCommand = new OpenSupportTicketCommand(
             alice.Response.Id,

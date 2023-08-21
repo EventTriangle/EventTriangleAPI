@@ -13,8 +13,8 @@ public class NotSuspendUserTestThrowEntityNotFound : IntegrationTestBase
     [Fact]
     public async Task TestRequesterNotFound()
     {
-        var dima = await CreateUserCommandHandler.HandleAsync(CommandHelper.CreateUserDimaCommand());
-        var alice = await CreateUserCommandHandler.HandleAsync(CommandHelper.CreateUserAliceCommand());
+        var dima = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
+        var alice = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserAliceCommand());
         
         var suspendUserCommand = new SuspendUserCommand(dima.Response.Id, alice.Response.Id);
         
@@ -35,7 +35,7 @@ public class NotSuspendUserTestThrowEntityNotFound : IntegrationTestBase
     [Fact]
     public async Task TestUserNotFound()
     {
-        var dima = await CreateUserCommandHandler.HandleAsync(CommandHelper.CreateUserDimaCommand());
+        var dima = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
         
         var notSuspendUserCommand = new NotSuspendUserCommand(dima.Response.Id, Guid.NewGuid().ToString());
 
