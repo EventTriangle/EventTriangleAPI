@@ -20,7 +20,7 @@ public class ChangeCreditCardCommandHandler : ICommandHandler<ChangeCreditCardCo
     public async Task<IResult<CreditCardEntity, Error>> HandleAsync(ChangeCreditCardCommand command)
     {
         var creditCard = await _context.CreditCardEntities
-            .FirstOrDefaultAsync(x => x.Id == command.CardId && x.UserId == command.UserId);
+            .FirstOrDefaultAsync(x => x.Id == command.CardId && x.UserId == command.RequesterId);
 
         if (creditCard == null)
         {

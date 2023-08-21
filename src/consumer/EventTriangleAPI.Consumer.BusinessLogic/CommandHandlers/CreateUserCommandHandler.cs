@@ -4,6 +4,7 @@ using EventTriangleAPI.Shared.Application.Abstractions;
 using EventTriangleAPI.Shared.DTO.Abstractions;
 using EventTriangleAPI.Shared.DTO.Responses;
 using EventTriangleAPI.Shared.DTO.Responses.Errors;
+using Microsoft.EntityFrameworkCore;
 
 namespace EventTriangleAPI.Consumer.BusinessLogic.CommandHandlers;
 
@@ -18,6 +19,13 @@ public class CreateUserCommandHandler : ICommandHandler<CreateUserCommand, UserE
 
     public async Task<IResult<UserEntity, Error>> HandleAsync(CreateUserCommand command)
     {
+        var user = await _context.UserEntities.FirstOrDefaultAsync(x => x.Id == command.UserId);
+
+        if (user != null)
+        {
+            return new Result<UserEntity>(new DbEntityExistsError("User already exists"));
+        }
+        
         var wallet = new WalletEntity(0);
         var newUser = new UserEntity(command.UserId, command.Email, wallet.Id, command.UserRole, command.UserStatus);
 

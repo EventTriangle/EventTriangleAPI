@@ -20,13 +20,13 @@ public class CreateTransactionCardToUserCommandHandler : ICommandHandler<CreateT
 
     public async Task<IResult<TransactionEntity, Error>> HandleAsync(CreateTransactionCardToUserCommand command)
     {
-        var user = await _context.UserEntities
+        var requester = await _context.UserEntities
             .Include(x => x.Wallet)
-            .FirstOrDefaultAsync(x => x.Id == command.ToUserId);
+            .FirstOrDefaultAsync(x => x.Id == command.RequesterId);
 
-        if (user == null)
+        if (requester == null)
         {
-            return new Result<TransactionEntity>(new DbEntityNotFoundError("User not found"));
+            return new Result<TransactionEntity>(new DbEntityNotFoundError("Requester not found"));
         }
 
         var creditCard = await _context.CreditCardEntities.FirstOrDefaultAsync(x => x.Id == command.CreditCardId);
@@ -37,15 +37,15 @@ public class CreateTransactionCardToUserCommandHandler : ICommandHandler<CreateT
         }
         
         var transaction = new TransactionEntity(
-            command.ToUserId, 
-            command.ToUserId, 
+            command.RequesterId, 
+            command.RequesterId, 
             command.Amount, 
             TransactionType.FromCardToUser);
 
-        user.Wallet.UpdateBalance(user.Wallet.Balance + command.Amount);
+        requester.Wallet.UpdateBalance(requester.Wallet.Balance + command.Amount);
         
         _context.TransactionEntities.Add(transaction);
-        _context.WalletEntities.Update(user.Wallet);
+        _context.WalletEntities.Update(requester.Wallet);
         
         await _context.SaveChangesAsync();
 

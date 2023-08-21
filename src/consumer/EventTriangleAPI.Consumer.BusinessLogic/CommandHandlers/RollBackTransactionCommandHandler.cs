@@ -20,7 +20,24 @@ public class RollBackTransactionCommandHandler : ICommandHandler<RollBackTransac
 
     public async Task<IResult<TransactionEntity, Error>> HandleAsync(RollBackTransactionCommand command)
     {
-        var transaction = await _context.TransactionEntities.FirstOrDefaultAsync(x => x.Id == command.TransactionId);
+        var requester = await _context.UserEntities.FirstOrDefaultAsync(x => x.Id == command.RequesterId);
+
+        if (requester == null)
+        {
+            return new Result<TransactionEntity>(new DbEntityNotFoundError("Requester not found"));
+        }
+
+        if (requester.UserRole != UserRole.Admin)
+        {
+            return new Result<TransactionEntity>(new ConflictError("Requester is not admin"));
+        }
+        
+        var transaction = await _context.TransactionEntities
+            .Include(x => x.FromUser)
+            .ThenInclude(x => x.Wallet)
+            .Include(x => x.ToUser)
+            .ThenInclude(x => x.Wallet)
+            .FirstOrDefaultAsync(x => x.Id == command.TransactionId);
 
         if (transaction == null)
         {
@@ -28,6 +45,8 @@ public class RollBackTransactionCommandHandler : ICommandHandler<RollBackTransac
         }
         
         transaction.UpdateTransactionState(TransactionState.RolledBack);
+        transaction.FromUser.Wallet.UpdateBalance(transaction.FromUser.Wallet.Balance + transaction.Amount);
+        transaction.ToUser.Wallet.UpdateBalance(transaction.FromUser.Wallet.Balance + transaction.Amount);
         
         _context.TransactionEntities.Update(transaction);
         await _context.SaveChangesAsync();

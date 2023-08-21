@@ -19,8 +19,15 @@ public class DeleteContactCommandHandler : ICommandHandler<DeleteContactCommand,
 
     public async Task<IResult<ContactEntity, Error>> HandleAsync(DeleteContactCommand command)
     {
+        var requester = await _context.UserEntities.FirstOrDefaultAsync(x => x.Id == command.RequesterId);
+
+        if (requester == null)
+        {
+            return new Result<ContactEntity>(new DbEntityNotFoundError("Requester not found"));
+        }
+        
         var contact = await _context.ContactEntities
-            .FirstOrDefaultAsync(x => x.UserId == command.UserId && x.ContactId == command.ContactId);
+            .FirstOrDefaultAsync(x => x.UserId == command.RequesterId && x.ContactId == command.ContactId);
 
         if (contact == null)
         {
