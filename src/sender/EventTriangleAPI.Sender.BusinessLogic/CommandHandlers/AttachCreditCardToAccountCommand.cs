@@ -4,7 +4,7 @@ using EventTriangleAPI.Shared.DTO.Enums;
 namespace EventTriangleAPI.Sender.BusinessLogic.CommandHandlers;
 
 public record AttachCreditCardToAccountCommand(
-    string UserId,
+    string RequesterId,
     string HolderName,
     string CardNumber,
     string Expiration,

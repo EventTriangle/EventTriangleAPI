@@ -10,7 +10,7 @@ public class ResolveSupportTicketCommandHandlerTest : IntegrationTestBase, IInte
     [Fact]
     public async Task Test()
     {
-        var command = new ResolveSupportTicketCommand(Guid.NewGuid(), Guid.NewGuid().ToString());
+        var command = new ResolveSupportTicketCommand(Guid.NewGuid().ToString(), Guid.NewGuid(), Guid.NewGuid().ToString());
         
         var result = await ResolveSupportTicketCommandHandler.HandleAsync(command);
 

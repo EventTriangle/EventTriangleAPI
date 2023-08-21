@@ -11,7 +11,7 @@ public class UpdateUserRoleCommandHandlerTest : IntegrationTestBase, IIntegratio
     [Fact]
     public async Task Test()
     {
-        var command = new UpdateUserRoleCommand(Guid.NewGuid().ToString(), UserRole.Admin);
+        var command = new UpdateUserRoleCommand(Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), UserRole.Admin);
         
         var result = await UpdateUserRoleCommandHandler.HandleAsync(command);
 

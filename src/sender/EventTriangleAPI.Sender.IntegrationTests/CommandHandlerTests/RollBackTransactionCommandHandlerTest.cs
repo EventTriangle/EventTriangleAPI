@@ -10,7 +10,7 @@ public class RollBackTransactionCommandHandlerTest : IntegrationTestBase, IInteg
     [Fact]
     public async Task Test()
     {
-        var command = new RollBackTransactionCommand(Guid.NewGuid());
+        var command = new RollBackTransactionCommand(Guid.NewGuid().ToString(), Guid.NewGuid());
         
         var result = await RollBackTransactionCommandHandler.HandleAsync(command);
 

@@ -8,16 +8,16 @@ public class ContactCreatedEvent
 {
     public Guid Id { get; private set; }
 
-    public string UserId { get; private set; }
+    public string RequesterId { get; private set; }
 
     public string ContactId { get; private set; }
 
     public DateTime CreatedAt { get; private set; }
     
-    public ContactCreatedEvent(string userId, string contactId)
+    public ContactCreatedEvent(string requesterId, string contactId)
     {
         Id = Guid.NewGuid();
-        UserId = userId;
+        RequesterId = requesterId;
         ContactId = contactId;
         CreatedAt = DateTime.UtcNow;
         
@@ -26,6 +26,6 @@ public class ContactCreatedEvent
 
     public ContactCreatedEventMessage CreateEventMessage()
     {
-        return new ContactCreatedEventMessage(Id, UserId, ContactId, CreatedAt);
+        return new ContactCreatedEventMessage(Id, RequesterId, ContactId, CreatedAt);
     }
 }

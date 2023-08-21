@@ -1,4 +1,6 @@
+using EventTriangleAPI.Consumer.Domain.Entities.Validation;
 using EventTriangleAPI.Shared.DTO.Enums;
+using FluentValidation;
 
 namespace EventTriangleAPI.Consumer.Domain.Entities;
 
@@ -22,12 +24,23 @@ public class TransactionEntity
 
     public DateTime CreatedAt { get; private set; }
 
-    public TransactionEntity(string fromUserId, string toUserId, TransactionType transactionType)
+    public TransactionEntity(string fromUserId, string toUserId, decimal amount, TransactionType transactionType)
     {
+        Id = Guid.NewGuid();
         FromUserId = fromUserId;
         ToUserId = toUserId;
+        Amount = amount;
         TransactionState = TransactionState.Completed;
         TransactionType = transactionType;
         CreatedAt = DateTime.UtcNow;
+        
+        new TransactionEntityValidator().ValidateAndThrow(this);
+    }
+
+    public void UpdateTransactionState(TransactionState transactionState)
+    {
+        TransactionState = transactionState;
+        
+        new TransactionEntityValidator().ValidateAndThrow(this);
     }
 }

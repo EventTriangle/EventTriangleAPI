@@ -8,6 +8,5 @@ public class ContactEntityValidator : AbstractValidator<ContactEntity>
     {
         RuleFor(x => x.UserId).NotEmpty();
         RuleFor(x => x.ContactId).NotEmpty();
-        RuleFor(x => x.ContactUsername).NotEmpty();
     }
 }

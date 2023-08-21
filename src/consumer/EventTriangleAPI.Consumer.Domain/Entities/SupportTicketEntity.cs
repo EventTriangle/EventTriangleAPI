@@ -32,4 +32,18 @@ public class SupportTicketEntity
         
         new SupportTicketEntityValidator().ValidateAndThrow(this);
     }
+
+    public void UpdateTicketJustification(string ticketJustification)
+    {
+        TicketJustification = ticketJustification;
+        
+        new SupportTicketEntityValidator().ValidateAndThrow(this);
+    }
+    
+    public void UpdateTicketStatus(TicketStatus ticketStatus)
+    {
+        TicketStatus = ticketStatus;
+        
+        new SupportTicketEntityValidator().ValidateAndThrow(this);
+    }
 }

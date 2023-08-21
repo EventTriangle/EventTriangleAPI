@@ -25,16 +25,6 @@ public class SupportTicketOpenedEventTests
         createSupportTicketOpenedEvent.Should().ThrowExactly<ValidationException>();
     }
     
-    [Theory]
-    [InlineData("")]
-    [InlineData(null)]
-    public void TestThrowUsername(string username)
-    {
-        var createSupportTicketOpenedEvent = () => SupportTicketOpenedEventHelper.CreateWithUsername(username);
-
-        createSupportTicketOpenedEvent.Should().ThrowExactly<ValidationException>();
-    }
-    
     [Fact]
     public void TestThrowWalletId()
     {

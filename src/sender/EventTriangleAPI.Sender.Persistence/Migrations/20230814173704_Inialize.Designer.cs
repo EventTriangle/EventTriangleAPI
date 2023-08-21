@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace EventTriangleAPI.Sender.Persistence.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20230807102241_Initialize")]
-    partial class Initialize
+    [Migration("20230814173704_Inialize")]
+    partial class Inialize
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -36,7 +36,7 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("UserId")
+                    b.Property<string>("RequesterId")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -56,7 +56,7 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("UserId")
+                    b.Property<string>("RequesterId")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -68,9 +68,6 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("CardId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("CardNumber")
@@ -91,7 +88,7 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
                     b.Property<int>("PaymentNetwork")
                         .HasColumnType("integer");
 
-                    b.Property<string>("UserId")
+                    b.Property<string>("RequesterId")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -126,7 +123,7 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
                     b.Property<int>("PaymentNetwork")
                         .HasColumnType("integer");
 
-                    b.Property<string>("UserId")
+                    b.Property<string>("RequesterId")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -146,7 +143,7 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("UserId")
+                    b.Property<string>("RequesterId")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -163,13 +160,10 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("RequesterId")
+                        .HasColumnType("text");
+
                     b.Property<string>("TicketReason")
-                        .HasColumnType("text");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Username")
                         .HasColumnType("text");
 
                     b.Property<Guid>("WalletId")
@@ -188,6 +182,9 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("RequesterId")
+                        .HasColumnType("text");
 
                     b.Property<Guid>("TicketId")
                         .HasColumnType("uuid");
@@ -215,7 +212,7 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
                     b.Property<Guid>("CreditCardId")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("ToUserId")
+                    b.Property<string>("RequesterId")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -231,6 +228,9 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("RequesterId")
+                        .HasColumnType("text");
 
                     b.Property<Guid>("TransactionId")
                         .HasColumnType("uuid");
@@ -252,7 +252,7 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("FromUserId")
+                    b.Property<string>("RequesterId")
                         .HasColumnType("text");
 
                     b.Property<string>("ToUserId")
@@ -298,6 +298,9 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("RequesterId")
+                        .HasColumnType("text");
+
                     b.Property<string>("UserId")
                         .HasColumnType("text");
 
@@ -314,6 +317,9 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("RequesterId")
+                        .HasColumnType("text");
 
                     b.Property<string>("UserId")
                         .HasColumnType("text");
@@ -334,6 +340,9 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("RequesterId")
+                        .HasColumnType("text");
 
                     b.Property<string>("UserId")
                         .HasColumnType("text");

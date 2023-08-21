@@ -1,3 +1,4 @@
+using EventTriangleAPI.Consumer.BusinessLogic.CommandHandlers;
 using EventTriangleAPI.Shared.DTO.Messages;
 using MassTransit;
 
@@ -19,73 +20,175 @@ public class EventConsumer :
     IConsumer<UserRoleUpdatedEventMessage>,
     IConsumer<UserSuspendedEventMessage>
 {
-    public Task Consume(ConsumeContext<ContactCreatedEventMessage> context)
+    private readonly CreateContactCommandHandler _createContactCommandHandler;
+    private readonly DeleteContactCommandHandler _deleteContactCommandHandler;
+    private readonly AddCreditCardCommandHandler _addCreditCardCommandHandler;
+    private readonly ChangeCreditCardCommandHandler _changeCreditCardCommandHandler;
+    private readonly DeleteCreditCardCommandHandler _deleteCreditCardCommandHandler;
+    private readonly OpenSupportTicketCommandHandler _openSupportTicketCommandHandler;
+    private readonly ResolveSupportTicketCommandHandler _resolveSupportTicketCommandHandler;
+    private readonly CreateTransactionCardToUserCommandHandler _createTransactionCardToUserCommandHandler;
+    private readonly CreateTransactionUserToUserCommandHandler _createTransactionUserToUserCommandHandler;
+    private readonly RollBackTransactionCommandHandler _rollBackTransactionCommandHandler;
+    private readonly CreateUserCommandHandler _createUserCommandHandler;
+    private readonly NotSuspendUserCommandHandler _notSuspendUserCommandHandler;
+    private readonly UpdateUserRoleCommandHandler _updateUserRoleCommandHandler;
+    private readonly SuspendUserCommandHandler _suspendUserCommandHandler;
+    
+    public EventConsumer(
+        CreateContactCommandHandler createContactCommandHandler, 
+        DeleteContactCommandHandler deleteContactCommandHandler, 
+        AddCreditCardCommandHandler addCreditCardCommandHandler,
+        ChangeCreditCardCommandHandler changeCreditCardCommandHandler, 
+        DeleteCreditCardCommandHandler deleteCreditCardCommandHandler, 
+        OpenSupportTicketCommandHandler openSupportTicketCommandHandler, 
+        ResolveSupportTicketCommandHandler resolveSupportTicketCommandHandler, 
+        CreateTransactionCardToUserCommandHandler createTransactionCardToUserCommandHandler, 
+        CreateTransactionUserToUserCommandHandler createTransactionUserToUserCommandHandler, 
+        RollBackTransactionCommandHandler rollBackTransactionCommandHandler, 
+        CreateUserCommandHandler createUserCommandHandler, 
+        NotSuspendUserCommandHandler notSuspendUserCommandHandler, 
+        UpdateUserRoleCommandHandler updateUserRoleCommandHandler,
+        SuspendUserCommandHandler suspendUserCommandHandler)
     {
-        throw new NotImplementedException();
+        _createContactCommandHandler = createContactCommandHandler;
+        _deleteContactCommandHandler = deleteContactCommandHandler;
+        _addCreditCardCommandHandler = addCreditCardCommandHandler;
+        _changeCreditCardCommandHandler = changeCreditCardCommandHandler;
+        _deleteCreditCardCommandHandler = deleteCreditCardCommandHandler;
+        _openSupportTicketCommandHandler = openSupportTicketCommandHandler;
+        _resolveSupportTicketCommandHandler = resolveSupportTicketCommandHandler;
+        _createTransactionCardToUserCommandHandler = createTransactionCardToUserCommandHandler;
+        _createTransactionUserToUserCommandHandler = createTransactionUserToUserCommandHandler;
+        _rollBackTransactionCommandHandler = rollBackTransactionCommandHandler;
+        _createUserCommandHandler = createUserCommandHandler;
+        _notSuspendUserCommandHandler = notSuspendUserCommandHandler;
+        _updateUserRoleCommandHandler = updateUserRoleCommandHandler;
+        _suspendUserCommandHandler = suspendUserCommandHandler;
     }
 
-    public Task Consume(ConsumeContext<ContactDeletedEventMessage> context)
+    public async Task Consume(ConsumeContext<ContactCreatedEventMessage> context)
     {
-        throw new NotImplementedException();
+        var message = context.Message;
+        var command = new CreateContactCommand(message.RequesterId, message.ContactId);
+
+        await _createContactCommandHandler.HandleAsync(command);
     }
 
-    public Task Consume(ConsumeContext<CreditCardAddedEventMessage> context)
+    public async Task Consume(ConsumeContext<ContactDeletedEventMessage> context)
     {
-        throw new NotImplementedException();
+        var message = context.Message;
+        var command = new DeleteContactCommand(message.RequesterId, message.ContactId);
+
+        await _deleteContactCommandHandler.HandleAsync(command);
     }
 
-    public Task Consume(ConsumeContext<CreditCardChangedEventMessage> context)
+    public async Task Consume(ConsumeContext<CreditCardAddedEventMessage> context)
     {
-        throw new NotImplementedException();
+        var message = context.Message;
+        var command = new AddCreditCardCommand(
+            message.RequesterId,
+            message.HolderName,
+            message.CardNumber,
+            message.Cvv,
+            message.Expiration,
+            message.PaymentNetwork);
+
+        await _addCreditCardCommandHandler.HandleAsync(command);
     }
 
-    public Task Consume(ConsumeContext<CreditCardDeletedEventMessage> context)
+    public async Task Consume(ConsumeContext<CreditCardChangedEventMessage> context)
     {
-        throw new NotImplementedException();
+        var message = context.Message;
+        var command = new ChangeCreditCardCommand(
+            message.CardId, 
+            message.RequesterId, 
+            message.HolderName,
+            message.CardNumber,
+            message.Cvv,
+            message.Expiration,
+            message.PaymentNetwork);
+
+        await _changeCreditCardCommandHandler.HandleAsync(command);
     }
 
-    public Task Consume(ConsumeContext<SupportTicketOpenedEventMessage> context)
+    public async Task Consume(ConsumeContext<CreditCardDeletedEventMessage> context)
     {
-        throw new NotImplementedException();
+        var message = context.Message;
+        var command = new DeleteCreditCardCommand(message.RequesterId, message.CardId);
+
+        await _deleteCreditCardCommandHandler.HandleAsync(command);
     }
 
-    public Task Consume(ConsumeContext<SupportTicketResolvedEventMessage> context)
+    public async Task Consume(ConsumeContext<SupportTicketOpenedEventMessage> context)
     {
-        throw new NotImplementedException();
+        var message = context.Message;
+        var command = new OpenSupportTicketCommand(message.RequesterId, message.WalletId, message.TicketReason);
+
+        await _openSupportTicketCommandHandler.HandleAsync(command);
     }
 
-    public Task Consume(ConsumeContext<TransactionCardToUserCreatedEventMessage> context)
+    public async Task Consume(ConsumeContext<SupportTicketResolvedEventMessage> context)
     {
-        throw new NotImplementedException();
+        var message = context.Message;
+        var command = new ResolveSupportTicketCommand(message.RequesterId, message.TicketId, message.TicketJustification);
+        
+        await _resolveSupportTicketCommandHandler.HandleAsync(command);
     }
 
-    public Task Consume(ConsumeContext<TransactionUserToUserCreatedEventMessage> context)
+    public async Task Consume(ConsumeContext<TransactionCardToUserCreatedEventMessage> context)
     {
-        throw new NotImplementedException();
+        var message = context.Message;
+        var command = new CreateTransactionCardToUserCommand(message.CreditCardId, message.RequesterId, message.Amount);
+
+        await _createTransactionCardToUserCommandHandler.HandleAsync(command);
+    }
+
+    public async Task Consume(ConsumeContext<TransactionUserToUserCreatedEventMessage> context)
+    {
+        var message = context.Message;
+        var command = new CreateTransactionUserToUserCommand(message.RequesterId, message.ToUserId, message.Amount);
+
+        await _createTransactionUserToUserCommandHandler.HandleAsync(command);
     }
     
-    public Task Consume(ConsumeContext<TransactionRollBackedEventMessage> context)
+    public async Task Consume(ConsumeContext<TransactionRollBackedEventMessage> context)
     {
-        throw new NotImplementedException();
+        var message = context.Message;
+        var command = new RollBackTransactionCommand(message.RequesterId, message.TransactionId);
+
+        await _rollBackTransactionCommandHandler.HandleAsync(command);
     }
 
-    public Task Consume(ConsumeContext<UserCreatedEventMessage> context)
+    public async Task Consume(ConsumeContext<UserCreatedEventMessage> context)
     {
-        throw new NotImplementedException();
+        var message = context.Message;
+        var command = new CreateUserCommand(message.UserId, message.Email, message.UserRole, message.UserStatus);
+
+        await _createUserCommandHandler.HandleAsync(command);
     }
 
-    public Task Consume(ConsumeContext<UserNotSuspendedEventMessage> context)
+    public async Task Consume(ConsumeContext<UserNotSuspendedEventMessage> context)
     {
-        throw new NotImplementedException();
+        var message = context.Message;
+        var command = new NotSuspendUserCommand(message.RequesterId, message.UserId);
+
+        await _notSuspendUserCommandHandler.HandleAsync(command);
     }
 
-    public Task Consume(ConsumeContext<UserRoleUpdatedEventMessage> context)
+    public async Task Consume(ConsumeContext<UserRoleUpdatedEventMessage> context)
     {
-        throw new NotImplementedException();
+        var message = context.Message;
+        var command = new UpdateUserRoleCommand(message.RequesterId, message.UserId, message.UserRole);
+
+        await _updateUserRoleCommandHandler.HandleAsync(command);
     }
 
-    public Task Consume(ConsumeContext<UserSuspendedEventMessage> context)
+    public async Task Consume(ConsumeContext<UserSuspendedEventMessage> context)
     {
-        throw new NotImplementedException();
+        var message = context.Message;
+        var command = new SuspendUserCommand(message.RequesterId, message.UserId);
+
+        await _suspendUserCommandHandler.HandleAsync(command);
     }
 }

@@ -20,7 +20,7 @@ public class CreateTransactionUserToUserCommandHandler :
     public async Task<IResult<TransactionUserToUserCreatedEvent, Error>> HandleAsync(CreateTransactionUserToUserCommand command)
     {
         var transactionCreatedEvent = new TransactionUserToUserCreatedEvent(
-            command.FromUserId,
+            command.RequesterId,
             command.ToUserId,
             command.Amount);
 

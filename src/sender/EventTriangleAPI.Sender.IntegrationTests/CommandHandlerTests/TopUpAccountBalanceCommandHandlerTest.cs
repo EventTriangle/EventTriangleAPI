@@ -11,8 +11,8 @@ public class TopUpAccountBalanceCommandHandlerTest : IntegrationTestBase, IInteg
     public async Task Test()
     {
         var command = new TopUpAccountBalanceCommand(
-            Guid.NewGuid(),
             Guid.NewGuid().ToString(),
+            Guid.NewGuid(),
             300);
 
         var result = await TopUpAccountBalanceCommandHandler.HandleAsync(command);

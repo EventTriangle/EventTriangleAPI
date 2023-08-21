@@ -1,6 +1,7 @@
 using EventTriangleAPI.Consumer.BusinessLogic.Consumers;
 using EventTriangleAPI.Consumer.Domain.Constants;
 using EventTriangleAPI.Consumer.Persistence;
+using EventTriangleAPI.Consumer.Presentation.DependencyInjection;
 using EventTriangleAPI.Shared.DTO.Models;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -22,6 +23,8 @@ builder.Services.AddDbContext<DatabaseContext>(options =>
     options.UseNpgsql(databaseConnectionString);
 });
 
+builder.Services.AddCommandHandlers();
+
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddMicrosoftIdentityWebApi(configurationSection);
@@ -38,7 +41,10 @@ builder.Services.AddMassTransit(config =>
             h.Password(rabbitMqConfiguration.Password);
         });
         
-        cfg.ReceiveEndpoint("event-queue", c => { c.Consumer<EventConsumer>(); });
+        cfg.ReceiveEndpoint("event-queue", c =>
+        {
+            c.ConfigureConsumer<EventConsumer>(ctx);
+        });
     });
 });
 

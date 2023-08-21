@@ -30,4 +30,18 @@ public class UserEntity
 
         new UserEntityValidator().ValidateAndThrow(this);
     }
+
+    public void UpdateUserRole(UserRole userRole)
+    {
+        UserRole = userRole;
+        
+        new UserEntityValidator().ValidateAndThrow(this);
+    }
+    
+    public void UpdateUserStatus(UserStatus userStatus)
+    {
+        UserStatus = userStatus;
+
+        new UserEntityValidator().ValidateAndThrow(this);
+    }
 }

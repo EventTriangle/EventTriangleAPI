@@ -9,15 +9,18 @@ public class UserRoleUpdatedEvent
 {
     public Guid Id { get; private set; }
     
+    public string RequesterId { get; private set; }
+    
     public string UserId { get; private set; }
     
     public UserRole UserRole { get; private set; }
     
     public DateTime CreatedAt { get; private set; }
 
-    public UserRoleUpdatedEvent(string userId, UserRole userRole)
+    public UserRoleUpdatedEvent(string requesterId, string userId, UserRole userRole)
     {
         Id = Guid.NewGuid();
+        RequesterId = requesterId;
         UserId = userId;
         UserRole = userRole;
         CreatedAt = DateTime.UtcNow;
@@ -27,6 +30,6 @@ public class UserRoleUpdatedEvent
 
     public UserRoleUpdatedEventMessage CreateEventMessage()
     {
-        return new UserRoleUpdatedEventMessage(Id, UserId, UserRole, CreatedAt);
+        return new UserRoleUpdatedEventMessage(Id, RequesterId, UserId, UserRole, CreatedAt);
     }
 }

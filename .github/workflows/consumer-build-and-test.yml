@@ -53,3 +53,4 @@ jobs:
           integrationTestsProjectPath: "src/consumer/EventTriangleAPI.Consumer.IntegrationTests"
           buildConfiguration: "Release"
           serviceName: "consumer-api"
+          creatingDatabase: "true"

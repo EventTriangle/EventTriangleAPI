@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace EventTriangleAPI.Sender.Persistence.Migrations
 {
-    public partial class Initialize : Migration
+    public partial class Inialize : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -14,7 +14,7 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    UserId = table.Column<string>(type: "text", nullable: true),
+                    RequesterId = table.Column<string>(type: "text", nullable: true),
                     ContactId = table.Column<string>(type: "text", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
@@ -28,7 +28,7 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    UserId = table.Column<string>(type: "text", nullable: true),
+                    RequesterId = table.Column<string>(type: "text", nullable: true),
                     ContactId = table.Column<string>(type: "text", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
@@ -42,8 +42,7 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    CardId = table.Column<Guid>(type: "uuid", nullable: false),
-                    UserId = table.Column<string>(type: "text", nullable: true),
+                    RequesterId = table.Column<string>(type: "text", nullable: true),
                     HolderName = table.Column<string>(type: "text", nullable: true),
                     CardNumber = table.Column<string>(type: "text", nullable: true),
                     Cvv = table.Column<string>(type: "text", nullable: true),
@@ -62,7 +61,7 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     CardId = table.Column<Guid>(type: "uuid", nullable: false),
-                    UserId = table.Column<string>(type: "text", nullable: true),
+                    RequesterId = table.Column<string>(type: "text", nullable: true),
                     HolderName = table.Column<string>(type: "text", nullable: true),
                     CardNumber = table.Column<string>(type: "text", nullable: true),
                     Cvv = table.Column<string>(type: "text", nullable: true),
@@ -80,7 +79,7 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    UserId = table.Column<string>(type: "text", nullable: true),
+                    RequesterId = table.Column<string>(type: "text", nullable: true),
                     CardId = table.Column<Guid>(type: "uuid", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
@@ -94,8 +93,7 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    UserId = table.Column<string>(type: "text", nullable: true),
-                    Username = table.Column<string>(type: "text", nullable: true),
+                    RequesterId = table.Column<string>(type: "text", nullable: true),
                     WalletId = table.Column<Guid>(type: "uuid", nullable: false),
                     TicketReason = table.Column<string>(type: "text", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
@@ -110,6 +108,7 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    RequesterId = table.Column<string>(type: "text", nullable: true),
                     TicketId = table.Column<Guid>(type: "uuid", nullable: false),
                     TicketJustification = table.Column<string>(type: "text", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
@@ -124,8 +123,8 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    RequesterId = table.Column<string>(type: "text", nullable: true),
                     CreditCardId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ToUserId = table.Column<string>(type: "text", nullable: true),
                     Amount = table.Column<decimal>(type: "numeric", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
@@ -139,6 +138,7 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    RequesterId = table.Column<string>(type: "text", nullable: true),
                     TransactionId = table.Column<Guid>(type: "uuid", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
@@ -152,7 +152,7 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    FromUserId = table.Column<string>(type: "text", nullable: true),
+                    RequesterId = table.Column<string>(type: "text", nullable: true),
                     ToUserId = table.Column<string>(type: "text", nullable: true),
                     Amount = table.Column<decimal>(type: "numeric", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
@@ -183,6 +183,7 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    RequesterId = table.Column<string>(type: "text", nullable: true),
                     UserId = table.Column<string>(type: "text", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
@@ -196,6 +197,7 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    RequesterId = table.Column<string>(type: "text", nullable: true),
                     UserId = table.Column<string>(type: "text", nullable: true),
                     UserRole = table.Column<int>(type: "integer", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
@@ -210,6 +212,7 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    RequesterId = table.Column<string>(type: "text", nullable: true),
                     UserId = table.Column<string>(type: "text", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },

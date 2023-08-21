@@ -15,14 +15,6 @@ public class CreditCardAddedEventTests
         createCreditCardAddedEvent.Should().NotThrow();
     }
 
-    [Fact]
-    public void TestThrowCardId()
-    {
-        var createCreditCardAddedEvent = () => CreditCardAddedEventHelper.CreateWithCardId(Guid.Empty);
-
-        createCreditCardAddedEvent.Should().ThrowExactly<ValidationException>();
-    }
-
     [Theory]
     [InlineData("")]
     [InlineData(null)]
