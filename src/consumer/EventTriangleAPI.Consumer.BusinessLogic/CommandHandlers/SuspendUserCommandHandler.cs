@@ -20,6 +20,18 @@ public class SuspendUserCommandHandler : ICommandHandler<SuspendUserCommand, Use
 
     public async Task<IResult<UserEntity, Error>> HandleAsync(SuspendUserCommand command)
     {
+        var requester = await _context.UserEntities.FirstOrDefaultAsync(x => x.Id == command.RequesterId);
+
+        if (requester == null)
+        {
+            return new Result<UserEntity>(new DbEntityNotFoundError("Requester not found"));
+        }
+        
+        if (requester.UserRole != UserRole.Admin)
+        {
+            return new Result<UserEntity>(new ConflictError("Requester is not admin"));
+        }
+        
         var user = await _context.UserEntities.FirstOrDefaultAsync(x => x.Id == command.UserId);
         
         if (user == null)

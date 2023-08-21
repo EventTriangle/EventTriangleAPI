@@ -9,7 +9,7 @@ public class SupportTicketEntityValidator : AbstractValidator<SupportTicketEntit
         RuleFor(x => x.Id).NotEmpty();
         RuleFor(x => x.UserId).NotEmpty();
         RuleFor(x => x.WalletId).NotEmpty();
-        RuleFor(x => x.TicketReason).MaximumLength(300);
+        RuleFor(x => x.TicketReason).NotEmpty().Length(1, 300);
         RuleFor(x => x.TicketJustification).MaximumLength(300);
     }
 }

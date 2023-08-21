@@ -5,7 +5,7 @@ namespace EventTriangleAPI.Consumer.BusinessLogic.CommandHandlers;
 
 public record ChangeCreditCardCommand(
     Guid CardId, 
-    string UserId,
+    string RequesterId,
     string HolderName, 
     string CardNumber,
     string Cvv,

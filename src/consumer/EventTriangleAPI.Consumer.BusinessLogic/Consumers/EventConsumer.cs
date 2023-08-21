@@ -70,7 +70,7 @@ public class EventConsumer :
     public async Task Consume(ConsumeContext<ContactCreatedEventMessage> context)
     {
         var message = context.Message;
-        var command = new CreateContactCommand(message.UserId, message.ContactId);
+        var command = new CreateContactCommand(message.RequesterId, message.ContactId);
 
         await _createContactCommandHandler.HandleAsync(command);
     }
@@ -78,7 +78,7 @@ public class EventConsumer :
     public async Task Consume(ConsumeContext<ContactDeletedEventMessage> context)
     {
         var message = context.Message;
-        var command = new DeleteContactCommand(message.UserId, message.ContactId);
+        var command = new DeleteContactCommand(message.RequesterId, message.ContactId);
 
         await _deleteContactCommandHandler.HandleAsync(command);
     }
@@ -87,7 +87,7 @@ public class EventConsumer :
     {
         var message = context.Message;
         var command = new AddCreditCardCommand(
-            message.UserId,
+            message.RequesterId,
             message.HolderName,
             message.CardNumber,
             message.Cvv,
@@ -102,7 +102,7 @@ public class EventConsumer :
         var message = context.Message;
         var command = new ChangeCreditCardCommand(
             message.CardId, 
-            message.UserId, 
+            message.RequesterId, 
             message.HolderName,
             message.CardNumber,
             message.Cvv,
@@ -115,7 +115,7 @@ public class EventConsumer :
     public async Task Consume(ConsumeContext<CreditCardDeletedEventMessage> context)
     {
         var message = context.Message;
-        var command = new DeleteCreditCardCommand(message.UserId, message.CardId);
+        var command = new DeleteCreditCardCommand(message.RequesterId, message.CardId);
 
         await _deleteCreditCardCommandHandler.HandleAsync(command);
     }
@@ -123,7 +123,7 @@ public class EventConsumer :
     public async Task Consume(ConsumeContext<SupportTicketOpenedEventMessage> context)
     {
         var message = context.Message;
-        var command = new OpenSupportTicketCommand(message.UserId, message.WalletId, message.TicketReason);
+        var command = new OpenSupportTicketCommand(message.RequesterId, message.WalletId, message.TicketReason);
 
         await _openSupportTicketCommandHandler.HandleAsync(command);
     }
@@ -131,7 +131,7 @@ public class EventConsumer :
     public async Task Consume(ConsumeContext<SupportTicketResolvedEventMessage> context)
     {
         var message = context.Message;
-        var command = new ResolveSupportTicketCommand(message.TicketId, message.TicketJustification);
+        var command = new ResolveSupportTicketCommand(message.RequesterId, message.TicketId, message.TicketJustification);
         
         await _resolveSupportTicketCommandHandler.HandleAsync(command);
     }
@@ -139,7 +139,7 @@ public class EventConsumer :
     public async Task Consume(ConsumeContext<TransactionCardToUserCreatedEventMessage> context)
     {
         var message = context.Message;
-        var command = new CreateTransactionCardToUserCommand(message.CreditCardId, message.ToUserId, message.Amount);
+        var command = new CreateTransactionCardToUserCommand(message.CreditCardId, message.RequesterId, message.Amount);
 
         await _createTransactionCardToUserCommandHandler.HandleAsync(command);
     }
@@ -147,7 +147,7 @@ public class EventConsumer :
     public async Task Consume(ConsumeContext<TransactionUserToUserCreatedEventMessage> context)
     {
         var message = context.Message;
-        var command = new CreateTransactionUserToUserCommand(message.FromUserId, message.ToUserId, message.Amount);
+        var command = new CreateTransactionUserToUserCommand(message.RequesterId, message.ToUserId, message.Amount);
 
         await _createTransactionUserToUserCommandHandler.HandleAsync(command);
     }
@@ -155,7 +155,7 @@ public class EventConsumer :
     public async Task Consume(ConsumeContext<TransactionRollBackedEventMessage> context)
     {
         var message = context.Message;
-        var command = new RollBackTransactionCommand(message.TransactionId);
+        var command = new RollBackTransactionCommand(message.RequesterId, message.TransactionId);
 
         await _rollBackTransactionCommandHandler.HandleAsync(command);
     }
@@ -171,7 +171,7 @@ public class EventConsumer :
     public async Task Consume(ConsumeContext<UserNotSuspendedEventMessage> context)
     {
         var message = context.Message;
-        var command = new NotSuspendUserCommand(message.UserId);
+        var command = new NotSuspendUserCommand(message.RequesterId, message.UserId);
 
         await _notSuspendUserCommandHandler.HandleAsync(command);
     }
@@ -179,7 +179,7 @@ public class EventConsumer :
     public async Task Consume(ConsumeContext<UserRoleUpdatedEventMessage> context)
     {
         var message = context.Message;
-        var command = new UpdateUserRoleCommand(message.UserId, message.UserRole);
+        var command = new UpdateUserRoleCommand(message.RequesterId, message.UserId, message.UserRole);
 
         await _updateUserRoleCommandHandler.HandleAsync(command);
     }
@@ -187,7 +187,7 @@ public class EventConsumer :
     public async Task Consume(ConsumeContext<UserSuspendedEventMessage> context)
     {
         var message = context.Message;
-        var command = new SuspendUserCommand(message.UserId);
+        var command = new SuspendUserCommand(message.RequesterId, message.UserId);
 
         await _suspendUserCommandHandler.HandleAsync(command);
     }

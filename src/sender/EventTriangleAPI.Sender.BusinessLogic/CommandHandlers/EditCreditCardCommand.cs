@@ -4,7 +4,7 @@ using EventTriangleAPI.Shared.DTO.Enums;
 namespace EventTriangleAPI.Sender.BusinessLogic.CommandHandlers;
 
 public record EditCreditCardCommand(
-    string UserId,
+    string RequesterId,
     Guid CardId,
     string HolderName,
     string CardNumber,

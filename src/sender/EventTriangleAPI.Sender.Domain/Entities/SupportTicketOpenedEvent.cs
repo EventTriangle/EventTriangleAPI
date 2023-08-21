@@ -8,7 +8,7 @@ public class SupportTicketOpenedEvent
 {
     public Guid Id { get; private set; }
     
-    public string UserId { get; private set; }
+    public string RequesterId { get; private set; }
     
     public Guid WalletId { get; private set; }
     
@@ -16,10 +16,10 @@ public class SupportTicketOpenedEvent
     
     public DateTime CreatedAt { get; private set; }
 
-    public SupportTicketOpenedEvent(string userId, Guid walletId, string ticketReason)
+    public SupportTicketOpenedEvent(string requesterId, Guid walletId, string ticketReason)
     {
         Id = Guid.NewGuid();
-        UserId = userId;
+        RequesterId = requesterId;
         WalletId = walletId;
         TicketReason = ticketReason;
         CreatedAt = DateTime.UtcNow;
@@ -29,6 +29,6 @@ public class SupportTicketOpenedEvent
 
     public SupportTicketOpenedEventMessage CreateEventMessage()
     {
-        return new SupportTicketOpenedEventMessage(Id, UserId, WalletId, TicketReason, CreatedAt);
+        return new SupportTicketOpenedEventMessage(Id, RequesterId, WalletId, TicketReason, CreatedAt);
     }
 }

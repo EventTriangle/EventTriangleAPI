@@ -8,13 +8,16 @@ public class UserSuspendedEvent
 {
     public Guid Id { get; private set; }
     
+    public string RequesterId { get; private set; }
+    
     public string UserId { get; private set; }
     
     public DateTime CreatedAt { get; private set; }
 
-    public UserSuspendedEvent(string userId)
+    public UserSuspendedEvent(string requesterId, string userId)
     {
         Id = Guid.NewGuid();
+        RequesterId = requesterId;
         UserId = userId;
         CreatedAt = DateTime.UtcNow;
         
@@ -23,6 +26,6 @@ public class UserSuspendedEvent
 
     public UserSuspendedEventMessage CreateEventMessage()
     {
-        return new UserSuspendedEventMessage(Id, UserId, CreatedAt);
+        return new UserSuspendedEventMessage(Id, RequesterId, UserId, CreatedAt);
     }
 }

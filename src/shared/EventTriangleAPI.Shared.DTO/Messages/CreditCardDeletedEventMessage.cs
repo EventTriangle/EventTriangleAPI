@@ -1,3 +1,3 @@
 namespace EventTriangleAPI.Shared.DTO.Messages;
 
-public record CreditCardDeletedEventMessage(Guid Id, string UserId, Guid CardId, DateTime CreatedAt);
+public record CreditCardDeletedEventMessage(Guid Id, string RequesterId, Guid CardId, DateTime CreatedAt);

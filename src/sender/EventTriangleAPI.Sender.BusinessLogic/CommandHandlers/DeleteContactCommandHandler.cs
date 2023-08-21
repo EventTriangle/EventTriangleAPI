@@ -18,7 +18,7 @@ public class DeleteContactCommandHandler : ICommandHandler<DeleteContactCommand,
 
     public async Task<IResult<ContactDeletedEvent, Error>> HandleAsync(DeleteContactCommand command)
     {
-        var contactDeletedEvent = new ContactDeletedEvent(command.UserId, command.ContactId);
+        var contactDeletedEvent = new ContactDeletedEvent(command.RequesterId, command.ContactId);
 
         _context.ContactDeletedEvents.Add(contactDeletedEvent);
         await _context.SaveChangesAsync();

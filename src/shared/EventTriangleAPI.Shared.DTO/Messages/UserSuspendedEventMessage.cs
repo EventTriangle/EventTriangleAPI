@@ -1,3 +1,7 @@
 namespace EventTriangleAPI.Shared.DTO.Messages;
 
-public record UserSuspendedEventMessage(Guid Id, string UserId, DateTime CreatedAt);
+public record UserSuspendedEventMessage(
+    Guid Id,
+    string RequesterId,
+    string UserId, 
+    DateTime CreatedAt);

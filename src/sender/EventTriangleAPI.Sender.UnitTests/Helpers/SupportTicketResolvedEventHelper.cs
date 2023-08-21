@@ -9,6 +9,7 @@ public static class SupportTicketResolvedEventHelper
     public static SupportTicketResolvedEvent CreateSuccess()
     {
         return new SupportTicketResolvedEvent(
+            Guid.NewGuid().ToString(),
             Guid.NewGuid(),
             TicketJustification);
     }
@@ -16,6 +17,7 @@ public static class SupportTicketResolvedEventHelper
     public static SupportTicketResolvedEvent CreateWithTicketId(Guid ticketId)
     {
         return new SupportTicketResolvedEvent(
+            Guid.NewGuid().ToString(),
             ticketId,
             TicketJustification);
     }
@@ -23,6 +25,7 @@ public static class SupportTicketResolvedEventHelper
     public static SupportTicketResolvedEvent CreateWithTicketJustification(string ticketJustification)
     {
         return new SupportTicketResolvedEvent(
+            Guid.NewGuid().ToString(),
             Guid.NewGuid(),
             ticketJustification);
     }

@@ -19,11 +19,11 @@ public class OpenSupportTicketCommandHandler : ICommandHandler<OpenSupportTicket
 
     public async Task<IResult<SupportTicketEntity, Error>> HandleAsync(OpenSupportTicketCommand command)
     {
-        var user = await _context.UserEntities.FirstOrDefaultAsync(x => x.Id == command.UserId);
+        var requester = await _context.UserEntities.FirstOrDefaultAsync(x => x.Id == command.RequesterId);
 
-        if (user == null)
+        if (requester == null)
         {
-            return new Result<SupportTicketEntity>(new DbEntityNotFoundError("User not found"));
+            return new Result<SupportTicketEntity>(new DbEntityNotFoundError("Requester not found"));
         }
         
         var wallet = await _context.WalletEntities.FirstOrDefaultAsync(x => x.Id == command.WalletId);
@@ -33,7 +33,7 @@ public class OpenSupportTicketCommandHandler : ICommandHandler<OpenSupportTicket
             return new Result<SupportTicketEntity>(new DbEntityNotFoundError("Wallet not found"));
         }
         
-        var supportTicket = new SupportTicketEntity(command.UserId, command.WalletId, command.TicketReason);
+        var supportTicket = new SupportTicketEntity(command.RequesterId, command.WalletId, command.TicketReason);
 
         _context.SupportTicketEntities.Add(supportTicket);
         await _context.SaveChangesAsync();

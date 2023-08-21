@@ -7,7 +7,7 @@ public class CreditCardDeletedEventValidator : AbstractValidator<CreditCardDelet
     public CreditCardDeletedEventValidator()
     {
         RuleFor(x => x.Id).NotEmpty();
-        RuleFor(x => x.UserId).NotEmpty();
+        RuleFor(x => x.RequesterId).NotEmpty();
         RuleFor(x => x.CardId).NotEmpty();
         RuleFor(x => x.CreatedAt).NotEmpty();
     }

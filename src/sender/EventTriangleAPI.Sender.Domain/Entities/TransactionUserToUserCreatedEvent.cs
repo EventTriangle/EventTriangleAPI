@@ -8,7 +8,7 @@ public class TransactionUserToUserCreatedEvent
 {
     public Guid Id { get; private set; }
     
-    public string FromUserId { get; private set; }
+    public string RequesterId { get; private set; }
     
     public string ToUserId { get; private set; }
     
@@ -16,10 +16,10 @@ public class TransactionUserToUserCreatedEvent
     
     public DateTime CreatedAt { get; private set; }
 
-    public TransactionUserToUserCreatedEvent(string fromUserId, string toUserId, decimal amount)
+    public TransactionUserToUserCreatedEvent(string requesterId, string toUserId, decimal amount)
     {
         Id = Guid.NewGuid();
-        FromUserId = fromUserId;
+        RequesterId = requesterId;
         ToUserId = toUserId;
         Amount = amount;
         CreatedAt = DateTime.UtcNow;
@@ -29,6 +29,6 @@ public class TransactionUserToUserCreatedEvent
 
     public TransactionUserToUserCreatedEventMessage CreateEventMessage()
     {
-        return new TransactionUserToUserCreatedEventMessage(Id, FromUserId, ToUserId, Amount, CreatedAt);
+        return new TransactionUserToUserCreatedEventMessage(Id, RequesterId, ToUserId, Amount, CreatedAt);
     }
 }

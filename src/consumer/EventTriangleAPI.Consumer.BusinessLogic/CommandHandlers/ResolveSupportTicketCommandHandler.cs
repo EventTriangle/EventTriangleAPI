@@ -20,6 +20,18 @@ public class ResolveSupportTicketCommandHandler : ICommandHandler<ResolveSupport
 
     public async Task<IResult<SupportTicketEntity, Error>> HandleAsync(ResolveSupportTicketCommand command)
     {
+        var requester = await _context.UserEntities.FirstOrDefaultAsync(x => x.Id == command.RequesterId);
+
+        if (requester == null)
+        {
+            return new Result<SupportTicketEntity>(new DbEntityNotFoundError("Requester not found"));
+        }
+
+        if (requester.UserRole != UserRole.Admin)
+        {
+            return new Result<SupportTicketEntity>(new ConflictError("Requester is not admin"));
+        }
+        
         var supportTicket = await _context.SupportTicketEntities
             .FirstOrDefaultAsync(x => x.Id == command.TicketId);
 

@@ -19,8 +19,15 @@ public class DeleteCreditCardCommandHandler : ICommandHandler<DeleteCreditCardCo
 
     public async Task<IResult<CreditCardEntity, Error>> HandleAsync(DeleteCreditCardCommand command)
     {
+        var requester = await _context.UserEntities.FirstOrDefaultAsync(x => x.Id == command.RequesterId);
+
+        if (requester == null)
+        {
+            return new Result<CreditCardEntity>(new DbEntityNotFoundError("Requester not found"));
+        }
+        
         var creditCard = await _context.CreditCardEntities
-            .FirstOrDefaultAsync(x => x.Id == command.CardId && x.UserId == command.UserId);
+            .FirstOrDefaultAsync(x => x.Id == command.CardId && x.UserId == command.RequesterId);
 
         if (creditCard == null)
         {

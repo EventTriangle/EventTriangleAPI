@@ -18,7 +18,7 @@ public class UpdateUserRoleCommandHandler : ICommandHandler<UpdateUserRoleComman
 
     public async Task<IResult<UserRoleUpdatedEvent, Error>> HandleAsync(UpdateUserRoleCommand command)
     {
-        var userRoleUpdatedEvent = new UserRoleUpdatedEvent(command.UserId, command.UserRole);
+        var userRoleUpdatedEvent = new UserRoleUpdatedEvent(command.RequesterId, command.UserId, command.UserRole);
 
         _context.UserRoleUpdatedEvents.Add(userRoleUpdatedEvent);
         await _context.SaveChangesAsync();

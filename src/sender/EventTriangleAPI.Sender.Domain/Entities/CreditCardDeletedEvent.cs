@@ -8,16 +8,16 @@ public class CreditCardDeletedEvent
 {
     public Guid Id { get; private set; }
     
-    public string UserId { get; private set; }
+    public string RequesterId { get; private set; }
     
     public Guid CardId { get; private set; }
     
     public DateTime CreatedAt { get; private set; }
 
-    public CreditCardDeletedEvent(string userId, Guid cardId)
+    public CreditCardDeletedEvent(string requesterId, Guid cardId)
     {
         Id = Guid.NewGuid();
-        UserId = userId;
+        RequesterId = requesterId;
         CardId = cardId;
         CreatedAt = DateTime.UtcNow;
         
@@ -26,6 +26,6 @@ public class CreditCardDeletedEvent
 
     public CreditCardDeletedEventMessage CreateEventMessage()
     {
-        return new CreditCardDeletedEventMessage(Id, UserId, CardId, CreatedAt);
+        return new CreditCardDeletedEventMessage(Id, RequesterId, CardId, CreatedAt);
     }
 }

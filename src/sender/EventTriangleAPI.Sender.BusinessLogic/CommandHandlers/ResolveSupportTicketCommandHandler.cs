@@ -19,6 +19,7 @@ public class ResolveSupportTicketCommandHandler : ICommandHandler<ResolveSupport
     public async Task<IResult<SupportTicketResolvedEvent, Error>> HandleAsync(ResolveSupportTicketCommand command)
     {
         var supportTicketResolvedEvent = new SupportTicketResolvedEvent(
+            command.RequesterId,
             command.TicketId, 
             command.TicketJustification);
 

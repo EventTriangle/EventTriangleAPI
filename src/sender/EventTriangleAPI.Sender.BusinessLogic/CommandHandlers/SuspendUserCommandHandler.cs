@@ -18,7 +18,7 @@ public class SuspendUserCommandHandler : ICommandHandler<SuspendUserCommand, Use
 
     public async Task<IResult<UserSuspendedEvent, Error>> HandleAsync(SuspendUserCommand command)
     {
-        var userSuspendedEvent = new UserSuspendedEvent(command.UserId);
+        var userSuspendedEvent = new UserSuspendedEvent(command.RequesterId, command.UserId);
 
         _context.UserSuspendedEvents.Add(userSuspendedEvent);
         await _context.SaveChangesAsync();

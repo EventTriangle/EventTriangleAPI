@@ -19,21 +19,21 @@ public class CreateContactCommandHandler : ICommandHandler<CreateContactCommand,
 
     public async Task<IResult<ContactEntity, Error>> HandleAsync(CreateContactCommand command)
     {
-        var user = await _context.UserEntities.FirstOrDefaultAsync(x => x.Id == command.UserId);
+        var requester = await _context.UserEntities.FirstOrDefaultAsync(x => x.Id == command.RequesterId);
 
-        if (user == null)
+        if (requester == null)
         {
-            return new Result<ContactEntity>(new DbEntityNotFoundError("User not found"));
+            return new Result<ContactEntity>(new DbEntityNotFoundError("Requester not found"));
         }
         
-        var userForAddingContact = await _context.UserEntities.FirstOrDefaultAsync(x => x.Id == command.ContactId);
+        var user = await _context.UserEntities.FirstOrDefaultAsync(x => x.Id == command.ContactId);
 
-        if (userForAddingContact == null)
+        if (user == null)
         {
             return new Result<ContactEntity>(new DbEntityNotFoundError("Contact not found"));
         }
         
-        var contact = new ContactEntity(command.UserId, command.ContactId);
+        var contact = new ContactEntity(command.RequesterId, command.ContactId);
 
         _context.ContactEntities.Add(contact);
         await _context.SaveChangesAsync();

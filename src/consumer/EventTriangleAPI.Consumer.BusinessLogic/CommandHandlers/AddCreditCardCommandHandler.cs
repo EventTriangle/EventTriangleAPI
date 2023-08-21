@@ -19,15 +19,15 @@ public class AddCreditCardCommandHandler : ICommandHandler<AddCreditCardCommand,
 
     public async Task<IResult<CreditCardEntity, Error>> HandleAsync(AddCreditCardCommand command)
     {
-        var user = await _context.UserEntities.FirstOrDefaultAsync(x => x.Id == command.UserId);
+        var requester = await _context.UserEntities.FirstOrDefaultAsync(x => x.Id == command.RequesterId);
 
-        if (user == null)
+        if (requester == null)
         {
-            return new Result<CreditCardEntity>(new DbEntityNotFoundError("User not found"));
+            return new Result<CreditCardEntity>(new DbEntityNotFoundError("Requester not found"));
         }
 
         var countCreditCardWithSameCardNumber = await _context.CreditCardEntities
-            .Where(x => x.CardNumber == command.CardNumber && x.UserId == command.UserId)
+            .Where(x => x.CardNumber == command.CardNumber && x.UserId == command.RequesterId)
             .CountAsync();
 
         if (countCreditCardWithSameCardNumber > 0)
@@ -36,7 +36,7 @@ public class AddCreditCardCommandHandler : ICommandHandler<AddCreditCardCommand,
         }
         
         var creditCard = new CreditCardEntity(
-            command.UserId, 
+            command.RequesterId, 
             command.HolderName, 
             command.CardNumber, 
             command.Cvv,
