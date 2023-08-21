@@ -1,3 +1,4 @@
+using EventTriangleAPI.Consumer.Domain.Constants;
 using EventTriangleAPI.Consumer.Domain.Entities;
 using EventTriangleAPI.Consumer.Persistence;
 using EventTriangleAPI.Shared.Application.Abstractions;
@@ -23,14 +24,14 @@ public class CreateContactCommandHandler : ICommandHandler<CreateContactCommand,
 
         if (requester == null)
         {
-            return new Result<ContactEntity>(new DbEntityNotFoundError("Requester not found"));
+            return new Result<ContactEntity>(new DbEntityNotFoundError(ResponseMessages.RequesterNotFound));
         }
         
         var user = await _context.UserEntities.FirstOrDefaultAsync(x => x.Id == command.ContactId);
 
         if (user == null)
         {
-            return new Result<ContactEntity>(new DbEntityNotFoundError("Contact not found"));
+            return new Result<ContactEntity>(new DbEntityNotFoundError(ResponseMessages.UserNotFound));
         }
         
         var contact = new ContactEntity(command.RequesterId, command.ContactId);

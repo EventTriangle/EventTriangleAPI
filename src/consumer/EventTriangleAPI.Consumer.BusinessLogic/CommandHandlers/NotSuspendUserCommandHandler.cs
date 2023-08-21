@@ -1,3 +1,4 @@
+using EventTriangleAPI.Consumer.Domain.Constants;
 using EventTriangleAPI.Consumer.Domain.Entities;
 using EventTriangleAPI.Consumer.Persistence;
 using EventTriangleAPI.Shared.Application.Abstractions;
@@ -24,19 +25,19 @@ public class NotSuspendUserCommandHandler : ICommandHandler<NotSuspendUserComman
 
         if (requester == null)
         {
-            return new Result<UserEntity>(new DbEntityNotFoundError("Requester not found"));
+            return new Result<UserEntity>(new DbEntityNotFoundError(ResponseMessages.RequesterNotFound));
         }
 
         if (requester.UserRole != UserRole.Admin)
         {
-            return new Result<UserEntity>(new ConflictError("Requester is not admin"));
+            return new Result<UserEntity>(new ConflictError(ResponseMessages.RequesterIsNotAdmin));
         }
         
         var user = await _context.UserEntities.FirstOrDefaultAsync(x => x.Id == command.UserId);
 
         if (user == null)
         {
-            return new Result<UserEntity>(new DbEntityNotFoundError("User not found"));
+            return new Result<UserEntity>(new DbEntityNotFoundError(ResponseMessages.UserNotFound));
         }
         
         user.UpdateUserStatus(UserStatus.Active);

@@ -1,3 +1,4 @@
+using EventTriangleAPI.Consumer.Domain.Constants;
 using EventTriangleAPI.Consumer.Domain.Entities;
 using EventTriangleAPI.Consumer.Persistence;
 using EventTriangleAPI.Shared.Application.Abstractions;
@@ -26,7 +27,7 @@ public class CreateTransactionUserToUserCommandHandler : ICommandHandler<CreateT
 
         if (requester == null)
         {
-            return new Result<TransactionEntity>(new DbEntityNotFoundError("User not found"));
+            return new Result<TransactionEntity>(new DbEntityNotFoundError(ResponseMessages.UserNotFound));
         }
         
         var toUser = await _context.UserEntities
@@ -35,12 +36,12 @@ public class CreateTransactionUserToUserCommandHandler : ICommandHandler<CreateT
 
         if (toUser == null)
         {
-            return new Result<TransactionEntity>(new DbEntityNotFoundError("The user to whom you want to transfer money is not found"));
+            return new Result<TransactionEntity>(new DbEntityNotFoundError(ResponseMessages.UserNotFound));
         }
 
         if (requester.Wallet.Balance < command.Amount)
         {
-            return new Result<TransactionEntity>(new ConflictError("You can't transfer more money than you have"));
+            return new Result<TransactionEntity>(new ConflictError(ResponseMessages.CannotTransferMoreMoneyThanYouHave));
         }
         
         var transaction = new TransactionEntity(

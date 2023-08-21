@@ -1,3 +1,4 @@
+using EventTriangleAPI.Consumer.Domain.Constants;
 using EventTriangleAPI.Consumer.Domain.Entities;
 using EventTriangleAPI.Consumer.Persistence;
 using EventTriangleAPI.Shared.Application.Abstractions;
@@ -23,7 +24,7 @@ public class DeleteContactCommandHandler : ICommandHandler<DeleteContactCommand,
 
         if (requester == null)
         {
-            return new Result<ContactEntity>(new DbEntityNotFoundError("Requester not found"));
+            return new Result<ContactEntity>(new DbEntityNotFoundError(ResponseMessages.RequesterNotFound));
         }
         
         var contact = await _context.ContactEntities
@@ -31,7 +32,7 @@ public class DeleteContactCommandHandler : ICommandHandler<DeleteContactCommand,
 
         if (contact == null)
         {
-            return new Result<ContactEntity>(new DbEntityNotFoundError("Contact not found"));
+            return new Result<ContactEntity>(new DbEntityNotFoundError(ResponseMessages.ContactNotFound));
         }
 
         _context.ContactEntities.Remove(contact);

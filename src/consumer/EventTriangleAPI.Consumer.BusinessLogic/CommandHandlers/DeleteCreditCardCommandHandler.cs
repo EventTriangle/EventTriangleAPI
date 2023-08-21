@@ -1,3 +1,4 @@
+using EventTriangleAPI.Consumer.Domain.Constants;
 using EventTriangleAPI.Consumer.Domain.Entities;
 using EventTriangleAPI.Consumer.Persistence;
 using EventTriangleAPI.Shared.Application.Abstractions;
@@ -23,7 +24,7 @@ public class DeleteCreditCardCommandHandler : ICommandHandler<DeleteCreditCardCo
 
         if (requester == null)
         {
-            return new Result<CreditCardEntity>(new DbEntityNotFoundError("Requester not found"));
+            return new Result<CreditCardEntity>(new DbEntityNotFoundError(ResponseMessages.RequesterNotFound));
         }
         
         var creditCard = await _context.CreditCardEntities
@@ -31,7 +32,7 @@ public class DeleteCreditCardCommandHandler : ICommandHandler<DeleteCreditCardCo
 
         if (creditCard == null)
         {
-            return new Result<CreditCardEntity>(new DbEntityNotFoundError("Credit card not found"));
+            return new Result<CreditCardEntity>(new DbEntityNotFoundError(ResponseMessages.CreditCardNotFound));
         }
 
         _context.CreditCardEntities.Remove(creditCard);

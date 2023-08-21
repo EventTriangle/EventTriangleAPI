@@ -1,3 +1,4 @@
+using EventTriangleAPI.Consumer.Domain.Constants;
 using EventTriangleAPI.Consumer.Domain.Entities;
 using EventTriangleAPI.Consumer.Persistence;
 using EventTriangleAPI.Shared.Application.Abstractions;
@@ -24,12 +25,12 @@ public class ResolveSupportTicketCommandHandler : ICommandHandler<ResolveSupport
 
         if (requester == null)
         {
-            return new Result<SupportTicketEntity>(new DbEntityNotFoundError("Requester not found"));
+            return new Result<SupportTicketEntity>(new DbEntityNotFoundError(ResponseMessages.RequesterNotFound));
         }
 
         if (requester.UserRole != UserRole.Admin)
         {
-            return new Result<SupportTicketEntity>(new ConflictError("Requester is not admin"));
+            return new Result<SupportTicketEntity>(new ConflictError(ResponseMessages.RequesterIsNotAdmin));
         }
         
         var supportTicket = await _context.SupportTicketEntities
@@ -37,7 +38,7 @@ public class ResolveSupportTicketCommandHandler : ICommandHandler<ResolveSupport
 
         if (supportTicket == null)
         {
-            return new Result<SupportTicketEntity>(new DbEntityNotFoundError("Support ticket not found"));
+            return new Result<SupportTicketEntity>(new DbEntityNotFoundError(ResponseMessages.SupportTicketNotFound));
         }
         
         supportTicket.UpdateTicketJustification(command.TicketJustification);

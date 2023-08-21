@@ -1,3 +1,4 @@
+using EventTriangleAPI.Consumer.Domain.Constants;
 using EventTriangleAPI.Consumer.Domain.Entities;
 using EventTriangleAPI.Consumer.Persistence;
 using EventTriangleAPI.Shared.Application.Abstractions;
@@ -24,7 +25,7 @@ public class ChangeCreditCardCommandHandler : ICommandHandler<ChangeCreditCardCo
 
         if (creditCard == null)
         {
-            return new Result<CreditCardEntity>(new DbEntityNotFoundError("Credit card not found"));
+            return new Result<CreditCardEntity>(new DbEntityNotFoundError(ResponseMessages.CreditCardNotFound));
         }
 
         creditCard.UpdateHolderName(command.HolderName);

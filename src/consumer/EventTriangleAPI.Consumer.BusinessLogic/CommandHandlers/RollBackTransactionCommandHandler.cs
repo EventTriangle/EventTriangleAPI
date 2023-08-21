@@ -1,3 +1,4 @@
+using EventTriangleAPI.Consumer.Domain.Constants;
 using EventTriangleAPI.Consumer.Domain.Entities;
 using EventTriangleAPI.Consumer.Persistence;
 using EventTriangleAPI.Shared.Application.Abstractions;
@@ -24,12 +25,12 @@ public class RollBackTransactionCommandHandler : ICommandHandler<RollBackTransac
 
         if (requester == null)
         {
-            return new Result<TransactionEntity>(new DbEntityNotFoundError("Requester not found"));
+            return new Result<TransactionEntity>(new DbEntityNotFoundError(ResponseMessages.RequesterNotFound));
         }
 
         if (requester.UserRole != UserRole.Admin)
         {
-            return new Result<TransactionEntity>(new ConflictError("Requester is not admin"));
+            return new Result<TransactionEntity>(new ConflictError(ResponseMessages.RequesterIsNotAdmin));
         }
         
         var transaction = await _context.TransactionEntities
@@ -41,7 +42,7 @@ public class RollBackTransactionCommandHandler : ICommandHandler<RollBackTransac
 
         if (transaction == null)
         {
-            return new Result<TransactionEntity>(new DbEntityNotFoundError("Transaction ticket not found"));
+            return new Result<TransactionEntity>(new DbEntityNotFoundError(ResponseMessages.TransactionTicketNotFound));
         }
         
         transaction.UpdateTransactionState(TransactionState.RolledBack);

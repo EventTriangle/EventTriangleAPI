@@ -1,3 +1,4 @@
+using EventTriangleAPI.Consumer.Domain.Constants;
 using EventTriangleAPI.Consumer.Domain.Entities;
 using EventTriangleAPI.Consumer.Persistence;
 using EventTriangleAPI.Shared.Application.Abstractions;
@@ -23,14 +24,14 @@ public class OpenSupportTicketCommandHandler : ICommandHandler<OpenSupportTicket
 
         if (requester == null)
         {
-            return new Result<SupportTicketEntity>(new DbEntityNotFoundError("Requester not found"));
+            return new Result<SupportTicketEntity>(new DbEntityNotFoundError(ResponseMessages.RequesterNotFound));
         }
         
         var wallet = await _context.WalletEntities.FirstOrDefaultAsync(x => x.Id == command.WalletId);
 
         if (wallet == null)
         {
-            return new Result<SupportTicketEntity>(new DbEntityNotFoundError("Wallet not found"));
+            return new Result<SupportTicketEntity>(new DbEntityNotFoundError(ResponseMessages.WalletNotFound));
         }
         
         var supportTicket = new SupportTicketEntity(command.RequesterId, command.WalletId, command.TicketReason);

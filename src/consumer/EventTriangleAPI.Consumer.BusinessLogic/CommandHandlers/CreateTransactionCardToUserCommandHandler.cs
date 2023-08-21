@@ -1,3 +1,4 @@
+using EventTriangleAPI.Consumer.Domain.Constants;
 using EventTriangleAPI.Consumer.Domain.Entities;
 using EventTriangleAPI.Consumer.Persistence;
 using EventTriangleAPI.Shared.Application.Abstractions;
@@ -26,14 +27,14 @@ public class CreateTransactionCardToUserCommandHandler : ICommandHandler<CreateT
 
         if (requester == null)
         {
-            return new Result<TransactionEntity>(new DbEntityNotFoundError("Requester not found"));
+            return new Result<TransactionEntity>(new DbEntityNotFoundError(ResponseMessages.RequesterNotFound));
         }
 
         var creditCard = await _context.CreditCardEntities.FirstOrDefaultAsync(x => x.Id == command.CreditCardId);
         
         if (creditCard == null)
         {
-            return new Result<TransactionEntity>(new DbEntityNotFoundError("Credit card not found"));
+            return new Result<TransactionEntity>(new DbEntityNotFoundError(ResponseMessages.CreditCardNotFound));
         }
         
         var transaction = new TransactionEntity(

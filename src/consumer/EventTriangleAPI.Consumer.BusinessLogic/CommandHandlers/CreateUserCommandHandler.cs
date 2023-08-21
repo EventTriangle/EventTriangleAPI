@@ -1,3 +1,4 @@
+using EventTriangleAPI.Consumer.Domain.Constants;
 using EventTriangleAPI.Consumer.Domain.Entities;
 using EventTriangleAPI.Consumer.Persistence;
 using EventTriangleAPI.Shared.Application.Abstractions;
@@ -23,7 +24,7 @@ public class CreateUserCommandHandler : ICommandHandler<CreateUserCommand, UserE
 
         if (user != null)
         {
-            return new Result<UserEntity>(new DbEntityExistsError("User already exists"));
+            return new Result<UserEntity>(new DbEntityExistsError(ResponseMessages.UserAlreadyExists));
         }
         
         var wallet = new WalletEntity(0);

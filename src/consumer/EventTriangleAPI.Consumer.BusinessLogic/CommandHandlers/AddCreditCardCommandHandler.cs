@@ -1,3 +1,4 @@
+using EventTriangleAPI.Consumer.Domain.Constants;
 using EventTriangleAPI.Consumer.Domain.Entities;
 using EventTriangleAPI.Consumer.Persistence;
 using EventTriangleAPI.Shared.Application.Abstractions;
@@ -23,7 +24,7 @@ public class AddCreditCardCommandHandler : ICommandHandler<AddCreditCardCommand,
 
         if (requester == null)
         {
-            return new Result<CreditCardEntity>(new DbEntityNotFoundError("Requester not found"));
+            return new Result<CreditCardEntity>(new DbEntityNotFoundError(ResponseMessages.RequesterNotFound));
         }
 
         var countCreditCardWithSameCardNumber = await _context.CreditCardEntities
@@ -32,7 +33,7 @@ public class AddCreditCardCommandHandler : ICommandHandler<AddCreditCardCommand,
 
         if (countCreditCardWithSameCardNumber > 0)
         {
-            return new Result<CreditCardEntity>(new BadRequestError("You cannot add 2 credit cards with the same card number"));
+            return new Result<CreditCardEntity>(new BadRequestError(ResponseMessages.CannotCreateCreditCardWithSameCardNumber));
         }
         
         var creditCard = new CreditCardEntity(
