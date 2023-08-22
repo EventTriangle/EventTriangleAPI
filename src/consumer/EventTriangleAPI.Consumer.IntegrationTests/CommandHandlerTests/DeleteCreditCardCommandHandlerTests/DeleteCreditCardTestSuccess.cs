@@ -1,6 +1,5 @@
 using EventTriangleAPI.Consumer.BusinessLogic.CommandHandlers;
 using EventTriangleAPI.Consumer.IntegrationTests.Helpers;
-using EventTriangleAPI.Shared.DTO.Enums;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
