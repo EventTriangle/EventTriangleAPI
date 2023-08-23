@@ -34,6 +34,8 @@ public class GetTicketsQueryHandler : ICommandHandler<GetTicketsQuery, List<Supp
         }
         
         var supportTickets = await _context.SupportTicketEntities
+            .OrderByDescending(x => x.CreatedAt)
+            .Where(x => x.CreatedAt < command.FromDateTime)
             .Select(x => new SupportTicketDto
             {
                 Id = x.Id,
@@ -43,6 +45,7 @@ public class GetTicketsQueryHandler : ICommandHandler<GetTicketsQuery, List<Supp
                 TicketJustification = x.TicketJustification,
                 TicketStatus = x.TicketStatus
             })
+            .Take(command.Limit)
             .ToListAsync();
 
         return new Result<List<SupportTicketDto>>(supportTickets);
