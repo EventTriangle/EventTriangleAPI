@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace EventTriangleAPI.Consumer.Persistence.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20230814175430_Initialize")]
+    [Migration("20230823153056_Initialize")]
     partial class Initialize
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -76,6 +76,9 @@ namespace EventTriangleAPI.Consumer.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("TicketJustification")
                         .HasColumnType("text");
 
@@ -85,6 +88,9 @@ namespace EventTriangleAPI.Consumer.Persistence.Migrations
                     b.Property<int>("TicketStatus")
                         .HasColumnType("integer");
 
+                    b.Property<Guid>("TransactionId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("UserId")
                         .HasColumnType("text");
 
@@ -92,6 +98,9 @@ namespace EventTriangleAPI.Consumer.Persistence.Migrations
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("TransactionId")
+                        .IsUnique();
 
                     b.HasIndex("UserId");
 
@@ -208,6 +217,12 @@ namespace EventTriangleAPI.Consumer.Persistence.Migrations
 
             modelBuilder.Entity("EventTriangleAPI.Consumer.Domain.Entities.SupportTicketEntity", b =>
                 {
+                    b.HasOne("EventTriangleAPI.Consumer.Domain.Entities.TransactionEntity", "Transaction")
+                        .WithOne()
+                        .HasForeignKey("EventTriangleAPI.Consumer.Domain.Entities.SupportTicketEntity", "TransactionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("EventTriangleAPI.Consumer.Domain.Entities.UserEntity", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
@@ -218,6 +233,8 @@ namespace EventTriangleAPI.Consumer.Persistence.Migrations
                         .HasForeignKey("WalletId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Transaction");
 
                     b.Navigation("User");
 

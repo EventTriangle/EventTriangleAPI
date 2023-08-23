@@ -33,6 +33,14 @@ public class SupportTicketEntityTests
         result.Should().ThrowExactly<ValidationException>();
     }
     
+    [Fact]
+    public void TestThrowTransactionId()
+    {
+        var result = () => SupportTicketEntityHelper.CreateWithTransactionId(Guid.Empty);
+
+        result.Should().ThrowExactly<ValidationException>();
+    }
+    
     [Theory]
     [InlineData("")]
     [InlineData(null)]

@@ -13,6 +13,7 @@ public class OpenSupportTicketCommandHandlerTest : IntegrationTestBase, IIntegra
         var command = new OpenSupportTicketCommand(
             Guid.NewGuid().ToString(),
             Guid.NewGuid(),
+            Guid.NewGuid(),
             Guid.NewGuid().ToString());
         
         var result = await OpenSupportTicketCommandHandler.HandleAsync(command);

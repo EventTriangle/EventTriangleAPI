@@ -123,7 +123,12 @@ public class EventConsumer :
     public async Task Consume(ConsumeContext<SupportTicketOpenedEventMessage> context)
     {
         var message = context.Message;
-        var command = new OpenSupportTicketCommand(message.RequesterId, message.WalletId, message.TicketReason);
+        var command = new OpenSupportTicketCommand(
+            message.RequesterId, 
+            message.WalletId,
+            message.TransactionId,
+            message.TicketReason,
+            message.CreatedAt);
 
         await _openSupportTicketCommandHandler.HandleAsync(command);
     }
@@ -139,7 +144,7 @@ public class EventConsumer :
     public async Task Consume(ConsumeContext<TransactionCardToUserCreatedEventMessage> context)
     {
         var message = context.Message;
-        var command = new CreateTransactionCardToUserCommand(message.CreditCardId, message.RequesterId, message.Amount);
+        var command = new CreateTransactionCardToUserCommand(message.CreditCardId, message.RequesterId, message.Amount, message.CreatedAt);
 
         await _createTransactionCardToUserCommandHandler.HandleAsync(command);
     }
@@ -147,7 +152,7 @@ public class EventConsumer :
     public async Task Consume(ConsumeContext<TransactionUserToUserCreatedEventMessage> context)
     {
         var message = context.Message;
-        var command = new CreateTransactionUserToUserCommand(message.RequesterId, message.ToUserId, message.Amount);
+        var command = new CreateTransactionUserToUserCommand(message.RequesterId, message.ToUserId, message.Amount, message.CreatedAt);
 
         await _createTransactionUserToUserCommandHandler.HandleAsync(command);
     }

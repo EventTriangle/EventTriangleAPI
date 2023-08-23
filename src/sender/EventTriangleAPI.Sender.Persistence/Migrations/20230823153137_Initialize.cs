@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace EventTriangleAPI.Sender.Persistence.Migrations
 {
-    public partial class Inialize : Migration
+    public partial class Initialize : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -95,6 +95,7 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     RequesterId = table.Column<string>(type: "text", nullable: true),
                     WalletId = table.Column<Guid>(type: "uuid", nullable: false),
+                    TransactionId = table.Column<Guid>(type: "uuid", nullable: false),
                     TicketReason = table.Column<string>(type: "text", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },

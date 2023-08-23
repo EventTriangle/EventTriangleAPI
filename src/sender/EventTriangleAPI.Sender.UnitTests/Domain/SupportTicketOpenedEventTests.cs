@@ -33,6 +33,14 @@ public class SupportTicketOpenedEventTests
         createSupportTicketOpenedEvent.Should().ThrowExactly<ValidationException>();
     }
     
+    [Fact]
+    public void TestThrowTransactionId()
+    {
+        var createSupportTicketOpenedEvent = () => SupportTicketOpenedEventHelper.CreateWithTransactionId(Guid.Empty);
+
+        createSupportTicketOpenedEvent.Should().ThrowExactly<ValidationException>();
+    }
+    
     [Theory]
     [InlineData("")]
     [InlineData(null)]

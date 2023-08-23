@@ -11,7 +11,9 @@ public class SupportTicketEntityHelper
         return new SupportTicketEntity(
             Guid.NewGuid().ToString(),
             Guid.NewGuid(),
-            TicketReason);
+            Guid.NewGuid(),
+            TicketReason,
+            DateTime.UtcNow);
     }
     
     public static SupportTicketEntity CreateWithUserId(string userId)
@@ -19,7 +21,9 @@ public class SupportTicketEntityHelper
         return new SupportTicketEntity(
             userId,
             Guid.NewGuid(),
-            TicketReason);
+            Guid.NewGuid(),
+            TicketReason,
+            DateTime.UtcNow);
     }
     
     public static SupportTicketEntity CreateWithWalletId(Guid walletId)
@@ -27,7 +31,19 @@ public class SupportTicketEntityHelper
         return new SupportTicketEntity(
             Guid.NewGuid().ToString(),
             walletId,
-            TicketReason);
+            Guid.NewGuid(),
+            TicketReason,
+            DateTime.UtcNow);
+    }
+    
+    public static SupportTicketEntity CreateWithTransactionId(Guid transactionId)
+    {
+        return new SupportTicketEntity(
+            Guid.NewGuid().ToString(),
+            Guid.NewGuid(),
+            transactionId,
+            TicketReason,
+            DateTime.UtcNow);
     }
     
     public static SupportTicketEntity CreateWithTicketReason(string ticketReason)
@@ -35,7 +51,9 @@ public class SupportTicketEntityHelper
         return new SupportTicketEntity(
             Guid.NewGuid().ToString(),
             Guid.NewGuid(),
-            ticketReason);
+            Guid.NewGuid(),
+            ticketReason,
+            DateTime.UtcNow);
     }
     
     public static SupportTicketEntity CreateWithTicketJustification(string ticketJustification)
@@ -43,7 +61,9 @@ public class SupportTicketEntityHelper
         var ticket = new SupportTicketEntity(
             Guid.NewGuid().ToString(),
             Guid.NewGuid(),
-            TicketReason);
+            Guid.NewGuid(),
+            TicketReason,
+            DateTime.UtcNow);
 
         ticket.UpdateTicketJustification(ticketJustification);
         

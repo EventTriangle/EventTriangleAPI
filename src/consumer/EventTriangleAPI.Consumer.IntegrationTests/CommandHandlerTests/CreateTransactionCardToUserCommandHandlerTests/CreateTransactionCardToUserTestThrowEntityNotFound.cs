@@ -20,7 +20,8 @@ public class CreateTransactionCardToUserTestThrowEntityNotFound : IntegrationTes
         var createTransactionCardToUserByNobodyCommand = new CreateTransactionCardToUserCommand(
             addCreditCardResult.Response.Id,
             Guid.NewGuid().ToString(),
-            300);
+            300,
+            DateTime.UtcNow);
 
         var createTransactionCardToUserByNobodyResult = 
             await CreateTransactionCardToUserCommandHandler.HandleAsync(createTransactionCardToUserByNobodyCommand);
@@ -36,7 +37,8 @@ public class CreateTransactionCardToUserTestThrowEntityNotFound : IntegrationTes
         var createTransactionCardToUserWithNonExistentCardCommand = new CreateTransactionCardToUserCommand(
         Guid.NewGuid(),
         dima.Response.Id,
-        300);
+        300,
+        DateTime.UtcNow);
 
         var createTransactionCardToUserWithNonExistentCardResult = 
         await CreateTransactionCardToUserCommandHandler.HandleAsync(createTransactionCardToUserWithNonExistentCardCommand);

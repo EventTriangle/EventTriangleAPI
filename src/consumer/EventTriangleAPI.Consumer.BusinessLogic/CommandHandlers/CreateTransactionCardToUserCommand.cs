@@ -5,4 +5,5 @@ namespace EventTriangleAPI.Consumer.BusinessLogic.CommandHandlers;
 public record CreateTransactionCardToUserCommand(
     Guid CreditCardId, 
     string RequesterId,
-    decimal Amount) : ICommand;
+    decimal Amount,
+    DateTime CreatedAt) : ICommand;

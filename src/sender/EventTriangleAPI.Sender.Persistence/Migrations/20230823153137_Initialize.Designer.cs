@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace EventTriangleAPI.Sender.Persistence.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20230814173704_Inialize")]
-    partial class Inialize
+    [Migration("20230823153137_Initialize")]
+    partial class Initialize
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -165,6 +165,9 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
 
                     b.Property<string>("TicketReason")
                         .HasColumnType("text");
+
+                    b.Property<Guid>("TransactionId")
+                        .HasColumnType("uuid");
 
                     b.Property<Guid>("WalletId")
                         .HasColumnType("uuid");

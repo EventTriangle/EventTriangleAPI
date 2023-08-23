@@ -13,7 +13,8 @@ public class TransactionEntityHelper
             Guid.NewGuid().ToString(),
             Guid.NewGuid().ToString(),
             Amount,
-            TransactionType.FromUserToUser);
+            TransactionType.FromUserToUser,
+            DateTime.UtcNow);
     }
     
     public static TransactionEntity CreateWithFromUserId(string fromUserId)
@@ -22,7 +23,8 @@ public class TransactionEntityHelper
             fromUserId,
             Guid.NewGuid().ToString(),
             Amount,
-            TransactionType.FromUserToUser);
+            TransactionType.FromUserToUser,
+            DateTime.UtcNow);
     }
     
     public static TransactionEntity CreateWithToUserId(string toUserId)
@@ -31,7 +33,8 @@ public class TransactionEntityHelper
             Guid.NewGuid().ToString(),
             toUserId,
             Amount,
-            TransactionType.FromUserToUser);
+            TransactionType.FromUserToUser,
+            DateTime.UtcNow);
     }
     
     public static TransactionEntity CreateWithAmount(decimal amount)
@@ -40,6 +43,7 @@ public class TransactionEntityHelper
             Guid.NewGuid().ToString(),
             Guid.NewGuid().ToString(),
             amount,
-            TransactionType.FromUserToUser);
+            TransactionType.FromUserToUser,
+            DateTime.UtcNow);
     }
 }

@@ -58,6 +58,13 @@ public class DatabaseContext : DbContext
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder
+            .Entity<SupportTicketEntity>()
+            .HasOne(x => x.Transaction)
+            .WithOne()
+            .HasForeignKey<SupportTicketEntity>(x => x.TransactionId)
+            .OnDelete(DeleteBehavior.Cascade);
+        
+        modelBuilder
             .Entity<TransactionEntity>()
             .HasOne(x => x.FromUser)
             .WithMany()

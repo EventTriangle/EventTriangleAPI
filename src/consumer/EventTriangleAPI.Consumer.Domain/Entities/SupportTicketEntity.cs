@@ -14,6 +14,10 @@ public class SupportTicketEntity
     
     public Guid WalletId { get; private set; }
     
+    public Guid TransactionId { get; private set;  }
+    
+    public TransactionEntity Transaction { get; private set; }
+    
     public WalletEntity Wallet { get; private set; }
     
     public string TicketReason { get; private set; }
@@ -21,14 +25,18 @@ public class SupportTicketEntity
     public string TicketJustification { get; private set; }
 
     public TicketStatus TicketStatus { get; private set; }
+    
+    public DateTime CreatedAt { get; private set; }
 
-    public SupportTicketEntity(string userId, Guid walletId, string ticketReason)
+    public SupportTicketEntity(string userId, Guid walletId, Guid transactionId, string ticketReason, DateTime createdAt)
     {
         Id = Guid.NewGuid();
         UserId = userId;
         WalletId = walletId;
+        TransactionId = transactionId;
         TicketReason = ticketReason;
         TicketStatus = TicketStatus.Open;
+        CreatedAt = createdAt;
         
         new SupportTicketEntityValidator().ValidateAndThrow(this);
     }
