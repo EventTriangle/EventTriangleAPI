@@ -9,16 +9,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EventTriangleAPI.Consumer.BusinessLogic.QueryHandlers;
 
-public class GetSupportTicketQueryHandler : ICommandHandler<GetSupportTicketQuery, List<SupportTicketDto>>
+public class GetSupportTicketsQueryHandler : ICommandHandler<GetSupportsTicketsQuery, List<SupportTicketDto>>
 {
     private readonly DatabaseContext _context;
 
-    public GetSupportTicketQueryHandler(DatabaseContext context)
+    public GetSupportTicketsQueryHandler(DatabaseContext context)
     {
         _context = context;
     }
 
-    public async Task<IResult<List<SupportTicketDto>, Error>> HandleAsync(GetSupportTicketQuery command)
+    public async Task<IResult<List<SupportTicketDto>, Error>> HandleAsync(GetSupportsTicketsQuery command)
     {
         var requester = await _context.UserEntities.FirstOrDefaultAsync(x => x.Id == command.RequesterId);
 

@@ -1,4 +1,5 @@
 using EventTriangleAPI.Consumer.BusinessLogic.CommandHandlers;
+using EventTriangleAPI.Consumer.BusinessLogic.QueryHandlers;
 using EventTriangleAPI.Consumer.Domain.Constants;
 using EventTriangleAPI.Consumer.IntegrationTests.Configuration;
 using EventTriangleAPI.Consumer.Persistence;
@@ -28,6 +29,15 @@ public class IntegrationTestBase : IAsyncLifetime
     protected readonly RollBackTransactionCommandHandler RollBackTransactionCommandHandler;
     protected readonly SuspendUserCommandHandler SuspendUserCommandHandler;
     protected readonly UpdateUserRoleCommandHandler UpdateUserRoleCommandHandler;
+
+    protected readonly GetContactsQueryHandler GetContactsQueryHandler;
+    protected readonly GetCreditCardsQueryHandler GetCreditCardsQueryHandler;
+    protected readonly GetProfileQueryHandler GetProfileQueryHandler;
+    protected readonly GetSupportTicketsQueryHandler GetSupportTicketsQueryHandler;
+    protected readonly GetTicketsQueryHandler GetTicketsQueryHandler;
+    protected readonly GetTransactionsQueryHandler GetTransactionsQueryHandler;
+    protected readonly GetUsersBySearchQueryHandler GetUsersBySearchQueryHandler;
+    protected readonly GetUsersQueryHandler GetUsersQueryHandler;
     
     public IntegrationTestBase()
     {
@@ -56,6 +66,15 @@ public class IntegrationTestBase : IAsyncLifetime
         RollBackTransactionCommandHandler = serviceProvider.GetRequiredService<RollBackTransactionCommandHandler>();
         SuspendUserCommandHandler = serviceProvider.GetRequiredService<SuspendUserCommandHandler>();
         UpdateUserRoleCommandHandler = serviceProvider.GetRequiredService<UpdateUserRoleCommandHandler>();
+
+        GetContactsQueryHandler = serviceProvider.GetRequiredService<GetContactsQueryHandler>();
+        GetCreditCardsQueryHandler = serviceProvider.GetRequiredService<GetCreditCardsQueryHandler>();
+        GetProfileQueryHandler = serviceProvider.GetRequiredService<GetProfileQueryHandler>();
+        GetSupportTicketsQueryHandler = serviceProvider.GetRequiredService<GetSupportTicketsQueryHandler>();
+        GetTicketsQueryHandler = serviceProvider.GetRequiredService<GetTicketsQueryHandler>();
+        GetTransactionsQueryHandler = serviceProvider.GetRequiredService<GetTransactionsQueryHandler>();
+        GetUsersBySearchQueryHandler = serviceProvider.GetRequiredService<GetUsersBySearchQueryHandler>();
+        GetUsersQueryHandler = serviceProvider.GetRequiredService<GetUsersQueryHandler>();
     }
 
     public async Task InitializeAsync()

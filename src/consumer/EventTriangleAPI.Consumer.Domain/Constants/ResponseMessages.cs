@@ -13,6 +13,6 @@ public static class ResponseMessages
     public const string WalletNotFound = "Wallet not found.";
     public const string SupportTicketNotFound = "Support ticket not found.";
     public const string TransactionTicketNotFound = "Transaction ticket not found.";
-    public const string PageCannotBeLessThanZero = "Page can't be less than zero.";
+    public const string PageCannotBeLessThanOne = "Page can't be less than one.";
     public const string TransactionNotFound = "TransactionNotFound";
 }
