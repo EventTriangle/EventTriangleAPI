@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EventTriangleAPI.Consumer.BusinessLogic.QueryHandlers;
 
-public class GetUsersBySearchQueryHandler: ICommandHandler<GetUsersBySearchQuery, List<UserDto>>
+public class GetUsersBySearchQueryHandler : ICommandHandler<GetUsersBySearchQuery, List<UserDto>>
 {
     private readonly DatabaseContext _context;
 
@@ -33,28 +33,32 @@ public class GetUsersBySearchQueryHandler: ICommandHandler<GetUsersBySearchQuery
             return new Result<List<UserDto>>(new ConflictError(ResponseMessages.RequesterIsNotAdmin));
         }
 
-        if (command.Limit < 1)
+        if (command.Page < 1)
         {
-            return new Result<List<UserDto>>(new BadRequestError(ResponseMessages.PageCannotBeLessThanZero));
+            return new Result<List<UserDto>>(new BadRequestError(ResponseMessages.PageCannotBeLessThanOne));
         }
+
+        var limit = command.Limit < 0 ? 0 : command.Limit; 
         
         var users = await _context.UserEntities
+            .Include(x => x.Wallet)
+            .Where(x => x.Id != requester.Id)
             .Where(x => EF.Functions.Like(x.Email, $"%{command.Email}%"))
             .Select(x => new UserDto 
             {
-                Id = requester.Id,
-                Email = requester.Email,
-                UserRole = requester.UserRole,
-                UserStatus = requester.UserStatus,
+                Id = x.Id,
+                Email = x.Email,
+                UserRole = x.UserRole,
+                UserStatus = x.UserStatus,
                 Wallet = new WalletDto
                 {
-                    Id = requester.Wallet.Id,
-                    Balance = requester.Wallet.Balance,
-                    LastTransactionId = requester.Wallet.LastTransactionId
+                    Id = x.Wallet.Id,
+                    Balance = x.Wallet.Balance,
+                    LastTransactionId = x.Wallet.LastTransactionId
                 }
             })
-            .Skip((command.Page - 1) * command.Limit)
-            .Take(command.Limit)
+            .Skip((command.Page - 1) * limit)
+            .Take(limit)
             .ToListAsync();
 
         return new Result<List<UserDto>>(users);
