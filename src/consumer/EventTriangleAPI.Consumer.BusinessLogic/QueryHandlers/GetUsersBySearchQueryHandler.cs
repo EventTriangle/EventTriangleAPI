@@ -38,7 +38,7 @@ public class GetUsersBySearchQueryHandler : ICommandHandler<GetUsersBySearchQuer
             return new Result<List<UserDto>>(new BadRequestError(ResponseMessages.PageCannotBeLessThanOne));
         }
 
-        var limit = command.Limit < 0 ? 0 : command.Limit; 
+        var limit = command.Limit < 1 ? DefaultValueConstants.DefaultLimit : command.Limit; 
         
         var users = await _context.UserEntities
             .Include(x => x.Wallet)

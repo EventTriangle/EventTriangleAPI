@@ -14,5 +14,5 @@ public static class ResponseMessages
     public const string SupportTicketNotFound = "Support ticket not found.";
     public const string TransactionTicketNotFound = "Transaction ticket not found.";
     public const string PageCannotBeLessThanOne = "Page can't be less than one.";
-    public const string TransactionNotFound = "TransactionNotFound";
+    public const string TransactionNotFound = "Transaction not found.";
 }
