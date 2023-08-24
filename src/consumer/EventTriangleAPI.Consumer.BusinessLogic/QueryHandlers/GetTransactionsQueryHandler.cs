@@ -31,16 +31,15 @@ public class GetTransactionsQueryHandler : ICommandHandler<GetTransactionsQuery,
             .OrderByDescending(x => x.CreatedAt)
             .Where(x => x.FromUserId == command.RequesterId || x.ToUserId == command.RequesterId)
             .Where(x => x.CreatedAt < command.FromDateTime)
-            .Select(x => new TransactionDto
-            {
-                Id = x.Id,
-                FromUserId = x.FromUserId,
-                ToUserId = x.ToUserId,
-                Amount = x.Amount,
-                TransactionState = x.TransactionState,
-                TransactionType = x.TransactionType,
-                CreatedAt = x.CreatedAt
-            })
+            .Select(x => new TransactionDto(
+                x.Id,
+                x.FromUserId,
+                x.ToUserId,
+                x.Amount,
+                x.TransactionState,
+                x.TransactionType,
+                x.CreatedAt)
+            )
             .ToListAsync();
 
         return new Result<List<TransactionDto>>(transactions);

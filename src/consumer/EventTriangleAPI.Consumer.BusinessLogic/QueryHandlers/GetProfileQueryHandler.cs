@@ -29,21 +29,17 @@ public class GetProfileQueryHandler : ICommandHandler<GetProfileQuery, UserDto>
             return new Result<UserDto>(new DbEntityNotFoundError(ResponseMessages.RequesterNotFound));
         }
 
-        var walletDto = new WalletDto
-        {
-            Id = requester.Wallet.Id,
-            Balance = requester.Wallet.Balance,
-            LastTransactionId = requester.Wallet.LastTransactionId,
-        };
+        var walletDto = new WalletDto(
+            requester.Wallet.Id,
+            requester.Wallet.Balance,
+            requester.Wallet.LastTransactionId);
 
-        var userDto = new UserDto
-        {
-            Id = requester.Id,
-            Email = requester.Email,
-            UserRole = requester.UserRole,
-            UserStatus = requester.UserStatus,
-            Wallet = walletDto
-        };
+        var userDto = new UserDto(
+            requester.Id,
+            requester.Email,
+            requester.UserRole,
+            requester.UserStatus,
+            walletDto);
 
         return new Result<UserDto>(userDto);
     }

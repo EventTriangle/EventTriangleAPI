@@ -43,19 +43,15 @@ public class GetUsersQueryHandler : ICommandHandler<GetUsersQuery, List<UserDto>
         var users = await _context.UserEntities
             .Include(x => x.Wallet)
             .Where(x => x.Id != requester.Id)
-            .Select(x => new UserDto 
-            {
-                Id = x.Id,
-                Email = x.Email,
-                UserRole = x.UserRole,
-                UserStatus = x.UserStatus,
-                Wallet = new WalletDto
-                {
-                    Id = x.Wallet.Id,
-                    Balance = x.Wallet.Balance,
-                    LastTransactionId = x.Wallet.LastTransactionId
-                }
-            })
+            .Select(x => new UserDto(
+                x.Id,
+                x.Email,
+                x.UserRole,
+                x.UserStatus,
+                new WalletDto(
+                    x.WalletId,
+                    x.Wallet.Balance,
+                    x.Wallet.LastTransactionId)))
             .Skip((command.Page - 1) * limit)
             .Take(limit)
             .ToListAsync();

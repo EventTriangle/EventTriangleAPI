@@ -30,19 +30,15 @@ public class GetContactsQueryHandler : ICommandHandler<GetContactsQuery, List<Co
         var contacts = await _context.ContactEntities
             .Include(x => x.Contact)
             .Where(x => x.UserId == requester.Id)
-            .Select(x => new ContactDto
-            {
-                UserId = x.UserId,
-                ContactId = x.ContactId,
-                Contact = new UserDto
-                {
-                    Id = x.Contact.Id,
-                    Email = x.Contact.Email,
-                    UserRole = x.Contact.UserRole,
-                    UserStatus = x.Contact.UserStatus,
-                    Wallet = null
-                }
-            })
+            .Select(x => new ContactDto(
+                x.UserId, 
+                x.ContactId, 
+                new UserDto(
+                    x.Contact.Id,
+                    x.Contact.Email,
+                    x.Contact.UserRole,
+                    x.Contact.UserStatus,
+                    null)))
             .ToListAsync();
 
         return new Result<List<ContactDto>>(contacts);

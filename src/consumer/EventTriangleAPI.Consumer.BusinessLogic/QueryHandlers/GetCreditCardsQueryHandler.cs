@@ -29,16 +29,15 @@ public class GetCreditCardsQueryHandler : ICommandHandler<GetCreditCardsQuery, L
 
         var creditCards = await _context.CreditCardEntities
             .Where(x => x.UserId == command.RequesterId)
-            .Select(x => new CreditCardDto
-            {
-                Id = x.Id,
-                UserId = x.UserId,
-                HolderName = x.HolderName,
-                CardNumber = x.CardNumber,
-                Cvv = x.Cvv,
-                Expiration = x.Expiration,
-                PaymentNetwork = x.PaymentNetwork
-            })
+            .Select(x => new CreditCardDto(
+                x.Id,
+                x.UserId,
+                x.HolderName,
+                x.CardNumber,
+                x.Cvv,
+                x.Expiration,
+                x.PaymentNetwork)
+            )
             .ToListAsync();
 
         return new Result<List<CreditCardDto>>(creditCards);
