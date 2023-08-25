@@ -14,7 +14,8 @@ public class ConsumerStartup
             {
                 options.UseNpgsql(databaseConnectionString);
             })
-            .AddCommandHandlers();
+            .AddCommandHandlers()
+            .AddQueryHandlers();
 
         return serviceCollection.BuildServiceProvider();
     }

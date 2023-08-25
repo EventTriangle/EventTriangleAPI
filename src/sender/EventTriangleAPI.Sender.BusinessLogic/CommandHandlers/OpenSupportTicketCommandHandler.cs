@@ -21,6 +21,7 @@ public class OpenSupportTicketCommandHandler : ICommandHandler<OpenSupportTicket
         var supportTicketOpenedEvent = new SupportTicketOpenedEvent(
             command.RequesterId,
             command.WalletId,
+            command.TransactionId,
             command.TicketReason);
 
         _context.SupportTicketOpenedEvents.Add(supportTicketOpenedEvent);

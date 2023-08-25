@@ -1,6 +1,5 @@
 using EventTriangleAPI.Consumer.BusinessLogic.CommandHandlers;
 using EventTriangleAPI.Consumer.IntegrationTests.Helpers;
-using EventTriangleAPI.Shared.DTO.Enums;
 using EventTriangleAPI.Shared.DTO.Responses;
 using FluentAssertions;
 using Xunit;
@@ -14,23 +13,20 @@ public class CreateTransactionUserToUserTestThrowConflict : IntegrationTestBase
     {
         var dima = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
         var alice = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserAliceCommand());
-        
         var addCreditCardForDimaCommand = AddCreditCardCommandHelper.CreateCreditCardCommand(dima.Response.Id);
-
         var addCreditCardForDimaResult = await AddCreditCardCommandHandler.HandleAsync(addCreditCardForDimaCommand);
-
         var createTransactionCardToUserForDimaCommand = new CreateTransactionCardToUserCommand(
             addCreditCardForDimaResult.Response.Id,
             dima.Response.Id,
-            300);
-
+            300,
+            DateTime.UtcNow);
         await CreateTransactionCardToUserCommandHandler.HandleAsync(createTransactionCardToUserForDimaCommand);
         
         var createTransactionUserToUserCommand = new CreateTransactionUserToUserCommand(
             dima.Response.Id,
             alice.Response.Id,
-            1000);
-
+            1000,
+            DateTime.UtcNow);
         var createTransactionUserToUserResult = 
             await CreateTransactionUserToUserCommandHandler.HandleAsync(createTransactionUserToUserCommand);
 

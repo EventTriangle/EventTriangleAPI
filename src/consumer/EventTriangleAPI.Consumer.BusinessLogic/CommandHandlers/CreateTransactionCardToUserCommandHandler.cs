@@ -41,7 +41,8 @@ public class CreateTransactionCardToUserCommandHandler : ICommandHandler<CreateT
             command.RequesterId, 
             command.RequesterId, 
             command.Amount, 
-            TransactionType.FromCardToUser);
+            TransactionType.FromCardToUser,
+            command.CreatedAt);
 
         requester.Wallet.UpdateBalance(requester.Wallet.Balance + command.Amount);
         

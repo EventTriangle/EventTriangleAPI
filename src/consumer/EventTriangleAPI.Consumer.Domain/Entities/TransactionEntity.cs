@@ -24,7 +24,12 @@ public class TransactionEntity
 
     public DateTime CreatedAt { get; private set; }
 
-    public TransactionEntity(string fromUserId, string toUserId, decimal amount, TransactionType transactionType)
+    public TransactionEntity(
+        string fromUserId, 
+        string toUserId, 
+        decimal amount, 
+        TransactionType transactionType,
+        DateTime createdAt)
     {
         Id = Guid.NewGuid();
         FromUserId = fromUserId;
@@ -32,7 +37,7 @@ public class TransactionEntity
         Amount = amount;
         TransactionState = TransactionState.Completed;
         TransactionType = transactionType;
-        CreatedAt = DateTime.UtcNow;
+        CreatedAt = createdAt;
         
         new TransactionEntityValidator().ValidateAndThrow(this);
     }

@@ -164,6 +164,9 @@ namespace EventTriangleAPI.Sender.Persistence.Migrations
                     b.Property<string>("TicketReason")
                         .HasColumnType("text");
 
+                    b.Property<Guid>("TransactionId")
+                        .HasColumnType("uuid");
+
                     b.Property<Guid>("WalletId")
                         .HasColumnType("uuid");
 

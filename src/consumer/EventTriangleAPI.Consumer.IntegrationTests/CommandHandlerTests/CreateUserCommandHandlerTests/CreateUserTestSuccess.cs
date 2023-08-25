@@ -11,11 +11,9 @@ public class CreateUserTestSuccess : IntegrationTestBase
     public async Task TestSuccess()
     {
         var createUserCommand = CreateUserCommandHelper.CreateUserDimaCommand();
-
         await CreateUserCommandHandler.HandleAsync(createUserCommand);
 
         var user = await DatabaseContextFixture.UserEntities.FirstOrDefaultAsync(x => x.Id == createUserCommand.UserId);
-
         user.Id.Should().Be(createUserCommand.UserId);
         user.Email.Should().Be(createUserCommand.Email);
         user.UserRole.Should().Be(createUserCommand.UserRole);

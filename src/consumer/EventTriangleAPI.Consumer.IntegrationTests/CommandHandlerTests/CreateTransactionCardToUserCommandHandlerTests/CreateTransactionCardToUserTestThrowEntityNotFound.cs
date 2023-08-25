@@ -1,6 +1,5 @@
 using EventTriangleAPI.Consumer.BusinessLogic.CommandHandlers;
 using EventTriangleAPI.Consumer.IntegrationTests.Helpers;
-using EventTriangleAPI.Shared.DTO.Enums;
 using EventTriangleAPI.Shared.DTO.Responses;
 using FluentAssertions;
 using Xunit;
@@ -13,16 +12,14 @@ public class CreateTransactionCardToUserTestThrowEntityNotFound : IntegrationTes
     public async Task TestRequesterNotFound()
     {
         var dima = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
-        
         var addCreditCardCommand = AddCreditCardCommandHelper.CreateCreditCardCommand(dima.Response.Id);
-
         var addCreditCardResult = await AddCreditCardCommandHandler.HandleAsync(addCreditCardCommand);
 
         var createTransactionCardToUserByNobodyCommand = new CreateTransactionCardToUserCommand(
             addCreditCardResult.Response.Id,
             Guid.NewGuid().ToString(),
-            300);
-
+            300,
+            DateTime.UtcNow);
         var createTransactionCardToUserByNobodyResult = 
             await CreateTransactionCardToUserCommandHandler.HandleAsync(createTransactionCardToUserByNobodyCommand);
 
@@ -37,7 +34,8 @@ public class CreateTransactionCardToUserTestThrowEntityNotFound : IntegrationTes
         var createTransactionCardToUserWithNonExistentCardCommand = new CreateTransactionCardToUserCommand(
         Guid.NewGuid(),
         dima.Response.Id,
-        300);
+        300,
+        DateTime.UtcNow);
 
         var createTransactionCardToUserWithNonExistentCardResult = 
         await CreateTransactionCardToUserCommandHandler.HandleAsync(createTransactionCardToUserWithNonExistentCardCommand);

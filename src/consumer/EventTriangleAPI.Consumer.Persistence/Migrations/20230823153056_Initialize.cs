@@ -45,9 +45,11 @@ namespace EventTriangleAPI.Consumer.Persistence.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     UserId = table.Column<string>(type: "text", nullable: true),
                     WalletId = table.Column<Guid>(type: "uuid", nullable: false),
+                    TransactionId = table.Column<Guid>(type: "uuid", nullable: false),
                     TicketReason = table.Column<string>(type: "text", nullable: true),
                     TicketJustification = table.Column<string>(type: "text", nullable: true),
-                    TicketStatus = table.Column<int>(type: "integer", nullable: false)
+                    TicketStatus = table.Column<int>(type: "integer", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -121,6 +123,12 @@ namespace EventTriangleAPI.Consumer.Persistence.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_SupportTicketEntities_TransactionId",
+                table: "SupportTicketEntities",
+                column: "TransactionId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_SupportTicketEntities_UserId",
                 table: "SupportTicketEntities",
                 column: "UserId");
@@ -172,6 +180,14 @@ namespace EventTriangleAPI.Consumer.Persistence.Migrations
                 table: "CreditCardEntities",
                 column: "UserId",
                 principalTable: "UserEntities",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_SupportTicketEntities_TransactionEntities_TransactionId",
+                table: "SupportTicketEntities",
+                column: "TransactionId",
+                principalTable: "TransactionEntities",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
 

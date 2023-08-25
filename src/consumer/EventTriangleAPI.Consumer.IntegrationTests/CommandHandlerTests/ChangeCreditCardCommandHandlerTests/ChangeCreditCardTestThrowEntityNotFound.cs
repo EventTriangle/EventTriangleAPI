@@ -22,7 +22,6 @@ public class ChangeCreditCardTestThrowEntityNotFound : IntegrationTestBase
             "321",
             "12/06",
             PaymentNetwork.Visa);
-
         var changeCreditCardResult = await ChangeCreditCardCommandHandler.HandleAsync(changeCreditCardCommand);
 
         changeCreditCardResult.Error.Should().BeOfType<DbEntityNotFoundError>();

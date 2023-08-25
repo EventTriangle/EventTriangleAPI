@@ -13,22 +13,19 @@ public class CreateTransactionCardToUserTestSuccess : IntegrationTestBase
     public async Task TestSuccess()
     {
         var dima = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
-        
         var addCreditCardCommand = AddCreditCardCommandHelper.CreateCreditCardCommand(dima.Response.Id);
-
         var addCreditCardResult = await AddCreditCardCommandHandler.HandleAsync(addCreditCardCommand);
 
         var createTransactionCardToUserCommand = new CreateTransactionCardToUserCommand(
             addCreditCardResult.Response.Id,
             dima.Response.Id,
-            300);
-
+            300,
+            DateTime.UtcNow);
         var createTransactionCardToUserResult = 
             await CreateTransactionCardToUserCommandHandler.HandleAsync(createTransactionCardToUserCommand);
 
         var transaction = await DatabaseContextFixture.TransactionEntities
             .FirstOrDefaultAsync(x => x.Id == createTransactionCardToUserResult.Response.Id);
-
         transaction.FromUserId.Should().Be(createTransactionCardToUserCommand.RequesterId);
         transaction.ToUserId.Should().Be(createTransactionCardToUserCommand.RequesterId);
         transaction.Amount.Should().Be(createTransactionCardToUserCommand.Amount);
