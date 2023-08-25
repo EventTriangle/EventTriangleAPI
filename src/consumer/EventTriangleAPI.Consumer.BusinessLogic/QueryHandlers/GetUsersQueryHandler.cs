@@ -51,7 +51,8 @@ public class GetUsersQueryHandler : ICommandHandler<GetUsersQuery, List<UserDto>
                 new WalletDto(
                     x.WalletId,
                     x.Wallet.Balance,
-                    x.Wallet.LastTransactionId)))
+                    x.Wallet.LastTransactionId))
+            )
             .Skip((command.Page - 1) * limit)
             .Take(limit)
             .ToListAsync();
