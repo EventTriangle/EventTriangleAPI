@@ -14,7 +14,6 @@ public class GetUsersTestThrowConflict : IntegrationTestBase
         var alice = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserAliceCommand());
         
         var getUsersQuery = new GetUsersQuery(alice.Response.Id, 10, 1);
-
         var getUsersResult = await GetUsersQueryHandler.HandleAsync(getUsersQuery);
 
         getUsersResult.Error.Should().BeOfType<ConflictError>();

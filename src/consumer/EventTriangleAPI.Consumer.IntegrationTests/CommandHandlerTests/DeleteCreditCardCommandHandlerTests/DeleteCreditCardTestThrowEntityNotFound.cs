@@ -12,14 +12,11 @@ public class DeleteCreditCardTestThrowEntityNotFound : IntegrationTestBase
     public async Task TestRequesterNotFound()
     {
         var dima = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
-
         var addCreditCardCommand = AddCreditCardCommandHelper.CreateCreditCardCommand(dima.Response.Id);
-
         var addCreditCardResult = await AddCreditCardCommandHandler.HandleAsync(addCreditCardCommand);
 
         var deleteCreditCardByNobodyCommand = 
             new DeleteCreditCardCommand(Guid.NewGuid().ToString(), addCreditCardResult.Response.Id);
-
         var deleteCreditCardByNobodyResult = 
             await DeleteCreditCardCommandHandler.HandleAsync(deleteCreditCardByNobodyCommand);
 
@@ -32,10 +29,9 @@ public class DeleteCreditCardTestThrowEntityNotFound : IntegrationTestBase
         var dima = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
 
         var deleteCreditCardForNonExistentCardCommand =
-        new DeleteCreditCardCommand(dima.Response.Id, Guid.NewGuid());
-
+            new DeleteCreditCardCommand(dima.Response.Id, Guid.NewGuid());
         var deleteCreditCardForNonExistentCardResult = 
-        await DeleteCreditCardCommandHandler.HandleAsync(deleteCreditCardForNonExistentCardCommand);
+            await DeleteCreditCardCommandHandler.HandleAsync(deleteCreditCardForNonExistentCardCommand);
 
         deleteCreditCardForNonExistentCardResult.Error.Should().BeOfType<DbEntityNotFoundError>();
     }

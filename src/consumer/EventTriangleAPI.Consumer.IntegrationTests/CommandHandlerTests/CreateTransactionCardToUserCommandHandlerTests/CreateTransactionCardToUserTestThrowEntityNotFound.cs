@@ -12,9 +12,7 @@ public class CreateTransactionCardToUserTestThrowEntityNotFound : IntegrationTes
     public async Task TestRequesterNotFound()
     {
         var dima = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
-        
         var addCreditCardCommand = AddCreditCardCommandHelper.CreateCreditCardCommand(dima.Response.Id);
-
         var addCreditCardResult = await AddCreditCardCommandHandler.HandleAsync(addCreditCardCommand);
 
         var createTransactionCardToUserByNobodyCommand = new CreateTransactionCardToUserCommand(
@@ -22,7 +20,6 @@ public class CreateTransactionCardToUserTestThrowEntityNotFound : IntegrationTes
             Guid.NewGuid().ToString(),
             300,
             DateTime.UtcNow);
-
         var createTransactionCardToUserByNobodyResult = 
             await CreateTransactionCardToUserCommandHandler.HandleAsync(createTransactionCardToUserByNobodyCommand);
 

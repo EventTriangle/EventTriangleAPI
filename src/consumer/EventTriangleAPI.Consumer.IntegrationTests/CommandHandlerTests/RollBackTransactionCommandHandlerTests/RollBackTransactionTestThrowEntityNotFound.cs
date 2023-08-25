@@ -13,31 +13,24 @@ public class RollBackTransactionTestThrowEntityNotFound : IntegrationTestBase
     {
         var alice = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserAliceCommand());
         var bob = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserBobCommand());
-
         var addCreditCardCommand = AddCreditCardCommandHelper.CreateCreditCardCommand(bob.Response.Id);
-
         var addCreditCardResult = await AddCreditCardCommandHandler.HandleAsync(addCreditCardCommand);
-        
         var createTransactionCardToUserCommand = new CreateTransactionCardToUserCommand(
             addCreditCardResult.Response.Id,
             bob.Response.Id,
             300,
             DateTime.UtcNow);
-
         await CreateTransactionCardToUserCommandHandler.HandleAsync(createTransactionCardToUserCommand);
-        
         var createTransactionUserToUserCommand = new CreateTransactionUserToUserCommand(
             bob.Response.Id,
             alice.Response.Id,
             300,
             DateTime.UtcNow);
-
         var  createTransactionUserToUserResult = await CreateTransactionUserToUserCommandHandler.HandleAsync(createTransactionUserToUserCommand);
 
         var rollbackTransactionCommand = new RollBackTransactionCommand(
             Guid.NewGuid().ToString(), 
             createTransactionUserToUserResult.Response.Id);
-
         var rollbackTransactionResult = await RollBackTransactionCommandHandler.HandleAsync(rollbackTransactionCommand);
 
         rollbackTransactionResult.Error.Should().BeOfType<DbEntityNotFoundError>();
@@ -51,7 +44,6 @@ public class RollBackTransactionTestThrowEntityNotFound : IntegrationTestBase
         var rollbackTransactionCommand = new RollBackTransactionCommand(
             dima.Response.Id, 
             Guid.NewGuid());
-
         var rollBackTransactionResult = await RollBackTransactionCommandHandler.HandleAsync(rollbackTransactionCommand);
 
         rollBackTransactionResult.Error.Should().BeOfType<DbEntityNotFoundError>();

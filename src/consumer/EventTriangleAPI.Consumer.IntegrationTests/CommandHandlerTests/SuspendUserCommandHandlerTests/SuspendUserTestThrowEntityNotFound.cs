@@ -14,7 +14,6 @@ public class SuspendUserTestThrowEntityNotFound : IntegrationTestBase
         var alice = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserAliceCommand());
         
         var suspendUserCommand = new SuspendUserCommand(Guid.NewGuid().ToString(), alice.Response.Id);
-        
         var suspendUserResult = await SuspendUserCommandHandler.HandleAsync(suspendUserCommand);
 
         suspendUserResult.Error.Should().BeOfType<DbEntityNotFoundError>();
@@ -26,7 +25,6 @@ public class SuspendUserTestThrowEntityNotFound : IntegrationTestBase
         var dima = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
         
         var suspendUserCommand = new SuspendUserCommand(dima.Response.Id, Guid.NewGuid().ToString());
-        
         var suspendUserResult = await SuspendUserCommandHandler.HandleAsync(suspendUserCommand);
 
         suspendUserResult.Error.Should().BeOfType<DbEntityNotFoundError>();

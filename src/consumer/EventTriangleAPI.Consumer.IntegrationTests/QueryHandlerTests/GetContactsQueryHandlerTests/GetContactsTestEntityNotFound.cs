@@ -11,7 +11,6 @@ public class GetContactsTestEntityNotFound : IntegrationTestBase
     public async Task TestRequesterNotFound()
     {
         var getContactsQuery = new GetContactsQuery(Guid.NewGuid().ToString());
-
         var getContactsResult = await GetContactsQueryHandler.HandleAsync(getContactsQuery);
 
         getContactsResult.Error.Should().BeOfType<DbEntityNotFoundError>();

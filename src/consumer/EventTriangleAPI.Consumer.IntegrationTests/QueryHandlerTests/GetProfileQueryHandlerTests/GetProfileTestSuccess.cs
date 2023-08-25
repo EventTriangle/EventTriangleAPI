@@ -13,7 +13,6 @@ public class GetProfileTestSuccess : IntegrationTestBase
         var dima = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
 
         var getProfileQuery = new GetProfileQuery(dima.Response.Id);
-
         var getProfileResult = await GetProfileQueryHandler.HandleAsync(getProfileQuery);
 
         getProfileResult.Response.Id.Should().Be(dima.Response.Id);

@@ -15,7 +15,6 @@ public class UpdateUserRoleTestThrowEntityNotFound : IntegrationTestBase
         var alice = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserAliceCommand());
 
         var updateUserRoleCommand = new UpdateUserRoleCommand(Guid.NewGuid().ToString(), alice.Response.Id, UserRole.Admin);
-
         var updateUserRoleResult = await UpdateUserRoleCommandHandler.HandleAsync(updateUserRoleCommand);
 
         updateUserRoleResult.Error.Should().BeOfType<DbEntityNotFoundError>();
@@ -27,7 +26,6 @@ public class UpdateUserRoleTestThrowEntityNotFound : IntegrationTestBase
         var dima = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
 
         var updateUserRoleCommand = new UpdateUserRoleCommand(dima.Response.Id, Guid.NewGuid().ToString(), UserRole.Admin);
-
         var updateUserRoleResult = await UpdateUserRoleCommandHandler.HandleAsync(updateUserRoleCommand);
 
         updateUserRoleResult.Error.Should().BeOfType<DbEntityNotFoundError>();

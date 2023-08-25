@@ -11,7 +11,6 @@ public class GetProfileTestThrowEntityNotFound : IntegrationTestBase
     public async Task TestRequesterNotFound()
     {
         var getProfileQuery = new GetProfileQuery(Guid.NewGuid().ToString());
-
         var getProfileResult = await GetProfileQueryHandler.HandleAsync(getProfileQuery);
 
         getProfileResult.Error.Should().BeOfType<DbEntityNotFoundError>();

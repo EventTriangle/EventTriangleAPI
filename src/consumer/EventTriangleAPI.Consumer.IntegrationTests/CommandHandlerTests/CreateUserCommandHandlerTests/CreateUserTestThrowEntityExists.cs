@@ -11,11 +11,9 @@ public class CreateUserTestThrowEntityExists : IntegrationTestBase
     public async Task TestUserAlreadyExists()
     {
         var createUserCommand = CreateUserCommandHelper.CreateUserDimaCommand();
-        
         await CreateUserCommandHandler.HandleAsync(createUserCommand);
         
         var secondCreateUserResult = await CreateUserCommandHandler.HandleAsync(createUserCommand);
-
         secondCreateUserResult.Error.Should().BeOfType<DbEntityExistsError>();
     }
 }

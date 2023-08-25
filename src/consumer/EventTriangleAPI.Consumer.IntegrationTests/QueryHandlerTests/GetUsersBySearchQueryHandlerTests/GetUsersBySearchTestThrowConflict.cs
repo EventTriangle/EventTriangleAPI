@@ -14,7 +14,6 @@ public class GetUsersBySearchTestThrowConflict : IntegrationTestBase
         var alice = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserAliceCommand());
         
         var getUsersBySearchQuery = new GetUsersBySearchQuery(alice.Response.Id, "bo", 10, 1);
-
         var getUsersBySearchResult = await GetUsersBySearchQueryHandler.HandleAsync(getUsersBySearchQuery);
 
         getUsersBySearchResult.Error.Should().BeOfType<ConflictError>();

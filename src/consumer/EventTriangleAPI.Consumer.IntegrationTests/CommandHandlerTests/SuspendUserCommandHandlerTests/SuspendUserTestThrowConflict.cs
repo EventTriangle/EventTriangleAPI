@@ -15,7 +15,6 @@ public class SuspendUserTestThrowConflict : IntegrationTestBase
         var alice = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserAliceCommand());
 
         var suspendUserCommand = new SuspendUserCommand(bob.Response.Id, alice.Response.Id);
-
         var suspendUserResult = await SuspendUserCommandHandler.HandleAsync(suspendUserCommand);
         
         suspendUserResult.Error.Should().BeOfType<ConflictError>();

@@ -14,7 +14,6 @@ public class GetUsersTestBadRequest: IntegrationTestBase
         var dima = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
         
         var getUsersQuery = new GetUsersQuery(dima.Response.Id, 10, -10);
-
         var getUsersResult = await GetUsersQueryHandler.HandleAsync(getUsersQuery);
 
         getUsersResult.Error.Should().BeOfType<BadRequestError>();

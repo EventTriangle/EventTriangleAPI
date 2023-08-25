@@ -16,12 +16,10 @@ public class SuspendUserTestSuccess : IntegrationTestBase
         var alice = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserAliceCommand());
         
         var suspendUserCommand = new SuspendUserCommand(dima.Response.Id, alice.Response.Id);
-        
         await SuspendUserCommandHandler.HandleAsync(suspendUserCommand);
         
         var aliceAfterSuspending = await DatabaseContextFixture.UserEntities
             .FirstOrDefaultAsync(x => x.Id == alice.Response.Id);
-        
         aliceAfterSuspending.UserStatus.Should().Be(UserStatus.Suspended);
     }
 }

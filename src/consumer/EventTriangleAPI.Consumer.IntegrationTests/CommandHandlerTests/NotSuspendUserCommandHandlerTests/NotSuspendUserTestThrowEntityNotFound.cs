@@ -15,20 +15,15 @@ public class NotSuspendUserTestThrowEntityNotFound : IntegrationTestBase
     {
         var dima = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
         var alice = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserAliceCommand());
-        
         var suspendUserCommand = new SuspendUserCommand(dima.Response.Id, alice.Response.Id);
-        
         await SuspendUserCommandHandler.HandleAsync(suspendUserCommand);
-        
         var aliceAfterSuspending = await DatabaseContextFixture.UserEntities
             .FirstOrDefaultAsync(x => x.Id == alice.Response.Id);
         
-        aliceAfterSuspending.UserStatus.Should().Be(UserStatus.Suspended);
-        
         var notSuspendUserCommand = new NotSuspendUserCommand(Guid.NewGuid().ToString(), alice.Response.Id);
-
         var notSuspendUserResult = await NotSuspendUserCommandHandler.HandleAsync(notSuspendUserCommand);
 
+        aliceAfterSuspending.UserStatus.Should().Be(UserStatus.Suspended);
         notSuspendUserResult.Error.Should().BeOfType<DbEntityNotFoundError>();
     }
     
@@ -38,7 +33,6 @@ public class NotSuspendUserTestThrowEntityNotFound : IntegrationTestBase
         var dima = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
         
         var notSuspendUserCommand = new NotSuspendUserCommand(dima.Response.Id, Guid.NewGuid().ToString());
-
         var notSuspendUserResult = await NotSuspendUserCommandHandler.HandleAsync(notSuspendUserCommand);
 
         notSuspendUserResult.Error.Should().BeOfType<DbEntityNotFoundError>();

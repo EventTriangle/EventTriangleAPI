@@ -11,7 +11,6 @@ public class GetCreditCardsTestThrowEntityNotFound : IntegrationTestBase
     public async Task TestRequesterNotFound()
     {
         var getCreditCardsQuery = new GetCreditCardsQuery(Guid.NewGuid().ToString());
-
         var getCreditCardsResult = await GetCreditCardsQueryHandler.HandleAsync(getCreditCardsQuery);
 
         getCreditCardsResult.Error.Should().BeOfType<DbEntityNotFoundError>();

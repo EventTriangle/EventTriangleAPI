@@ -11,7 +11,6 @@ public class GetTicketsTestEntityNotFound : IntegrationTestBase
     public async Task TestRequesterNotFound()
     {
         var getTicketsQuery = new GetTicketsQuery(Guid.NewGuid().ToString(), 10, DateTime.UtcNow);
-
         var getTicketsResult = await GetTicketsQueryHandler.HandleAsync(getTicketsQuery);
 
         getTicketsResult.Error.Should().BeOfType<DbEntityNotFoundError>();

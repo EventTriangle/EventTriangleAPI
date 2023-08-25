@@ -14,7 +14,6 @@ public class GetTicketsTestConflict : IntegrationTestBase
         var alice = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserAliceCommand());
         
         var getTicketsQuery = new GetTicketsQuery(alice.Response.Id, 10, DateTime.UtcNow);
-
         var getTicketsResult = await GetTicketsQueryHandler.HandleAsync(getTicketsQuery);
 
         getTicketsResult.Error.Should().BeOfType<ConflictError>();

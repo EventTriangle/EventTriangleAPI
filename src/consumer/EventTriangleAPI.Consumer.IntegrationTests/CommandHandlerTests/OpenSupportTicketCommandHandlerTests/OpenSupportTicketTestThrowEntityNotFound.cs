@@ -13,25 +13,19 @@ public class OpenSupportTicketTestThrowEntityNotFound : IntegrationTestBase
     {
         var alice = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserAliceCommand());
         var bob = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserBobCommand());
-
         var addCreditCardForAliceCommand = AddCreditCardCommandHelper.CreateCreditCardCommand(alice.Response.Id);
-
         var addCreditCardForAliceResult = await AddCreditCardCommandHandler.HandleAsync(addCreditCardForAliceCommand);
-
         var createTransactionCardToUserForDimaCommand = new CreateTransactionCardToUserCommand(
             addCreditCardForAliceResult.Response.Id,
             alice.Response.Id,
             300,
             DateTime.UtcNow);
-
         await CreateTransactionCardToUserCommandHandler.HandleAsync(createTransactionCardToUserForDimaCommand);
-        
         var createTransactionUserToUserCommand = new CreateTransactionUserToUserCommand(
             alice.Response.Id,
             bob.Response.Id,
             300, 
             DateTime.UtcNow);
-
         var createTransactionUserToUserResult = 
             await CreateTransactionUserToUserCommandHandler.HandleAsync(createTransactionUserToUserCommand);
         
@@ -41,7 +35,6 @@ public class OpenSupportTicketTestThrowEntityNotFound : IntegrationTestBase
             createTransactionUserToUserResult.Response.Id,
             "Please, can you rollback my transaction?", 
             DateTime.UtcNow);
-
         var openSupportTicketResult = await OpenSupportTicketCommandHandler.HandleAsync(openSupportTicketCommand);
 
         openSupportTicketResult.Error.Should().BeOfType<DbEntityNotFoundError>();
@@ -51,27 +44,20 @@ public class OpenSupportTicketTestThrowEntityNotFound : IntegrationTestBase
     public async Task TestWalletNotFound()
     {
         var alice = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserAliceCommand());
-
         var bob = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserBobCommand());
-
         var addCreditCardForAliceCommand = AddCreditCardCommandHelper.CreateCreditCardCommand(alice.Response.Id);
-
         var addCreditCardForAliceResult = await AddCreditCardCommandHandler.HandleAsync(addCreditCardForAliceCommand);
-
         var createTransactionCardToUserForDimaCommand = new CreateTransactionCardToUserCommand(
             addCreditCardForAliceResult.Response.Id,
             alice.Response.Id,
             300,
             DateTime.UtcNow);
-
         await CreateTransactionCardToUserCommandHandler.HandleAsync(createTransactionCardToUserForDimaCommand);
-        
         var createTransactionUserToUserCommand = new CreateTransactionUserToUserCommand(
             alice.Response.Id,
             bob.Response.Id,
             300, 
             DateTime.UtcNow);
-
         var createTransactionUserToUserResult = 
             await CreateTransactionUserToUserCommandHandler.HandleAsync(createTransactionUserToUserCommand);
         
@@ -81,7 +67,6 @@ public class OpenSupportTicketTestThrowEntityNotFound : IntegrationTestBase
             createTransactionUserToUserResult.Response.Id,
             "Please, can you rollback my transaction?",
             DateTime.UtcNow);
-
         var openSupportTicketResult = await OpenSupportTicketCommandHandler.HandleAsync(openSupportTicketCommand);
 
         openSupportTicketResult.Error.Should().BeOfType<DbEntityNotFoundError>();
@@ -98,7 +83,6 @@ public class OpenSupportTicketTestThrowEntityNotFound : IntegrationTestBase
             Guid.NewGuid(),
             "Please, can you rollback my transaction?",
             DateTime.UtcNow);
-
         var openSupportTicketResult = await OpenSupportTicketCommandHandler.HandleAsync(openSupportTicketCommand);
 
         openSupportTicketResult.Error.Should().BeOfType<DbEntityNotFoundError>();

@@ -16,11 +16,9 @@ public class UpdateUserRoleTestSuccess : IntegrationTestBase
         var alice = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserAliceCommand());
 
         var updateUserRoleCommand = new UpdateUserRoleCommand(dima.Response.Id, alice.Response.Id, UserRole.Admin);
-
         await UpdateUserRoleCommandHandler.HandleAsync(updateUserRoleCommand);
 
         var user = await DatabaseContextFixture.UserEntities.FirstAsync(x => x.Id == alice.Response.Id);
-
         user.UserRole.Should().Be(UserRole.Admin);
     }
 }

@@ -11,7 +11,6 @@ public class GetTransactionsTestThrowEntityNotFound : IntegrationTestBase
     public async Task TestRequesterNotFound()
     {
         var getTransactionsQuery = new GetTransactionsQuery(Guid.NewGuid().ToString(), 10, DateTime.UtcNow);
-
         var getTransactionsResult = await GetTransactionsQueryHandler.HandleAsync(getTransactionsQuery);
 
         getTransactionsResult.Error.Should().BeOfType<DbEntityNotFoundError>();

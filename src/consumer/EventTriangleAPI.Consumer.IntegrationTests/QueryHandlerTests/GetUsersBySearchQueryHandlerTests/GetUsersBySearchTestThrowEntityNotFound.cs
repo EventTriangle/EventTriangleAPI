@@ -11,7 +11,6 @@ public class GetUsersBySearchTestThrowEntityNotFound : IntegrationTestBase
     public async Task TestRequesterNotFound()
     {
         var getUsersBySearchQuery = new GetUsersBySearchQuery(Guid.NewGuid().ToString(), "bo", 10, 1);
-
         var getUsersBySearchResult = await GetUsersBySearchQueryHandler.HandleAsync(getUsersBySearchQuery);
 
         getUsersBySearchResult.Error.Should().BeOfType<DbEntityNotFoundError>();

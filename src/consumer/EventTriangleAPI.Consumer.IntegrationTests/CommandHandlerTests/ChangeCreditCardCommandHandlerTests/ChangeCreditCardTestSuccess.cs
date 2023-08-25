@@ -13,11 +13,9 @@ public class ChangeCreditCardTestSuccess : IntegrationTestBase
     public async Task TestSuccess()
     {
         var dima = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
-        
         var addCreditCardCommand = AddCreditCardCommandHelper.CreateCreditCardCommand(dima.Response.Id);
-
         var addCreditCardResult = await AddCreditCardCommandHandler.HandleAsync(addCreditCardCommand);
-
+        
         var changeCreditCardCommand = new ChangeCreditCardCommand(
             addCreditCardResult.Response.Id,
             dima.Response.Id,
@@ -26,12 +24,10 @@ public class ChangeCreditCardTestSuccess : IntegrationTestBase
             "321",
             "12/06",
             PaymentNetwork.Visa);
-
         await ChangeCreditCardCommandHandler.HandleAsync(changeCreditCardCommand);
 
         var creditCard = await DatabaseContextFixture.CreditCardEntities
             .FirstOrDefaultAsync(x => x.Id == addCreditCardResult.Response.Id);
-        
         creditCard.UserId.Should().Be(dima.Response.Id);
         creditCard.HolderName.Should().Be(changeCreditCardCommand.HolderName);
         creditCard.CardNumber.Should().Be(changeCreditCardCommand.CardNumber);

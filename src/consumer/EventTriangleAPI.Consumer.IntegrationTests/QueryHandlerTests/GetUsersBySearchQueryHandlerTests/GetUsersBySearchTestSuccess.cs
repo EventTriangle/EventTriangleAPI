@@ -16,13 +16,11 @@ public class GetUsersBySearchTestSuccess : IntegrationTestBase
 
         var getUsersBySearchAliceQuery = new GetUsersBySearchQuery(dima.Response.Id, "ali", 10, 1);
         var getUsersBySearchBobQuery = new GetUsersBySearchQuery(dima.Response.Id, "bo", 10, 1);
-
         var getUsersBySearchAliceResult = await GetUsersBySearchQueryHandler.HandleAsync(getUsersBySearchAliceQuery);
         var getUsersBySearchBobResult = await GetUsersBySearchQueryHandler.HandleAsync(getUsersBySearchBobQuery);
 
         getUsersBySearchAliceResult.Response.Count.Should().Be(1);
         getUsersBySearchBobResult.Response.Count.Should().Be(1);
-        
         getUsersBySearchAliceResult.Response.FirstOrDefault(x => x.Id == alice.Response.Id).Should().NotBeNull();
         getUsersBySearchBobResult.Response.FirstOrDefault(x => x.Id == bob.Response.Id).Should().NotBeNull();
     }

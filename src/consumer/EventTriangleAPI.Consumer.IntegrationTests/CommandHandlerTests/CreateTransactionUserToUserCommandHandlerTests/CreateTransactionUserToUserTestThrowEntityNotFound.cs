@@ -18,7 +18,6 @@ public class CreateTransactionUserToUserTestThrowEntityNotFound : IntegrationTes
             alice.Response.Id,
             300,
             DateTime.UtcNow);
-        
         var createTransactionUserToUserByNobodyResult = 
             await CreateTransactionUserToUserCommandHandler.HandleAsync(createTransactionUserToUserByNobodyCommand);
         
@@ -35,7 +34,6 @@ public class CreateTransactionUserToUserTestThrowEntityNotFound : IntegrationTes
             Guid.NewGuid().ToString(),
             300,
             DateTime.UtcNow);
-        
         var createTransactionUserToUserForNobodyResult = 
             await CreateTransactionUserToUserCommandHandler.HandleAsync(createTransactionUserToUserForNobodyCommand);
 

@@ -11,7 +11,6 @@ public class AddCreditCardTestThrowEntityNotFound : IntegrationTestBase
     public async Task TestRequesterNotFound()
     {
         var addCreditCardCommand = AddCreditCardCommandHelper.CreateCreditCardCommand(Guid.NewGuid().ToString());
-
         var addCreditCardResult = await AddCreditCardCommandHandler.HandleAsync(addCreditCardCommand);
 
         addCreditCardResult.Error.Should().BeOfType<DbEntityNotFoundError>();

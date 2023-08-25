@@ -14,7 +14,6 @@ public class CreateContactTestThrowEntityNotFound : IntegrationTestBase
         var dima = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
 
         var createContactForDimaWithNobodyCommand = new CreateContactCommand(dima.Response.Id, Guid.NewGuid().ToString());
-        
         var createContactForDimaWithNobodyResult = await CreateContactCommandHandler.HandleAsync(createContactForDimaWithNobodyCommand);
 
         createContactForDimaWithNobodyResult.Error.Should().BeOfType<DbEntityNotFoundError>();
@@ -26,7 +25,6 @@ public class CreateContactTestThrowEntityNotFound : IntegrationTestBase
         var alice = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserAliceCommand());
 
         var createContactForNobodyCommand = new CreateContactCommand(Guid.NewGuid().ToString(), alice.Response.Id);
-        
         var createContactForNobodyResult = await CreateContactCommandHandler.HandleAsync(createContactForNobodyCommand);
 
         createContactForNobodyResult.Error.Should().BeOfType<DbEntityNotFoundError>();

@@ -14,7 +14,6 @@ public class GetUsersBySearchTestBadRequest : IntegrationTestBase
         var dima = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
         
         var getUsersBySearchQuery = new GetUsersBySearchQuery(dima.Response.Id, "ali", 10, -10);
-
         var getUsersBySearchResult = await GetUsersBySearchQueryHandler.HandleAsync(getUsersBySearchQuery);
 
         getUsersBySearchResult.Error.Should().BeOfType<BadRequestError>();
