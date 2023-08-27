@@ -19,14 +19,14 @@ public class CreateTransactionUserToUserTestSuccess : IntegrationTestBase
         var createTransactionCardToUserForDimaCommand = new CreateTransactionCardToUserCommand(
             addCreditCardForDimaResult.Response.Id,
             dima.Response.Id,
-            300,
+            Amount: 300,
             DateTime.UtcNow);
         await CreateTransactionCardToUserCommandHandler.HandleAsync(createTransactionCardToUserForDimaCommand);
         
         var createTransactionUserToUserCommand = new CreateTransactionUserToUserCommand(
             dima.Response.Id,
             alice.Response.Id,
-            300, 
+            Amount: 300,
             DateTime.UtcNow);
         var createTransactionUserToUserResult = 
             await CreateTransactionUserToUserCommandHandler.HandleAsync(createTransactionUserToUserCommand);

@@ -13,7 +13,7 @@ public class TopUpAccountBalanceCommandHandlerTest : IntegrationTestBase, IInteg
         var command = new TopUpAccountBalanceCommand(
             Guid.NewGuid().ToString(),
             Guid.NewGuid(),
-            300);
+            Amount: 300);
 
         var result = await TopUpAccountBalanceCommandHandler.HandleAsync(command);
 

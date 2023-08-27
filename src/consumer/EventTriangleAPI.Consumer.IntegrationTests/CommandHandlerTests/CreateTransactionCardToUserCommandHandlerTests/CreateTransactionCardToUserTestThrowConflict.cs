@@ -21,7 +21,7 @@ public class CreateTransactionCardToUserTestThrowConflict : IntegrationTestBase
         var createTransactionCardToUserCommand = new CreateTransactionCardToUserCommand(
             addCreditCardResult.Response.Id,
             alice.Response.Id,
-            300,
+            Amount: 300,
             DateTime.UtcNow);
         var createTransactionCardToUserResult = 
             await CreateTransactionCardToUserCommandHandler.HandleAsync(createTransactionCardToUserCommand);

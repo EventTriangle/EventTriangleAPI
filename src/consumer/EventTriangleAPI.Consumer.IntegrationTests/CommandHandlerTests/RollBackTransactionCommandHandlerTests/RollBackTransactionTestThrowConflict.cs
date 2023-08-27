@@ -18,13 +18,13 @@ public class RollBackTransactionTestThrowConflict : IntegrationTestBase
         var createTransactionCardToUserCommand = new CreateTransactionCardToUserCommand(
             addCreditCardResult.Response.Id,
             bob.Response.Id,
-            300,
+            Amount: 300,
             DateTime.UtcNow);
         await CreateTransactionCardToUserCommandHandler.HandleAsync(createTransactionCardToUserCommand);
         var createTransactionUserToUserCommand = new CreateTransactionUserToUserCommand(
             bob.Response.Id,
             alice.Response.Id,
-            300,
+            Amount: 300,
             DateTime.UtcNow);
         var  createTransactionUserToUserResult = await CreateTransactionUserToUserCommandHandler.HandleAsync(createTransactionUserToUserCommand);
 

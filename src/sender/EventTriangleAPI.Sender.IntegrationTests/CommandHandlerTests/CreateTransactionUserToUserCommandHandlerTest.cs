@@ -13,7 +13,7 @@ public class CreateTransactionUserToUserCommandHandlerTest : IntegrationTestBase
         var command = new CreateTransactionUserToUserCommand(
             Guid.NewGuid().ToString(),
             Guid.NewGuid().ToString(),
-            300);
+            Amount: 300);
         
         var result = await CreateTransactionUserToUserCommandHandler.HandleAsync(command);
 

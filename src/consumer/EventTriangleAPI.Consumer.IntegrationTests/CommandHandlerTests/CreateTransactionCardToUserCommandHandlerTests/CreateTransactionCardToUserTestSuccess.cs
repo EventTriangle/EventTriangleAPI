@@ -19,7 +19,7 @@ public class CreateTransactionCardToUserTestSuccess : IntegrationTestBase
         var createTransactionCardToUserCommand = new CreateTransactionCardToUserCommand(
             addCreditCardResult.Response.Id,
             dima.Response.Id,
-            300,
+            Amount: 300,
             DateTime.UtcNow);
         var createTransactionCardToUserResult = 
             await CreateTransactionCardToUserCommandHandler.HandleAsync(createTransactionCardToUserCommand);
