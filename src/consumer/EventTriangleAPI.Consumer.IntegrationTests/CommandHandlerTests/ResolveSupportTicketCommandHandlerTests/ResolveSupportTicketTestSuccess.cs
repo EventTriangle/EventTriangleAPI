@@ -20,13 +20,13 @@ public class ResolveSupportTicketTestSuccess : IntegrationTestBase
         var createTransactionCardToUserForDimaCommand = new CreateTransactionCardToUserCommand(
             addCreditCardForAliceResult.Response.Id,
             alice.Response.Id,
-            300,
+            Amount: 300,
             DateTime.UtcNow);
         await CreateTransactionCardToUserCommandHandler.HandleAsync(createTransactionCardToUserForDimaCommand);
         var createTransactionUserToUserCommand = new CreateTransactionUserToUserCommand(
             alice.Response.Id,
             bob.Response.Id,
-            300, 
+            Amount: 300,
             DateTime.UtcNow);
         var createTransactionUserToUserResult = 
             await CreateTransactionUserToUserCommandHandler.HandleAsync(createTransactionUserToUserCommand);

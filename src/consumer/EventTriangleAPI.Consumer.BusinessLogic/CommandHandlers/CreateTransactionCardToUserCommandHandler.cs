@@ -30,6 +30,11 @@ public class CreateTransactionCardToUserCommandHandler : ICommandHandler<CreateT
             return new Result<TransactionEntity>(new DbEntityNotFoundError(ResponseMessages.RequesterNotFound));
         }
 
+        if (requester.UserStatus == UserStatus.Suspended)
+        {
+            return new Result<TransactionEntity>(new ConflictError(ResponseMessages.RequesterIsSuspended));
+        }
+
         var creditCard = await _context.CreditCardEntities.FirstOrDefaultAsync(x => x.Id == command.CreditCardId);
         
         if (creditCard == null)

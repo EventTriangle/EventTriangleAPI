@@ -18,18 +18,46 @@ public class CreateTransactionUserToUserTestThrowConflict : IntegrationTestBase
         var createTransactionCardToUserForDimaCommand = new CreateTransactionCardToUserCommand(
             addCreditCardForDimaResult.Response.Id,
             dima.Response.Id,
-            300,
+            Amount: 300,
             DateTime.UtcNow);
         await CreateTransactionCardToUserCommandHandler.HandleAsync(createTransactionCardToUserForDimaCommand);
         
         var createTransactionUserToUserCommand = new CreateTransactionUserToUserCommand(
             dima.Response.Id,
             alice.Response.Id,
-            1000,
+            Amount: 1000,
             DateTime.UtcNow);
         var createTransactionUserToUserResult = 
             await CreateTransactionUserToUserCommandHandler.HandleAsync(createTransactionUserToUserCommand);
 
+        createTransactionUserToUserResult.Error.Should().BeOfType<ConflictError>();
+    }
+
+    [Fact]
+    public async Task RequesterSuspended()
+    {
+        var dima = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
+        var alice = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserAliceCommand());
+        var bob = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserAliceCommand());
+        var addCreditCardCommand = AddCreditCardCommandHelper.CreateCreditCardCommand(alice.Response.Id);
+        var addCreditCardResult = await AddCreditCardCommandHandler.HandleAsync(addCreditCardCommand);
+        var createTransactionCardToUserCommand = new CreateTransactionCardToUserCommand(
+            addCreditCardResult.Response.Id,
+            alice.Response.Id,
+            Amount: 300,
+            DateTime.UtcNow);
+        await CreateTransactionCardToUserCommandHandler.HandleAsync(createTransactionCardToUserCommand);
+        var suspendUserCommand = new SuspendUserCommand(dima.Response.Id, alice.Response.Id);
+        await SuspendUserCommandHandler.HandleAsync(suspendUserCommand);
+
+        var createTransactionUserToUserCommand = new CreateTransactionUserToUserCommand(
+            alice.Response.Id,
+            bob.Response.Id,
+            Amount: 300,
+            DateTime.Now);
+        var createTransactionUserToUserResult =
+            await CreateTransactionUserToUserCommandHandler.HandleAsync(createTransactionUserToUserCommand);
+        
         createTransactionUserToUserResult.Error.Should().BeOfType<ConflictError>();
     }
 }

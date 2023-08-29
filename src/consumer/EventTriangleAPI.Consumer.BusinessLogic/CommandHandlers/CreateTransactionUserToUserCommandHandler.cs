@@ -30,6 +30,11 @@ public class CreateTransactionUserToUserCommandHandler : ICommandHandler<CreateT
             return new Result<TransactionEntity>(new DbEntityNotFoundError(ResponseMessages.UserNotFound));
         }
         
+        if (requester.UserStatus == UserStatus.Suspended)
+        {
+            return new Result<TransactionEntity>(new ConflictError(ResponseMessages.RequesterIsSuspended));
+        }
+        
         var toUser = await _context.UserEntities
             .Include(x => x.Wallet)
             .FirstOrDefaultAsync(x => x.Id == command.ToUserId);

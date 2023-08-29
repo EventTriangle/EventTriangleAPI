@@ -16,7 +16,7 @@ public class CreateTransactionUserToUserTestThrowEntityNotFound : IntegrationTes
         var createTransactionUserToUserByNobodyCommand = new CreateTransactionUserToUserCommand(
             Guid.NewGuid().ToString(),
             alice.Response.Id,
-            300,
+            Amount: 300,
             DateTime.UtcNow);
         var createTransactionUserToUserByNobodyResult = 
             await CreateTransactionUserToUserCommandHandler.HandleAsync(createTransactionUserToUserByNobodyCommand);
@@ -32,7 +32,7 @@ public class CreateTransactionUserToUserTestThrowEntityNotFound : IntegrationTes
         var createTransactionUserToUserForNobodyCommand = new CreateTransactionUserToUserCommand(
             dima.Response.Id,
             Guid.NewGuid().ToString(),
-            300,
+            Amount: 300,
             DateTime.UtcNow);
         var createTransactionUserToUserForNobodyResult = 
             await CreateTransactionUserToUserCommandHandler.HandleAsync(createTransactionUserToUserForNobodyCommand);

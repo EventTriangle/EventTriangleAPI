@@ -39,6 +39,11 @@ public class SuspendUserCommandHandler : ICommandHandler<SuspendUserCommand, Use
         {
             return new Result<UserEntity>(new DbEntityNotFoundError(ResponseMessages.UserNotFound));
         }
+
+        if (user.UserRole == UserRole.Admin)
+        {
+            return new Result<UserEntity>(new ConflictError(ResponseMessages.CannotSuspendAdmin));
+        }
         
         user.UpdateUserStatus(UserStatus.Suspended);
 
