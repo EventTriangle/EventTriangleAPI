@@ -1,4 +1,5 @@
 using EventTriangleAPI.Consumer.BusinessLogic.Consumers;
+using EventTriangleAPI.Consumer.BusinessLogic.Hubs;
 using EventTriangleAPI.Consumer.Domain.Constants;
 using EventTriangleAPI.Consumer.Persistence;
 using EventTriangleAPI.Consumer.Presentation.DependencyInjection;
@@ -18,6 +19,7 @@ var databaseConnectionString = builder.Configuration[AppSettingsConstants.Databa
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddSignalR();
 builder.Services.AddDbContext<DatabaseContext>(options =>
 {
     options.UseNpgsql(databaseConnectionString);
@@ -27,6 +29,24 @@ builder.Services.AddCommandHandlers();
 
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer("SignalR", options =>
+    {
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var accessToken = context.Request.Query["access_token"];
+                var path = context.Request.Path;
+    
+                if (path.StartsWithSegments("/notify") && !string.IsNullOrEmpty(accessToken))
+                {
+                    context.Token = accessToken;
+                }
+    
+                return Task.CompletedTask;
+            }
+        };
+    })
     .AddMicrosoftIdentityWebApi(configurationSection);
 
 builder.Services.AddMassTransit(config =>
@@ -63,5 +83,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<NotificationHub>("notify");
 
 app.Run();
