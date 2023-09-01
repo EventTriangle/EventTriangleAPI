@@ -1,6 +1,10 @@
 using EventTriangleAPI.Consumer.BusinessLogic.CommandHandlers;
+using EventTriangleAPI.Consumer.BusinessLogic.Hubs;
+using EventTriangleAPI.Consumer.BusinessLogic.Models.Notifications;
+using EventTriangleAPI.Shared.DTO.Enums;
 using EventTriangleAPI.Shared.DTO.Messages;
 using MassTransit;
+using Microsoft.AspNetCore.SignalR;
 
 namespace EventTriangleAPI.Consumer.BusinessLogic.Consumers;
 
@@ -34,7 +38,9 @@ public class EventConsumer :
     private readonly NotSuspendUserCommandHandler _notSuspendUserCommandHandler;
     private readonly UpdateUserRoleCommandHandler _updateUserRoleCommandHandler;
     private readonly SuspendUserCommandHandler _suspendUserCommandHandler;
-    
+
+    private readonly IHubContext<NotificationHub, INotificationHub> _hubContext;
+
     public EventConsumer(
         CreateContactCommandHandler createContactCommandHandler, 
         DeleteContactCommandHandler deleteContactCommandHandler, 
@@ -49,7 +55,8 @@ public class EventConsumer :
         CreateUserCommandHandler createUserCommandHandler, 
         NotSuspendUserCommandHandler notSuspendUserCommandHandler, 
         UpdateUserRoleCommandHandler updateUserRoleCommandHandler,
-        SuspendUserCommandHandler suspendUserCommandHandler)
+        SuspendUserCommandHandler suspendUserCommandHandler, 
+        IHubContext<NotificationHub, INotificationHub> hubContext)
     {
         _createContactCommandHandler = createContactCommandHandler;
         _deleteContactCommandHandler = deleteContactCommandHandler;
@@ -65,6 +72,7 @@ public class EventConsumer :
         _notSuspendUserCommandHandler = notSuspendUserCommandHandler;
         _updateUserRoleCommandHandler = updateUserRoleCommandHandler;
         _suspendUserCommandHandler = suspendUserCommandHandler;
+        _hubContext = hubContext;
     }
 
     public async Task Consume(ConsumeContext<ContactCreatedEventMessage> context)
@@ -144,17 +152,85 @@ public class EventConsumer :
     public async Task Consume(ConsumeContext<TransactionCardToUserCreatedEventMessage> context)
     {
         var message = context.Message;
-        var command = new CreateTransactionCardToUserCommand(message.CreditCardId, message.RequesterId, message.Amount, message.CreatedAt);
 
-        await _createTransactionCardToUserCommandHandler.HandleAsync(command);
+        try
+        {
+            var command = new CreateTransactionCardToUserCommand(
+                message.CreditCardId, 
+                message.RequesterId, 
+                message.Amount, 
+                message.CreatedAt);
+
+            var result = await _createTransactionCardToUserCommandHandler.HandleAsync(command);
+
+            if (!result.IsSuccess)
+            {
+                var notification = new TransactionCanceledNotification(
+                    message.RequesterId, 
+                    message.RequesterId, 
+                    message.Amount,
+                    TransactionType.FromCardToUser,
+                    message.CreatedAt,
+                    Reason: result.Error.Message);
+            
+                await _hubContext.Clients.User(context.Message.RequesterId).TransactionCanceledAsync(notification);
+            }
+        }
+        catch
+        {
+            var notification = new TransactionCanceledNotification(
+                message.RequesterId, 
+                message.RequesterId, 
+                message.Amount,
+                TransactionType.FromCardToUser,
+                message.CreatedAt,
+                Reason: "Internal error");
+            
+            await _hubContext.Clients.User(context.Message.RequesterId).TransactionCanceledAsync(notification);
+            throw;
+        }
     }
 
     public async Task Consume(ConsumeContext<TransactionUserToUserCreatedEventMessage> context)
     {
         var message = context.Message;
-        var command = new CreateTransactionUserToUserCommand(message.RequesterId, message.ToUserId, message.Amount, message.CreatedAt);
 
-        await _createTransactionUserToUserCommandHandler.HandleAsync(command);
+        try
+        {
+            var command = new CreateTransactionUserToUserCommand(
+                message.RequesterId,
+                message.ToUserId,
+                message.Amount,
+                message.CreatedAt);
+
+            var result = await _createTransactionUserToUserCommandHandler.HandleAsync(command);
+
+            if (!result.IsSuccess)
+            {
+                var notification = new TransactionCanceledNotification(
+                    message.RequesterId, 
+                    message.ToUserId, 
+                    message.Amount,
+                    TransactionType.FromCardToUser,
+                    message.CreatedAt,
+                    Reason: result.Error.Message);
+            
+                await _hubContext.Clients.User(context.Message.RequesterId).TransactionCanceledAsync(notification);
+            }
+        }
+        catch
+        {
+            var notification = new TransactionCanceledNotification(
+                message.RequesterId, 
+                message.ToUserId, 
+                message.Amount,
+                TransactionType.FromCardToUser,
+                message.CreatedAt,
+                Reason: "Internal error");
+            
+            await _hubContext.Clients.User(context.Message.RequesterId).TransactionCanceledAsync(notification);
+            throw;
+        }
     }
     
     public async Task Consume(ConsumeContext<TransactionRollBackedEventMessage> context)
