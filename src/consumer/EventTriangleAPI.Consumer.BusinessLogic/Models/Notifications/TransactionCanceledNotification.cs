@@ -8,5 +8,4 @@ public record TransactionCanceledNotification(
     decimal Amount,
     TransactionType TransactionType,
     DateTime CreatedAt,
-    string Reason
-);
+    string Reason);
