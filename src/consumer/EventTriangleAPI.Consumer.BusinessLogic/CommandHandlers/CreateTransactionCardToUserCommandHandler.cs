@@ -1,3 +1,4 @@
+using EventTriangleAPI.Consumer.BusinessLogic.Models;
 using EventTriangleAPI.Consumer.Domain.Constants;
 using EventTriangleAPI.Consumer.Domain.Entities;
 using EventTriangleAPI.Consumer.Persistence;
@@ -10,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EventTriangleAPI.Consumer.BusinessLogic.CommandHandlers;
 
-public class CreateTransactionCardToUserCommandHandler : ICommandHandler<CreateTransactionCardToUserCommand, TransactionEntity>
+public class CreateTransactionCardToUserCommandHandler : ICommandHandler<CreateTransactionCardToUserCommand, TransactionDto>
 {
     private readonly DatabaseContext _context;
 
@@ -19,7 +20,7 @@ public class CreateTransactionCardToUserCommandHandler : ICommandHandler<CreateT
         _context = context;
     }
 
-    public async Task<IResult<TransactionEntity, Error>> HandleAsync(CreateTransactionCardToUserCommand command)
+    public async Task<IResult<TransactionDto, Error>> HandleAsync(CreateTransactionCardToUserCommand command)
     {
         var requester = await _context.UserEntities
             .Include(x => x.Wallet)
@@ -27,19 +28,19 @@ public class CreateTransactionCardToUserCommandHandler : ICommandHandler<CreateT
 
         if (requester == null)
         {
-            return new Result<TransactionEntity>(new DbEntityNotFoundError(ResponseMessages.RequesterNotFound));
+            return new Result<TransactionDto>(new DbEntityNotFoundError(ResponseMessages.RequesterNotFound));
         }
 
         if (requester.UserStatus == UserStatus.Suspended)
         {
-            return new Result<TransactionEntity>(new ConflictError(ResponseMessages.RequesterIsSuspended));
+            return new Result<TransactionDto>(new ConflictError(ResponseMessages.RequesterIsSuspended));
         }
 
         var creditCard = await _context.CreditCardEntities.FirstOrDefaultAsync(x => x.Id == command.CreditCardId);
         
         if (creditCard == null)
         {
-            return new Result<TransactionEntity>(new DbEntityNotFoundError(ResponseMessages.CreditCardNotFound));
+            return new Result<TransactionDto>(new DbEntityNotFoundError(ResponseMessages.CreditCardNotFound));
         }
         
         var transaction = new TransactionEntity(
@@ -56,6 +57,15 @@ public class CreateTransactionCardToUserCommandHandler : ICommandHandler<CreateT
         
         await _context.SaveChangesAsync();
 
-        return new Result<TransactionEntity>(transaction);
+        var transactionDto = new TransactionDto(
+            transaction.Id,
+            transaction.FromUserId,
+            transaction.ToUserId,
+            transaction.Amount,
+            transaction.TransactionState,
+            transaction.TransactionType,
+            transaction.CreatedAt);
+        
+        return new Result<TransactionDto>(transactionDto);
     }
 }

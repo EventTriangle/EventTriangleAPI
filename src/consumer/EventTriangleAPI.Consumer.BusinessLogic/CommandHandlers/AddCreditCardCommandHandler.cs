@@ -1,3 +1,4 @@
+using EventTriangleAPI.Consumer.BusinessLogic.Models;
 using EventTriangleAPI.Consumer.Domain.Constants;
 using EventTriangleAPI.Consumer.Domain.Entities;
 using EventTriangleAPI.Consumer.Persistence;
@@ -9,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EventTriangleAPI.Consumer.BusinessLogic.CommandHandlers;
 
-public class AddCreditCardCommandHandler : ICommandHandler<AddCreditCardCommand, CreditCardEntity>
+public class AddCreditCardCommandHandler : ICommandHandler<AddCreditCardCommand, CreditCardDto>
 {
     private readonly DatabaseContext _context;
 
@@ -18,13 +19,13 @@ public class AddCreditCardCommandHandler : ICommandHandler<AddCreditCardCommand,
         _context = context;
     }
 
-    public async Task<IResult<CreditCardEntity, Error>> HandleAsync(AddCreditCardCommand command)
+    public async Task<IResult<CreditCardDto, Error>> HandleAsync(AddCreditCardCommand command)
     {
         var requester = await _context.UserEntities.FirstOrDefaultAsync(x => x.Id == command.RequesterId);
 
         if (requester == null)
         {
-            return new Result<CreditCardEntity>(new DbEntityNotFoundError(ResponseMessages.RequesterNotFound));
+            return new Result<CreditCardDto>(new DbEntityNotFoundError(ResponseMessages.RequesterNotFound));
         }
 
         var countCreditCardWithSameCardNumber = await _context.CreditCardEntities
@@ -33,7 +34,7 @@ public class AddCreditCardCommandHandler : ICommandHandler<AddCreditCardCommand,
 
         if (countCreditCardWithSameCardNumber > 0)
         {
-            return new Result<CreditCardEntity>(new BadRequestError(ResponseMessages.CannotCreateCreditCardWithSameCardNumber));
+            return new Result<CreditCardDto>(new BadRequestError(ResponseMessages.CannotCreateCreditCardWithSameCardNumber));
         }
         
         var creditCard = new CreditCardEntity(
@@ -47,6 +48,15 @@ public class AddCreditCardCommandHandler : ICommandHandler<AddCreditCardCommand,
         _context.CreditCardEntities.Add(creditCard);
         await _context.SaveChangesAsync();
 
-        return new Result<CreditCardEntity>(creditCard);
+        var creditCardDto = new CreditCardDto(
+            creditCard.Id,
+            creditCard.UserId, 
+            creditCard.HolderName, 
+            creditCard.CardNumber, 
+            creditCard.Cvv,
+            creditCard.Expiration,
+            creditCard.PaymentNetwork);
+        
+        return new Result<CreditCardDto>(creditCardDto);
     }
 }

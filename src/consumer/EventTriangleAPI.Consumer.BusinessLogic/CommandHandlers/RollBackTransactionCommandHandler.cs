@@ -1,5 +1,5 @@
+using EventTriangleAPI.Consumer.BusinessLogic.Models;
 using EventTriangleAPI.Consumer.Domain.Constants;
-using EventTriangleAPI.Consumer.Domain.Entities;
 using EventTriangleAPI.Consumer.Persistence;
 using EventTriangleAPI.Shared.Application.Abstractions;
 using EventTriangleAPI.Shared.DTO.Abstractions;
@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EventTriangleAPI.Consumer.BusinessLogic.CommandHandlers;
 
-public class RollBackTransactionCommandHandler : ICommandHandler<RollBackTransactionCommand, TransactionEntity>
+public class RollBackTransactionCommandHandler : ICommandHandler<RollBackTransactionCommand, TransactionDto>
 {
     private readonly DatabaseContext _context;
 
@@ -19,18 +19,18 @@ public class RollBackTransactionCommandHandler : ICommandHandler<RollBackTransac
         _context = context;
     }
 
-    public async Task<IResult<TransactionEntity, Error>> HandleAsync(RollBackTransactionCommand command)
+    public async Task<IResult<TransactionDto, Error>> HandleAsync(RollBackTransactionCommand command)
     {
         var requester = await _context.UserEntities.FirstOrDefaultAsync(x => x.Id == command.RequesterId);
 
         if (requester == null)
         {
-            return new Result<TransactionEntity>(new DbEntityNotFoundError(ResponseMessages.RequesterNotFound));
+            return new Result<TransactionDto>(new DbEntityNotFoundError(ResponseMessages.RequesterNotFound));
         }
 
         if (requester.UserRole != UserRole.Admin)
         {
-            return new Result<TransactionEntity>(new ConflictError(ResponseMessages.RequesterIsNotAdmin));
+            return new Result<TransactionDto>(new ConflictError(ResponseMessages.RequesterIsNotAdmin));
         }
         
         var transaction = await _context.TransactionEntities
@@ -42,7 +42,7 @@ public class RollBackTransactionCommandHandler : ICommandHandler<RollBackTransac
 
         if (transaction == null)
         {
-            return new Result<TransactionEntity>(new DbEntityNotFoundError(ResponseMessages.TransactionTicketNotFound));
+            return new Result<TransactionDto>(new DbEntityNotFoundError(ResponseMessages.TransactionTicketNotFound));
         }
         
         transaction.UpdateTransactionState(TransactionState.RolledBack);
@@ -52,6 +52,15 @@ public class RollBackTransactionCommandHandler : ICommandHandler<RollBackTransac
         _context.TransactionEntities.Update(transaction);
         await _context.SaveChangesAsync();
 
-        return new Result<TransactionEntity>(transaction);
+        var transactionDto = new TransactionDto(
+            transaction.Id,
+            transaction.FromUserId,
+            transaction.ToUserId,
+            transaction.Amount,
+            transaction.TransactionState,
+            transaction.TransactionType,
+            transaction.CreatedAt);
+        
+        return new Result<TransactionDto>(transactionDto);
     }
 }

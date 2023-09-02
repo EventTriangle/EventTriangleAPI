@@ -7,4 +7,5 @@ public record UserDto(
     string Email, 
     UserRole UserRole,
     UserStatus UserStatus,
+    Guid WalletId,
     WalletDto Wallet);

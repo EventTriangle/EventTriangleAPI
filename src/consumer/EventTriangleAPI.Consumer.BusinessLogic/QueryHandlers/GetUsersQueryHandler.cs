@@ -48,6 +48,7 @@ public class GetUsersQueryHandler : ICommandHandler<GetUsersQuery, List<UserDto>
                 x.Email,
                 x.UserRole,
                 x.UserStatus,
+                x.WalletId,
                 new WalletDto(
                     x.WalletId,
                     x.Wallet.Balance,
