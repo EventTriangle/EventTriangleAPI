@@ -339,7 +339,10 @@ public class EventConsumer :
                     result.Error.Message);
             
                 await _hubContext.Clients.User(context.Message.RequesterId).TransactionCanceledAsync(notification);
+                return;
             }
+            
+            await _hubContext.Clients.User(context.Message.RequesterId).TransactionSucceededAsync(result.Response);
         }
         catch
         {
@@ -381,7 +384,10 @@ public class EventConsumer :
                     result.Error.Message);
             
                 await _hubContext.Clients.User(context.Message.RequesterId).TransactionCanceledAsync(notification);
+                return;
             }
+            
+            await _hubContext.Clients.User(context.Message.RequesterId).TransactionSucceededAsync(result.Response);
         }
         catch
         {

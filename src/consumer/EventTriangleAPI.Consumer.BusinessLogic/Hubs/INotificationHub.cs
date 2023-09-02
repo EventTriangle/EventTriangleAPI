@@ -1,9 +1,14 @@
+using EventTriangleAPI.Consumer.BusinessLogic.Models;
 using EventTriangleAPI.Consumer.BusinessLogic.Models.Notifications;
 
 namespace EventTriangleAPI.Consumer.BusinessLogic.Hubs;
 
 public interface INotificationHub
 {
+    //success 
+    Task TransactionSucceededAsync(TransactionDto transaction);
+    
+    //fail
     Task ContactCreatingCanceledAsync(ContactCreatingCanceledNotification notification);
 
     Task ContactDeletingCanceledAsync(ContactDeletingCanceledNotification notification);
