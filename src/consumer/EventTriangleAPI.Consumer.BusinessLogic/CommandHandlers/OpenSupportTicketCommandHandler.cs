@@ -1,3 +1,4 @@
+using EventTriangleAPI.Consumer.BusinessLogic.Models;
 using EventTriangleAPI.Consumer.Domain.Constants;
 using EventTriangleAPI.Consumer.Domain.Entities;
 using EventTriangleAPI.Consumer.Persistence;
@@ -9,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EventTriangleAPI.Consumer.BusinessLogic.CommandHandlers;
 
-public class OpenSupportTicketCommandHandler : ICommandHandler<OpenSupportTicketCommand, SupportTicketEntity>
+public class OpenSupportTicketCommandHandler : ICommandHandler<OpenSupportTicketCommand, SupportTicketDto>
 {
     private readonly DatabaseContext _context;
 
@@ -18,27 +19,27 @@ public class OpenSupportTicketCommandHandler : ICommandHandler<OpenSupportTicket
         _context = context;
     }
 
-    public async Task<IResult<SupportTicketEntity, Error>> HandleAsync(OpenSupportTicketCommand command)
+    public async Task<IResult<SupportTicketDto, Error>> HandleAsync(OpenSupportTicketCommand command)
     {
         var requester = await _context.UserEntities.FirstOrDefaultAsync(x => x.Id == command.RequesterId);
 
         if (requester == null)
         {
-            return new Result<SupportTicketEntity>(new DbEntityNotFoundError(ResponseMessages.RequesterNotFound));
+            return new Result<SupportTicketDto>(new DbEntityNotFoundError(ResponseMessages.RequesterNotFound));
         }
         
         var wallet = await _context.WalletEntities.FirstOrDefaultAsync(x => x.Id == command.WalletId);
 
         if (wallet == null)
         {
-            return new Result<SupportTicketEntity>(new DbEntityNotFoundError(ResponseMessages.WalletNotFound));
+            return new Result<SupportTicketDto>(new DbEntityNotFoundError(ResponseMessages.WalletNotFound));
         }
 
         var transaction = await _context.TransactionEntities.FirstOrDefaultAsync(x => x.Id == command.TransactionId);
 
         if (transaction == null)
         {
-            return new Result<SupportTicketEntity>(new DbEntityNotFoundError(ResponseMessages.TransactionNotFound));
+            return new Result<SupportTicketDto>(new DbEntityNotFoundError(ResponseMessages.TransactionNotFound));
         }
         
         var supportTicket = new SupportTicketEntity(
@@ -51,6 +52,14 @@ public class OpenSupportTicketCommandHandler : ICommandHandler<OpenSupportTicket
         _context.SupportTicketEntities.Add(supportTicket);
         await _context.SaveChangesAsync();
 
-        return new Result<SupportTicketEntity>(supportTicket);
+        var supportTicketDto = new SupportTicketDto(
+            supportTicket.Id,
+            supportTicket.UserId,
+            supportTicket.WalletId,
+            supportTicket.TicketReason,
+            supportTicket.TicketJustification,
+            supportTicket.TicketStatus);
+        
+        return new Result<SupportTicketDto>(supportTicketDto);
     }
 }

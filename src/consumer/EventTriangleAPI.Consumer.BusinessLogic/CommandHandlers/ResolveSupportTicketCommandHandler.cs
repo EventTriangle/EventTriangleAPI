@@ -1,5 +1,5 @@
+using EventTriangleAPI.Consumer.BusinessLogic.Models;
 using EventTriangleAPI.Consumer.Domain.Constants;
-using EventTriangleAPI.Consumer.Domain.Entities;
 using EventTriangleAPI.Consumer.Persistence;
 using EventTriangleAPI.Shared.Application.Abstractions;
 using EventTriangleAPI.Shared.DTO.Abstractions;
@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EventTriangleAPI.Consumer.BusinessLogic.CommandHandlers;
 
-public class ResolveSupportTicketCommandHandler : ICommandHandler<ResolveSupportTicketCommand, SupportTicketEntity>
+public class ResolveSupportTicketCommandHandler : ICommandHandler<ResolveSupportTicketCommand, SupportTicketDto>
 {
     private readonly DatabaseContext _context;
 
@@ -19,18 +19,18 @@ public class ResolveSupportTicketCommandHandler : ICommandHandler<ResolveSupport
         _context = context;
     }
 
-    public async Task<IResult<SupportTicketEntity, Error>> HandleAsync(ResolveSupportTicketCommand command)
+    public async Task<IResult<SupportTicketDto, Error>> HandleAsync(ResolveSupportTicketCommand command)
     {
         var requester = await _context.UserEntities.FirstOrDefaultAsync(x => x.Id == command.RequesterId);
 
         if (requester == null)
         {
-            return new Result<SupportTicketEntity>(new DbEntityNotFoundError(ResponseMessages.RequesterNotFound));
+            return new Result<SupportTicketDto>(new DbEntityNotFoundError(ResponseMessages.RequesterNotFound));
         }
 
         if (requester.UserRole != UserRole.Admin)
         {
-            return new Result<SupportTicketEntity>(new ConflictError(ResponseMessages.RequesterIsNotAdmin));
+            return new Result<SupportTicketDto>(new ConflictError(ResponseMessages.RequesterIsNotAdmin));
         }
         
         var supportTicket = await _context.SupportTicketEntities
@@ -38,7 +38,7 @@ public class ResolveSupportTicketCommandHandler : ICommandHandler<ResolveSupport
 
         if (supportTicket == null)
         {
-            return new Result<SupportTicketEntity>(new DbEntityNotFoundError(ResponseMessages.SupportTicketNotFound));
+            return new Result<SupportTicketDto>(new DbEntityNotFoundError(ResponseMessages.SupportTicketNotFound));
         }
         
         supportTicket.UpdateTicketJustification(command.TicketJustification);
@@ -47,6 +47,14 @@ public class ResolveSupportTicketCommandHandler : ICommandHandler<ResolveSupport
         _context.SupportTicketEntities.Update(supportTicket);
         await _context.SaveChangesAsync();
 
-        return new Result<SupportTicketEntity>(supportTicket);
+        var supportTicketDto = new SupportTicketDto(
+            supportTicket.Id,
+            supportTicket.UserId,
+            supportTicket.WalletId,
+            supportTicket.TicketReason,
+            supportTicket.TicketJustification,
+            supportTicket.TicketStatus);
+        
+        return new Result<SupportTicketDto>(supportTicketDto);
     }
 }

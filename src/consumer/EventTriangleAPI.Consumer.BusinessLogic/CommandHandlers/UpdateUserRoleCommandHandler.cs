@@ -1,5 +1,5 @@
+using EventTriangleAPI.Consumer.BusinessLogic.Models;
 using EventTriangleAPI.Consumer.Domain.Constants;
-using EventTriangleAPI.Consumer.Domain.Entities;
 using EventTriangleAPI.Consumer.Persistence;
 using EventTriangleAPI.Shared.Application.Abstractions;
 using EventTriangleAPI.Shared.DTO.Abstractions;
@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EventTriangleAPI.Consumer.BusinessLogic.CommandHandlers;
 
-public class UpdateUserRoleCommandHandler : ICommandHandler<UpdateUserRoleCommand, UserEntity>
+public class UpdateUserRoleCommandHandler : ICommandHandler<UpdateUserRoleCommand, UserDto>
 {
     private readonly DatabaseContext _context;
 
@@ -19,25 +19,25 @@ public class UpdateUserRoleCommandHandler : ICommandHandler<UpdateUserRoleComman
         _context = context;
     }
 
-    public async Task<IResult<UserEntity, Error>> HandleAsync(UpdateUserRoleCommand command)
+    public async Task<IResult<UserDto, Error>> HandleAsync(UpdateUserRoleCommand command)
     {
         var requester = await _context.UserEntities.FirstOrDefaultAsync(x => x.Id == command.RequesterId);
 
         if (requester == null)
         {
-            return new Result<UserEntity>(new DbEntityNotFoundError(ResponseMessages.RequesterNotFound));
+            return new Result<UserDto>(new DbEntityNotFoundError(ResponseMessages.RequesterNotFound));
         }
         
         if (requester.UserRole != UserRole.Admin)
         {
-            return new Result<UserEntity>(new ConflictError(ResponseMessages.RequesterIsNotAdmin));
+            return new Result<UserDto>(new ConflictError(ResponseMessages.RequesterIsNotAdmin));
         }
         
         var user = await _context.UserEntities.FirstOrDefaultAsync(x => x.Id == command.UserId);
         
         if (user == null)
         {
-            return new Result<UserEntity>(new DbEntityNotFoundError(ResponseMessages.UserNotFound));
+            return new Result<UserDto>(new DbEntityNotFoundError(ResponseMessages.UserNotFound));
         }
         
         user.UpdateUserRole(command.UserRole);
@@ -45,6 +45,8 @@ public class UpdateUserRoleCommandHandler : ICommandHandler<UpdateUserRoleComman
         _context.UserEntities.Update(user);
         await _context.SaveChangesAsync();
 
-        return new Result<UserEntity>(user);
+        var userDto = new UserDto(user.Id, user.Email, user.UserRole, user.UserStatus, user.WalletId, null);
+        
+        return new Result<UserDto>(userDto);
     }
 }

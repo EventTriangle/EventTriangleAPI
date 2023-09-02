@@ -1,5 +1,5 @@
+using EventTriangleAPI.Consumer.BusinessLogic.Models;
 using EventTriangleAPI.Consumer.Domain.Constants;
-using EventTriangleAPI.Consumer.Domain.Entities;
 using EventTriangleAPI.Consumer.Persistence;
 using EventTriangleAPI.Shared.Application.Abstractions;
 using EventTriangleAPI.Shared.DTO.Abstractions;
@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EventTriangleAPI.Consumer.BusinessLogic.CommandHandlers;
 
-public class ChangeCreditCardCommandHandler : ICommandHandler<ChangeCreditCardCommand, CreditCardEntity>
+public class ChangeCreditCardCommandHandler : ICommandHandler<ChangeCreditCardCommand, CreditCardDto>
 {
     private readonly DatabaseContext _context;
 
@@ -18,14 +18,14 @@ public class ChangeCreditCardCommandHandler : ICommandHandler<ChangeCreditCardCo
         _context = context;
     }
 
-    public async Task<IResult<CreditCardEntity, Error>> HandleAsync(ChangeCreditCardCommand command)
+    public async Task<IResult<CreditCardDto, Error>> HandleAsync(ChangeCreditCardCommand command)
     {
         var creditCard = await _context.CreditCardEntities
             .FirstOrDefaultAsync(x => x.Id == command.CardId && x.UserId == command.RequesterId);
 
         if (creditCard == null)
         {
-            return new Result<CreditCardEntity>(new DbEntityNotFoundError(ResponseMessages.CreditCardNotFound));
+            return new Result<CreditCardDto>(new DbEntityNotFoundError(ResponseMessages.CreditCardNotFound));
         }
 
         creditCard.UpdateHolderName(command.HolderName);
@@ -37,6 +37,15 @@ public class ChangeCreditCardCommandHandler : ICommandHandler<ChangeCreditCardCo
         _context.CreditCardEntities.Update(creditCard);
         await _context.SaveChangesAsync();
 
-        return new Result<CreditCardEntity>(creditCard);
+        var creditCardDto = new CreditCardDto(
+            creditCard.Id,
+            creditCard.UserId, 
+            creditCard.HolderName, 
+            creditCard.CardNumber, 
+            creditCard.Cvv,
+            creditCard.Expiration,
+            creditCard.PaymentNetwork);
+
+        return new Result<CreditCardDto>(creditCardDto);
     }
 }

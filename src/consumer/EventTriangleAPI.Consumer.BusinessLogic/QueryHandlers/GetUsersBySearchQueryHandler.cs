@@ -48,7 +48,8 @@ public class GetUsersBySearchQueryHandler : ICommandHandler<GetUsersBySearchQuer
                 x.Id, 
                 x.Email,
                 x.UserRole, 
-                x.UserStatus, 
+                x.UserStatus,
+                x.WalletId,
                 new WalletDto(
                     x.WalletId, 
                     x.Wallet.Balance, 
