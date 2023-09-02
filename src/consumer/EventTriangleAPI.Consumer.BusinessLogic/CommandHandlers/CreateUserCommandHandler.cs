@@ -1,3 +1,4 @@
+using EventTriangleAPI.Consumer.BusinessLogic.Models;
 using EventTriangleAPI.Consumer.Domain.Constants;
 using EventTriangleAPI.Consumer.Domain.Entities;
 using EventTriangleAPI.Consumer.Persistence;
@@ -9,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EventTriangleAPI.Consumer.BusinessLogic.CommandHandlers;
 
-public class CreateUserCommandHandler : ICommandHandler<CreateUserCommand, UserEntity>
+public class CreateUserCommandHandler : ICommandHandler<CreateUserCommand, UserDto>
 {
     private readonly DatabaseContext _context;
 
@@ -18,13 +19,13 @@ public class CreateUserCommandHandler : ICommandHandler<CreateUserCommand, UserE
         _context = context;
     }
 
-    public async Task<IResult<UserEntity, Error>> HandleAsync(CreateUserCommand command)
+    public async Task<IResult<UserDto, Error>> HandleAsync(CreateUserCommand command)
     {
         var user = await _context.UserEntities.FirstOrDefaultAsync(x => x.Id == command.UserId);
 
         if (user != null)
         {
-            return new Result<UserEntity>(new DbEntityExistsError(ResponseMessages.UserAlreadyExists));
+            return new Result<UserDto>(new DbEntityExistsError(ResponseMessages.UserAlreadyExists));
         }
         
         var wallet = new WalletEntity(0);
@@ -34,6 +35,8 @@ public class CreateUserCommandHandler : ICommandHandler<CreateUserCommand, UserE
         _context.UserEntities.Add(newUser);
         await _context.SaveChangesAsync();
 
-        return new Result<UserEntity>(newUser);
+        var userDto = new UserDto(newUser.Id, newUser.Email, newUser.UserRole, newUser.UserStatus, newUser.WalletId, null);
+        
+        return new Result<UserDto>(userDto);
     }
 }

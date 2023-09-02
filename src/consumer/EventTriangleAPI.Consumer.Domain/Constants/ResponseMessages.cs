@@ -17,4 +17,5 @@ public static class ResponseMessages
     public const string TransactionNotFound = "Transaction not found.";
     public const string RequesterIsSuspended = "Requester is suspended.";
     public const string CannotSuspendAdmin = "You can't suspend an admin.";
+    public const string InternalError = "Internal error.";
 }

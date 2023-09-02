@@ -39,6 +39,7 @@ public class GetProfileQueryHandler : ICommandHandler<GetProfileQuery, UserDto>
             requester.Email,
             requester.UserRole,
             requester.UserStatus,
+            requester.WalletId,
             walletDto);
 
         return new Result<UserDto>(userDto);

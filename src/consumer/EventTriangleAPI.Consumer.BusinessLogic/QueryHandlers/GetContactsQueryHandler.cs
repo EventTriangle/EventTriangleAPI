@@ -38,6 +38,7 @@ public class GetContactsQueryHandler : ICommandHandler<GetContactsQuery, List<Co
                     x.Contact.Email,
                     x.Contact.UserRole,
                     x.Contact.UserStatus,
+                    x.Contact.WalletId,
                     null))
             )
             .ToListAsync();

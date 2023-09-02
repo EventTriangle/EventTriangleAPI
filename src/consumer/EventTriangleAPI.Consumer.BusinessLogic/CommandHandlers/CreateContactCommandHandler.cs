@@ -1,3 +1,4 @@
+using EventTriangleAPI.Consumer.BusinessLogic.Models;
 using EventTriangleAPI.Consumer.Domain.Constants;
 using EventTriangleAPI.Consumer.Domain.Entities;
 using EventTriangleAPI.Consumer.Persistence;
@@ -9,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EventTriangleAPI.Consumer.BusinessLogic.CommandHandlers;
 
-public class CreateContactCommandHandler : ICommandHandler<CreateContactCommand, ContactEntity>
+public class CreateContactCommandHandler : ICommandHandler<CreateContactCommand, ContactDto>
 {
     private readonly DatabaseContext _context;
 
@@ -18,20 +19,20 @@ public class CreateContactCommandHandler : ICommandHandler<CreateContactCommand,
         _context = context;
     }
 
-    public async Task<IResult<ContactEntity, Error>> HandleAsync(CreateContactCommand command)
+    public async Task<IResult<ContactDto, Error>> HandleAsync(CreateContactCommand command)
     {
         var requester = await _context.UserEntities.FirstOrDefaultAsync(x => x.Id == command.RequesterId);
 
         if (requester == null)
         {
-            return new Result<ContactEntity>(new DbEntityNotFoundError(ResponseMessages.RequesterNotFound));
+            return new Result<ContactDto>(new DbEntityNotFoundError(ResponseMessages.RequesterNotFound));
         }
         
         var user = await _context.UserEntities.FirstOrDefaultAsync(x => x.Id == command.ContactId);
 
         if (user == null)
         {
-            return new Result<ContactEntity>(new DbEntityNotFoundError(ResponseMessages.UserNotFound));
+            return new Result<ContactDto>(new DbEntityNotFoundError(ResponseMessages.UserNotFound));
         }
         
         var contact = new ContactEntity(command.RequesterId, command.ContactId);
@@ -39,6 +40,8 @@ public class CreateContactCommandHandler : ICommandHandler<CreateContactCommand,
         _context.ContactEntities.Add(contact);
         await _context.SaveChangesAsync();
 
-        return new Result<ContactEntity>(contact);
+        var contactDto = new ContactDto(contact.UserId, contact.ContactId, null);
+        
+        return new Result<ContactDto>(contactDto);
     }
 }

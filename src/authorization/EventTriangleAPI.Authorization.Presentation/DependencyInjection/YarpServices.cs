@@ -22,6 +22,11 @@ public static class YarpServices
                     var authenticateResult = await transformContext.HttpContext.AuthenticateAsync(AuthConstants.AppOidc);
                     var accessToken = authenticateResult.Properties?.GetTokenValue(TokenTypes.AccessToken);
                     transformContext.ProxyRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+                    if (transformContext.Path.StartsWithSegments("/notify"))
+                    {
+                        transformContext.Query.Collection.Add("access_token", accessToken);
+                    }
                 });
             });
 

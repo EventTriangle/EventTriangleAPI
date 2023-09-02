@@ -1,5 +1,4 @@
 using System.IdentityModel.Tokens.Jwt;
-using EventTriangleAPI.Authorization.Domain.Constants;
 using EventTriangleAPI.Authorization.Domain.Entities;
 using EventTriangleAPI.Authorization.Domain.Exceptions;
 using EventTriangleAPI.Authorization.Persistence;
@@ -59,8 +58,8 @@ public class TicketStore : ITicketStore
         using var scope = _serviceScopeFactory.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
         
-        var sub = ticket.Principal.Claims.First(x => x.Type == "sub").Value;
-        var role = ticket.Principal.Claims.First(x => x.Type == "roles").Value;
+        var sub = ticket.Principal.Claims.First(x => x.Type == ClaimsConstants.Sub).Value;
+        var role = ticket.Principal.Claims.First(x => x.Type == ClaimsConstants.Roles).Value;
         
         var idToken = ticket.Properties.GetTokenValue(TokenTypes.IdentityToken);
         var accessToken = ticket.Properties.GetTokenValue(TokenTypes.AccessToken);
@@ -122,7 +121,7 @@ public class TicketStore : ITicketStore
 
             if (user == null)
             {
-                var email = decodeAccessToken.Claims.First(x => x.Type == "unique_name").Value;
+                var email = decodeAccessToken.Claims.First(x => x.Type == ClaimsConstants.UniqueName).Value;
                 var userRole = (UserRole)Enum.Parse(typeof(UserRole), role);
 
                 var newUser = new UserEntity(sub, email);

@@ -1,3 +1,4 @@
+using EventTriangleAPI.Consumer.BusinessLogic.Models;
 using EventTriangleAPI.Consumer.Domain.Constants;
 using EventTriangleAPI.Consumer.Domain.Entities;
 using EventTriangleAPI.Consumer.Persistence;
@@ -10,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EventTriangleAPI.Consumer.BusinessLogic.CommandHandlers;
 
-public class CreateTransactionUserToUserCommandHandler : ICommandHandler<CreateTransactionUserToUserCommand, TransactionEntity>
+public class CreateTransactionUserToUserCommandHandler : ICommandHandler<CreateTransactionUserToUserCommand, TransactionDto>
 {
     private readonly DatabaseContext _context;
 
@@ -19,7 +20,7 @@ public class CreateTransactionUserToUserCommandHandler : ICommandHandler<CreateT
         _context = context;
     }
 
-    public async Task<IResult<TransactionEntity, Error>> HandleAsync(CreateTransactionUserToUserCommand command)
+    public async Task<IResult<TransactionDto, Error>> HandleAsync(CreateTransactionUserToUserCommand command)
     {
         var requester = await _context.UserEntities
             .Include(x => x.Wallet)
@@ -27,12 +28,12 @@ public class CreateTransactionUserToUserCommandHandler : ICommandHandler<CreateT
 
         if (requester == null)
         {
-            return new Result<TransactionEntity>(new DbEntityNotFoundError(ResponseMessages.UserNotFound));
+            return new Result<TransactionDto>(new DbEntityNotFoundError(ResponseMessages.UserNotFound));
         }
         
         if (requester.UserStatus == UserStatus.Suspended)
         {
-            return new Result<TransactionEntity>(new ConflictError(ResponseMessages.RequesterIsSuspended));
+            return new Result<TransactionDto>(new ConflictError(ResponseMessages.RequesterIsSuspended));
         }
         
         var toUser = await _context.UserEntities
@@ -41,12 +42,12 @@ public class CreateTransactionUserToUserCommandHandler : ICommandHandler<CreateT
 
         if (toUser == null)
         {
-            return new Result<TransactionEntity>(new DbEntityNotFoundError(ResponseMessages.UserNotFound));
+            return new Result<TransactionDto>(new DbEntityNotFoundError(ResponseMessages.UserNotFound));
         }
 
         if (requester.Wallet.Balance < command.Amount)
         {
-            return new Result<TransactionEntity>(new ConflictError(ResponseMessages.CannotTransferMoreMoneyThanYouHave));
+            return new Result<TransactionDto>(new ConflictError(ResponseMessages.CannotTransferMoreMoneyThanYouHave));
         }
         
         var transaction = new TransactionEntity(
@@ -65,6 +66,15 @@ public class CreateTransactionUserToUserCommandHandler : ICommandHandler<CreateT
 
         await _context.SaveChangesAsync();
 
-        return new Result<TransactionEntity>(transaction);
+        var transactionDto = new TransactionDto(
+            transaction.Id,
+            transaction.FromUserId,
+            transaction.ToUserId,
+            transaction.Amount,
+            transaction.TransactionState,
+            transaction.TransactionType,
+            transaction.CreatedAt);
+        
+        return new Result<TransactionDto>(transactionDto);
     }
 }
