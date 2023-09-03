@@ -20,6 +20,7 @@
       <PackageReference Include="MassTransit.RabbitMQ" Version="8.0.16" />
       <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.15" />
       <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.15" />
+      <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
       <PackageReference Include="Microsoft.Identity.Web" Version="2.7.0" />
       <PackageReference Include="Microsoft.Identity.Web.UI" Version="2.7.0" />
       <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.8" />

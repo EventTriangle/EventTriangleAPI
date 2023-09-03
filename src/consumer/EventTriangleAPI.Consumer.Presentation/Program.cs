@@ -1,3 +1,4 @@
+using EventTriangleAPI.Consumer.Application.Services;
 using EventTriangleAPI.Consumer.BusinessLogic.Consumers;
 using EventTriangleAPI.Consumer.BusinessLogic.Hubs;
 using EventTriangleAPI.Consumer.Domain.Constants;
@@ -27,7 +28,7 @@ builder.Services.AddDbContext<DatabaseContext>(options =>
 
 builder.Services.AddCommandHandlers();
 builder.Services.AddQueryHandlers();
-builder.Services.AddRouting(o => o.LowercaseUrls = true);
+builder.Services.AddTransient<UserClaimsService>();
 
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
