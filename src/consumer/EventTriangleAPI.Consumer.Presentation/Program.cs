@@ -63,6 +63,8 @@ builder.Services.AddMassTransit(config =>
         
         cfg.ReceiveEndpoint("event-queue", c =>
         {
+            c.PrefetchCount = 1;
+            c.UseConcurrencyLimit(1);
             c.ConfigureConsumer<EventConsumer>(ctx);
         });
     });
