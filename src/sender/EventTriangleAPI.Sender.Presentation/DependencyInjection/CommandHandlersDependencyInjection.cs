@@ -6,6 +6,7 @@ public static class CommandHandlersDependencyInjection
 {
     public static IServiceCollection AddCommandHandlers(this IServiceCollection serviceCollection)
     {
+        serviceCollection.AddScoped<CreateUserCommandHandler>();
         serviceCollection.AddScoped<AddContactCommandHandler>();
         serviceCollection.AddScoped<AttachCreditCardToAccountCommandHandler>();
         serviceCollection.AddScoped<DeleteContactCommandHandler>();

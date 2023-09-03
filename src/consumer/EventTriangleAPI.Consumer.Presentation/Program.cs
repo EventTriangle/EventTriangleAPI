@@ -26,6 +26,8 @@ builder.Services.AddDbContext<DatabaseContext>(options =>
 });
 
 builder.Services.AddCommandHandlers();
+builder.Services.AddQueryHandlers();
+builder.Services.AddRouting(o => o.LowercaseUrls = true);
 
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -77,11 +79,11 @@ IdentityModelEventSource.ShowPII = true;
 app.UseSwagger();
 app.UseSwaggerUI();
 
-
 app.UseHttpsRedirection();
 
-app.UseAuthentication();
+app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

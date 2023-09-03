@@ -4,16 +4,19 @@ using EventTriangleAPI.Shared.Application.Abstractions;
 using EventTriangleAPI.Shared.DTO.Abstractions;
 using EventTriangleAPI.Shared.DTO.Responses;
 using EventTriangleAPI.Shared.DTO.Responses.Errors;
+using MassTransit;
 
 namespace EventTriangleAPI.Sender.BusinessLogic.CommandHandlers;
 
 public class UpdateUserRoleCommandHandler : ICommandHandler<UpdateUserRoleCommand, UserRoleUpdatedEvent>
 {
     private readonly DatabaseContext _context;
+    private readonly IPublishEndpoint _client;
 
-    public UpdateUserRoleCommandHandler(DatabaseContext context)
+    public UpdateUserRoleCommandHandler(DatabaseContext context, IPublishEndpoint client)
     {
         _context = context;
+        _client = client;
     }
 
     public async Task<IResult<UserRoleUpdatedEvent, Error>> HandleAsync(UpdateUserRoleCommand command)
@@ -23,7 +26,7 @@ public class UpdateUserRoleCommandHandler : ICommandHandler<UpdateUserRoleComman
         _context.UserRoleUpdatedEvents.Add(userRoleUpdatedEvent);
         await _context.SaveChangesAsync();
 
-        new MockOrder().Send(userRoleUpdatedEvent);
+        var _ = _client.Publish(userRoleUpdatedEvent.CreateEventMessage());
         
         return new Result<UserRoleUpdatedEvent>(userRoleUpdatedEvent);
     }
