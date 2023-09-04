@@ -4,9 +4,11 @@ using EventTriangleAPI.Consumer.BusinessLogic.Hubs;
 using EventTriangleAPI.Consumer.Domain.Constants;
 using EventTriangleAPI.Consumer.Persistence;
 using EventTriangleAPI.Consumer.Presentation.DependencyInjection;
+using EventTriangleAPI.Sender.Presentation.Routing;
 using EventTriangleAPI.Shared.DTO.Models;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
 using Microsoft.IdentityModel.Logging;
@@ -17,7 +19,10 @@ var configurationSection = builder.Configuration.GetSection(AppSettingsConstants
 var rabbitMqConfiguration = builder.Configuration.GetSection(AppSettingsConstants.RabbitMqConfiguration).Get<RabbitMqConfiguration>();
 var databaseConnectionString = builder.Configuration[AppSettingsConstants.DatabaseConnectionString];
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(o =>
+{
+    o.Conventions.Add(new RouteTokenTransformerConvention(new CustomParameterTransformer()));
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSignalR();
@@ -29,7 +34,6 @@ builder.Services.AddDbContext<DatabaseContext>(options =>
 builder.Services.AddCommandHandlers();
 builder.Services.AddQueryHandlers();
 builder.Services.AddTransient<UserClaimsService>();
-builder.Services.AddRouting(x => x.LowercaseUrls = true);
 
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

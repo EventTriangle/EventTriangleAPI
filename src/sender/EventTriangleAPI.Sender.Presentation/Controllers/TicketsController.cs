@@ -38,7 +38,7 @@ public class TicketsController : ControllerBase
     }
     
     [Authorize(Roles = "Admin")]
-    [HttpPost("support-ticket")]
+    [HttpPut("support-ticket")]
     public async Task<IActionResult> ResolveSupportTicket([FromBody] ResolveSupportTicketRequest request)
     {
         var requesterId = _userClaimsService.GetUserId();
