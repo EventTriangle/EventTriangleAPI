@@ -26,6 +26,7 @@ builder.Services.AddDbContext<DatabaseContext>(options =>
 builder.Services.AddCommandHandlers();
 builder.Services.AddGrpc();
 builder.Services.AddTransient<UserClaimsService>();
+builder.Services.AddRouting(x => x.LowercaseUrls = true);
 
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
