@@ -1,3 +1,4 @@
+using EventTriangleAPI.Sender.Application.Services;
 using EventTriangleAPI.Sender.BusinessLogic.GrpcServices;
 using EventTriangleAPI.Sender.Domain.Constants;
 using EventTriangleAPI.Sender.Persistence;
@@ -24,6 +25,7 @@ builder.Services.AddDbContext<DatabaseContext>(options =>
 });
 builder.Services.AddCommandHandlers();
 builder.Services.AddGrpc();
+builder.Services.AddTransient<UserClaimsService>();
 
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
