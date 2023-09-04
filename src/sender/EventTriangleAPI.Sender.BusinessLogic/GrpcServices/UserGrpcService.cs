@@ -1,5 +1,4 @@
-using EventTriangleAPI.Sender.Domain.Entities;
-using EventTriangleAPI.Sender.Persistence;
+using EventTriangleAPI.Sender.BusinessLogic.CommandHandlers;
 using EventTriangleAPI.Shared.Application.Proto;
 using EventTriangleAPI.Shared.DTO.Enums;
 using Grpc.Core;
@@ -8,25 +7,24 @@ namespace EventTriangleAPI.Sender.BusinessLogic.GrpcServices;
 
 public class UserGrpcService : User.UserBase
 {
-    private readonly DatabaseContext _context;
+    private readonly CreateUserCommandHandler _createUserCommandHandler;
 
-    public UserGrpcService(DatabaseContext context)
+    public UserGrpcService(CreateUserCommandHandler createUserCommandHandler)
     {
-        _context = context;
+        _createUserCommandHandler = createUserCommandHandler;
     }
 
     public override async Task<CreateUserReply> CreateUser(CreateUserRequest request, ServerCallContext context)
     {
         try
         {
-            var userCreatedEvent = new UserCreatedEvent(
-                request.UserId,
+            var command = new CreateUserCommand(
+                request.UserId, 
                 request.Email,
                 (UserRole)request.UserRole, 
                 (UserStatus)request.UserStatus);
             
-            _context.UserCreatedEvents.Add(userCreatedEvent);
-            await _context.SaveChangesAsync();
+            await _createUserCommandHandler.HandleAsync(command);
 
             return new CreateUserReply { IsSuccess = true };
         }

@@ -15,6 +15,7 @@ public class IntegrationTestBase : IAsyncLifetime
     private readonly SenderStartup _senderStartup = new();
     protected readonly DatabaseContext DatabaseContextFixture;
 
+    protected readonly CreateUserCommandHandler CreateUserCommandHandler;
     protected readonly AddContactCommandHandler AddContactCommandHandler;
     protected readonly AttachCreditCardToAccountCommandHandler AttachCreditCardToAccountCommandHandler;
     protected readonly DeleteContactCommandHandler DeleteContactCommandHandler;
@@ -43,6 +44,7 @@ public class IntegrationTestBase : IAsyncLifetime
         DatabaseContextFixture = serviceProvider.GetRequiredService<DatabaseContext>() ??
                                  throw new InvalidOperationException("DatabaseContext service is not registered in the DI.");
 
+        CreateUserCommandHandler = serviceProvider.GetRequiredService<CreateUserCommandHandler>();
         AddContactCommandHandler = serviceProvider.GetRequiredService<AddContactCommandHandler>();
         AttachCreditCardToAccountCommandHandler = serviceProvider.GetRequiredService<AttachCreditCardToAccountCommandHandler>();
         DeleteContactCommandHandler = serviceProvider.GetRequiredService<DeleteContactCommandHandler>();

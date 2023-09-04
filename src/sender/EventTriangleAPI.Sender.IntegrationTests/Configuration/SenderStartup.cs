@@ -1,5 +1,6 @@
 using EventTriangleAPI.Sender.Persistence;
 using EventTriangleAPI.Sender.Presentation.DependencyInjection;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,6 +12,10 @@ public class SenderStartup
     {
         var serviceCollection = new ServiceCollection();
 
+        serviceCollection.AddMassTransit(config =>
+        {
+            config.UsingInMemory();
+        });
         serviceCollection.AddCommandHandlers();
         serviceCollection.AddDbContext<DatabaseContext>(options =>
         {

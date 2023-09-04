@@ -6,6 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\EventTriangleAPI.Consumer.Application\EventTriangleAPI.Consumer.Application.csproj" />
       <ProjectReference Include="..\EventTriangleAPI.Consumer.Domain\EventTriangleAPI.Consumer.Domain.csproj" />
       <ProjectReference Include="..\EventTriangleAPI.Consumer.Persistence\EventTriangleAPI.Consumer.Persistence.csproj" />
     </ItemGroup>

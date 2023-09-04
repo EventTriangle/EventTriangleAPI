@@ -4,16 +4,19 @@ using EventTriangleAPI.Shared.Application.Abstractions;
 using EventTriangleAPI.Shared.DTO.Abstractions;
 using EventTriangleAPI.Shared.DTO.Responses;
 using EventTriangleAPI.Shared.DTO.Responses.Errors;
+using MassTransit;
 
 namespace EventTriangleAPI.Sender.BusinessLogic.CommandHandlers;
 
 public class AttachCreditCardToAccountCommandHandler : ICommandHandler<AttachCreditCardToAccountCommand, CreditCardAddedEvent>
 {
     private readonly DatabaseContext _context;
+    private readonly IPublishEndpoint _client;
 
-    public AttachCreditCardToAccountCommandHandler(DatabaseContext context)
+    public AttachCreditCardToAccountCommandHandler(DatabaseContext context, IPublishEndpoint client)
     {
         _context = context;
+        _client = client;
     }
 
     public async Task<IResult<CreditCardAddedEvent, Error>> HandleAsync(AttachCreditCardToAccountCommand command)
@@ -29,7 +32,7 @@ public class AttachCreditCardToAccountCommandHandler : ICommandHandler<AttachCre
         _context.CreditCardAddedEvents.Add(creditCardAddedEvent);
         await _context.SaveChangesAsync();
         
-        new MockOrder().Send(creditCardAddedEvent);
+        var _ = _client.Publish(creditCardAddedEvent.CreateEventMessage());
         
         return new Result<CreditCardAddedEvent>(creditCardAddedEvent);
     }

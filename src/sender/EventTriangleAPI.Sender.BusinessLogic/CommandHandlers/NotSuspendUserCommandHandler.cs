@@ -4,16 +4,19 @@ using EventTriangleAPI.Shared.Application.Abstractions;
 using EventTriangleAPI.Shared.DTO.Abstractions;
 using EventTriangleAPI.Shared.DTO.Responses;
 using EventTriangleAPI.Shared.DTO.Responses.Errors;
+using MassTransit;
 
 namespace EventTriangleAPI.Sender.BusinessLogic.CommandHandlers;
 
 public class NotSuspendUserCommandHandler : ICommandHandler<NotSuspendUserCommand, UserNotSuspendedEvent>
 {
     private readonly DatabaseContext _context;
-
-    public NotSuspendUserCommandHandler(DatabaseContext context)
+    private readonly IPublishEndpoint _client;
+    
+    public NotSuspendUserCommandHandler(DatabaseContext context, IPublishEndpoint client)
     {
         _context = context;
+        _client = client;
     }
 
     public async Task<IResult<UserNotSuspendedEvent, Error>> HandleAsync(NotSuspendUserCommand command)
@@ -23,7 +26,7 @@ public class NotSuspendUserCommandHandler : ICommandHandler<NotSuspendUserComman
         _context.UserNotSuspendedEvents.Add(userNotSuspendedEvent);
         await _context.SaveChangesAsync();
         
-        new MockOrder().Send(userNotSuspendedEvent);
+        var _ = _client.Publish(userNotSuspendedEvent.CreateEventMessage());
         
         return new Result<UserNotSuspendedEvent>(userNotSuspendedEvent);
     }
