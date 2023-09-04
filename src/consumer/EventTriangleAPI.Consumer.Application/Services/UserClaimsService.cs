@@ -1,3 +1,4 @@
+using EventTriangleAPI.Shared.Application.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Identity.Web;
 
@@ -20,7 +21,7 @@ public class UserClaimsService
 
         if (userId == null)
         {
-            throw new Exception("User Id not found");
+            throw new UserClaimsException("UserId not found");
         }
 
         return userId;

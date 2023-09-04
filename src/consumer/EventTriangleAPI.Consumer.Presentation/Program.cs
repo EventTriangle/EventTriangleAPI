@@ -4,7 +4,7 @@ using EventTriangleAPI.Consumer.BusinessLogic.Hubs;
 using EventTriangleAPI.Consumer.Domain.Constants;
 using EventTriangleAPI.Consumer.Persistence;
 using EventTriangleAPI.Consumer.Presentation.DependencyInjection;
-using EventTriangleAPI.Sender.Presentation.Routing;
+using EventTriangleAPI.Consumer.Presentation.Routing;
 using EventTriangleAPI.Shared.DTO.Models;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
