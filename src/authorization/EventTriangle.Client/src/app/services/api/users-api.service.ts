@@ -2,13 +2,13 @@ import {Injectable} from "@angular/core";
 import ApiBaseService from "./api-base.service";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {UserDto} from "../../types/models/UserDto";
-import {UserSuspendedEvent} from "../../types/models/UserSuspendedEvent";
+import {UserDto} from "../../types/models/consumer/UserDto";
+import {UserSuspendedEvent} from "../../types/models/sender/UserSuspendedEvent";
 import {SuspendUserCommand} from "../../types/requests/SuspendUserCommand";
 import {NotSuspendUserCommand} from "../../types/requests/NotSuspendUserCommand";
-import {UserNotSuspendedEvent} from "../../types/models/UserNotSuspendedEvent";
+import {UserNotSuspendedEvent} from "../../types/models/sender/UserNotSuspendedEvent";
 import {UserRole} from "../../types/enums/UserRole";
-import {UpdateUserRoleEvent} from "../../types/models/UpdateUserRoleEvent";
+import {UpdateUserRoleEvent} from "../../types/models/sender/UpdateUserRoleEvent";
 import {UpdateUserRoleRequest} from "../../types/requests/UpdateUserRoleRequest";
 
 @Injectable({

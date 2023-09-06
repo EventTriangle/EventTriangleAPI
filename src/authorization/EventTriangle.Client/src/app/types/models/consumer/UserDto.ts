@@ -1,5 +1,5 @@
-import {UserRole} from "../enums/UserRole";
-import {UserStatus} from "../enums/UserStatus";
+import {UserRole} from "../../enums/UserRole";
+import {UserStatus} from "../../enums/UserStatus";
 import {WalletDto} from "./WalletDto";
 
 export interface UserDto {
