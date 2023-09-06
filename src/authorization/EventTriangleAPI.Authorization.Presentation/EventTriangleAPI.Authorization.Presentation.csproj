@@ -19,8 +19,4 @@
     <ProjectReference Include="..\EventTriangleAPI.Authorization.BusinessLogic\EventTriangleAPI.Authorization.BusinessLogic.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="wwwroot\" />
-  </ItemGroup>
-
 </Project>
