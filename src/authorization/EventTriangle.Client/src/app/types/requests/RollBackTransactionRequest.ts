@@ -1,7 +1,3 @@
-export class RollBackTransactionRequest {
+export interface RollBackTransactionRequest {
   transactionId: string;
-
-  constructor(transactionId: string) {
-    this.transactionId = transactionId;
-  }
 }

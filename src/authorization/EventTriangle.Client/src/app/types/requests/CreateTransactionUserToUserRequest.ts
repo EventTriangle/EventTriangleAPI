@@ -1,9 +1,4 @@
-export class CreateTransactionUserToUserRequest {
+export interface CreateTransactionUserToUserRequest {
   toUserId: string;
   amount: number;
-
-  constructor(toUserId: string, amount: number) {
-    this.toUserId = toUserId;
-    this.amount = amount;
-  }
 }

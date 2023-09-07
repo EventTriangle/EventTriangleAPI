@@ -1,7 +1,3 @@
-export class SuspendUserCommand {
+export interface SuspendUserCommand {
   userId: string;
-
-  constructor(userId: string) {
-    this.userId = userId;
-  }
 }

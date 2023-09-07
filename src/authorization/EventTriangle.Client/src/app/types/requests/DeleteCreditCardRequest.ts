@@ -1,7 +1,3 @@
-export class DeleteCreditCardRequest {
+export interface DeleteCreditCardRequest {
   cardId: string;
-
-  constructor(cardId: string) {
-    this.cardId = cardId;
-  }
 }

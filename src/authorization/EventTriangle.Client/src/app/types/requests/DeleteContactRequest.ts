@@ -1,7 +1,3 @@
-export class DeleteContactRequest {
+export interface DeleteContactRequest {
   contactId: string;
-
-  constructor(contactId: string) {
-    this.contactId = contactId;
-  }
 }
