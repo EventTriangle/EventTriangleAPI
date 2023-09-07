@@ -34,7 +34,10 @@ export class TransactionsApiService extends ApiBaseService {
 
   // POST sender/user-to-user
   public createTransactionUserToUser(toUserId: string, amount: number) : Observable<CreateTransactionUserToUserEvent> {
-    let command = new CreateTransactionUserToUserRequest(toUserId, amount);
+    let command : CreateTransactionUserToUserRequest = {
+      toUserId: toUserId,
+      amount: amount
+    };
 
     return this.httpClient.post<CreateTransactionUserToUserEvent>(
       this.baseUrl + this.senderTransactionsRoute + "user-to-user",
@@ -44,7 +47,10 @@ export class TransactionsApiService extends ApiBaseService {
 
   // POST sender/card-to-user
   public topUpAccountBalance(creditCardId: string, amount: number) : Observable<CreateTransactionCardToUserEvent> {
-    let command = new TopUpAccountBalanceRequest(creditCardId, amount);
+    let command : TopUpAccountBalanceRequest = {
+      creditCardId: creditCardId,
+      amount: amount
+    };
 
     return this.httpClient.post<CreateTransactionCardToUserEvent>(
       this.baseUrl + this.senderTransactionsRoute + "card-to-user",
@@ -53,7 +59,9 @@ export class TransactionsApiService extends ApiBaseService {
   }
 
   public rollBackTransaction(transactionId: string) : Observable<TransactionRolledBackEvent> {
-    let command = new RollBackTransactionRequest(transactionId);
+    let command : RollBackTransactionRequest = {
+      transactionId: transactionId
+    };
 
     return this.httpClient.post<TransactionRolledBackEvent>(
       this.baseUrl + this.senderTransactionsRoute + "rollback",

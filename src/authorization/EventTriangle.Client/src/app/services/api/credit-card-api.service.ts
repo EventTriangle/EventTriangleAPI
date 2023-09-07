@@ -35,8 +35,13 @@ export class CreditCardApiService extends ApiBaseService {
   public attachCreditCardToAccount(holderName: string, creditCardNumber: string,
                                    expiration: string, cvv: string, paymentNetwork: PaymentNetwork)
     : Observable<CreditCardAddedEvent> {
-    let command =
-      new AttachCreditCardToAccountRequest(holderName, creditCardNumber, expiration, cvv, paymentNetwork);
+    let command : AttachCreditCardToAccountRequest = {
+      holderName: holderName,
+      creditCardNumber: creditCardNumber,
+      expiration: expiration,
+      cvv: cvv,
+      paymentNetwork: paymentNetwork
+    };
 
     return this.httpClient.post<CreditCardAddedEvent>(
       this.baseUrl + this.senderCreditCardsRoute,
@@ -48,9 +53,13 @@ export class CreditCardApiService extends ApiBaseService {
   public editCreditCard(holderName: string, creditCardNumber: string,
                         expiration: string, cvv: string, paymentNetwork: PaymentNetwork)
     : Observable<CreditCardChangedEvent> {
-    let command =
-      new EditCreditCardRequest(holderName, creditCardNumber, expiration, cvv, paymentNetwork);
-
+    let command : EditCreditCardRequest = {
+      holderName: holderName,
+      creditCardNumber: creditCardNumber,
+      expiration: expiration,
+      cvv: cvv,
+      paymentNetwork: paymentNetwork
+    }
     return this.httpClient.put<CreditCardChangedEvent>(
       this.baseUrl + this.senderCreditCardsRoute,
       command
@@ -59,7 +68,9 @@ export class CreditCardApiService extends ApiBaseService {
 
   // DELETE sender/credit-cards
   public deleteCreditCard(creditCardId: string) : Observable<CreditCardDeletedEvent> {
-    let command = new DeleteCreditCardRequest(creditCardId);
+    let command : DeleteCreditCardRequest = {
+      creditCardId: creditCardId
+    }
     let options = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'

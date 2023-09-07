@@ -42,7 +42,9 @@ export class UsersApiService extends ApiBaseService {
 
   // POST sender/users
   public suspend(userId: string) : Observable<UserSuspendedEvent> {
-    let command = new SuspendUserCommand(userId);
+    let command : SuspendUserCommand = {
+      userId: userId
+    }
 
     return this.httpClient.post<UserSuspendedEvent>(
       this.baseUrl + this.senderUsersRoute,
@@ -52,7 +54,9 @@ export class UsersApiService extends ApiBaseService {
 
   // DELETE sender/users
   public notSuspend(userId: string) : Observable<UserNotSuspendedEvent> {
-    let command = new NotSuspendUserCommand(userId);
+    let command : NotSuspendUserCommand = {
+      userId: userId
+    };
     let options = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
@@ -68,7 +72,10 @@ export class UsersApiService extends ApiBaseService {
 
   // PUT sender/users/role
   public updateUserRole(userId: string, userRole: UserRole) : Observable<UpdateUserRoleEvent> {
-    let command =  new UpdateUserRoleRequest(userId, userRole);
+    let command : UpdateUserRoleRequest = {
+      userId: userId,
+      userRole: userRole
+    };
 
     return this.httpClient.put<UpdateUserRoleEvent>(
       this.baseUrl + this.senderUsersRoute,

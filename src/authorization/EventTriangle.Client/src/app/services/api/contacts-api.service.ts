@@ -32,7 +32,9 @@ export class ContactsApiService extends ApiBaseService {
 
   // POST sender/contacts
   public addContact(contactId: string) : Observable<ContactCreatedEvent> {
-    let command = new AddContactRequest(contactId);
+    let command : AddContactRequest = {
+      contactId: contactId
+    };
 
     return this.httpClient.post<ContactCreatedEvent>(
       this.baseUrl + this.senderContactsRoute,
@@ -42,7 +44,9 @@ export class ContactsApiService extends ApiBaseService {
 
   // DELETE sender/contacts
   public deleteContact(contactId: string) : Observable<ContactDeletedEvent> {
-    let command = new DeleteContactRequest(contactId);
+    let command : DeleteContactRequest = {
+      contactId: contactId
+    };
     let options = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
