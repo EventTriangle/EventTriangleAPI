@@ -1,4 +1,4 @@
 export enum PaymentNetwork {
-  Visa,
-  MasterCard
+  Visa = 1,
+  MasterCard = 2
 }

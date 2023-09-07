@@ -58,6 +58,7 @@ export class TransactionsApiService extends ApiBaseService {
     );
   }
 
+  // POST sender/transactions/rollback
   public rollBackTransaction(transactionId: string) : Observable<TransactionRolledBackEvent> {
     let command : RollBackTransactionRequest = {
       transactionId: transactionId

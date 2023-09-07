@@ -16,6 +16,9 @@ export class ProfileApiService extends ApiBaseService {
     this.baseUrl = super.getUrl();
   }
 
+  // requests
+
+  // GET consumer/profile
   getProfile(): Observable<UserDto> {
     return this.httpClient.get<UserDto>(
       this.baseUrl + this.consumerProfileRoute
