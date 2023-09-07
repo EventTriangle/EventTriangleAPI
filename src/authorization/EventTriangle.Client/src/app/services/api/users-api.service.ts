@@ -69,16 +69,10 @@ export class UsersApiService extends ApiBaseService {
   // PUT sender/users/role
   public updateUserRole(userId: string, userRole: UserRole) : Observable<UpdateUserRoleEvent> {
     let command =  new UpdateUserRoleRequest(userId, userRole);
-    let options = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json'
-      }),
-      body: command
-    };
 
     return this.httpClient.put<UpdateUserRoleEvent>(
       this.baseUrl + this.senderUsersRoute,
-      options
+      command
     );
   }
 }
