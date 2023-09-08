@@ -26,7 +26,8 @@ export class ContactsApiService extends ApiBaseService {
   // GET consumer/contacts
   public getContacts() : Observable<ContactDto[]> {
     return this.httpClient.get<ContactDto[]>(
-      this.baseUrl + this.consumerContactsRoute
+      this.baseUrl + this.consumerContactsRoute,
+      { withCredentials: true }
     );
   }
 
@@ -38,7 +39,7 @@ export class ContactsApiService extends ApiBaseService {
 
     return this.httpClient.post<ContactCreatedEvent>(
       this.baseUrl + this.senderContactsRoute,
-      command
+      command, { withCredentials: true }
     );
   }
 
@@ -51,6 +52,7 @@ export class ContactsApiService extends ApiBaseService {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
       }),
+      withCredentials: true,
       body: command
     };
 

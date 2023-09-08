@@ -21,7 +21,7 @@ export class ProfileApiService extends ApiBaseService {
   // GET consumer/profile
   getProfile(): Observable<UserDto> {
     return this.httpClient.get<UserDto>(
-      this.baseUrl + this.consumerProfileRoute
+      this.baseUrl + this.consumerProfileRoute, { withCredentials: true }
     );
   }
 }

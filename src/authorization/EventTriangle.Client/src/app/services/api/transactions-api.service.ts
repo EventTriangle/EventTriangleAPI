@@ -28,7 +28,8 @@ export class TransactionsApiService extends ApiBaseService {
   // GET consumer/transactions
   public getTransactions(fromDateTime: Date, limit: number) : Observable<TransactionDto[]> {
     return this.httpClient.get<TransactionDto[]>(
-      this.baseUrl + this.consumerTransactionsRoute + `?fromDateTime=${fromDateTime.toJSON()}&limit=${limit}`
+      this.baseUrl + this.consumerTransactionsRoute + `?fromDateTime=${fromDateTime.toJSON()}&limit=${limit}`,
+      { withCredentials: true }
     );
   }
 
@@ -41,7 +42,7 @@ export class TransactionsApiService extends ApiBaseService {
 
     return this.httpClient.post<CreateTransactionUserToUserEvent>(
       this.baseUrl + this.senderTransactionsRoute + "user-to-user",
-      command
+      command, { withCredentials: true }
     );
   }
 
@@ -54,7 +55,7 @@ export class TransactionsApiService extends ApiBaseService {
 
     return this.httpClient.post<CreateTransactionCardToUserEvent>(
       this.baseUrl + this.senderTransactionsRoute + "card-to-user",
-      command
+      command, { withCredentials: true }
     );
   }
 
@@ -66,7 +67,7 @@ export class TransactionsApiService extends ApiBaseService {
 
     return this.httpClient.post<TransactionRolledBackEvent>(
       this.baseUrl + this.senderTransactionsRoute + "rollback",
-      command
+      command, { withCredentials: true }
     );
   }
 }

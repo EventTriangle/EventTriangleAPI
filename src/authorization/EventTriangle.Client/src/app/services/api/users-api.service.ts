@@ -29,14 +29,16 @@ export class UsersApiService extends ApiBaseService {
   // GET consumer/users
   public getUsers(limit: number, page: number) : Observable<UserDto[]> {
     return this.httpClient.get<UserDto[]>(
-      this.baseUrl + this.consumerUsersRoute + `?limit=${limit}&page=${page}`
+      this.baseUrl + this.consumerUsersRoute + `?limit=${limit}&page=${page}`,
+      { withCredentials: true }
     );
   }
 
   // GET consumer/users/search/{searchText}
   public searchUsers(searchText: string, limit: number, page: number) : Observable<UserDto[]> {
     return this.httpClient.get<UserDto[]>(
-      this.baseUrl + this.consumerUsersRoute + `/search/${searchText}` + `?limit=${limit}&page=${page}`
+      this.baseUrl + this.consumerUsersRoute + `/search/${searchText}` + `?limit=${limit}&page=${page}`,
+      { withCredentials: true }
     );
   }
 
@@ -48,7 +50,7 @@ export class UsersApiService extends ApiBaseService {
 
     return this.httpClient.post<UserSuspendedEvent>(
       this.baseUrl + this.senderUsersRoute,
-      command
+      command,{ withCredentials: true }
     );
   }
 
@@ -61,6 +63,7 @@ export class UsersApiService extends ApiBaseService {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
       }),
+      withCredentials: true,
       body: command
     };
 
@@ -79,7 +82,7 @@ export class UsersApiService extends ApiBaseService {
 
     return this.httpClient.put<UpdateUserRoleEvent>(
       this.baseUrl + this.senderUsersRoute,
-      command
+      command, { withCredentials: true }
     );
   }
 }

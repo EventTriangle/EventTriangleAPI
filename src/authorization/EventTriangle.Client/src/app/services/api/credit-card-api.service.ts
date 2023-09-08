@@ -27,7 +27,8 @@ export class CreditCardApiService extends ApiBaseService {
   // GET consumer/credit-cards
   public getCreditCards(): Observable<CreditCardDto[]> {
     return this.httpClient.get<CreditCardDto[]>(
-      this.baseUrl + this.consumerCreditCardsRoute
+      this.baseUrl + this.consumerCreditCardsRoute,
+      { withCredentials: true }
     );
   }
 
@@ -45,7 +46,7 @@ export class CreditCardApiService extends ApiBaseService {
 
     return this.httpClient.post<CreditCardAddedEvent>(
       this.baseUrl + this.senderCreditCardsRoute,
-      command
+      command, { withCredentials: true }
     );
   }
 
@@ -62,7 +63,7 @@ export class CreditCardApiService extends ApiBaseService {
     }
     return this.httpClient.put<CreditCardChangedEvent>(
       this.baseUrl + this.senderCreditCardsRoute,
-      command
+      command, { withCredentials: true }
     );
   }
 
@@ -75,6 +76,7 @@ export class CreditCardApiService extends ApiBaseService {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
       }),
+      withCredentials: true,
       body: command
     };
 

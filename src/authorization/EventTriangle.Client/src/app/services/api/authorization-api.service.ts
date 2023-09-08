@@ -21,7 +21,9 @@ export class AuthorizationApiService extends ApiBaseService {
 
   //requests
   public getIsAuthenticated() : Observable<IIsAuthenticatedResponse> {
-    return this.httpClient.get<IIsAuthenticatedResponse>(this.baseUrl + this.authorizationRoute + "isAuthenticated",
-      { withCredentials: true });
+    return this.httpClient.get<IIsAuthenticatedResponse>(
+      this.baseUrl + this.authorizationRoute + "isAuthenticated",
+      { withCredentials: true }
+    );
   }
 }

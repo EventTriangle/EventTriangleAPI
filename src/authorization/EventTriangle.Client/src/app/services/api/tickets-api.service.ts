@@ -26,14 +26,16 @@ export class TicketsApiService extends ApiBaseService {
   // GET consumer/tickets
   public getTickets(fromDateTime: Date, limit: number) : Observable<SupportTicketDto[]> {
     return this.httpClient.get<SupportTicketDto[]>(
-      this.baseUrl + this.consumerTicketsRoute + `?fromDateTime=${fromDateTime}&limit=${limit}`
+      this.baseUrl + this.consumerTicketsRoute + `?fromDateTime=${fromDateTime}&limit=${limit}`,
+      { withCredentials: true }
     )
   }
 
   // GET consumer/tickets/support-ticket
   public getSupportTickets(fromDateTime: Date, limit: number) : Observable<SupportTicketDto[]> {
     return this.httpClient.get<SupportTicketDto[]>(
-      this.baseUrl + this.consumerTicketsRoute + `support-tickets?fromDateTime=${fromDateTime}&limit=${limit}`
+      this.baseUrl + this.consumerTicketsRoute + `support-tickets?fromDateTime=${fromDateTime}&limit=${limit}`,
+      { withCredentials: true }
     )
   }
 
@@ -48,7 +50,7 @@ export class TicketsApiService extends ApiBaseService {
 
     return this.httpClient.post<SupportTicketOpenedEvent>(
       this.baseUrl + this.senderTicketsRoute,
-      command
+      command, { withCredentials: true }
     );
   }
 
@@ -61,7 +63,7 @@ export class TicketsApiService extends ApiBaseService {
 
     return this.httpClient.post<SupportTicketResolved>(
       this.baseUrl + this.senderTicketsRoute + "sender-ticket",
-      command
+      command, { withCredentials: true }
     );
   }
 }
