@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { IIsAuthenticatedResponse } from 'src/app/types/responses/IIsAuthenticatedResponse';
 import ApiBaseService from './api-base.service';
+import {Observable} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -19,8 +20,10 @@ export class AuthorizationApiService extends ApiBaseService {
   public getLoginPathForRedirection = () => this.baseUrl + this.authorizationRoute + "login";
 
   //requests
-  public getIsAuthenticated() {
-    return this.httpClient.get<IIsAuthenticatedResponse>(this.baseUrl + this.authorizationRoute + "isAuthenticated",
-      { withCredentials: true });
+  public getIsAuthenticated() : Observable<IIsAuthenticatedResponse> {
+    return this.httpClient.get<IIsAuthenticatedResponse>(
+      this.baseUrl + this.authorizationRoute + "isAuthenticated",
+      { withCredentials: true }
+    );
   }
 }

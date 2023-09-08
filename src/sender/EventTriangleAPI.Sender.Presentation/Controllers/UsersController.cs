@@ -29,8 +29,8 @@ public class UsersController : ControllerBase
         _updateUserRoleCommandHandler = updateUserRoleCommandHandler;
     }
 
-    [HttpPost("suspect")]
-    public async Task<IActionResult> SuspectUser([FromBody] SuspectUserRequest request)
+    [HttpPost("suspend")]
+    public async Task<IActionResult> SuspendUser([FromBody] SuspendUserRequest request)
     {
         var requesterId = _userClaimsService.GetUserId();
 
@@ -40,7 +40,7 @@ public class UsersController : ControllerBase
         return result.ToActionResult();
     }
     
-    [HttpPut("update-role")]
+    [HttpPut("role")]
     public async Task<IActionResult> UpdateUserRole([FromBody] UpdateUserRoleRequest request)
     {
         var requesterId = _userClaimsService.GetUserId();
@@ -51,8 +51,8 @@ public class UsersController : ControllerBase
         return result.ToActionResult();
     }
     
-    [HttpDelete("suspect")]
-    public async Task<IActionResult> NotSuspectUser([FromBody] NotSuspectUserRequest request)
+    [HttpDelete("suspend")]
+    public async Task<IActionResult> NotSuspendUser([FromBody] NotSuspendUserRequest request)
     {
         var requesterId = _userClaimsService.GetUserId();
 

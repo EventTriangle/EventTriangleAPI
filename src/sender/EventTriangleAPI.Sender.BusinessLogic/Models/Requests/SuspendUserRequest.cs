@@ -1,3 +1,3 @@
 namespace EventTriangleAPI.Sender.BusinessLogic.Models.Requests;
 
-public record NotSuspectUserRequest(string UserId);
+public record SuspendUserRequest(string UserId);
