@@ -33,12 +33,12 @@ export class CreditCardApiService extends ApiBaseService {
   }
 
   // POST sender/credit-cards
-  public attachCreditCardToAccount(holderName: string, creditCardNumber: string,
+  public attachCreditCardToAccount(holderName: string, cardNumber: string,
                                    expiration: string, cvv: string, paymentNetwork: PaymentNetwork)
     : Observable<CreditCardAddedEvent> {
     let command : AttachCreditCardToAccountRequest = {
       holderName: holderName,
-      creditCardNumber: creditCardNumber,
+      cardNumber: cardNumber,
       expiration: expiration,
       cvv: cvv,
       paymentNetwork: paymentNetwork
