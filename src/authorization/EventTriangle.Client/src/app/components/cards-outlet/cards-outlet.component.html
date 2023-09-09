@@ -2,7 +2,7 @@
   <div class="cardsInfoContainer">
     <span class="titleSpan">
       <p class="title">Cards</p>
-      <svg-icon src="../../../assets/svg/credit-card.svg" class="titleCardSvg" />
+      <svg-icon src="../../../assets/svg/credit-card.svg" class="titleCardSvg"/>
     </span>
     <p class="overview">An overview of cards</p>
     <div class="cardList" [@cardListAnimation]>
@@ -17,19 +17,27 @@
 </div>
 <div class="addNewCard">
   <div class="addNewCardContainer">
-    <div [@rightBarAnimation]>
+    <div [@rightBarAnimation]="">
       <p class="addNewCardTitle">
         Add New Card
       </p>
-      <input type="text" class="addNewCardInput" placeholder="Card Holder Name" />
-      <input type="text" class="addNewCardInput" placeholder="0000-0000-0000-0000" />
-      <input type="text" class="addNewCardInput" placeholder="mm/dd" />
-      <input type="text" class="addNewCardInput" placeholder="Cvv" />
-      <select class="addNewCardInput">
-        <option value="Visa">Visa</option>
-        <option value="MasterCard">Master Card</option>
+      <input type="text" class="addNewCardInput"
+             placeholder="Card Holder Name" id="CardHolderName"
+             [(ngModel)]="cardHolderName"/>
+      <input type="text" class="addNewCardInput"
+             placeholder="0000-0000-0000-0000" id="CardNumber"
+             [(ngModel)]="cardNumber"/>
+      <input type="text" class="addNewCardInput"
+             placeholder="mm/dd" id="Expiration"
+             [(ngModel)]="expiration"/>
+      <input type="text" class="addNewCardInput"
+             placeholder="CVV/CVC" id="Cvv"
+             [(ngModel)]="cvv"/>
+      <select [(ngModel)]="paymentNetwork" class="addNewCardInput">
+        <option [ngValue]="PaymentNetwork.Visa">Visa</option>
+        <option [ngValue]="PaymentNetwork.MasterCard">Master Card</option>
       </select>
-      <button class="addNewCardOkButton">Ok</button>
+      <button class="addNewCardOkButton" (click)="onAttachCardOkClick()">Ok</button>
     </div>
   </div>
 </div>

@@ -1,5 +1,9 @@
-import { Component } from '@angular/core';
-import { animate, query, stagger, style, transition, trigger } from "@angular/animations";
+import {Component} from '@angular/core';
+import {animate, query, stagger, style, transition, trigger} from "@angular/animations";
+import {CreditCardApiService} from "../../services/api/credit-card-api.service";
+import {PaymentNetwork} from "../../types/enums/PaymentNetwork";
+import {firstValueFrom} from "rxjs";
+import {CreditCardAddedEvent} from "../../types/models/sender/CreditCardAddedEvent";
 
 @Component({
   selector: 'app-cards-outlet',
@@ -24,4 +28,24 @@ import { animate, query, stagger, style, transition, trigger } from "@angular/an
 })
 export class CardsOutletComponent {
   cards = [1, 2, 1, 1, 1]
+
+  constructor(private _creditCardApiService: CreditCardApiService) {
+
+  }
+
+  public cardHolderName = '';
+  public cardNumber = '';
+  public expiration = '';
+  public cvv = '';
+  public paymentNetwork: PaymentNetwork = PaymentNetwork.Visa;
+  protected readonly PaymentNetwork = PaymentNetwork;
+
+  async onAttachCardOkClick() {
+    const attachCardSub$ = this._creditCardApiService.attachCreditCardToAccount(
+      this.cardHolderName, this.cardNumber,
+      this.expiration, this.cvv, this.paymentNetwork
+    );
+
+    await firstValueFrom<CreditCardAddedEvent>(attachCardSub$);
+  }
 }
