@@ -29,6 +29,10 @@
 .title {
   font-weight: 700;
   font-size: 40px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
   margin-bottom: 12px;
 }
 
@@ -47,6 +51,10 @@
   color: $grey-p;
   font-weight: 700;
   font-size: 16px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
   margin-bottom: 30px;
 }
 
@@ -70,6 +78,10 @@
   margin-bottom: 10px;
   font-weight: 700;
   font-size: 18px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
   color: white;
 }
 
@@ -77,6 +89,10 @@
   margin-left: 35px;
   font-weight: 700;
   font-size: 35px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
   color: white;
 }
 
@@ -100,6 +116,10 @@
   margin-left: 5px;
   font-size: 14px;
   font-weight: 700;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
   color: white;
 }
 
@@ -127,17 +147,29 @@
 .userInfoData {
   margin-top: 62px;
   margin-left: 32px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .userInfoFullName {
   font-weight: 700;
   font-size: 30px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
   margin-bottom: 7px;
 }
 
 .userInfoAge {
   font-weight: 700;
   font-size: 18px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .searchTransactions {
@@ -249,21 +281,37 @@
 .transactionItemFrom {
   margin-top: 3px;
   margin-left: 35px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .transactionItemTo {
   margin-top: 3px;
   margin-left: 110px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .transactionItemAmount {
   margin-top: 3px;
   margin-left: 110px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .transactionItemDate {
   margin-top: 3px;
   margin-left: 110px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .createNewTransaction {
@@ -284,6 +332,10 @@
   width: 100%;
   font-weight: 700;
   font-size: 30px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
   margin-bottom: 25px;
   text-align: center;
 }

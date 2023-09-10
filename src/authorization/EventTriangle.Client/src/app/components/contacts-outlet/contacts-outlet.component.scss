@@ -30,6 +30,10 @@
 .title {
   font-weight: 700;
   font-size: 40px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
   margin-bottom: 12px;
 }
 
@@ -48,6 +52,10 @@
   color: $grey-p;
   font-weight: 700;
   font-size: 16px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
   margin-bottom: 30px;
 }
 
@@ -103,11 +111,19 @@
 .contactItemUsername {
   margin-top: 15px;
   margin-left: 36px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .contactItemStatus {
   margin-top: 15px;
   margin-left: 87px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .plusSvg {

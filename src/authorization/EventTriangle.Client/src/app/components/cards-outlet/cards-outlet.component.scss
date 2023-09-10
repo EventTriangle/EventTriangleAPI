@@ -29,6 +29,10 @@
   font-weight: 700;
   font-size: 40px;
   margin-bottom: 12px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .titleCardSvg {
@@ -46,6 +50,10 @@
   color: $grey-p;
   font-weight: 700;
   font-size: 16px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
   margin-bottom: 30px;
 }
 
@@ -101,6 +109,10 @@
   height: 100%;
   background-color: white;
   grid-area: rightbar;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .addNewCardContainer {
