@@ -29,6 +29,10 @@
 .title {
   font-weight: 700;
   font-size: 40px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
   margin-bottom: 12px;
 }
 
@@ -47,6 +51,10 @@
   color: $grey-p;
   font-weight: 700;
   font-size: 16px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
   margin-bottom: 30px;
 }
 
@@ -68,19 +76,36 @@
 
 .ticketItemTransactionId {
   margin-bottom: 35px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .ticketItemStatus {
   position: absolute;
   top: 27px;
   right: 27px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .ticketItemDescriptionTitle {
   margin-bottom: 12px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
-.ticketItemDescriptionText {}
+.ticketItemDescriptionText {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
 
 .createTicket {
   display: flex;
@@ -103,6 +128,10 @@
   margin-bottom: 25px;
   font-weight: 700;
   font-size: 30px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
   text-align: center;
 }
 

@@ -29,6 +29,10 @@
 .title {
   font-weight: 700;
   font-size: 40px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
   margin-bottom: 12px;
 }
 
@@ -47,6 +51,10 @@
   color: $grey-p;
   font-weight: 700;
   font-size: 16px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
   margin-bottom: 30px;
 }
 
@@ -101,17 +109,34 @@
 
 .userItemUsername {
   margin-top: 12px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .userItemBalance {
   margin-top: 12px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .userItemRole {
   margin-top: 12px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
-.userItemStatus {}
+.userItemStatus {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
 
 .userItemStatusSelect {
   width: 150px;

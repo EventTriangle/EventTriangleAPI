@@ -1,237 +1,245 @@
 @import "../../../app/app.component.scss";
 
 :host {
-    position: relative;
-    display: flex;
-    grid-area: navbar;
+  position: relative;
+  display: flex;
+  grid-area: navbar;
 }
 
 .navBarContainer {
-    position: fixed;
-    margin-top: 80px;
-    width: 328px;
-    height: 100%;
+  position: fixed;
+  margin-top: 80px;
+  width: 328px;
+  height: 100%;
 }
 
 .title {
-    color: $light-grey-p;
-    font-size: 20px;
-    font-weight: 700;
-    margin-left: 55px;
-    margin-bottom: 20px;
+  color: $light-grey-p;
+  font-size: 20px;
+  font-weight: 700;
+  margin-left: 55px;
+  margin-bottom: 20px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .item {
-    display: flex;
-    width: 100%;
-    height: 68px;
-    margin-bottom: 17px;
-    text-decoration: none;
-    cursor: pointer;
+  display: flex;
+  width: 100%;
+  height: 68px;
+  margin-bottom: 17px;
+  text-decoration: none;
+  cursor: pointer;
 
-    &:last-child {
+  &:last-child {
 
-        .itemTitle {
-            color: $red-p;
-        }
+    .itemTitle {
+      color: $red-p;
     }
+  }
 
-    &:hover {
-        background-color: $grey-2;
-    }
+  &:hover {
+    background-color: $grey-2;
+  }
 }
 
 .itemIcon {
+  display: flex;
+  width: 40px;
+  height: 40px;
+  margin-top: 14px;
+  margin-left: 56px;
+  border-radius: 10px;
+  background-color: $grey-2;
+}
+
+.itemTitle {
+  margin-top: 25px;
+  margin-left: 15px;
+  color: $grey-p;
+  font-size: 18px;
+  font-weight: 700;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.transactionSvg {
+  width: 30px;
+  height: 30px;
+  margin: auto;
+
+  path {
+    stroke: black;
+  }
+}
+
+.cardSvg {
+  width: 30px;
+  height: 30px;
+  margin: auto;
+
+  path {
+    fill: black;
+  }
+}
+
+.depostionSvg {
+  width: 30px;
+  height: 30px;
+  margin: auto;
+
+  path {
+    fill: black;
+  }
+}
+
+.contactsSvg {
+  width: 30px;
+  height: 30px;
+  margin: auto;
+
+  path {
+    stroke: black;
+  }
+}
+
+.supportSvg {
+  width: 30px;
+  height: 30px;
+  margin: auto;
+
+  g {
+    fill: black;
+  }
+}
+
+.ticketSvg {
+  width: 30px;
+  height: 30px;
+  margin: auto;
+
+  path {
+    stroke: black;
+  }
+}
+
+.usersSvg {
+  width: 30px;
+  height: 30px;
+  margin: auto;
+
+  path {
+    stroke: black;
+  }
+}
+
+.logoutSvg {
+  width: 30px;
+  height: 30px;
+  margin: auto;
+
+  fill: $red-svg;
+}
+
+
+.itemActive {
+  display: flex;
+  width: 100%;
+  height: 68px;
+  margin-bottom: 17px;
+  background-color: $purple-20percent;
+  border-left: 3px solid $purple;
+  text-decoration: none;
+
+  .itemIcon {
     display: flex;
     width: 40px;
     height: 40px;
     margin-top: 14px;
-    margin-left: 56px;
+    margin-left: 53px;
     border-radius: 10px;
-    background-color: $grey-2;
-}
+    background-color: $purple;
+  }
 
-.itemTitle {
+  .itemTitle {
     margin-top: 25px;
     margin-left: 15px;
-    color: $grey-p;
+    color: $purple;
     font-size: 18px;
     font-weight: 700;
-}
+  }
 
-.transactionSvg {
+  .transactionSvg {
     width: 30px;
     height: 30px;
     margin: auto;
 
     path {
-        stroke: black;
+      stroke: white;
     }
-}
+  }
 
-.cardSvg {
+  .cardSvg {
     width: 30px;
     height: 30px;
     margin: auto;
 
     path {
-        fill: black;
+      fill: white;
     }
-}
+  }
 
-.depostionSvg {
+  .depostionSvg {
     width: 30px;
     height: 30px;
     margin: auto;
 
     path {
-        fill: black;
+      fill: white;
     }
-}
+  }
 
-.contactsSvg {
+  .contactsSvg {
     width: 30px;
     height: 30px;
     margin: auto;
 
     path {
-        stroke: black;
+      stroke: white;
     }
-}
+  }
 
-.supportSvg {
+  .supportSvg {
     width: 30px;
     height: 30px;
     margin: auto;
 
     g {
-        fill: black;
+      fill: white;
     }
-}
+  }
 
-.ticketSvg {
+  .ticketSvg {
     width: 30px;
     height: 30px;
     margin: auto;
 
     path {
-        stroke: black;
+      stroke: white;
     }
-}
+  }
 
-.usersSvg {
+  .usersSvg {
     width: 30px;
     height: 30px;
     margin: auto;
 
     path {
-        stroke: black;
+      stroke: white;
     }
-}
-
-.logoutSvg {
-    width: 30px;
-    height: 30px;
-    margin: auto;
-
-    fill: $red-svg;
-}
-
-
-.itemActive {
-    display: flex;
-    width: 100%;
-    height: 68px;
-    margin-bottom: 17px;
-    background-color: $purple-20percent;
-    border-left: 3px solid $purple;
-    text-decoration: none;
-
-    .itemIcon {
-        display: flex;
-        width: 40px;
-        height: 40px;
-        margin-top: 14px;
-        margin-left: 53px;
-        border-radius: 10px;
-        background-color: $purple;
-    }
-
-    .itemTitle {
-        margin-top: 25px;
-        margin-left: 15px;
-        color: $purple;
-        font-size: 18px;
-        font-weight: 700;
-    }
-
-    .transactionSvg {
-        width: 30px;
-        height: 30px;
-        margin: auto;
-
-        path {
-            stroke: white;
-        }
-    }
-
-    .cardSvg {
-        width: 30px;
-        height: 30px;
-        margin: auto;
-
-        path {
-            fill: white;
-        }
-    }
-
-    .depostionSvg {
-        width: 30px;
-        height: 30px;
-        margin: auto;
-
-        path {
-            fill: white;
-        }
-    }
-
-    .contactsSvg {
-        width: 30px;
-        height: 30px;
-        margin: auto;
-
-        path {
-            stroke: white;
-        }
-    }
-
-    .supportSvg {
-        width: 30px;
-        height: 30px;
-        margin: auto;
-
-        g {
-            fill: white;
-        }
-    }
-
-    .ticketSvg {
-        width: 30px;
-        height: 30px;
-        margin: auto;
-
-        path {
-            stroke: white;
-        }
-    }
-
-    .usersSvg {
-        width: 30px;
-        height: 30px;
-        margin: auto;
-
-        path {
-            stroke: white;
-        }
-    }
+  }
 }

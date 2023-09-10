@@ -29,6 +29,10 @@
 .title {
   font-weight: 700;
   font-size: 40px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
   margin-bottom: 12px;
 }
 
@@ -47,6 +51,10 @@
   color: $grey-p;
   font-weight: 700;
   font-size: 16px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
   margin-bottom: 30px;
 }
 
