@@ -1,7 +1,6 @@
 FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
 WORKDIR /app
 EXPOSE 80
-EXPOSE 433
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS publish
 WORKDIR /src
@@ -16,7 +15,7 @@ COPY ["shared/EventTriangleAPI.Shared.DTO/EventTriangleAPI.Shared.DTO.csproj", "
 RUN dotnet restore "consumer/EventTriangleAPI.Consumer.Presentation/EventTriangleAPI.Consumer.Presentation.csproj"
 COPY . .
 WORKDIR "consumer/EventTriangleAPI.Consumer.Presentation"
-RUN dotnet publish "EventTriangleAPI.Consumer.Presentation.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "EventTriangleAPI.Consumer.Presentation.csproj" -c Release -o /app/publish /p:UseAppHost=false --no-cache
 
 FROM base AS final
 WORKDIR /app

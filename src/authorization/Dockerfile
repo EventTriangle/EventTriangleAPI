@@ -1,7 +1,7 @@
 FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
 WORKDIR /app
 EXPOSE 80
-EXPOSE 433
+EXPOSE 81
 
 FROM node:18.15.0-alpine AS angularBuild
 WORKDIR /angular
@@ -13,6 +13,7 @@ WORKDIR /angular
 COPY ["authorization/EventTriangle.Client", "EventTriangle.Client/"]
 RUN npm install -g @angular/cli@15.2.7
 WORKDIR "EventTriangle.Client"
+RUN sed -i 's/"baseUrl": "https:\/\/localhost:7000\/"/"baseUrl": "http:\/\/localhost:7000\/"/' ./src/assets/config/config.json
 RUN ng build --output-path "dist/client"
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS publish
@@ -27,7 +28,7 @@ COPY ["shared/EventTriangleAPI.Shared.DTO/EventTriangleAPI.Shared.DTO.csproj", "
 RUN dotnet restore "authorization/EventTriangleAPI.Authorization.Presentation/EventTriangleAPI.Authorization.Presentation.csproj"
 COPY . .
 WORKDIR "authorization/EventTriangleAPI.Authorization.Presentation"
-RUN dotnet publish "EventTriangleAPI.Authorization.Presentation.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "EventTriangleAPI.Authorization.Presentation.csproj" -c Release -o /app/publish /p:UseAppHost=false --no-cache
 
 FROM base AS final
 WORKDIR /app
