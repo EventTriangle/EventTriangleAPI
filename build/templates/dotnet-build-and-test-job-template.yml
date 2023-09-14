@@ -52,12 +52,6 @@ jobs:
           Action: '##vso[build.updatebuildnumber]'
           BuildVersion: $(GitVersion.SemVer)
 
-      - task: UseDotNet@2
-        displayName: 'Install .NET 6.x SDK'
-        inputs:
-          packageType: sdk
-          version: 6.x
-
       - task: DotNetCoreCLI@2
         displayName: 'Dotnet restore'
         inputs:
