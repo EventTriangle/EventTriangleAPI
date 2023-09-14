@@ -39,5 +39,5 @@ stages:
           unitTestsProjectPath: './src/sender/EventTriangleAPI.Sender.UnitTests/EventTriangleAPI.Authorization.UnitTests.csproj'
           pushDockerImage: true
           imageRepository: 'auth-service'
-          dockerfilePath: 'authorization/Dockerfile'
+          dockerfilePath: 'src/authorization/Dockerfile'
           dockerfileServiceConnection: "Docker_Hub_Connection"
