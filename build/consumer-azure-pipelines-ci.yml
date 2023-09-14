@@ -39,15 +39,7 @@ pool:
 stages:
   - stage: 'Build_And_Test_ConsumerAPI'
     displayName: 'Build and Test Consumer API and Drop Artifacts'
-    jobs:
-#      - template: templates/dotnet-build-and-test-job-template.yml
-#        parameters:
-#          buildConfiguration: 'Release'
-#          backendProjectPath: './src/consumer/EventTriangleAPI.Consumer.Presentation'
-#          integrationTestsProjectPath: './src/consumer/EventTriangleAPI.Consumer.IntegrationTests/EventTriangleAPI.Consumer.IntegrationTests.csproj'
-#          unitTestsProjectPath: './src/consumer/EventTriangleAPI.Consumer.UnitTests/EventTriangleAPI.Consumer.UnitTests.csproj'
-#          creatingDatabase: true
-          
+    jobs: 
       - template: templates/dotnet-build-and-test-job-template.yml
         parameters:
           solution: 'EventTriangleAPI.sln'
