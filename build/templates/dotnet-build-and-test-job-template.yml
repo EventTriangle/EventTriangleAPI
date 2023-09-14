@@ -137,13 +137,21 @@ jobs:
         env:
           Action: '##vso[build.updatebuildnumber]'
           BuildVersion: $(GitVersion.SemVer)
-      
+
+      - bash: |
+          IMAGE_FULL_NAME="$REPOSITORY:$VERSION"
+          echo "Image full name: $IMAGE_FULL_NAME"
+          cd ./src/authorization/EventTriangle.Client/src
+          docker build --build-arg FRONT_API_URL="http://localhost:7000/" -t "$IMAGE_FULL_NAME" -f ./authorization/Dockerfile .
+        env:
+          REPOSITORY: ${{ parameters.imageRepository }}
+          VERSION: $(GitVersion.SemVer)
+        displayName: 'Build Docker Image'
+
       - task: Docker@2
-        displayName: 'Build and push an image to container registry'
+        displayName: 'Push to DockerHub'
         inputs:
-          command: 'buildAndPush'
-          buildContext: './src/authorization/EventTriangle.Client/src'
+          command: push
+          containerRegistry: 'Docker_Hub_Connection'
           repository: '${{ parameters.imageRepository }}'
-          dockerfile: '${{ parameters.dockerfilePath }}'
-          containerRegistry: Docker_Hub_Connection
           tags: '$(GitVersion.SemVer)'
