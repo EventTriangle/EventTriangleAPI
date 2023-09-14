@@ -37,7 +37,7 @@ stages:
           solution: 'EventTriangleAPI.sln'
           buildConfiguration: 'Release'
           backendProjectPath: 'src/authorization/EventTriangleAPI.Authorization.Presentation'
-          unitTestsProjectPath: 'src/sender/EventTriangleAPI.Sender.UnitTests/EventTriangleAPI.Authorization.UnitTests.csproj'
+          unitTestsProjectPath: 'src/authorization/EventTriangleAPI.Authorization.UnitTests/EventTriangleAPI.Authorization.UnitTests.csproj'
           shouldRunIntegrationTests: 'false'
           integrationTestsProjectPath: ''
           dockerUsername: 'kaminome'
