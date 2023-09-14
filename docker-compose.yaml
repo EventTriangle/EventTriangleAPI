@@ -4,6 +4,8 @@ services:
   auth-service:
     build:
       context: src
+      args:
+        FRONT_API_URL: 'http://localhost:7000/'
       dockerfile: authorization/Dockerfile
     ports:
       - "7000:80"
@@ -57,6 +59,6 @@ services:
       - RABBITMQ_DEFAULT_PASS=guest
     ports:
       - "15672:15672"
-        
+
 volumes:
   pgdata:

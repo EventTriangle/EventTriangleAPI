@@ -3,6 +3,8 @@ WORKDIR /app
 EXPOSE 80
 EXPOSE 81
 
+ARG FRONT_API_URL
+
 FROM node:18.15.0-alpine AS angularBuild
 WORKDIR /angular
 COPY ["authorization/EventTriangle.Client/package.json", "EventTriangle.Client/"]
@@ -13,7 +15,7 @@ WORKDIR /angular
 COPY ["authorization/EventTriangle.Client", "EventTriangle.Client/"]
 RUN npm install -g @angular/cli@15.2.7
 WORKDIR "EventTriangle.Client"
-RUN sed -i 's/"baseUrl": "https:\/\/localhost:7000\/"/"baseUrl": "http:\/\/localhost:7000\/"/' ./src/assets/config/config.json
+RUN sed -i "s|https://localhost:7000/|$FRONT_API_URL|" ./src/assets/config/config.json
 RUN ng build --output-path "dist/client"
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS publish
