@@ -10,6 +10,7 @@ import {CreditCardChangedEvent} from "../../types/models/sender/CreditCardChange
 import {EditCreditCardRequest} from "../../types/requests/EditCreditCardRequest";
 import {CreditCardDeletedEvent} from "../../types/models/sender/CreditCardDeletedEvent";
 import {DeleteCreditCardRequest} from "../../types/requests/DeleteCreditCardRequest";
+import {Result} from "../../types/models/Result";
 
 @Injectable({
   providedIn: 'root'
@@ -25,8 +26,8 @@ export class CreditCardApiService extends ApiBaseService {
   }
 
   // GET consumer/credit-cards
-  public getCreditCards(): Observable<CreditCardDto[]> {
-    return this.httpClient.get<CreditCardDto[]>(
+  public getCreditCards(): Observable<Result<CreditCardDto[]>> {
+    return this.httpClient.get<Result<CreditCardDto[]>>(
       this.baseUrl + this.consumerCreditCardsRoute,
       { withCredentials: true }
     );
