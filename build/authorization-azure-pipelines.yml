@@ -37,3 +37,6 @@ stages:
           buildConfiguration: 'Release'
           backendProjectPath: './src/authorization/EventTriangleAPI.Authorization.Presentation'
           unitTestsProjectPath: './src/sender/EventTriangleAPI.Sender.UnitTests/EventTriangleAPI.Authorization.UnitTests.csproj'
+          pushDockerImage: true
+          imageRepository: 'kaminome/auth-service'
+          dockerfilePath: './authorization/Dockerfile'
