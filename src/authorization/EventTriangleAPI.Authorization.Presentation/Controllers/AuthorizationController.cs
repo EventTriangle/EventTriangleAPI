@@ -14,13 +14,13 @@ public class AuthorizationController : ControllerBase
 {
     private readonly RefreshTokenCommandHandler _refreshTokenCommandHandler;
     private readonly GetTokenCommandHandler _getTokenCommandHandler;
-    private readonly IHostEnvironment  _hostEnvironment;
+    private readonly IHostEnvironment _hostEnvironment;
     private readonly IConfiguration _configuration;
 
     public AuthorizationController(
         RefreshTokenCommandHandler refreshTokenCommandHandler,
-        GetTokenCommandHandler getTokenCommandHandler, 
-        IHostEnvironment hostEnvironment, 
+        GetTokenCommandHandler getTokenCommandHandler,
+        IHostEnvironment hostEnvironment,
         IConfiguration configuration)
     {
         _refreshTokenCommandHandler = refreshTokenCommandHandler;
@@ -34,17 +34,17 @@ public class AuthorizationController : ControllerBase
     {
         var authN = await HttpContext.AuthenticateAsync(AuthConstants.AppOidc);
         var devFrontendUrl = _configuration[AppSettingsConstants.DevFrontendUrl];
-        
+
         if (authN.Succeeded)
         {
-            return _hostEnvironment.IsDevelopment() ? 
-                Redirect(devFrontendUrl + SpaRouting.Transactions) 
+            return _hostEnvironment.IsDevelopment()
+                ? Redirect(devFrontendUrl + SpaRouting.Transactions)
                 : Redirect(SpaRouting.Transactions);
         }
-        
+
         return Challenge(AuthConstants.AppOidc);
     }
-    
+
     [Authorize]
     [HttpGet("logout")]
     public async Task<IActionResult> Logout()
@@ -58,11 +58,11 @@ public class AuthorizationController : ControllerBase
     public async Task<IActionResult> IsAuthenticated()
     {
         var authN = await HttpContext.AuthenticateAsync(AuthConstants.AppOidc);
-        return authN.Succeeded 
+        return authN.Succeeded
             ? Ok(new AuthNStatus(true))
             : Unauthorized(new AuthNStatus(false));
     }
-    
+
     [HttpGet("token")]
     public async Task<IActionResult> GetAuthorizationData([FromQuery] string code, [FromQuery] string codeVerifier)
     {
@@ -80,6 +80,6 @@ public class AuthorizationController : ControllerBase
 
         return result.ToActionResult();
     }
-    
+
     private record AuthNStatus(bool Authenticated);
 }
