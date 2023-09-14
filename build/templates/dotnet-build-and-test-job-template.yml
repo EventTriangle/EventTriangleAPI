@@ -16,27 +16,27 @@ parameters:
     displayName: 'Unit Tests Project Path'
     default: ' '
     type: string
-    
+
   - name: creatingDatabase
     displayName: 'Creating Database'
     default: false
     type: boolean
 
-  - name: pushDockerImage
-    displayName: 'Push Docker Image'
-    default: false
-    type: boolean
+  - name: dockerUsername
+    displayName: "Docker username"
+    default: ' '
+    type: string
 
   - name: imageRepository
     displayName: "Image Repository"
     default: ' '
     type: string
-    
+
   - name: dockerfilePath
     displayName: "Dockerfile Path"
     default: ' '
     type: string
-    
+
   - name: dockerfileServiceConnection
     displayName: "Dockerfile Service Connection"
     default: ' '
@@ -90,19 +90,19 @@ jobs:
           arguments: '-c ${{ parameters.buildConfiguration }} --no-restore'
 
       - ${{ if eq(parameters.creatingDatabase, true) }}:
-        - task: PowerShell@2
-          displayName: 'Start PostgreSQL database in docker container'
-          inputs:
-            targetType: 'inline'
-            script: 'docker run --name pgsql-db -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres:latest'
+          - task: PowerShell@2
+            displayName: 'Start PostgreSQL database in docker container'
+            inputs:
+              targetType: 'inline'
+              script: 'docker run --name pgsql-db -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres:latest'
 
       - ${{ if eq(parameters.creatingDatabase, true) }}:
-        - task: PowerShell@2
-          displayName: 'Wait database'
-          timeoutInMinutes: 5
-          inputs: 
-            targetType: 'inline'
-            script: .\scripts\wait_postgres_database.ps1
+          - task: PowerShell@2
+            displayName: 'Wait database'
+            timeoutInMinutes: 5
+            inputs:
+              targetType: 'inline'
+              script: .\scripts\wait_postgres_database.ps1
 
       - task: DotnetCoreCLI@2
         displayName: 'Run unit tests'
@@ -136,7 +136,7 @@ jobs:
           PathtoPublish: '$(Build.ArtifactStagingDirectory)'
           ArtifactName: 'drop'
           publishLocation: 'Container'
-          
+
       - task: Docker@2
         displayName: Login to Docker Hub
         inputs:
@@ -144,13 +144,15 @@ jobs:
           containerRegistry: '${{ parameters.dockerfileServiceConnection }}'
 
       - bash: |
-          IMAGE_FULL_NAME="$REPOSITORY:$VERSION"
+          IMAGE_FULL_NAME="$DOCKERUSERNAME/$REPOSITORY:$VERSION"
           echo "Image full name: $IMAGE_FULL_NAME"
           docker build --build-arg FRONT_API_URL="http://localhost:7000/" -t "$IMAGE_FULL_NAME" -f "$DOCKERFILEPATH" .
         env:
           REPOSITORY: ${{ parameters.imageRepository }}
           DOCKERFILEPATH: ${{ parameters.dockerfilePath }}
           VERSION: $(GitVersion.SemVer)
+          DOCKERUSERNAME: ${{ parameters.dockerUsername }}
+        workingDirectory: '$(Build.SourcesDirectory)/src'
         displayName: 'Build Docker Image'
 
       - task: Docker@2
@@ -158,5 +160,5 @@ jobs:
         inputs:
           command: push
           containerRegistry: '${{ parameters.dockerfileServiceConnection }}'
-          repository: '${{ parameters.imageRepository }}'
+          repository: '${{ parameters.dockerUsername }}/${{ parameters.imageRepository }}'
           tags: '$(GitVersion.SemVer)'

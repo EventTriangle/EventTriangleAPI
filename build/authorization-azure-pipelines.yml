@@ -37,7 +37,7 @@ stages:
           buildConfiguration: 'Release'
           backendProjectPath: './src/authorization/EventTriangleAPI.Authorization.Presentation'
           unitTestsProjectPath: './src/sender/EventTriangleAPI.Sender.UnitTests/EventTriangleAPI.Authorization.UnitTests.csproj'
-          pushDockerImage: true
+          dockerUsername: 'kaminome'
           imageRepository: 'auth-service'
-          dockerfilePath: 'src/authorization/Dockerfile'
-          dockerfileServiceConnection: "Docker_Hub_Connection"
+          dockerfilePath: './authorization/Dockerfile'
+          dockerfileServiceConnection: 'Docker_Hub_Connection'

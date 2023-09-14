@@ -7,6 +7,14 @@
 Repository that contains API for both event publisher and event consumer applications
 
 ## Required Software
+## Useful links
+
+- Docker images: https://hub.docker.com/u/kaminome
+- Azure DevOps project: https://dev.azure.com/EventTriangle/EventTriangleAPI
+
+## Build and run the project
+
+### Required Software
 
 - **.NET SDK 6.0.202 or later:** https://dotnet.microsoft.com/en-us/download
 - **NVM for windows:** https://github.com/coreybutler/nvm-windows
