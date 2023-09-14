@@ -1,20 +1,26 @@
 # EventTriangleAPI
 
+[![Build And Test Auth API](https://github.com/EventTriangle/EventTriangleAPI/actions/workflows/auth-build-and-test.yml/badge.svg)](https://github.com/EventTriangle/EventTriangleAPI/actions/workflows/auth-build-and-test.yml)
+[![Build And Test Sender API](https://github.com/EventTriangle/EventTriangleAPI/actions/workflows/sender-build-and-test.yml/badge.svg)](https://github.com/EventTriangle/EventTriangleAPI/actions/workflows/sender-build-and-test.yml)
+[![Build And Test Consumer API](https://github.com/EventTriangle/EventTriangleAPI/actions/workflows/consumer-build-and-test.yml/badge.svg)](https://github.com/EventTriangle/EventTriangleAPI/actions/workflows/consumer-build-and-test.yml)
+
 Repository that contains API for both event publisher and event consumer applications
 
-## Build and run the project
-
-### Required Software
+## Required Software
 
 - **.NET SDK 6.0.202 or later:** https://dotnet.microsoft.com/en-us/download
 - **NVM for windows:** https://github.com/coreybutler/nvm-windows
 - **Angular CLI:** `15.2.6`
 - **NodeJS:** `18.15.0`
 - **NPM:** `9.5.0`
+- **Docker:** https://docs.docker.com/get-docker/
+- **IDE**: Visual Studio 2022 or JetBrains Rider
 
-### Run in debug mode
+## Run in Debug mode
 
-- Install NVM: https://github.com/coreybutler/nvm-windows
+### Build Angular client
+
+- Install NVM: `choco install nvm -y`
 - Install NodeJS `18.15.0` using NVM & PowerShell as Administrator: `nvm install 18.15.0`
 - Use NodeJS `18.15.0` using NVM via PowerShell as Administrator: `nvm use 18.15.0`
 - Check NodeJS installed properly (should be `18.15.0`): `node -v`
@@ -25,21 +31,32 @@ Repository that contains API for both event publisher and event consumer applica
 - Open PowerShell as Administrator and type: `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned`
 - Check that Angular CLI installed properly: `ng version`
 - Build project for development using Angular CLI: `ng build`
-- Run the .NET WEB API solutions
+- Run angular client: `ng serve`
 
-### Run Docker compose
+### Run required containers
 
-#### Windows
+- `docker run --name "event-auth-pgsql-db" -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres:latest`
+- `docker run --name=rabbit1 -p 5672:5672 -p 15672:15672 -e RABBITMQ_DEFAULT_USER=guest -e RABBITMQ_DEFAULT_PASS=guest -d rabbitmq:3-management`
+
+### Run .NET Services
+
+- `authorization`
+- `sender`
+- `consumer`
+
+## Run Docker compose
+
+### Windows
 
 - `setx EVENT_TRIANGLE_AD_CLIENT_SECRET <YOUR_AD_SECRET>`
 - `docker-compose up`
 
-#### Linux
+### Linux
 
 - `export EVENT_TRIANGLE_AD_CLIENT_SECRET=<YOUR_AD_SECRET>`
 - `docker compose up`
 
-### To build docker images
+## To build docker images
 
 From `src` folder run:
 
