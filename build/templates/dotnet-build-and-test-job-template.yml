@@ -147,7 +147,7 @@ jobs:
           IMAGE_FULL_NAME="$REPOSITORY:$VERSION"
           echo "Image full name: $IMAGE_FULL_NAME"
           cd ./src/authorization/EventTriangle.Client/src
-          docker build --build-arg FRONT_API_URL="http://localhost:7000/" -t "$IMAGE_FULL_NAME" -f "DOCKERFILE-PATH" .
+          docker build --build-arg FRONT_API_URL="http://localhost:7000/" -t "$IMAGE_FULL_NAME" -f "$DOCKERFILE-PATH" .
         env:
           REPOSITORY: ${{ parameters.imageRepository }}
           DOCKERFILE-PATH: ${{ parameters.dockerfilePath }}
