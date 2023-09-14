@@ -15,11 +15,14 @@ using Microsoft.IdentityModel.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.WebHost.ConfigureKestrel(options =>
+if (builder.Environment.EnvironmentName == "Docker")
 {
-    options.ListenAnyIP(80, listenOptions => listenOptions.Protocols = HttpProtocols.Http1);
-    options.ListenAnyIP(81, listenOptions => listenOptions.Protocols = HttpProtocols.Http2);
-});
+    builder.WebHost.ConfigureKestrel(options =>
+    {
+        options.ListenAnyIP(80, listenOptions => listenOptions.Protocols = HttpProtocols.Http1);
+        options.ListenAnyIP(81, listenOptions => listenOptions.Protocols = HttpProtocols.Http2);
+    });
+}
 
 var configurationSection = builder.Configuration.GetSection(AppSettingsConstants.AzureAd);
 var databaseConnectionString = builder.Configuration[AppSettingsConstants.DatabaseConnectionString];
