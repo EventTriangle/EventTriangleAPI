@@ -36,6 +36,11 @@ parameters:
     displayName: "Dockerfile Path"
     default: ' '
     type: string
+    
+  - name: dockerfileServiceConnection
+    displayName: "Dockerfile Service Connection"
+    default: ' '
+    type: string
 
 jobs:
   - job: 'Build_And_Test_Pack'
@@ -43,6 +48,22 @@ jobs:
     steps:
       - checkout: self
         fetchDepth: 0
+
+      - task: gitversion/setup@0
+        displayName: 'GitVersion Setup'
+        inputs:
+          versionSpec: '5.9.x'
+
+      - task: gitversion/execute@0
+        displayName: 'GitVersion Execute'
+        inputs:
+          updateAssemblyInfo: true
+
+      - bash: echo $Action$BuildVersion
+        displayName: 'Set Build Version'
+        env:
+          Action: '##vso[build.updatebuildnumber]'
+          BuildVersion: $(GitVersion.SemVer)
 
       - task: UseDotNet@2
         displayName: 'Install .NET 6.x SDK'
@@ -120,31 +141,16 @@ jobs:
         displayName: Login to Docker Hub
         inputs:
           command: login
-          containerRegistry: Docker_Hub_Connection
-
-      - task: gitversion/setup@0
-        displayName: 'GitVersion Setup'
-        inputs:
-          versionSpec: '5.9.x'
-
-      - task: gitversion/execute@0
-        displayName: 'GitVersion Execute'
-        inputs:
-          updateAssemblyInfo: true
-
-      - bash: echo $Action$BuildVersion
-        displayName: 'Set Build Version'
-        env:
-          Action: '##vso[build.updatebuildnumber]'
-          BuildVersion: $(GitVersion.SemVer)
+          containerRegistry: '${{ parameters.dockerfileServiceConnection }}'
 
       - bash: |
           IMAGE_FULL_NAME="$REPOSITORY:$VERSION"
           echo "Image full name: $IMAGE_FULL_NAME"
           cd ./src/authorization/EventTriangle.Client/src
-          docker build --build-arg FRONT_API_URL="http://localhost:7000/" -t "$IMAGE_FULL_NAME" -f ./authorization/Dockerfile .
+          docker build --build-arg FRONT_API_URL="http://localhost:7000/" -t "$IMAGE_FULL_NAME" -f "DOCKERFILE-PATH" .
         env:
           REPOSITORY: ${{ parameters.imageRepository }}
+          DOCKERFILE-PATH: ${{ parameters.dockerfilePath }}
           VERSION: $(GitVersion.SemVer)
         displayName: 'Build Docker Image'
 
@@ -152,6 +158,6 @@ jobs:
         displayName: 'Push to DockerHub'
         inputs:
           command: push
-          containerRegistry: 'Docker_Hub_Connection'
+          containerRegistry: '${{ parameters.dockerfileServiceConnection }}'
           repository: '${{ parameters.imageRepository }}'
           tags: '$(GitVersion.SemVer)'
