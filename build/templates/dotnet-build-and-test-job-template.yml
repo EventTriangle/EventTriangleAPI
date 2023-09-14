@@ -140,9 +140,9 @@ jobs:
       
       - task: Docker@2
         displayName: 'Build and push an image to container registry'
-        workingDirectory: './src/authorization/EventTriangle.Client/src'
         inputs:
           command: 'buildAndPush'
+          buildContext: './src/authorization/EventTriangle.Client/src'
           repository: '${{ parameters.imageRepository }}'
           dockerfile: '${{ parameters.dockerfilePath }}'
           containerRegistry: Docker_Hub_Connection
