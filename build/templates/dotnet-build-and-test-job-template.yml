@@ -1,45 +1,32 @@
 parameters:
+  - name: solution
+    type: string
+
   - name: buildConfiguration
-    displayName: 'Build Configuration'
     type: string
 
   - name: backendProjectPath
-    displayName: 'Backend project path'
-    type: string
-
-  - name: integrationTestsProjectPath
-    displayName: 'Integration Tests Project Path'
-    default: ' '
     type: string
 
   - name: unitTestsProjectPath
-    displayName: 'Unit Tests Project Path'
-    default: ' '
     type: string
 
-  - name: creatingDatabase
-    displayName: 'Creating Database'
-    default: false
+  - name: shouldRunIntegrationTests
     type: boolean
+    
+  - name: integrationTestsProjectPath
+    type: string
 
   - name: dockerUsername
-    displayName: "Docker username"
-    default: ' '
     type: string
 
   - name: imageRepository
-    displayName: "Image Repository"
-    default: ' '
     type: string
 
   - name: dockerfilePath
-    displayName: "Dockerfile Path"
-    default: ' '
     type: string
 
   - name: dockerfileServiceConnection
-    displayName: "Dockerfile Service Connection"
-    default: ' '
     type: string
 
 jobs:
@@ -75,28 +62,31 @@ jobs:
         displayName: 'Dotnet restore'
         inputs:
           command: 'restore'
-          projects: |
-            ${{ parameters.backendProjectPath }}
-            ${{ parameters.integrationTestsProjectPath }}
+          projects: '${{ parameters.solution }}'
           arguments: '--verbosity minimal'
 
       - task: DotNetCoreCLI@2
-        displayName: 'Dotnet build ${{ parameters.buildConfiguration }}'
+        displayName: 'Build solution'
         inputs:
           command: 'build'
-          projects: |
-            ${{ parameters.backendProjectPath }}
-            ${{ parameters.integrationTestsProjectPath }}
-          arguments: '-c ${{ parameters.buildConfiguration }} --no-restore'
+          projects: '${{ parameters.solution }}'
+          arguments: '-c ${{ parameters.buildConfiguration }} -p:Version=$(GitVersion.SemVer) --no-restore'
+          
+      - task: DotnetCoreCLI@2
+        displayName: 'Run unit tests'
+        inputs:
+          command: 'test'
+          projects: '${{ parameters.unitTestsProjectPath }}'
+          arguments: '--no-build --configuration ${{ parameters.buildConfiguration }} --collect "Code Coverage"'
 
-      - ${{ if eq(parameters.creatingDatabase, true) }}:
+      - ${{ if eq(parameters.shouldRunIntegrationTests, 'true') }}:
           - task: PowerShell@2
-            displayName: 'Start PostgreSQL database in docker container'
+            displayName: 'Start PgSQL container'
             inputs:
               targetType: 'inline'
               script: 'docker run --name pgsql-db -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres:latest'
 
-      - ${{ if eq(parameters.creatingDatabase, true) }}:
+      - ${{ if eq(parameters.shouldRunIntegrationTests, 'true') }}:
           - task: PowerShell@2
             displayName: 'Wait database'
             timeoutInMinutes: 5
@@ -104,23 +94,13 @@ jobs:
               targetType: 'inline'
               script: .\scripts\wait_postgres_database.ps1
 
-      - task: DotnetCoreCLI@2
-        displayName: 'Run unit tests'
-        inputs:
-          command: 'test'
-          projects: '${{ parameters.unitTestsProjectPath }}'
-
-      - task: DotNetCoreCLI@2
-        displayName: 'Run integration tests'
-        inputs:
-          command: 'test'
-          projects: '${{ parameters.integrationTestsProjectPath }}'
-          arguments: '--no-restore'
-
-      - task: PublishTestResults@2
-        inputs:
-          testRunner: VSTest
-          testResultsFiles: '$(Agent.TempDirectory)/**/*.trx'
+      - ${{ if eq(parameters.shouldRunIntegrationTests, 'true') }}:
+          - task: DotNetCoreCLI@2
+            displayName: 'Run integration tests'
+            inputs:
+              command: 'test'
+              projects: '${{ parameters.integrationTestsProjectPath }}'
+              arguments: '--no-build --configuration ${{ parameters.buildConfiguration }} --collect "Code Coverage"'
 
       - task: DotNetCoreCLI@2
         displayName: 'Dotnet Publish'
