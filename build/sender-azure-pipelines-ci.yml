@@ -39,15 +39,7 @@ pool:
 stages:
   - stage: 'Build_And_Test_SenderAPI'
     displayName: 'Build and Test Sender API and Drop Artifacts'
-    jobs:
-#      - template: templates/dotnet-build-and-test-job-template.yml
-#        parameters:
-#          buildConfiguration: 'Release'
-#          backendProjectPath: './src/sender/EventTriangleAPI.Sender.Presentation'
-#          integrationTestsProjectPath: './src/sender/EventTriangleAPI.Sender.IntegrationTests/EventTriangleAPI.Sender.IntegrationTests.csproj'
-#          unitTestsProjectPath: './src/sender/EventTriangleAPI.Sender.UnitTests/EventTriangleAPI.Sender.UnitTests.csproj'
-#          creatingDatabase: true
-          
+    jobs: 
       - template: templates/dotnet-build-and-test-job-template.yml
         parameters:
           solution: 'EventTriangleAPI.sln'
