@@ -26,3 +26,23 @@ Repository that contains API for both event publisher and event consumer applica
 - Check that Angular CLI installed properly: `ng version`
 - Build project for development using Angular CLI: `ng build`
 - Run the .NET WEB API solutions
+
+### Run Docker compose
+
+#### Windows
+
+- `setx EVENT_TRIANGLE_AD_CLIENT_SECRET <YOUR_AD_SECRET>`
+- `docker-compose up`
+
+#### Linux
+
+- `export EVENT_TRIANGLE_AD_CLIENT_SECRET=<YOUR_AD_SECRET>`
+- `docker compose up`
+
+### To build docker images
+
+From `src` folder run:
+
+- `docker build --build-arg FRONT_API_URL="http://localhost:7000/" -t eventtriangle/auth:1.0 -f ./authorization/Dockerfile .`
+- `docker build -t eventtriangle/consumer:1.0 -f ./consumer/Dockerfile . `
+- `docker build -t eventtriangle/sender:1.0 -f ./sender/Dockerfile .`

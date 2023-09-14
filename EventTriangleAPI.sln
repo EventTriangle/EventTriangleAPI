@@ -6,8 +6,14 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{B4042E24-7516-4341-B2CF-E8254E888696}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sender", "sender", "{00E00698-E256-44CB-A3B9-585C99CA5244}"
+	ProjectSection(SolutionItems) = preProject
+		src\sender\Dockerfile = src\sender\Dockerfile
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "consumer", "consumer", "{317E2931-3CB0-4893-9D5F-DD41A959CBEF}"
+	ProjectSection(SolutionItems) = preProject
+		src\consumer\Dockerfile = src\consumer\Dockerfile
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "shared", "shared", "{951C746E-7FC0-4254-9882-580149DE3FEE}"
 EndProject
@@ -40,6 +46,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventTriangleAPI.Shared.Application", "src\shared\EventTriangleAPI.Shared.Application\EventTriangleAPI.Shared.Application.csproj", "{822EA33D-1900-4EB1-B873-A550D508D736}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "authorization", "authorization", "{31A58EF0-F272-4824-86FE-19473671C529}"
+	ProjectSection(SolutionItems) = preProject
+		src\authorization\Dockerfile = src\authorization\Dockerfile
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventTriangleAPI.Authorization.Presentation", "src\authorization\EventTriangleAPI.Authorization.Presentation\EventTriangleAPI.Authorization.Presentation.csproj", "{5313BD9A-3FF2-4F51-A266-1433CC3D385C}"
 EndProject
@@ -70,6 +79,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "items", "items", "{41B7EF6D
 		GitVersion.yml = GitVersion.yml
 		LICENSE = LICENSE
 		README.md = README.md
+		docker-compose.yaml = docker-compose.yaml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{29CCAA4D-33CB-406F-BB10-9BD1641BBEF0}"

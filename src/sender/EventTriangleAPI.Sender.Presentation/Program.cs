@@ -8,11 +8,18 @@ using EventTriangleAPI.Shared.DTO.Models;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
 using Microsoft.IdentityModel.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(80, listenOptions => listenOptions.Protocols = HttpProtocols.Http1);
+    options.ListenAnyIP(81, listenOptions => listenOptions.Protocols = HttpProtocols.Http2);
+});
 
 var configurationSection = builder.Configuration.GetSection(AppSettingsConstants.AzureAd);
 var databaseConnectionString = builder.Configuration[AppSettingsConstants.DatabaseConnectionString];
@@ -64,5 +71,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.MapGrpcService<UserGrpcService>();
+
+app.MigrateDatabase();
 
 app.Run();

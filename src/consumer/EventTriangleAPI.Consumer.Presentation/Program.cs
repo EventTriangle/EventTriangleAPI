@@ -95,4 +95,6 @@ app.UseAuthorization();
 app.MapControllers();
 app.MapHub<NotificationHub>("notify");
 
+app.MigrateDatabase();
+
 app.Run();
