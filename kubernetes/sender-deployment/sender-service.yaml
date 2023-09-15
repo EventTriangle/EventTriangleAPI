@@ -1,0 +1,14 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: sender-service
+spec:
+  selector:
+    app: event-triangle
+  ports:
+    - protocol: TCP
+      nodePort: 30471
+      port: 8000
+      targetPort: 80
+  type: LoadBalancer #NodePort
