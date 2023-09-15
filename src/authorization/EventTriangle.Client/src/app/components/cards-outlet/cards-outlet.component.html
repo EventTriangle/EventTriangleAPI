@@ -5,12 +5,12 @@
       <svg-icon src="../../../assets/svg/credit-card.svg" class="titleCardSvg"/>
     </span>
     <p class="overview">An overview of cards</p>
-    <div class="cardList" [@cardListAnimation]>
+    <div class="cardList" [@cardListAnimation]="">
       <div *ngFor="let card of cards" class="cardItem">
-        <p class="cardItemTitle">{{card == 1 ? 'Master Card' : 'Visa'}}</p>
-        <p class="cardItemNumbers">4234 4333 6324 4254</p>
-        <p class="cardItemExpiryDate">12/12</p>
-        <p class="cardItemFullName">W. Callhoun</p>
+        <p class="cardItemTitle">{{card.paymentNetwork == PaymentNetwork.Visa ? 'Visa' : 'MasterCard'}}</p>
+        <p class="cardItemNumbers">{{card.cardNumber}}</p>
+        <p class="cardItemExpiryDate">{{card.expiration}}</p>
+        <p class="cardItemFullName">{{card.holderName}}</p>
       </div>
     </div>
   </div>

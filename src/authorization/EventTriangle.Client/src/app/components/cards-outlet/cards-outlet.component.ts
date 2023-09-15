@@ -1,9 +1,11 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {animate, query, stagger, style, transition, trigger} from "@angular/animations";
 import {CreditCardApiService} from "../../services/api/credit-card-api.service";
 import {PaymentNetwork} from "../../types/enums/PaymentNetwork";
 import {firstValueFrom} from "rxjs";
 import {CreditCardAddedEvent} from "../../types/models/sender/CreditCardAddedEvent";
+import {CreditCardDto} from "../../types/models/consumer/CreditCardDto";
+import {Result} from "../../types/models/Result";
 
 @Component({
   selector: 'app-cards-outlet',
@@ -26,11 +28,17 @@ import {CreditCardAddedEvent} from "../../types/models/sender/CreditCardAddedEve
     ])
   ]
 })
-export class CardsOutletComponent {
-  cards = [1, 2, 1, 1, 1]
+export class CardsOutletComponent implements OnInit {
+  cards: CreditCardDto[] = [];
 
   constructor(private _creditCardApiService: CreditCardApiService) {
 
+  }
+
+  async ngOnInit() {
+    const getCreditCardsSub$ = this._creditCardApiService.getCreditCards();
+    const getCreditCardsResponse = await firstValueFrom<Result<CreditCardDto[]>>(getCreditCardsSub$);
+    this.cards = getCreditCardsResponse.response;
   }
 
   public cardHolderName = '';
@@ -38,7 +46,7 @@ export class CardsOutletComponent {
   public expiration = '';
   public cvv = '';
   public paymentNetwork: PaymentNetwork = PaymentNetwork.Visa;
-  protected readonly PaymentNetwork = PaymentNetwork;
+  public PaymentNetwork = PaymentNetwork;
 
   async onAttachCardOkClick() {
     const attachCardSub$ = this._creditCardApiService.attachCreditCardToAccount(
@@ -47,5 +55,9 @@ export class CardsOutletComponent {
     );
 
     await firstValueFrom<CreditCardAddedEvent>(attachCardSub$);
+
+    const getCreditCardsSub$ = this._creditCardApiService.getCreditCards();
+    const getCreditCardsResponse = await firstValueFrom<Result<CreditCardDto[]>>(getCreditCardsSub$);
+    this.cards = getCreditCardsResponse.response;
   }
 }
