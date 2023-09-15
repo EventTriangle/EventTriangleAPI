@@ -39,11 +39,16 @@ pool:
 stages:
   - stage: 'Build_And_Test_ConsumerAPI'
     displayName: 'Build and Test Consumer API and Drop Artifacts'
-    jobs:
+    jobs: 
       - template: templates/dotnet-build-and-test-job-template.yml
         parameters:
+          solution: 'EventTriangleAPI.sln'
           buildConfiguration: 'Release'
-          backendProjectPath: './src/consumer/EventTriangleAPI.Consumer.Presentation'
-          integrationTestsProjectPath: './src/consumer/EventTriangleAPI.Consumer.IntegrationTests/EventTriangleAPI.Consumer.IntegrationTests.csproj'
-          unitTestsProjectPath: './src/consumer/EventTriangleAPI.Consumer.UnitTests/EventTriangleAPI.Consumer.UnitTests.csproj'
-          creatingDatabase: true
+          backendProjectPath: 'src/consumer/EventTriangleAPI.Consumer.Presentation'
+          unitTestsProjectPath: 'src/consumer/EventTriangleAPI.Consumer.UnitTests/EventTriangleAPI.Consumer.UnitTests.csproj'
+          shouldRunIntegrationTests: 'true'
+          integrationTestsProjectPath: 'src/consumer/EventTriangleAPI.Consumer.IntegrationTests/EventTriangleAPI.Consumer.IntegrationTests.csproj'
+          dockerUsername: 'kaminome'
+          imageRepository: 'consumer-service'
+          dockerfilePath: 'consumer/Dockerfile'
+          dockerfileServiceConnection: 'Docker_Hub_Connection'

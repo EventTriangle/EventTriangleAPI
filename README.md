@@ -16,6 +16,11 @@ Repository that contains API for both event publisher and event consumer applica
 - **Docker:** https://docs.docker.com/get-docker/
 - **IDE**: Visual Studio 2022 or JetBrains Rider
 
+## Useful links
+
+- Docker images: https://hub.docker.com/u/kaminome
+- Azure DevOps project: https://dev.azure.com/EventTriangle/EventTriangleAPI
+
 ## Run in Debug mode
 
 ### Build Angular client

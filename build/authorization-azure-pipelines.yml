@@ -34,6 +34,13 @@ stages:
     jobs:
       - template: templates/dotnet-build-and-test-job-template.yml
         parameters:
+          solution: 'EventTriangleAPI.sln'
           buildConfiguration: 'Release'
-          backendProjectPath: './src/authorization/EventTriangleAPI.Authorization.Presentation'
-          unitTestsProjectPath: './src/sender/EventTriangleAPI.Sender.UnitTests/EventTriangleAPI.Authorization.UnitTests.csproj'
+          backendProjectPath: 'src/authorization/EventTriangleAPI.Authorization.Presentation'
+          unitTestsProjectPath: 'src/authorization/EventTriangleAPI.Authorization.UnitTests/EventTriangleAPI.Authorization.UnitTests.csproj'
+          shouldRunIntegrationTests: 'false'
+          integrationTestsProjectPath: ''
+          dockerUsername: 'kaminome'
+          imageRepository: 'auth-service'
+          dockerfilePath: 'authorization/Dockerfile'
+          dockerfileServiceConnection: 'Docker_Hub_Connection'
