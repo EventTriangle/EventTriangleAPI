@@ -1,9 +1,0 @@
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: sender-configmap
-  labels:
-    app: sender-service
-data:
-  ASPNETCORE_ENVIRONMENT: "Docker"

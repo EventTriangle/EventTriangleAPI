@@ -2,10 +2,10 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: sender-service-api
+  name: sender-api-service
 spec:
   selector:
-    app: sender-service
+    app: sender-api
   ports:
     - protocol: TCP
       port: 80

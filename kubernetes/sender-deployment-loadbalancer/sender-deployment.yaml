@@ -2,19 +2,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: sender-service-deployment
+  name: sender-api-deployment
 spec:
   selector:
     matchLabels:
-      app: sender-service
+      app: sender-api
   replicas: 3
   template:
     metadata:
       labels:
-        app: sender-service
+        app: sender-api
     spec:
       containers:
-        - name: sender-service-api
+        - name: sender-api
           image: kaminome/sender-service:0.3.0-alpha.235
           ports:
             - containerPort: 80

@@ -1,0 +1,9 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sender-configmap
+  labels:
+    app: sender-api
+data:
+  DatabaseConnectionString: "Server=localhost;User Id=postgres;Password=postgres;Database=SenderDb;"
