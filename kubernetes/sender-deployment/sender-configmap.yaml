@@ -4,6 +4,6 @@ kind: ConfigMap
 metadata:
   name: sender-configmap
   labels:
-    app: event-triangle
+    app: sender-service
 data:
-  DatabaseConnectionString: "Server=localhost;User Id=postgres;Password=postgres;Database=SenderDb;"
+  ASPNETCORE_ENVIRONMENT: "Docker"
