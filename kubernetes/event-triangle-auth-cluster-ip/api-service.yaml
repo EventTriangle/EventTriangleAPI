@@ -2,12 +2,12 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: sender-api-service
+  name: event-triangle-auth-service
 spec:
   selector:
-    app: sender-api
+    app: event-triangle-auth-api
   ports:
     - protocol: TCP
       port: 80
       targetPort: 80
-  type: LoadBalancer #NodePort
+  type: ClusterIP

@@ -1,0 +1,32 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: event-triangle-auth-deployment
+spec:
+  selector:
+    matchLabels:
+      app: event-triangle-auth-api
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: event-triangle-auth-api
+    spec:
+      containers:
+        - name: event-triangle-auth-api
+          image: kaminome/auth-service:0.3.0-alpha.235
+          ports:
+            - containerPort: 80
+          env:
+            - name: EVENT_TRIANGLE_AD_CLIENT_SECRET
+              valueFrom:
+                configMapKeyRef:
+                  name: event-triangle-auth-configmap
+                  key: EVENT_TRIANGLE_AD_CLIENT_SECRET
+
+            - name: DatabaseConnectionString
+              valueFrom:
+                configMapKeyRef:
+                  name: event-triangle-auth-configmap
+                  key: DatabaseConnectionString

@@ -1,0 +1,10 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: event-triangle-auth-configmap
+  labels:
+    app: event-triangle-auth-api
+data:
+  EVENT_TRIANGLE_AD_CLIENT_SECRET: "zJn8Q~scVqXMeazIe~2wo5bJwnWA5kCnSQ-Gtayy"
+  DatabaseConnectionString: "Server=20.223.15.43;User Id=postgres;Password=postgres;Database=AuthorizationDb;"
