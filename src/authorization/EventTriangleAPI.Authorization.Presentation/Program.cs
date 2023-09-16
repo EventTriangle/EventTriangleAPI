@@ -53,8 +53,6 @@ builder.Services.AddHttpClient();
 builder.Services.AddTicketStore();
 builder.Services.AddHostedServices();
 
-builder.Services.AddHttpsRedirection(options => options.HttpsPort = 443);
-
 var app = builder.Build();
 
 app.UseSwagger();
