@@ -1,9 +1,7 @@
 namespace EventTriangleAPI.Authorization.Domain.Constants;
 
-public class AppSettingsConstants
+public static class AppSettingsConstants
 {
-    public const string AllowedHosts = "AllowedHosts";
-
     public const string DatabaseConnectionString = "DatabaseConnectionString";
 
     public const string AzureAdSelection = "AzureAd";
