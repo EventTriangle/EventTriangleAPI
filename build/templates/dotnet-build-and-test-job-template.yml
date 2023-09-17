@@ -135,4 +135,6 @@ jobs:
           command: push
           containerRegistry: '${{ parameters.dockerfileServiceConnection }}'
           repository: '${{ parameters.dockerUsername }}/${{ parameters.imageRepository }}'
-          tags: '$(GitVersion.SemVer)'
+          tags: |
+            $(GitVersion.SemVer)
+            latest
