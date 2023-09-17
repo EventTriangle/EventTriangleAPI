@@ -7,6 +7,7 @@ import {ContactCreatedEvent} from "../../types/models/sender/ContactCreatedEvent
 import {AddContactRequest} from "../../types/requests/AddContactRequest";
 import {DeleteContactRequest} from "../../types/requests/DeleteContactRequest";
 import {ContactDeletedEvent} from "../../types/models/sender/ContactDeletedEvent";
+import {Result} from "../../types/models/Result";
 
 @Injectable({
   providedIn: 'root'
@@ -24,27 +25,27 @@ export class ContactsApiService extends ApiBaseService {
   // requests
 
   // GET consumer/contacts
-  public getContacts() : Observable<ContactDto[]> {
-    return this.httpClient.get<ContactDto[]>(
+  public getContacts() : Observable<Result<ContactDto[]>> {
+    return this.httpClient.get<Result<ContactDto[]>>(
       this.baseUrl + this.consumerContactsRoute,
       { withCredentials: true }
     );
   }
 
   // POST sender/contacts
-  public addContact(contactId: string) : Observable<ContactCreatedEvent> {
+  public addContact(contactId: string) : Observable<Result<ContactCreatedEvent>> {
     let command : AddContactRequest = {
       contactId: contactId
     };
 
-    return this.httpClient.post<ContactCreatedEvent>(
+    return this.httpClient.post<Result<ContactCreatedEvent>>(
       this.baseUrl + this.senderContactsRoute,
       command, { withCredentials: true }
     );
   }
 
   // DELETE sender/contacts
-  public deleteContact(contactId: string) : Observable<ContactDeletedEvent> {
+  public deleteContact(contactId: string) : Observable<Result<ContactDeletedEvent>> {
     let command : DeleteContactRequest = {
       contactId: contactId
     };
@@ -56,7 +57,7 @@ export class ContactsApiService extends ApiBaseService {
       body: command
     };
 
-    return this.httpClient.delete<ContactDeletedEvent>(
+    return this.httpClient.delete<Result<ContactDeletedEvent>>(
       this.baseUrl + this.senderContactsRoute,
       options
     );
