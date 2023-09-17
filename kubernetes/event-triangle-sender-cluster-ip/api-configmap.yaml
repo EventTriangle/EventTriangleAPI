@@ -7,5 +7,5 @@ metadata:
     app: event-triangle-sender-api
 data:
   RabbitMqHost: "20.105.41.213"
-  DatabaseConnectionString: "Server=20.223.15.43;User Id=postgres;Password=postgres;Database=ConsumerDb;"
+  DatabaseConnectionString: "Server=20.223.15.43;User Id=postgres;Password=postgres;Database=SenderDb;"
   ASPNETCORE_ENVIRONMENT: "Docker"
