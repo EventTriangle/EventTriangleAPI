@@ -7,4 +7,4 @@ metadata:
     app: event-triangle-sender-api
 data:
   RabbitMqHost: "20.105.41.213"
-  DatabaseConnectionString: "Server=20.223.15.43;User Id=postgres;Password=postgres;Database=AuthorizationDb;"
+  DatabaseConnectionString: "Server=20.223.15.43;User Id=postgres;Password=postgres;Database=ConsumerDb;"

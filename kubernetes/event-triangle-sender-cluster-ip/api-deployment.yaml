@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: event-triangle-sender-api
-          image: kaminome/sender-service:0.1.3-PullRequest0076.247
+          image: kaminome/sender-service:latest
           ports:
             - containerPort: 80
             - containerPort: 81

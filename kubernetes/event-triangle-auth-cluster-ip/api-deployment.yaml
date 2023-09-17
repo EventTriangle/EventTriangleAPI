@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: event-triangle-auth-api
-          image: kaminome/auth-service:0.1.3-PullRequest0076.247
+          image: kaminome/auth-service:latest
           ports:
             - containerPort: 80
             - containerPort: 81
