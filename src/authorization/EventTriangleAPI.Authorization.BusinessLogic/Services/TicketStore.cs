@@ -39,7 +39,8 @@ public class TicketStore : ITicketStore
         TicketSerializer ticketSerializer,
         HttpClient httpClient,
         AzureAdConfiguration azureAdConfiguration,
-        IMemoryCache memoryCache, ILoggerFactory loggerFactory)
+        IMemoryCache memoryCache,
+        ILoggerFactory loggerFactory)
     {
         _serviceScopeFactory = serviceScopeFactory;
         _ticketSerializer = ticketSerializer;
@@ -52,8 +53,11 @@ public class TicketStore : ITicketStore
             .SetSlidingExpiration(TimeSpan.FromSeconds(15))
             .SetAbsoluteExpiration(TimeSpan.FromSeconds(100));
 
-        var channel = GrpcChannel.ForAddress(userGrpcChannelAddress,
-            new GrpcChannelOptions { LoggerFactory = _loggerFactory });
+        var options = new GrpcChannelOptions { LoggerFactory = _loggerFactory };
+        var channel = GrpcChannel.ForAddress(
+            userGrpcChannelAddress,
+            options);
+
         _userClient = new User.UserClient(channel);
     }
 
@@ -129,8 +133,12 @@ public class TicketStore : ITicketStore
                 var userRole = (UserRole)Enum.Parse(typeof(UserRole), role);
 
                 var newUser = new UserEntity(sub, email);
-                var newUserSession = new UserSessionEntity(new Guid(sessionId), ticketExpiresUtc.Value,
-                    serializedTicket, newUser.Id);
+
+                var newUserSession = new UserSessionEntity(
+                    id: new Guid(sessionId),
+                    ticketExpiresUtc.Value,
+                    serializedTicket,
+                    newUser.Id);
 
                 context.Users.Add(newUser);
                 context.UserSessions.Add(newUserSession);
@@ -153,8 +161,12 @@ public class TicketStore : ITicketStore
             }
             else
             {
-                var newUserSession = new UserSessionEntity(new Guid(sessionId), ticketExpiresUtc.Value,
-                    serializedTicket, user.Id);
+                var newUserSession = new UserSessionEntity(
+                    id: new Guid(sessionId),
+                    ticketExpiresUtc.Value,
+                    serializedTicket,
+                    user.Id);
+
                 context.UserSessions.Add(newUserSession);
             }
 

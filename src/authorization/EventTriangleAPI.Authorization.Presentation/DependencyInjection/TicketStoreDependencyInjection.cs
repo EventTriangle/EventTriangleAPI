@@ -34,7 +34,8 @@ public static class TicketStoreDependencyInjection
             ticketSerializer,
             httpClient,
             azureAdConfiguration,
-            memoryCache, logger);
+            memoryCache,
+            logger);
 
         serviceCollection.AddSingleton<ITicketStore, TicketStore>(_ => ticketStore);
         serviceCollection
