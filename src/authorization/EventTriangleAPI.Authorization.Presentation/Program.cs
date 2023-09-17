@@ -53,6 +53,11 @@ builder.Services.AddHttpClient();
 builder.Services.AddTicketStore();
 builder.Services.AddHostedServices();
 
+builder.WebHost.ConfigureLogging(logging =>
+{
+    logging.AddFilter("Grpc", LogLevel.Debug);
+});
+
 var app = builder.Build();
 
 app.UseSwagger();

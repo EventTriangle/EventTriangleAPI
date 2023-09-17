@@ -28,13 +28,15 @@ public static class HostedServicesDependencyInjection
 
         var grpcChannelAddresses = configuration[AppSettingsConstants.GrpcChannelAddresses];
 
+        var logger = serviceProvider.GetService<ILoggerFactory>();
+
         var tickerStore = new TicketStore(
             grpcChannelAddresses,
             serviceScopeFactory,
             tickerSerializer,
             httpClient,
             azureAdConfiguration,
-            memoryCache);
+            memoryCache, logger);
 
         var refreshBackgroundService = new RefreshBackgroundService(databaseContext, tickerStore);
 

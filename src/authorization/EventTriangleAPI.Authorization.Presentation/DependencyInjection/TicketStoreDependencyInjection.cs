@@ -26,13 +26,15 @@ public static class TicketStoreDependencyInjection
 
         var grpcChannelAddresses = configuration[AppSettingsConstants.GrpcChannelAddresses];
 
+        var logger = serviceProvider.GetService<ILoggerFactory>();
+
         var ticketStore = new TicketStore(
             grpcChannelAddresses,
             serviceScopeFactory,
             ticketSerializer,
             httpClient,
             azureAdConfiguration,
-            memoryCache);
+            memoryCache, logger);
 
         serviceCollection.AddSingleton<ITicketStore, TicketStore>(_ => ticketStore);
         serviceCollection
