@@ -54,7 +54,7 @@ export class CardsOutletComponent implements OnInit {
       this.expiration, this.cvv, this.paymentNetwork
     );
 
-    await firstValueFrom<CreditCardAddedEvent>(attachCardSub$);
+    await firstValueFrom<Result<CreditCardAddedEvent>>(attachCardSub$);
 
     const getCreditCardsSub$ = this._creditCardApiService.getCreditCards();
     const getCreditCardsResponse = await firstValueFrom<Result<CreditCardDto[]>>(getCreditCardsSub$);

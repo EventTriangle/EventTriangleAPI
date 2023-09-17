@@ -36,7 +36,7 @@ export class CreditCardApiService extends ApiBaseService {
   // POST sender/credit-cards
   public attachCreditCardToAccount(holderName: string, cardNumber: string,
                                    expiration: string, cvv: string, paymentNetwork: PaymentNetwork)
-    : Observable<CreditCardAddedEvent> {
+    : Observable<Result<CreditCardAddedEvent>> {
     let command : AttachCreditCardToAccountRequest = {
       holderName: holderName,
       cardNumber: cardNumber,
@@ -45,7 +45,7 @@ export class CreditCardApiService extends ApiBaseService {
       paymentNetwork: paymentNetwork
     };
 
-    return this.httpClient.post<CreditCardAddedEvent>(
+    return this.httpClient.post<Result<CreditCardAddedEvent>>(
       this.baseUrl + this.senderCreditCardsRoute,
       command, { withCredentials: true }
     );
@@ -54,7 +54,7 @@ export class CreditCardApiService extends ApiBaseService {
   // PUT sender/credit-cards
   public editCreditCard(holderName: string, creditCardNumber: string,
                         expiration: string, cvv: string, paymentNetwork: PaymentNetwork)
-    : Observable<CreditCardChangedEvent> {
+    : Observable<Result<CreditCardChangedEvent>> {
     let command : EditCreditCardRequest = {
       holderName: holderName,
       creditCardNumber: creditCardNumber,
@@ -62,14 +62,14 @@ export class CreditCardApiService extends ApiBaseService {
       cvv: cvv,
       paymentNetwork: paymentNetwork
     }
-    return this.httpClient.put<CreditCardChangedEvent>(
+    return this.httpClient.put<Result<CreditCardChangedEvent>>(
       this.baseUrl + this.senderCreditCardsRoute,
       command, { withCredentials: true }
     );
   }
 
   // DELETE sender/credit-cards
-  public deleteCreditCard(creditCardId: string) : Observable<CreditCardDeletedEvent> {
+  public deleteCreditCard(creditCardId: string) : Observable<Result<CreditCardDeletedEvent>> {
     let command : DeleteCreditCardRequest = {
       creditCardId: creditCardId
     }
@@ -81,7 +81,7 @@ export class CreditCardApiService extends ApiBaseService {
       body: command
     };
 
-    return this.httpClient.delete<CreditCardDeletedEvent>(
+    return this.httpClient.delete<Result<CreditCardDeletedEvent>>(
       this.baseUrl + this.senderCreditCardsRoute,
       options
     );
