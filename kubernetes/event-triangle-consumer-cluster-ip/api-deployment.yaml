@@ -30,3 +30,9 @@ spec:
                 configMapKeyRef:
                   name: event-triangle-consumer-configmap
                   key: DatabaseConnectionString
+                  
+            - name: ASPNETCORE_ENVIRONMENT
+              valueFrom:
+                configMapKeyRef:
+                  name: event-triangle-consumer-configmap
+                  key: ASPNETCORE_ENVIRONMENT

@@ -9,3 +9,4 @@ data:
   EVENT_TRIANGLE_AD_CLIENT_SECRET: "zJn8Q~scVqXMeazIe~2wo5bJwnWA5kCnSQ-Gtayy"
   DatabaseConnectionString: "Server=20.223.15.43;User Id=postgres;Password=postgres;Database=AuthorizationDb;"
   GrpcChannelAddresses: "http://sender-service:81"
+  ASPNETCORE_ENVIRONMENT: "Docker"
