@@ -8,7 +8,7 @@
     <div class="walletAndUserInfoContainer">
       <div class="wallet">
         <p class="walletTitle">Wallet Balance</p>
-        <p class="walletBalance">$48.000.000</p>
+        <p class="walletBalance">{{user.wallet.balance}} ֏</p>
         <div class="logo">
           <svg-icon src="../../../assets/svg/logo.svg" class="logoSvg" />
           <p class="logoTitle">Event Triangle</p>
@@ -18,10 +18,7 @@
         <div class="userInfoAvatar"></div>
         <div class="userInfoData">
           <p class="userInfoFullName">
-            William Calhoun
-          </p>
-          <p class="userInfoAge">
-            27 age old
+            {{user.email.split('@')[0]}}
           </p>
         </div>
       </div>
@@ -30,12 +27,12 @@
       <input type="text" class="searchTransactionsInput" placeholder="Search Transactions" />
       <svg-icon src="../../../assets/svg/search.svg" class="searchSvg" />
     </div>
-    <div class="transactionList" [@transactionItemAnimation]>
+    <div class="transactionList" [@transactionItemAnimation]="">
       <div *ngFor="let transaction of transactions"
-        class="{{transaction === 1 ? 'transactionItemToMe' : transaction === 2 ? 'transactionItemFromMe' : 'transactionItemRollbacked'}}">
+        class="{{getTransactionClassName(transaction)}}">
         <svg-icon src="../../../assets/svg/transaction.svg" class="transactionSvg" />
         <div
-          class="{{transaction === 1 ? 'transactionItemToMeInfo' : transaction === 2 ? 'transactionItemFromMeInfo' : 'transactionItemRollbackedInfo'}}">
+          class="{{getTransactionInfoClassName(transaction)}}">
           <p class="transactionItemFrom">
             From: Sender
           </p>
@@ -43,10 +40,10 @@
             To: Receiver
           </p>
           <p class="transactionItemAmount">
-            Amount: $150
+            Amount: {{transaction.amount}} ֏
           </p>
           <p class="transactionItemDate">
-            15:27 02/04/2023
+            {{transaction.createdAt}}
           </p>
         </div>
       </div>
@@ -55,7 +52,7 @@
 </div>
 <div class="createNewTransaction">
   <div class="createNewTransactionContainer">
-    <div [@rightBarAnimation]>
+    <div [@rightBarAnimation]="">
       <p class="createNewTransactionTitle">
         Create New Transaction
       </p>

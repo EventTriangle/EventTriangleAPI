@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { IsAuthenticatedResponse } from 'src/app/types/responses/IsAuthenticatedResponse';
+import { IsAuthenticatedResponse } from '../../types/responses/IsAuthenticatedResponse';
 import ApiBaseService from './api-base.service';
 import {Observable} from "rxjs";
 import {AzureAdAuthResponse} from "../../types/responses/AzureAdAuthResponse";

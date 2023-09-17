@@ -31,22 +31,23 @@ import {Result} from "../../types/models/Result";
 export class CardsOutletComponent implements OnInit {
   cards: CreditCardDto[] = [];
 
-  constructor(private _creditCardApiService: CreditCardApiService) {
-
-  }
-
-  async ngOnInit() {
-    const getCreditCardsSub$ = this._creditCardApiService.getCreditCards();
-    const getCreditCardsResponse = await firstValueFrom<Result<CreditCardDto[]>>(getCreditCardsSub$);
-    this.cards = getCreditCardsResponse.response;
-  }
-
+  // input data
   public cardHolderName = '';
   public cardNumber = '';
   public expiration = '';
   public cvv = '';
   public paymentNetwork: PaymentNetwork = PaymentNetwork.Visa;
   public PaymentNetwork = PaymentNetwork;
+
+  constructor(private _creditCardApiService: CreditCardApiService) {
+
+  }
+
+  async ngOnInit() {
+    const getCreditCardsSub$ = this._creditCardApiService.getCreditCards();
+    const getCreditCardsResult = await firstValueFrom<Result<CreditCardDto[]>>(getCreditCardsSub$);
+    this.cards = getCreditCardsResult.response;
+  }
 
   async onAttachCardOkClick() {
     const attachCardSub$ = this._creditCardApiService.attachCreditCardToAccount(

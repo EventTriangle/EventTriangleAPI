@@ -248,7 +248,7 @@
   }
 }
 
-.transactionItemRollbacked {
+.transactionItemRolledBack {
   display: flex;
   padding-top: 21px;
   padding-left: 36px;
@@ -261,7 +261,7 @@
   font-size: 20px;
   border-radius: 10px;
 
-  .transactionItemRollbackedInfo {
+  .transactionItemRolledBackInfo {
     display: flex;
     width: 100%;
     justify-content: space-between;
