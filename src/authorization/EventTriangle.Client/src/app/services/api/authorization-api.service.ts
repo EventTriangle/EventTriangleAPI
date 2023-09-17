@@ -1,8 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { IIsAuthenticatedResponse } from 'src/app/types/responses/IIsAuthenticatedResponse';
+import { IsAuthenticatedResponse } from 'src/app/types/responses/IsAuthenticatedResponse';
 import ApiBaseService from './api-base.service';
 import {Observable} from "rxjs";
+import {AzureAdAuthResponse} from "../../types/responses/AzureAdAuthResponse";
+import {Result} from "../../types/models/Result";
 
 @Injectable({
   providedIn: 'root'
@@ -20,10 +22,37 @@ export class AuthorizationApiService extends ApiBaseService {
   public getLoginPathForRedirection = () => this.baseUrl + this.authorizationRoute + "login";
 
   //requests
-  public getIsAuthenticated() : Observable<IIsAuthenticatedResponse> {
-    return this.httpClient.get<IIsAuthenticatedResponse>(
+
+  // GET api/isAuthenticated
+  public getIsAuthenticated() : Observable<IsAuthenticatedResponse> {
+    return this.httpClient.get<IsAuthenticatedResponse>(
       this.baseUrl + this.authorizationRoute + "isAuthenticated",
       { withCredentials: true }
     );
   }
+
+  // GET api/logout
+  public logout() : Observable<any> {
+    return this.httpClient.get<any>(
+      this.baseUrl + this.authorizationRoute + "logout",
+      { withCredentials: true }
+    );
+  }
+
+  // GET api/token
+  public getAuthorizationData() : Observable<Result<AzureAdAuthResponse>> {
+    return this.httpClient.get<Result<AzureAdAuthResponse>>(
+      this.baseUrl + this.authorizationRoute + "token"
+    );
+  }
+
+  // POST api/token?refreshToken=
+  public refreshToken(refreshToken: string) : Observable<Result<AzureAdAuthResponse>> {
+    return this.httpClient.post<Result<AzureAdAuthResponse>>(
+      this.baseUrl + this.authorizationRoute + `token?refreshToken=${refreshToken}`,
+      {},
+      { withCredentials: true }
+    );
+  }
+
 }
