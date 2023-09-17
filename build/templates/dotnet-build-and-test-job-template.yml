@@ -121,6 +121,7 @@ jobs:
           IMAGE_FULL_NAME="$DOCKERUSERNAME/$REPOSITORY:$VERSION"
           echo "Image full name: $IMAGE_FULL_NAME"
           docker build --build-arg FRONT_API_URL="http://localhost:7000/" -t "$IMAGE_FULL_NAME" -f "$DOCKERFILEPATH" .
+          docker build --build-arg FRONT_API_URL="http://localhost:7000/" -t "$DOCKERUSERNAME/$REPOSITORY:latest" -f "$DOCKERFILEPATH" .
         env:
           REPOSITORY: ${{ parameters.imageRepository }}
           DOCKERFILEPATH: ${{ parameters.dockerfilePath }}
