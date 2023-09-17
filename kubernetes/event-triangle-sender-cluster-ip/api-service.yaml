@@ -2,10 +2,10 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: event-triangle-auth-service
+  name: sender-service
 spec:
   selector:
-    app: event-triangle-auth-api
+    app: event-triangle-sender-api
   ports:
     - protocol: TCP
       port: 80
