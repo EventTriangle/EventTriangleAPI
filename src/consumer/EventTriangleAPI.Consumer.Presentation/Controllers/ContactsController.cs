@@ -12,14 +12,17 @@ namespace EventTriangleAPI.Consumer.Presentation.Controllers;
 public class ContactsController : ControllerBase
 {
     private readonly GetContactsQueryHandler _getContactsQueryHandler;
+    private readonly GetContactsBySearchQueryHandler _getContactsBySearchQueryHandler;
     private readonly UserClaimsService _userClaimsService;
     
     public ContactsController(
+        UserClaimsService userClaimsService, 
         GetContactsQueryHandler getContactsQueryHandler,
-        UserClaimsService userClaimsService)
+        GetContactsBySearchQueryHandler getContactsBySearchQueryHandler)
     {
-        _getContactsQueryHandler = getContactsQueryHandler;
         _userClaimsService = userClaimsService;
+        _getContactsQueryHandler = getContactsQueryHandler;
+        _getContactsBySearchQueryHandler = getContactsBySearchQueryHandler;
     }
 
     [HttpGet]
@@ -29,6 +32,17 @@ public class ContactsController : ControllerBase
         
         var query = new GetContactsQuery(requesterId);
         var result = await _getContactsQueryHandler.HandleAsync(query);
+
+        return result.ToActionResult();
+    }
+    
+    [HttpGet("search")]
+    public async Task<IActionResult> GetContactsBySearch([FromQuery] string email)
+    {
+        var requesterId = _userClaimsService.GetUserId();
+        
+        var query = new GetContactsBySearchQuery(requesterId, email);
+        var result = await _getContactsBySearchQueryHandler.HandleAsync(query);
 
         return result.ToActionResult();
     }
