@@ -5,6 +5,7 @@ using EventTriangleAPI.Shared.Application.Extensions;
 using EventTriangleAPI.Shared.DTO.Responses.Errors;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace EventTriangleAPI.Consumer.Presentation.Controllers;
 
@@ -24,6 +25,9 @@ public class TransactionsController : ControllerBase
         _getTransactionsQueryHandler = getTransactionsQueryHandler;
     }
 
+    /// <summary>
+    /// Returns user's transactions.
+    /// </summary>
     [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(List<TransactionDto>), StatusCodes.Status200OK)]
     [HttpGet]

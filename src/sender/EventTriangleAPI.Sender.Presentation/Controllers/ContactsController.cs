@@ -6,6 +6,7 @@ using EventTriangleAPI.Shared.Application.Extensions;
 using EventTriangleAPI.Shared.DTO.Responses.Errors;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace EventTriangleAPI.Sender.Presentation.Controllers;
 
@@ -28,6 +29,9 @@ public class ContactsController : ControllerBase
         _deleteContactCommandHandler = deleteContactCommandHandler;
     }
 
+    /// <summary>
+    /// Add contact.
+    /// </summary>
     [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ContactCreatedEvent), StatusCodes.Status200OK)]
     [HttpPost]
@@ -40,7 +44,10 @@ public class ContactsController : ControllerBase
 
         return result.ToActionResult();
     }
-    
+
+    /// <summary>
+    /// Delete contact.
+    /// </summary>
     [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ContactDeletedEvent), StatusCodes.Status200OK)]
     [HttpDelete]

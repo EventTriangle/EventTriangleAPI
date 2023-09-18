@@ -5,6 +5,7 @@ using EventTriangleAPI.Shared.Application.Extensions;
 using EventTriangleAPI.Shared.DTO.Responses.Errors;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace EventTriangleAPI.Consumer.Presentation.Controllers;
 
@@ -27,6 +28,9 @@ public class UsersController : ControllerBase
         _getUsersBySearchQueryHandler = getUsersBySearchQueryHandler;
     }
 
+    /// <summary>
+    /// Returns users for admin.
+    /// </summary>
     [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(List<UserDto>), StatusCodes.Status200OK)]
     [HttpGet]
@@ -42,6 +46,9 @@ public class UsersController : ControllerBase
         return result.ToActionResult();
     }
     
+    /// <summary>
+    /// Returns users by search for admin.
+    /// </summary>
     [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(List<UserDto>), StatusCodes.Status200OK)]
     [HttpGet("search/{searchText}")]

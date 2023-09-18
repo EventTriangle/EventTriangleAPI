@@ -6,6 +6,7 @@ using EventTriangleAPI.Shared.Application.Extensions;
 using EventTriangleAPI.Shared.DTO.Responses.Errors;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace EventTriangleAPI.Sender.Presentation.Controllers;
 
@@ -27,7 +28,10 @@ public class TicketsController : ControllerBase
         _resolveSupportTicketCommandHandler = resolveSupportTicketCommandHandler;
         _openSupportTicketCommandHandler = openSupportTicketCommandHandler;
     }
-
+    
+    /// <summary>
+    /// Open a support ticket.
+    /// </summary>
     [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(SupportTicketOpenedEvent), StatusCodes.Status200OK)]
     [HttpPost("support-ticket")]
@@ -41,6 +45,9 @@ public class TicketsController : ControllerBase
         return result.ToActionResult();
     }
     
+    /// <summary>
+    /// Resolve a support ticket.
+    /// </summary>
     [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(SupportTicketResolvedEvent), StatusCodes.Status200OK)]
     [Authorize(Roles = "Admin")]

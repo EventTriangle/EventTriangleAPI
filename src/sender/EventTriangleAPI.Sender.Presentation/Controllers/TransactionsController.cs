@@ -6,6 +6,7 @@ using EventTriangleAPI.Shared.Application.Extensions;
 using EventTriangleAPI.Shared.DTO.Responses.Errors;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace EventTriangleAPI.Sender.Presentation.Controllers;
 
@@ -31,6 +32,9 @@ public class TransactionsController : ControllerBase
         _rollBackTransactionCommandHandler = rollBackTransactionCommandHandler;
     }
 
+    /// <summary>
+    /// Create transaction user-to-user.
+    /// </summary>
     [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(TransactionUserToUserCreatedEvent), StatusCodes.Status200OK)]
     [HttpPost("user-to-user")]
@@ -43,7 +47,10 @@ public class TransactionsController : ControllerBase
 
         return result.ToActionResult();
     }
-    
+
+    /// <summary>
+    /// Top up user's account balance.
+    /// </summary>
     [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(TransactionCardToUserCreatedEvent), StatusCodes.Status200OK)]
     [HttpPost("card-to-user")]
@@ -57,6 +64,9 @@ public class TransactionsController : ControllerBase
         return result.ToActionResult();
     }
     
+    /// <summary>
+    /// Roll back transaction.
+    /// </summary>
     [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(TransactionRollBackedEvent), StatusCodes.Status200OK)]
     [Authorize(Roles = "Admin")]

@@ -5,6 +5,7 @@ using EventTriangleAPI.Shared.Application.Extensions;
 using EventTriangleAPI.Shared.DTO.Responses.Errors;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace EventTriangleAPI.Consumer.Presentation.Controllers;
 
@@ -27,6 +28,9 @@ public class ProfileController : ControllerBase
         _getProfileByIdQueryHandler = getProfileByIdQueryHandler;
     }
 
+    /// <summary>
+    /// Returns user's profile.
+    /// </summary>
     [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
     [HttpGet]
@@ -40,6 +44,9 @@ public class ProfileController : ControllerBase
         return result.ToActionResult();
     }
     
+    /// <summary>
+    /// Returns user's profile by Id.
+    /// </summary>
     [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
     [HttpGet("{userId}")]

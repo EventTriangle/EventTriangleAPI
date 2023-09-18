@@ -6,6 +6,7 @@ using EventTriangleAPI.Shared.Application.Extensions;
 using EventTriangleAPI.Shared.DTO.Responses.Errors;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace EventTriangleAPI.Sender.Presentation.Controllers;
 
@@ -31,6 +32,9 @@ public class CreditCardsController : ControllerBase
         _editCreditCardCommandHandler = editCreditCardCommandHandler;
     }
 
+    /// <summary>
+    /// Attach credit card to user's account.
+    /// </summary>
     [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(CreditCardAddedEvent), StatusCodes.Status200OK)]
     [HttpPost]
@@ -51,6 +55,9 @@ public class CreditCardsController : ControllerBase
         return result.ToActionResult();
     }
     
+    /// <summary>
+    /// Edit user's credit card.
+    /// </summary>
     [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(CreditCardChangedEvent), StatusCodes.Status200OK)]
     [HttpPut]
@@ -72,6 +79,9 @@ public class CreditCardsController : ControllerBase
         return result.ToActionResult();
     }
 
+    /// <summary>
+    /// Delete user's credit card.
+    /// </summary>
     [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(CreditCardDeletedEvent), StatusCodes.Status200OK)]
     [HttpDelete]    
