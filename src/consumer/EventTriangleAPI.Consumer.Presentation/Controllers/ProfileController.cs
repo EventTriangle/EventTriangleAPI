@@ -12,14 +12,17 @@ namespace EventTriangleAPI.Consumer.Presentation.Controllers;
 public class ProfileController : ControllerBase
 {
     private readonly GetProfileQueryHandler _getProfileQueryHandler;
+    private readonly GetProfileByIdQueryHandler _getProfileByIdQueryHandler;
     private readonly UserClaimsService _userClaimsService;
     
     public ProfileController(
         UserClaimsService userClaimsService, 
-        GetProfileQueryHandler getProfileQueryHandler)
+        GetProfileQueryHandler getProfileQueryHandler, 
+        GetProfileByIdQueryHandler getProfileByIdQueryHandler)
     {
         _userClaimsService = userClaimsService;
         _getProfileQueryHandler = getProfileQueryHandler;
+        _getProfileByIdQueryHandler = getProfileByIdQueryHandler;
     }
 
     [HttpGet]
@@ -29,6 +32,15 @@ public class ProfileController : ControllerBase
         
         var query = new GetProfileQuery(requesterId);
         var result = await _getProfileQueryHandler.HandleAsync(query);
+
+        return result.ToActionResult();
+    }
+    
+    [HttpGet("{userId}")]
+    public async Task<IActionResult> GetProfileById(string userId)
+    {
+        var query = new GetProfileByIdQuery(userId);
+        var result = await _getProfileByIdQueryHandler.HandleAsync(query);
 
         return result.ToActionResult();
     }

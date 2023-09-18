@@ -24,4 +24,5 @@
       <ProjectReference Include="..\EventTriangleAPI.Consumer.Presentation\EventTriangleAPI.Consumer.Presentation.csproj" />
     </ItemGroup>
 
+
 </Project>
