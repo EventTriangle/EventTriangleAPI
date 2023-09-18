@@ -5,7 +5,6 @@ using EventTriangleAPI.Shared.Application.Extensions;
 using EventTriangleAPI.Shared.DTO.Responses.Errors;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Swashbuckle.AspNetCore.Annotations;
 
 namespace EventTriangleAPI.Consumer.Presentation.Controllers;
 
