@@ -6,6 +6,7 @@ public static class QueryHandlersDependencyInjection
 {
     public static IServiceCollection AddQueryHandlers(this IServiceCollection serviceCollection)
     {
+        serviceCollection.AddScoped<GetContactsBySearchQueryHandler>();
         serviceCollection.AddScoped<GetContactsQueryHandler>();
         serviceCollection.AddScoped<GetCreditCardsQueryHandler>();
         serviceCollection.AddScoped<GetProfileQueryHandler>();

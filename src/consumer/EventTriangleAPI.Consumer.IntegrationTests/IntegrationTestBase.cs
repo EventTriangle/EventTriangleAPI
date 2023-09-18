@@ -30,6 +30,7 @@ public class IntegrationTestBase : IAsyncLifetime
     protected readonly SuspendUserCommandHandler SuspendUserCommandHandler;
     protected readonly UpdateUserRoleCommandHandler UpdateUserRoleCommandHandler;
 
+    protected readonly GetContactsBySearchQueryHandler GetContactsBySearchQueryHandler;
     protected readonly GetContactsQueryHandler GetContactsQueryHandler;
     protected readonly GetCreditCardsQueryHandler GetCreditCardsQueryHandler;
     protected readonly GetProfileQueryHandler GetProfileQueryHandler;
@@ -67,6 +68,7 @@ public class IntegrationTestBase : IAsyncLifetime
         SuspendUserCommandHandler = serviceProvider.GetRequiredService<SuspendUserCommandHandler>();
         UpdateUserRoleCommandHandler = serviceProvider.GetRequiredService<UpdateUserRoleCommandHandler>();
 
+        GetContactsBySearchQueryHandler = serviceProvider.GetRequiredService<GetContactsBySearchQueryHandler>();
         GetContactsQueryHandler = serviceProvider.GetRequiredService<GetContactsQueryHandler>();
         GetCreditCardsQueryHandler = serviceProvider.GetRequiredService<GetCreditCardsQueryHandler>();
         GetProfileQueryHandler = serviceProvider.GetRequiredService<GetProfileQueryHandler>();
