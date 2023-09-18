@@ -1,6 +1,8 @@
 using EventTriangleAPI.Consumer.Application.Services;
+using EventTriangleAPI.Consumer.BusinessLogic.Models;
 using EventTriangleAPI.Consumer.BusinessLogic.QueryHandlers;
 using EventTriangleAPI.Shared.Application.Extensions;
+using EventTriangleAPI.Shared.DTO.Responses.Errors;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,6 +27,8 @@ public class TicketsController : ControllerBase
         _getSupportTicketsQueryHandler = getSupportTicketsQueryHandler;
     }
 
+    [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(List<SupportTicketDto>), StatusCodes.Status200OK)]
     [Authorize(Roles = "Admin")]
     [HttpGet]
     public async Task<IActionResult> GetTickets(
@@ -39,6 +43,8 @@ public class TicketsController : ControllerBase
         return result.ToActionResult();
     }
     
+    [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(List<SupportTicketDto>), StatusCodes.Status200OK)]
     [HttpGet("support-tickets")]
     public async Task<IActionResult> GetSupportTickets(
         [FromQuery] DateTime fromDateTime,

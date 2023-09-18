@@ -1,6 +1,8 @@
 using EventTriangleAPI.Consumer.Application.Services;
+using EventTriangleAPI.Consumer.BusinessLogic.Models;
 using EventTriangleAPI.Consumer.BusinessLogic.QueryHandlers;
 using EventTriangleAPI.Shared.Application.Extensions;
+using EventTriangleAPI.Shared.DTO.Responses.Errors;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,6 +27,8 @@ public class ContactsController : ControllerBase
         _getContactsBySearchQueryHandler = getContactsBySearchQueryHandler;
     }
 
+    [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(List<ContactDto>), StatusCodes.Status200OK)]
     [HttpGet]
     public async Task<IActionResult> GetContacts()
     {
@@ -36,6 +40,8 @@ public class ContactsController : ControllerBase
         return result.ToActionResult();
     }
     
+    [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(List<ContactDto>), StatusCodes.Status200OK)]
     [HttpGet("search")]
     public async Task<IActionResult> GetContactsBySearch([FromQuery] string email)
     {

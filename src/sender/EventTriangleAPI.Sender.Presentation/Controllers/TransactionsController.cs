@@ -1,7 +1,9 @@
 using EventTriangleAPI.Sender.Application.Services;
 using EventTriangleAPI.Sender.BusinessLogic.CommandHandlers;
 using EventTriangleAPI.Sender.BusinessLogic.Models.Requests;
+using EventTriangleAPI.Sender.Domain.Entities;
 using EventTriangleAPI.Shared.Application.Extensions;
+using EventTriangleAPI.Shared.DTO.Responses.Errors;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -29,6 +31,8 @@ public class TransactionsController : ControllerBase
         _rollBackTransactionCommandHandler = rollBackTransactionCommandHandler;
     }
 
+    [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(TransactionUserToUserCreatedEvent), StatusCodes.Status200OK)]
     [HttpPost("user-to-user")]
     public async Task<IActionResult> CreateTransactionUserToUser([FromBody] CreateTransactionUserToUserRequest request)
     {
@@ -40,6 +44,8 @@ public class TransactionsController : ControllerBase
         return result.ToActionResult();
     }
     
+    [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(TransactionCardToUserCreatedEvent), StatusCodes.Status200OK)]
     [HttpPost("card-to-user")]
     public async Task<IActionResult> TopUpAccountBalance([FromBody] TopUpAccountBalanceRequest request)
     {
@@ -51,6 +57,8 @@ public class TransactionsController : ControllerBase
         return result.ToActionResult();
     }
     
+    [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(TransactionRollBackedEvent), StatusCodes.Status200OK)]
     [Authorize(Roles = "Admin")]
     [HttpPost("rollback")]
     public async Task<IActionResult> RollBackTransaction([FromBody] RollBackTransactionRequest request)

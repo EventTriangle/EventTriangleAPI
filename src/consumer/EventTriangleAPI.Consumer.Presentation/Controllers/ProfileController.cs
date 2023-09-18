@@ -1,6 +1,8 @@
 using EventTriangleAPI.Consumer.Application.Services;
+using EventTriangleAPI.Consumer.BusinessLogic.Models;
 using EventTriangleAPI.Consumer.BusinessLogic.QueryHandlers;
 using EventTriangleAPI.Shared.Application.Extensions;
+using EventTriangleAPI.Shared.DTO.Responses.Errors;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,6 +27,8 @@ public class ProfileController : ControllerBase
         _getProfileByIdQueryHandler = getProfileByIdQueryHandler;
     }
 
+    [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
     [HttpGet]
     public async Task<IActionResult> GetProfile()
     {
@@ -36,6 +40,8 @@ public class ProfileController : ControllerBase
         return result.ToActionResult();
     }
     
+    [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
     [HttpGet("{userId}")]
     public async Task<IActionResult> GetProfileById(string userId)
     {

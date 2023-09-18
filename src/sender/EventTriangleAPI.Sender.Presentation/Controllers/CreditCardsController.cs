@@ -1,7 +1,9 @@
 using EventTriangleAPI.Sender.Application.Services;
 using EventTriangleAPI.Sender.BusinessLogic.CommandHandlers;
 using EventTriangleAPI.Sender.BusinessLogic.Models.Requests;
+using EventTriangleAPI.Sender.Domain.Entities;
 using EventTriangleAPI.Shared.Application.Extensions;
+using EventTriangleAPI.Shared.DTO.Responses.Errors;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -29,6 +31,8 @@ public class CreditCardsController : ControllerBase
         _editCreditCardCommandHandler = editCreditCardCommandHandler;
     }
 
+    [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(CreditCardAddedEvent), StatusCodes.Status200OK)]
     [HttpPost]
     public async Task<IActionResult> AttachCreditCardToAccount([FromBody] AttachCreditCardToAccountRequest request)
     {
@@ -47,6 +51,8 @@ public class CreditCardsController : ControllerBase
         return result.ToActionResult();
     }
     
+    [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(CreditCardChangedEvent), StatusCodes.Status200OK)]
     [HttpPut]
     public async Task<IActionResult> EditCreditCard([FromBody] EditCreditCardRequest request)
     {
@@ -66,6 +72,8 @@ public class CreditCardsController : ControllerBase
         return result.ToActionResult();
     }
 
+    [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(CreditCardDeletedEvent), StatusCodes.Status200OK)]
     [HttpDelete]    
     public async Task<IActionResult> DeleteCreditCard([FromBody] DeleteCreditCardRequest request)
     {
