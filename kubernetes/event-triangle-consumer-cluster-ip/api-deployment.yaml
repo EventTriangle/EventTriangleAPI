@@ -1,0 +1,38 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: event-triangle-consumer-deployment
+spec:
+  selector:
+    matchLabels:
+      app: event-triangle-consumer-api
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: event-triangle-consumer-api
+    spec:
+      containers:
+        - name: event-triangle-auth-api
+          image: kaminome/consumer-service:latest
+          ports:
+            - containerPort: 80
+          env:
+            - name: RabbitMqHost
+              valueFrom:
+                configMapKeyRef:
+                  name: event-triangle-consumer-configmap
+                  key: RabbitMqHost
+
+            - name: DatabaseConnectionString
+              valueFrom:
+                configMapKeyRef:
+                  name: event-triangle-consumer-configmap
+                  key: DatabaseConnectionString
+                  
+            - name: ASPNETCORE_ENVIRONMENT
+              valueFrom:
+                configMapKeyRef:
+                  name: event-triangle-consumer-configmap
+                  key: ASPNETCORE_ENVIRONMENT

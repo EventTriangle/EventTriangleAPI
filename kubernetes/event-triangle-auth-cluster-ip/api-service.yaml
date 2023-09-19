@@ -1,0 +1,18 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: event-triangle-auth-service
+spec:
+  selector:
+    app: event-triangle-auth-api
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 80
+    - name: grpc
+      protocol: TCP
+      port: 81
+      targetPort: 81
+  type: ClusterIP

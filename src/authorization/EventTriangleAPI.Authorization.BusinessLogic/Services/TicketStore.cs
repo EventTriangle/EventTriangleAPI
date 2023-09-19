@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using static IdentityModel.OidcConstants;
 using Enum = System.Enum;
 using TokenResponse = IdentityModel.Client.TokenResponse;
@@ -30,26 +31,33 @@ public class TicketStore : ITicketStore
     private readonly MemoryCacheEntryOptions _memoryCacheEntryOptions;
 
     private readonly User.UserClient _userClient;
-    
+    private ILoggerFactory _loggerFactory;
+
     public TicketStore(
         string userGrpcChannelAddress,
         IServiceScopeFactory serviceScopeFactory,
         TicketSerializer ticketSerializer,
         HttpClient httpClient,
         AzureAdConfiguration azureAdConfiguration,
-        IMemoryCache memoryCache)
+        IMemoryCache memoryCache,
+        ILoggerFactory loggerFactory)
     {
         _serviceScopeFactory = serviceScopeFactory;
         _ticketSerializer = ticketSerializer;
         _httpClient = httpClient;
         _azureAdConfiguration = azureAdConfiguration;
         _memoryCache = memoryCache;
+        _loggerFactory = loggerFactory;
 
         _memoryCacheEntryOptions = new MemoryCacheEntryOptions()
             .SetSlidingExpiration(TimeSpan.FromSeconds(15))
             .SetAbsoluteExpiration(TimeSpan.FromSeconds(100));
-        
-        var channel = GrpcChannel.ForAddress(userGrpcChannelAddress);
+
+        var options = new GrpcChannelOptions { LoggerFactory = _loggerFactory };
+        var channel = GrpcChannel.ForAddress(
+            userGrpcChannelAddress,
+            options);
+
         _userClient = new User.UserClient(channel);
     }
 
@@ -57,25 +65,25 @@ public class TicketStore : ITicketStore
     {
         using var scope = _serviceScopeFactory.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
-        
+
         var sub = ticket.Principal.Claims.First(x => x.Type == ClaimsConstants.Sub).Value;
         var role = ticket.Principal.Claims.First(x => x.Type == ClaimsConstants.Roles).Value;
-        
+
         var idToken = ticket.Properties.GetTokenValue(TokenTypes.IdentityToken);
         var accessToken = ticket.Properties.GetTokenValue(TokenTypes.AccessToken);
         var refreshToken = ticket.Properties.GetTokenValue(TokenTypes.RefreshToken);
-        
+
         var handler = new JwtSecurityTokenHandler();
-        
+
         var decodeIdToken = handler.ReadToken(idToken) as JwtSecurityToken;
         var decodeAccessToken = handler.ReadToken(accessToken) as JwtSecurityToken;
         var ticketExpiresUtc = ticket.Properties.ExpiresUtc;
-        
+
         if (decodeIdToken == null || decodeAccessToken == null)
         {
             throw new StoreException("Read token error");
         }
-        
+
         if (ticketExpiresUtc.HasValue == false)
         {
             throw new StoreException("Ticket ExpiresUtc value does not exist");
@@ -87,17 +95,17 @@ public class TicketStore : ITicketStore
         if (userSession != null)
         {
             var deserializedTicket = _ticketSerializer.Deserialize(userSession.Value);
-            
+
             if (deserializedTicket == null)
             {
                 throw new StoreException("Deserialization ticket error");
             }
-            
+
             if (accessToken == null || refreshToken == null || idToken == null)
             {
                 throw new StoreException("Access token, refresh token, identity token are not existing");
             }
-            
+
             deserializedTicket.Properties.UpdateTokenValue(TokenTypes.AccessToken, accessToken);
             deserializedTicket.Properties.UpdateTokenValue(TokenTypes.RefreshToken, refreshToken);
             deserializedTicket.Properties.UpdateTokenValue(TokenTypes.IdentityToken, idToken);
@@ -109,14 +117,14 @@ public class TicketStore : ITicketStore
 
             context.UserSessions.Update(userSession);
             await context.SaveChangesAsync();
-            
+
             _memoryCache.Set(sessionId, ticket, _memoryCacheEntryOptions);
         }
-        
+
         if (userSession == null)
         {
             var serializedTicket = _ticketSerializer.Serialize(ticket);
-            
+
             var user = await context.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == sub);
 
             if (user == null)
@@ -125,17 +133,22 @@ public class TicketStore : ITicketStore
                 var userRole = (UserRole)Enum.Parse(typeof(UserRole), role);
 
                 var newUser = new UserEntity(sub, email);
-                var newUserSession = new UserSessionEntity(new Guid(sessionId), ticketExpiresUtc.Value, serializedTicket, newUser.Id);
+
+                var newUserSession = new UserSessionEntity(
+                    id: new Guid(sessionId),
+                    ticketExpiresUtc.Value,
+                    serializedTicket,
+                    newUser.Id);
 
                 context.Users.Add(newUser);
                 context.UserSessions.Add(newUserSession);
-                
+
                 var createUserRequest = new CreateUserRequest
                 {
                     UserId = newUser.Id,
                     Email = email,
-                    UserRole = (GrpcUserRole)userRole, 
-                    UserStatus = GrpcUserStatus.Active, 
+                    UserRole = (GrpcUserRole)userRole,
+                    UserStatus = GrpcUserStatus.Active,
                     CreatedAt = DateTime.UtcNow.ToTimestamp()
                 };
 
@@ -148,10 +161,15 @@ public class TicketStore : ITicketStore
             }
             else
             {
-                var newUserSession = new UserSessionEntity(new Guid(sessionId), ticketExpiresUtc.Value, serializedTicket, user.Id);
+                var newUserSession = new UserSessionEntity(
+                    id: new Guid(sessionId),
+                    ticketExpiresUtc.Value,
+                    serializedTicket,
+                    user.Id);
+
                 context.UserSessions.Add(newUserSession);
             }
-         
+
             await context.SaveChangesAsync();
             _memoryCache.Set(sessionId, ticket, _memoryCacheEntryOptions);
         }
@@ -163,40 +181,40 @@ public class TicketStore : ITicketStore
     {
         using var scope = _serviceScopeFactory.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
-        
+
         var userSession = await context.UserSessions.FirstOrDefaultAsync(x => x.Id == new Guid(key));
 
         if (userSession == null)
         {
             throw new StoreException("UserSession does not exist");
         }
-        
+
         var deserializedTicket = _ticketSerializer.Deserialize(userSession.Value);
 
         if (deserializedTicket == null)
         {
             throw new StoreException("Deserialization ticket error");
         }
-        
+
         var refreshToken = deserializedTicket.Properties.GetTokenValue(TokenTypes.RefreshToken);
 
         var response = await RequestRefreshTokenAsync(refreshToken);
-            
+
         if (response.AccessToken == null || response.RefreshToken == null || response.IdentityToken == null)
         {
             await RemoveAsync(key);
             return;
         }
-            
+
         deserializedTicket.Properties.UpdateTokenValue(TokenTypes.AccessToken, response.AccessToken);
         deserializedTicket.Properties.UpdateTokenValue(TokenTypes.RefreshToken, response.RefreshToken);
         deserializedTicket.Properties.UpdateTokenValue(TokenTypes.IdentityToken, response.IdentityToken);
-            
+
         var serializedTicket = _ticketSerializer.Serialize(deserializedTicket);
-            
+
         userSession.UpdateValue(serializedTicket);
         userSession.UpdateExpiresAt(userSession.ExpiresAt.AddSeconds(response.ExpiresIn));
-            
+
         context.UserSessions.Update(userSession);
         await context.SaveChangesAsync();
     }
@@ -205,14 +223,14 @@ public class TicketStore : ITicketStore
     {
         using var scope = _serviceScopeFactory.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
-        
+
         var isMemoryCacheTicketExist = _memoryCache.TryGetValue(key, out AuthenticationTicket memoryCacheTicket);
-        
+
         if (isMemoryCacheTicketExist)
         {
             return memoryCacheTicket;
         }
-     
+
         var userSession = await context.UserSessions.FirstOrDefaultAsync(x => x.Id == new Guid(key));
 
         if (userSession == null)
@@ -221,7 +239,7 @@ public class TicketStore : ITicketStore
         }
 
         var deserializedTicket = _ticketSerializer.Deserialize(userSession.Value);
-        
+
         if (deserializedTicket == null)
         {
             throw new StoreException("Deserialization ticket error");
@@ -235,7 +253,7 @@ public class TicketStore : ITicketStore
             {
                 throw new StoreException("Refresh token does not exist");
             }
-            
+
             var response = await RequestRefreshTokenAsync(refreshToken);
 
             if (response.AccessToken == null || response.RefreshToken == null || response.IdentityToken == null)
@@ -243,24 +261,24 @@ public class TicketStore : ITicketStore
                 await RemoveAsync(key);
                 return null;
             }
-            
+
             deserializedTicket.Properties.UpdateTokenValue(TokenTypes.AccessToken, response.AccessToken);
             deserializedTicket.Properties.UpdateTokenValue(TokenTypes.RefreshToken, response.RefreshToken);
             deserializedTicket.Properties.UpdateTokenValue(TokenTypes.IdentityToken, response.IdentityToken);
-            
+
             var serializedTicket = _ticketSerializer.Serialize(deserializedTicket);
-        
+
             userSession.UpdateValue(serializedTicket);
             userSession.UpdateExpiresAt(DateTimeOffset.UtcNow.AddSeconds(response.ExpiresIn));
         }
-        
+
         userSession.UpdateDateOfLastAccess();
         context.UserSessions.Update(userSession);
-        
+
         await context.SaveChangesAsync();
-            
+
         _memoryCache.Set(key, deserializedTicket, _memoryCacheEntryOptions);
-        
+
         return deserializedTicket;
     }
 
@@ -268,11 +286,11 @@ public class TicketStore : ITicketStore
     {
         using var scope = _serviceScopeFactory.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
-        
+
         var userSession = await context.UserSessions.FirstOrDefaultAsync(x => x.Id == new Guid(key));
-        
+
         if (userSession == null) return;
-        
+
         context.UserSessions.Remove(userSession);
         await context.SaveChangesAsync();
     }
@@ -288,7 +306,7 @@ public class TicketStore : ITicketStore
             Scope = _azureAdConfiguration.Scopes,
             RefreshToken = refreshToken
         };
-        
+
         var response = await _httpClient.RequestRefreshTokenAsync(refreshTokenRequest);
 
         return response;

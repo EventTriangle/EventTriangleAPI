@@ -1,0 +1,39 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: event-triangle-sender-deployment
+spec:
+  selector:
+    matchLabels:
+      app: event-triangle-sender-api
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: event-triangle-sender-api
+    spec:
+      containers:
+        - name: event-triangle-sender-api
+          image: kaminome/sender-service:latest
+          ports:
+            - containerPort: 80
+            - containerPort: 81
+          env:
+            - name: RabbitMqHost
+              valueFrom:
+                configMapKeyRef:
+                  name: event-triangle-sender-configmap
+                  key: RabbitMqHost
+
+            - name: DatabaseConnectionString
+              valueFrom:
+                configMapKeyRef:
+                  name: event-triangle-sender-configmap
+                  key: DatabaseConnectionString            
+                    
+            - name: ASPNETCORE_ENVIRONMENT
+              valueFrom:
+                configMapKeyRef:
+                  name: event-triangle-sender-configmap
+                  key: ASPNETCORE_ENVIRONMENT

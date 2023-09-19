@@ -26,10 +26,7 @@ builder.Services.AddMvc();
 builder.Services.ConfigureYarp(reverseProxySection);
 builder.Services.ConfigureCors(allowOrigins);
 builder.Services.ConfigureSameSiteNoneCookiePolicy();
-builder.Services.AddDbContext<DatabaseContext>(options =>
-{
-    options.UseNpgsql(databaseConnectionString);
-});
+builder.Services.AddDbContext<DatabaseContext>(options => { options.UseNpgsql(databaseConnectionString); });
 
 if (string.IsNullOrEmpty(adClientSecret))
 {
@@ -56,12 +53,19 @@ builder.Services.AddHttpClient();
 builder.Services.AddTicketStore();
 builder.Services.AddHostedServices();
 
+builder.WebHost.ConfigureLogging(logging =>
+{
+    logging.AddFilter("Grpc", LogLevel.Debug);
+});
+
 var app = builder.Build();
 
 app.UseSwagger();
 app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "EventTriangle Authorization API V1"); });
 
 app.UseHttpsRedirection();
+
+app.UseHsts();
 
 app.UseStaticFiles();
 
@@ -80,7 +84,7 @@ app.UseAuthorization();
 app.UseEndpoints(options =>
 {
     options.MapReverseProxy();
-    options.MapControllers();    
+    options.MapControllers();
 });
 
 app.MigrateDatabase();

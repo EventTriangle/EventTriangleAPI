@@ -6,7 +6,6 @@ using EventTriangleAPI.Consumer.Domain.Constants;
 using EventTriangleAPI.Consumer.Persistence;
 using EventTriangleAPI.Consumer.Presentation.DependencyInjection;
 using EventTriangleAPI.Consumer.Presentation.Routing;
-using EventTriangleAPI.Shared.DTO.Models;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
@@ -17,7 +16,6 @@ using Microsoft.IdentityModel.Logging;
 var builder = WebApplication.CreateBuilder(args);
 
 var configurationSection = builder.Configuration.GetSection(AppSettingsConstants.AzureAd);
-var rabbitMqConfiguration = builder.Configuration.GetSection(AppSettingsConstants.RabbitMqConfiguration).Get<RabbitMqConfiguration>();
 var databaseConnectionString = builder.Configuration[AppSettingsConstants.DatabaseConnectionString];
 
 builder.Services.AddControllers(o =>
@@ -62,16 +60,20 @@ builder.Services
     })
     .AddMicrosoftIdentityWebApi(configurationSection);
 
+var rabbitHost = builder.Configuration[AppSettingsConstants.RabbitMqHost];
+var rabbitUsername = builder.Configuration[AppSettingsConstants.RabbitMqUsername];
+var rabbitPassword = builder.Configuration[AppSettingsConstants.RabbitMqPassword];
+
 builder.Services.AddMassTransit(config =>
 {
     config.AddConsumer<EventConsumer>();
     
     config.UsingRabbitMq((ctx, cfg) =>
     {
-        cfg.Host(rabbitMqConfiguration.Host, h =>
+        cfg.Host(rabbitHost, h =>
         {
-            h.Username(rabbitMqConfiguration.Username);
-            h.Password(rabbitMqConfiguration.Password);
+            h.Username(rabbitUsername);
+            h.Password(rabbitPassword);
         });
         
         cfg.ReceiveEndpoint("event-queue", c =>

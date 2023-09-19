@@ -5,7 +5,6 @@ using EventTriangleAPI.Sender.Domain.Constants;
 using EventTriangleAPI.Sender.Persistence;
 using EventTriangleAPI.Sender.Presentation.DependencyInjection;
 using EventTriangleAPI.Sender.Presentation.Routing;
-using EventTriangleAPI.Shared.DTO.Models;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
@@ -27,7 +26,6 @@ if (builder.Environment.EnvironmentName == "Docker")
 
 var configurationSection = builder.Configuration.GetSection(AppSettingsConstants.AzureAd);
 var databaseConnectionString = builder.Configuration[AppSettingsConstants.DatabaseConnectionString];
-var rabbitMqConfiguration = builder.Configuration.GetSection(AppSettingsConstants.RabbitMqConfiguration).Get<RabbitMqConfiguration>();
 
 builder.Services.AddControllers(o =>
 {
@@ -51,16 +49,25 @@ builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddMicrosoftIdentityWebApi(configurationSection);
 
+var rabbitHost = builder.Configuration[AppSettingsConstants.RabbitMqHost];
+var rabbitUsername = builder.Configuration[AppSettingsConstants.RabbitMqUsername];
+var rabbitPassword = builder.Configuration[AppSettingsConstants.RabbitMqPassword];
+
 builder.Services.AddMassTransit(config =>
 {
     config.UsingRabbitMq((ctx, cfg) =>
     {
-        cfg.Host(rabbitMqConfiguration.Host, h =>
+        cfg.Host(rabbitHost, h =>
         {
-            h.Username(rabbitMqConfiguration.Username);
-            h.Password(rabbitMqConfiguration.Password);
+            h.Username(rabbitUsername);
+            h.Password(rabbitPassword);
         });
     });
+});
+
+builder.WebHost.ConfigureLogging(logging =>
+{
+    logging.AddFilter("Grpc", LogLevel.Debug);
 });
 
 var app = builder.Build();
