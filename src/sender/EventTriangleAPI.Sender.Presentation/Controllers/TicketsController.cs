@@ -1,7 +1,9 @@
 using EventTriangleAPI.Sender.Application.Services;
 using EventTriangleAPI.Sender.BusinessLogic.CommandHandlers;
 using EventTriangleAPI.Sender.BusinessLogic.Models.Requests;
+using EventTriangleAPI.Sender.Domain.Entities;
 using EventTriangleAPI.Shared.Application.Extensions;
+using EventTriangleAPI.Shared.DTO.Responses.Errors;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,7 +27,12 @@ public class TicketsController : ControllerBase
         _resolveSupportTicketCommandHandler = resolveSupportTicketCommandHandler;
         _openSupportTicketCommandHandler = openSupportTicketCommandHandler;
     }
-
+    
+    /// <summary>
+    /// Open a support ticket.
+    /// </summary>
+    [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(SupportTicketOpenedEvent), StatusCodes.Status200OK)]
     [HttpPost("support-ticket")]
     public async Task<IActionResult> OpenSupportTicket([FromBody] OpenSupportTicketRequest request)
     {
@@ -37,6 +44,11 @@ public class TicketsController : ControllerBase
         return result.ToActionResult();
     }
     
+    /// <summary>
+    /// Resolve a support ticket.
+    /// </summary>
+    [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(SupportTicketResolvedEvent), StatusCodes.Status200OK)]
     [Authorize(Roles = "Admin")]
     [HttpPut("support-ticket")]
     public async Task<IActionResult> ResolveSupportTicket([FromBody] ResolveSupportTicketRequest request)

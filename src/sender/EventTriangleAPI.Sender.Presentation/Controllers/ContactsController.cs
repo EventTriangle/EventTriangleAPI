@@ -1,7 +1,9 @@
 using EventTriangleAPI.Sender.Application.Services;
 using EventTriangleAPI.Sender.BusinessLogic.CommandHandlers;
 using EventTriangleAPI.Sender.BusinessLogic.Models.Requests;
+using EventTriangleAPI.Sender.Domain.Entities;
 using EventTriangleAPI.Shared.Application.Extensions;
+using EventTriangleAPI.Shared.DTO.Responses.Errors;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,6 +28,11 @@ public class ContactsController : ControllerBase
         _deleteContactCommandHandler = deleteContactCommandHandler;
     }
 
+    /// <summary>
+    /// Add contact.
+    /// </summary>
+    [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ContactCreatedEvent), StatusCodes.Status200OK)]
     [HttpPost]
     public async Task<IActionResult> AddContact([FromBody] AddContactRequest request)
     {
@@ -36,7 +43,12 @@ public class ContactsController : ControllerBase
 
         return result.ToActionResult();
     }
-    
+
+    /// <summary>
+    /// Delete contact.
+    /// </summary>
+    [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ContactDeletedEvent), StatusCodes.Status200OK)]
     [HttpDelete]
     public async Task<IActionResult> DeleteContact([FromBody] DeleteContactRequest request)
     {

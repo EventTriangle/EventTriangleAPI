@@ -1,9 +1,12 @@
 using EventTriangleAPI.Sender.Application.Services;
 using EventTriangleAPI.Sender.BusinessLogic.CommandHandlers;
 using EventTriangleAPI.Sender.BusinessLogic.Models.Requests;
+using EventTriangleAPI.Sender.Domain.Entities;
 using EventTriangleAPI.Shared.Application.Extensions;
+using EventTriangleAPI.Shared.DTO.Responses.Errors;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace EventTriangleAPI.Sender.Presentation.Controllers;
 
@@ -29,6 +32,11 @@ public class UsersController : ControllerBase
         _updateUserRoleCommandHandler = updateUserRoleCommandHandler;
     }
 
+    /// <summary>
+    /// Suspend a user
+    /// </summary>
+    [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(UserSuspendedEvent), StatusCodes.Status200OK)]
     [HttpPost("suspend")]
     public async Task<IActionResult> SuspendUser([FromBody] SuspendUserRequest request)
     {
@@ -40,6 +48,12 @@ public class UsersController : ControllerBase
         return result.ToActionResult();
     }
     
+    /// <summary>
+    /// Update user's role
+    /// </summary>
+    [SwaggerOperation(Description = "")]
+    [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(UserRoleUpdatedEvent), StatusCodes.Status200OK)]
     [HttpPut("role")]
     public async Task<IActionResult> UpdateUserRole([FromBody] UpdateUserRoleRequest request)
     {
@@ -51,6 +65,12 @@ public class UsersController : ControllerBase
         return result.ToActionResult();
     }
     
+    /// <summary>
+    /// Stop suspending the user
+    /// </summary>
+    [SwaggerOperation(Description = "")]
+    [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(UserNotSuspendedEvent), StatusCodes.Status200OK)]
     [HttpDelete("suspend")]
     public async Task<IActionResult> NotSuspendUser([FromBody] NotSuspendUserRequest request)
     {
