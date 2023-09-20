@@ -40,6 +40,8 @@ import {TransactionState} from "../../types/enums/TransactionState";
 export class TransactionsOutletComponent implements OnInit {
   transactions: TransactionDto[] = [];
   user: UserDto = this._transactionsOutletHelper.generateEmptyUser();
+  protected readonly TransactionType = TransactionType;
+  protected readonly TransactionState = TransactionState;
 
   constructor(private _transactionsOutletHelper: TransactionsOutletHelper,
               private _profileApiService: ProfileApiService,
@@ -87,6 +89,11 @@ export class TransactionsOutletComponent implements OnInit {
     }
   }
 
-  protected readonly TransactionType = TransactionType;
-  protected readonly TransactionState = TransactionState;
+  async getUserNameById(userId: string) : Promise<string> {
+    const getUserProfileByIdSub$ = this._profileApiService.getProfileById(userId);
+    const getUserProfileResponse = await firstValueFrom<Result<UserDto>>(getUserProfileByIdSub$);
+    const user = getUserProfileResponse.response;
+
+    return user.email.split('@')[0];
+  }
 }

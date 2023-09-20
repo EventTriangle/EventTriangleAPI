@@ -34,10 +34,10 @@
         <div
           class="{{getTransactionInfoClassName(transaction)}}">
           <p class="transactionItemFrom">
-            From: Sender
+            From: {{getUserNameById(transaction.fromUserId)}}
           </p>
           <p class="transactionItemTo">
-            To: Receiver
+            To: {{getUserNameById(transaction.toUserId)}}
           </p>
           <p class="transactionItemAmount">
             Amount: {{transaction.amount}} ֏
@@ -57,7 +57,7 @@
         Create New Transaction
       </p>
       <input type="text" class="createNewTransactionToInput" placeholder="To: Receiver" />
-      <input type="text" class="createNewTransactionAmountInput" placeholder="Amount: $0" />
+      <input type="text" class="createNewTransactionAmountInput" placeholder="Amount: 0 ֏" />
       <button class="createNewTransactionOkButton">Ok</button>
     </div>
   </div>

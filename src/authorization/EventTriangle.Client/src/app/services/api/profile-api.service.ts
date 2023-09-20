@@ -20,9 +20,17 @@ export class ProfileApiService extends ApiBaseService {
   // requests
 
   // GET consumer/profile
-  getProfile(): Observable<Result<UserDto>> {
+  getProfile() : Observable<Result<UserDto>> {
     return this.httpClient.get<Result<UserDto>>(
-      this.baseUrl + this.consumerProfileRoute, { withCredentials: true }
+      this.baseUrl + this.consumerProfileRoute,
+      { withCredentials: true }
     );
+  }
+
+  // GET consumer/profile/{userId}
+  getProfileById(userId: string) : Observable<Result<UserDto>> {
+    return this.httpClient.get<Result<UserDto>>(
+      this.baseUrl + this.consumerProfileRoute + `/${userId}`
+    )
   }
 }
