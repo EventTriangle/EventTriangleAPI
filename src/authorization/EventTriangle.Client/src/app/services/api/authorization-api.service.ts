@@ -20,6 +20,7 @@ export class AuthorizationApiService extends ApiBaseService {
 
   //paths
   public getLoginPathForRedirection = () => this.baseUrl + this.authorizationRoute + "login";
+  public getLogoutPathForRedirection = () => this.baseUrl + this.authorizationRoute + "logout";
 
   //requests
 

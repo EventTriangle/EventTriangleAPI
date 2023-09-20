@@ -48,14 +48,14 @@ const initializeAppFactory = (): Promise<void> => {
     TicketsOutletComponent,
     UsersOutletComponent
   ],
-    imports: [
-        BrowserModule,
-        AppRoutingModule,
-        HttpClientModule,
-        BrowserAnimationsModule,
-        AngularSvgIconModule.forRoot(),
-        FormsModule,
-    ],
+  imports: [
+      BrowserModule,
+      AppRoutingModule,
+      HttpClientModule,
+      BrowserAnimationsModule,
+      AngularSvgIconModule.forRoot(),
+      FormsModule,
+  ],
   providers: [
     {
       provide: APP_BASE_HREF,

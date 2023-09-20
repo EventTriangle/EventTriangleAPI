@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import {animate, style, transition, trigger} from "@angular/animations";
+import { AuthorizationApiService } from 'src/app/services/api/authorization-api.service';
 
 @Component({
   selector: 'app-navbar',
@@ -15,5 +16,13 @@ import {animate, style, transition, trigger} from "@angular/animations";
   ]
 })
 export class NavbarComponent {
+  public authorizationApiService;
 
+  constructor(authorizationApiService: AuthorizationApiService) {
+    this.authorizationApiService = authorizationApiService;
+  };
+
+  async getLogout() {
+    window.location.href = this.authorizationApiService.getLogoutPathForRedirection();
+  }
 }

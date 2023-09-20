@@ -49,8 +49,13 @@ public class AuthorizationController : ControllerBase
     [HttpGet("logout")]
     public async Task<IActionResult> Logout()
     {
+        var devFrontendUrl = _configuration[AppSettingsConstants.DevFrontendUrl];
+        
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-        return SignOut(AuthConstants.AppOidc);
+
+        return _hostEnvironment.IsDevelopment()
+            ? SignOut(new AuthenticationProperties{ RedirectUri = devFrontendUrl + SpaRouting.Transactions }, AuthConstants.AppOidc)
+            : SignOut(AuthConstants.AppOidc);
     }
 
     [AllowAnonymous]
