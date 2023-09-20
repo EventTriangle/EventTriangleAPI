@@ -1,4 +1,3 @@
-using System.Reflection;
 using EventTriangleAPI.Sender.Application.Services;
 using EventTriangleAPI.Sender.BusinessLogic.GrpcServices;
 using EventTriangleAPI.Sender.Domain.Constants;
@@ -32,11 +31,7 @@ builder.Services.AddControllers(o =>
     o.Conventions.Add(new RouteTokenTransformerConvention(new CustomParameterTransformer()));
 });
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
-{
-    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
-});
+builder.Services.AddSwagger();
 builder.Services.AddDbContext<DatabaseContext>(options =>
 {
     options.UseNpgsql(databaseConnectionString);
