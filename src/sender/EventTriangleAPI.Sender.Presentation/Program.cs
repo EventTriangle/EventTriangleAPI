@@ -3,6 +3,7 @@ using EventTriangleAPI.Sender.BusinessLogic.GrpcServices;
 using EventTriangleAPI.Sender.Domain.Constants;
 using EventTriangleAPI.Sender.Persistence;
 using EventTriangleAPI.Sender.Presentation.DependencyInjection;
+using EventTriangleAPI.Sender.Presentation.Filters;
 using EventTriangleAPI.Sender.Presentation.Routing;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -28,6 +29,7 @@ var databaseConnectionString = builder.Configuration[AppSettingsConstants.Databa
 
 builder.Services.AddControllers(o =>
 {
+    o.Filters.Add<HttpResponseExceptionFilter>();
     o.Conventions.Add(new RouteTokenTransformerConvention(new CustomParameterTransformer()));
 });
 builder.Services.AddEndpointsApiExplorer();
