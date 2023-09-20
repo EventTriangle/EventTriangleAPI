@@ -1,9 +1,9 @@
-using System.Reflection;
 using EventTriangleAPI.Sender.Application.Services;
 using EventTriangleAPI.Sender.BusinessLogic.GrpcServices;
 using EventTriangleAPI.Sender.Domain.Constants;
 using EventTriangleAPI.Sender.Persistence;
 using EventTriangleAPI.Sender.Presentation.DependencyInjection;
+using EventTriangleAPI.Sender.Presentation.Filters;
 using EventTriangleAPI.Sender.Presentation.Routing;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -29,14 +29,11 @@ var databaseConnectionString = builder.Configuration[AppSettingsConstants.Databa
 
 builder.Services.AddControllers(o =>
 {
+    o.Filters.Add<HttpResponseExceptionFilter>();
     o.Conventions.Add(new RouteTokenTransformerConvention(new CustomParameterTransformer()));
 });
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
-{
-    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
-});
+builder.Services.AddSwagger();
 builder.Services.AddDbContext<DatabaseContext>(options =>
 {
     options.UseNpgsql(databaseConnectionString);
