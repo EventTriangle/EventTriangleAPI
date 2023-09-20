@@ -20,6 +20,9 @@
           <p class="userInfoFullName">
             {{user.email.split('@')[0]}}
           </p>
+          <span class="userInfoId">
+            ID: <p class="userId">{{user.id}}</p>
+          </span>
         </div>
       </div>
     </div>
@@ -56,9 +59,13 @@
       <p class="createNewTransactionTitle">
         Create New Transaction
       </p>
-      <input type="text" class="createNewTransactionToInput" placeholder="To: Receiver" />
-      <input type="text" class="createNewTransactionAmountInput" placeholder="Amount: 0 ֏" />
-      <button class="createNewTransactionOkButton">Ok</button>
+      <input type="text" class="createNewTransactionToInput"
+             placeholder="To: Receiver" [(ngModel)]="toUserId"/>
+      <input type="text" class="createNewTransactionAmountInput"
+             placeholder="Amount: 0 ֏"  [(ngModel)]="amount"/>
+      <button class="createNewTransactionOkButton" (click)="sendMoneyToUser(toUserId, amount)">
+        Ok
+      </button>
     </div>
   </div>
 </div>

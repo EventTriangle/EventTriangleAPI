@@ -9,6 +9,7 @@ import {TransactionsApiService} from "../../services/api/transactions-api.servic
 import {TransactionDto} from "../../types/models/consumer/TransactionDto";
 import {TransactionType} from "../../types/enums/TransactionType";
 import {TransactionState} from "../../types/enums/TransactionState";
+import {CreateTransactionUserToUserEvent} from "../../types/models/sender/CreateTransactionUserToUserEvent";
 
 @Component({
   selector: 'app-transactions-outlet',
@@ -40,6 +41,8 @@ import {TransactionState} from "../../types/enums/TransactionState";
 export class TransactionsOutletComponent implements OnInit {
   transactions: TransactionDto[] = [];
   user: UserDto = this._transactionsOutletHelper.generateEmptyUser();
+  amount: number = 0;
+  toUserId: string = '';
   protected readonly TransactionType = TransactionType;
   protected readonly TransactionState = TransactionState;
 
@@ -60,6 +63,7 @@ export class TransactionsOutletComponent implements OnInit {
     const getTransactionsSub$ =
       this._transactionsApiService.getTransactions(threeDaysBefore, 25);
     const getTransactionsResult = await firstValueFrom<Result<TransactionDto[]>>(getTransactionsSub$);
+    console.log(getTransactionsResult);
     this.transactions = getTransactionsResult.response;
   }
 
@@ -95,5 +99,12 @@ export class TransactionsOutletComponent implements OnInit {
     const user = getUserProfileResponse.response;
 
     return user.email.split('@')[0];
+  }
+
+  async sendMoneyToUser(toUserId: string, amount: number) : Promise<void> {
+    const sendMoneyToUserSub$ =
+      this._transactionsApiService.createTransactionUserToUser(toUserId,amount);
+    await firstValueFrom<Result<CreateTransactionUserToUserEvent>>(sendMoneyToUserSub$);
+    await this.ngOnInit();
   }
 }
