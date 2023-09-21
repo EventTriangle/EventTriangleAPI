@@ -95,8 +95,6 @@ public class EventConsumer :
             {
                 _logger.LogError(result.Error.Message);
                 
-                _logger.LogError(result.Error.Message);
-                
                 var notification = new ContactCreatingCanceledNotification(message.ContactId, result.Error.Message);
 
                 await _hubContext.Clients.User(message.RequesterId).ContactCreatingCanceledAsync(notification);
