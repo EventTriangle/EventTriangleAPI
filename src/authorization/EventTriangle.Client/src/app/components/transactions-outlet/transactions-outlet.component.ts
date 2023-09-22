@@ -4,12 +4,13 @@ import {ProfileApiService} from "../../services/api/profile-api.service";
 import {firstValueFrom} from "rxjs";
 import {UserDto} from "../../types/models/consumer/UserDto";
 import {Result} from "../../types/models/Result";
-import {TransactionsOutletHelper} from "./transactions-outlet.helper";
 import {TransactionsApiService} from "../../services/api/transactions-api.service";
 import {TransactionDto} from "../../types/models/consumer/TransactionDto";
 import {TransactionType} from "../../types/enums/TransactionType";
 import {TransactionState} from "../../types/enums/TransactionState";
 import {CreateTransactionUserToUserEvent} from "../../types/models/sender/CreateTransactionUserToUserEvent";
+import {TransactionsStateService} from "../../services/state/transactions-state.service";
+import {ProfileStateService} from "../../services/state/profile-state.service";
 
 @Component({
   selector: 'app-transactions-outlet',
@@ -39,23 +40,23 @@ import {CreateTransactionUserToUserEvent} from "../../types/models/sender/Create
   ]
 })
 export class TransactionsOutletComponent implements OnInit {
-  transactions: TransactionDto[] = [];
-  user: UserDto = this._transactionsOutletHelper.generateEmptyUser();
   amount: number = 0;
   toUserId: string = '';
+
   protected readonly TransactionType = TransactionType;
   protected readonly TransactionState = TransactionState;
 
-  constructor(private _transactionsOutletHelper: TransactionsOutletHelper,
-              private _profileApiService: ProfileApiService,
-              private _transactionsApiService: TransactionsApiService) {
+  constructor(private _profileApiService: ProfileApiService,
+              private _transactionsApiService: TransactionsApiService,
+              protected _transactionsStateService: TransactionsStateService,
+              protected _profileStateService: ProfileStateService) {
 
   }
 
   async ngOnInit() {
     const getProfileSub$ = this._profileApiService.getProfile();
     const getProfileResult = await firstValueFrom<Result<UserDto>>(getProfileSub$);
-    this.user = getProfileResult.response;
+    this._profileStateService.user = getProfileResult.response;
 
     const threeDaysBefore = new Date();
     threeDaysBefore.setDate(threeDaysBefore.getDate() - 3);
@@ -64,13 +65,13 @@ export class TransactionsOutletComponent implements OnInit {
       this._transactionsApiService.getTransactions(threeDaysBefore, 25);
     const getTransactionsResult = await firstValueFrom<Result<TransactionDto[]>>(getTransactionsSub$);
     console.log(getTransactionsResult);
-    this.transactions = getTransactionsResult.response;
+    this._transactionsStateService.transactions = getTransactionsResult.response;
   }
 
   getTransactionClassName(transaction: TransactionDto) : string {
     if(transaction.transactionState === TransactionState.Completed)
     {
-      if(transaction.toUserId === this.user.id) {
+      if(transaction.toUserId === this._profileStateService.user.id) {
         return 'transactionItemToMe';
       } else {
         return 'transactionItemFromMe'
@@ -83,7 +84,7 @@ export class TransactionsOutletComponent implements OnInit {
   getTransactionInfoClassName(transaction: TransactionDto) : string {
     if(transaction.transactionState === TransactionState.Completed)
     {
-      if(transaction.toUserId === this.user.id) {
+      if(transaction.toUserId === this._profileStateService.user.id) {
         return 'transactionItemToMeInfo';
       } else {
         return 'transactionItemFromMeInfo'
