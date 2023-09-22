@@ -8,7 +8,7 @@
     <div class="walletAndUserInfoContainer">
       <div class="wallet">
         <p class="walletTitle">Wallet Balance</p>
-        <p class="walletBalance">{{user.wallet.balance}} ֏</p>
+        <p class="walletBalance">€{{user.wallet.balance}}</p>
         <div class="logo">
           <svg-icon src="../../../assets/svg/logo.svg" class="logoSvg" />
           <p class="logoTitle">Event Triangle</p>
@@ -21,7 +21,7 @@
             {{user.email.split('@')[0]}}
           </p>
           <span class="userInfoId">
-            ID: <p class="userId">{{user.id}}</p>
+            ID: {{user.id}}
           </span>
         </div>
       </div>
@@ -30,9 +30,9 @@
       <input type="text" class="searchTransactionsInput" placeholder="Search Transactions" />
       <svg-icon src="../../../assets/svg/search.svg" class="searchSvg" />
     </div>
-    <div class="transactionList" [@transactionItemAnimation]="" *ngIf="transactions.length > 0">
+    <div class="transactionList" [@transactionItemAnimation]="" *ngIf="transactions.length > 0; else emptyTransactionsBlock;">
       <div *ngFor="let transaction of transactions"
-        class="{{getTransactionClassName(transaction)}}">
+           class="{{getTransactionClassName(transaction)}}">
         <svg-icon src="../../../assets/svg/transaction.svg" class="transactionSvg" />
         <div
           class="{{getTransactionInfoClassName(transaction)}}">
@@ -43,7 +43,7 @@
             To: {{getUserNameById(transaction.toUserId)}}
           </p>
           <p class="transactionItemAmount">
-            Amount: {{transaction.amount}} ֏
+            Amount: €{{transaction.amount}}
           </p>
           <p class="transactionItemDate">
             {{transaction.createdAt}}
@@ -51,6 +51,11 @@
         </div>
       </div>
     </div>
+    <ng-template  #emptyTransactionsBlock>
+      <div class="emptyTransactionList">
+        No transactions yet
+      </div>
+    </ng-template>
   </div>
 </div>
 <div class="createNewTransaction">
@@ -62,7 +67,7 @@
       <input type="text" class="createNewTransactionToInput"
              placeholder="To: Receiver" [(ngModel)]="toUserId"/>
       <input type="text" class="createNewTransactionAmountInput"
-             placeholder="Amount: 0 ֏"  [(ngModel)]="amount"/>
+             placeholder="Amount: €0"  [(ngModel)]="amount"/>
       <button class="createNewTransactionOkButton" (click)="sendMoneyToUser(toUserId, amount)">
         Ok
       </button>

@@ -160,19 +160,8 @@
 }
 
 .userInfoId {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
   font-weight: 700;
   font-size: 18px;
-}
-
-.userId {
-  -webkit-user-select: all;
-  -moz-user-select: all;
-  -ms-user-select: all;
-  user-select: all;
 }
 
 .searchTransactions {
@@ -392,4 +381,17 @@
   &:hover {
     background-color: $purple-hover-button;
   }
+}
+
+.emptyTransactionList {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10%;
+  font-size: 20px;
+  font-weight: 700;
 }
