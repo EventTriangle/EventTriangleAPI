@@ -43,7 +43,7 @@ export class TransactionsApiService extends ApiBaseService {
     };
 
     return this.httpClient.post<Result<CreateTransactionUserToUserEvent>>(
-      this.baseUrl + this.senderTransactionsRoute + "user-to-user",
+      this.baseUrl + this.senderTransactionsRoute + "/user-to-user",
       command, { withCredentials: true }
     );
   }
@@ -56,7 +56,7 @@ export class TransactionsApiService extends ApiBaseService {
     };
 
     return this.httpClient.post<Result<CreateTransactionCardToUserEvent>>(
-      this.baseUrl + this.senderTransactionsRoute + "card-to-user",
+      this.baseUrl + this.senderTransactionsRoute + "/card-to-user",
       command, { withCredentials: true }
     );
   }
@@ -68,7 +68,7 @@ export class TransactionsApiService extends ApiBaseService {
     };
 
     return this.httpClient.post<Result<TransactionRolledBackEvent>>(
-      this.baseUrl + this.senderTransactionsRoute + "rollback",
+      this.baseUrl + this.senderTransactionsRoute + "/rollback",
       command, { withCredentials: true }
     );
   }

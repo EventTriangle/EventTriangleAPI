@@ -8,7 +8,7 @@
     <div class="walletAndUserInfoContainer">
       <div class="wallet">
         <p class="walletTitle">Wallet Balance</p>
-        <p class="walletBalance">$48.000.000</p>
+        <p class="walletBalance">€{{_profileStateService.user.wallet.balance}}</p>
         <div class="logo">
           <svg-icon src="../../../assets/svg/logo.svg" class="logoSvg" />
           <p class="logoTitle">Event Triangle</p>
@@ -18,11 +18,11 @@
         <div class="userInfoAvatar"></div>
         <div class="userInfoData">
           <p class="userInfoFullName">
-            William Calhoun
+            {{_profileStateService.user.email.split('@')[0]}}
           </p>
-          <p class="userInfoAge">
-            27 age old
-          </p>
+          <span class="userInfoId">
+            ID: {{_profileStateService.user.id}}
+          </span>
         </div>
       </div>
     </div>
@@ -30,38 +30,48 @@
       <input type="text" class="searchTransactionsInput" placeholder="Search Transactions" />
       <svg-icon src="../../../assets/svg/search.svg" class="searchSvg" />
     </div>
-    <div class="transactionList" [@transactionItemAnimation]>
-      <div *ngFor="let transaction of transactions"
-        class="{{transaction === 1 ? 'transactionItemToMe' : transaction === 2 ? 'transactionItemFromMe' : 'transactionItemRollbacked'}}">
+    <div class="transactionList" [@transactionItemAnimation]=""
+         *ngIf="_transactionsStateService.transactions.length > 0; else emptyTransactionsBlock;">
+      <div *ngFor="let transaction of _transactionsStateService.transactions"
+           class="{{getTransactionClassName(transaction)}}">
         <svg-icon src="../../../assets/svg/transaction.svg" class="transactionSvg" />
         <div
-          class="{{transaction === 1 ? 'transactionItemToMeInfo' : transaction === 2 ? 'transactionItemFromMeInfo' : 'transactionItemRollbackedInfo'}}">
+          class="{{getTransactionInfoClassName(transaction)}}">
           <p class="transactionItemFrom">
-            From: Sender
+            From: {{getUserNameById(transaction.fromUserId)}}
           </p>
           <p class="transactionItemTo">
-            To: Receiver
+            To: {{getUserNameById(transaction.toUserId)}}
           </p>
           <p class="transactionItemAmount">
-            Amount: $150
+            Amount: €{{transaction.amount}}
           </p>
           <p class="transactionItemDate">
-            15:27 02/04/2023
+            {{transaction.createdAt}}
           </p>
         </div>
       </div>
     </div>
+    <ng-template  #emptyTransactionsBlock>
+      <div class="emptyTransactionList">
+        <p>No transactions yet</p>
+      </div>
+    </ng-template>
   </div>
 </div>
 <div class="createNewTransaction">
   <div class="createNewTransactionContainer">
-    <div [@rightBarAnimation]>
+    <div [@rightBarAnimation]="">
       <p class="createNewTransactionTitle">
         Create New Transaction
       </p>
-      <input type="text" class="createNewTransactionToInput" placeholder="To: Receiver" />
-      <input type="text" class="createNewTransactionAmountInput" placeholder="Amount: $0" />
-      <button class="createNewTransactionOkButton">Ok</button>
+      <input type="text" class="createNewTransactionToInput"
+             placeholder="To: Receiver" [(ngModel)]="toUserId"/>
+      <input type="text" class="createNewTransactionAmountInput"
+             placeholder="Amount: €0"  [(ngModel)]="amount"/>
+      <button class="createNewTransactionOkButton" (click)="sendMoneyToUser(toUserId, amount)">
+        Ok
+      </button>
     </div>
   </div>
 </div>

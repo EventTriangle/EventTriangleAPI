@@ -6,6 +6,7 @@ import {firstValueFrom} from "rxjs";
 import {CreditCardAddedEvent} from "../../types/models/sender/CreditCardAddedEvent";
 import {CreditCardDto} from "../../types/models/consumer/CreditCardDto";
 import {Result} from "../../types/models/Result";
+import {CreditCardsStateService} from "../../services/state/credit-cards-state.service";
 
 @Component({
   selector: 'app-cards-outlet',
@@ -29,24 +30,24 @@ import {Result} from "../../types/models/Result";
   ]
 })
 export class CardsOutletComponent implements OnInit {
-  cards: CreditCardDto[] = [];
-
-  constructor(private _creditCardApiService: CreditCardApiService) {
-
-  }
-
-  async ngOnInit() {
-    const getCreditCardsSub$ = this._creditCardApiService.getCreditCards();
-    const getCreditCardsResponse = await firstValueFrom<Result<CreditCardDto[]>>(getCreditCardsSub$);
-    this.cards = getCreditCardsResponse.response;
-  }
-
+  // input data
   public cardHolderName = '';
   public cardNumber = '';
   public expiration = '';
   public cvv = '';
   public paymentNetwork: PaymentNetwork = PaymentNetwork.Visa;
   public PaymentNetwork = PaymentNetwork;
+
+  constructor(private _creditCardApiService: CreditCardApiService,
+              protected _creditCardsStateService: CreditCardsStateService) {
+
+  }
+
+  async ngOnInit() {
+    const getCreditCardsSub$ = this._creditCardApiService.getCreditCards();
+    const getCreditCardsResult = await firstValueFrom<Result<CreditCardDto[]>>(getCreditCardsSub$);
+    this._creditCardsStateService.cards = getCreditCardsResult.response;
+  }
 
   async onAttachCardOkClick() {
     const attachCardSub$ = this._creditCardApiService.attachCreditCardToAccount(
@@ -58,6 +59,6 @@ export class CardsOutletComponent implements OnInit {
 
     const getCreditCardsSub$ = this._creditCardApiService.getCreditCards();
     const getCreditCardsResponse = await firstValueFrom<Result<CreditCardDto[]>>(getCreditCardsSub$);
-    this.cards = getCreditCardsResponse.response;
+    this._creditCardsStateService.cards = getCreditCardsResponse.response;
   }
 }
