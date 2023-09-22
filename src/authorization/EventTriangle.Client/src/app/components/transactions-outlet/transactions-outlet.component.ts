@@ -64,7 +64,6 @@ export class TransactionsOutletComponent implements OnInit {
     const getTransactionsSub$ =
       this._transactionsApiService.getTransactions(threeDaysBefore, 25);
     const getTransactionsResult = await firstValueFrom<Result<TransactionDto[]>>(getTransactionsSub$);
-    console.log(getTransactionsResult);
     this._transactionsStateService.transactions = getTransactionsResult.response;
   }
 
