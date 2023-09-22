@@ -6,6 +6,7 @@ using EventTriangleAPI.Shared.DTO.Enums;
 using EventTriangleAPI.Shared.DTO.Messages;
 using MassTransit;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Logging;
 
 namespace EventTriangleAPI.Consumer.BusinessLogic.Consumers;
 
@@ -41,6 +42,7 @@ public class EventConsumer :
     private readonly SuspendUserCommandHandler _suspendUserCommandHandler;
 
     private readonly IHubContext<NotificationHub, INotificationHub> _hubContext;
+    private readonly ILogger<EventConsumer> _logger;
 
     public EventConsumer(
         CreateContactCommandHandler createContactCommandHandler, 
@@ -57,7 +59,9 @@ public class EventConsumer :
         NotSuspendUserCommandHandler notSuspendUserCommandHandler, 
         UpdateUserRoleCommandHandler updateUserRoleCommandHandler,
         SuspendUserCommandHandler suspendUserCommandHandler, 
-        IHubContext<NotificationHub, INotificationHub> hubContext)
+        IHubContext<NotificationHub,
+        INotificationHub> hubContext, 
+        ILogger<EventConsumer> logger)
     {
         _createContactCommandHandler = createContactCommandHandler;
         _deleteContactCommandHandler = deleteContactCommandHandler;
@@ -74,6 +78,7 @@ public class EventConsumer :
         _updateUserRoleCommandHandler = updateUserRoleCommandHandler;
         _suspendUserCommandHandler = suspendUserCommandHandler;
         _hubContext = hubContext;
+        _logger = logger;
     }
 
     public async Task Consume(ConsumeContext<ContactCreatedEventMessage> context)
@@ -88,13 +93,17 @@ public class EventConsumer :
 
             if (!result.IsSuccess)
             {
+                _logger.LogError(result.Error.Message);
+                
                 var notification = new ContactCreatingCanceledNotification(message.ContactId, result.Error.Message);
 
                 await _hubContext.Clients.User(message.RequesterId).ContactCreatingCanceledAsync(notification);
             }            
         }
-        catch
+        catch(Exception e)
         {
+            _logger.LogError(e.Message);
+            
             var notification = new ContactCreatingCanceledNotification(message.ContactId, ResponseMessages.InternalError);
 
             await _hubContext.Clients.User(message.RequesterId).ContactCreatingCanceledAsync(notification);
@@ -114,13 +123,17 @@ public class EventConsumer :
 
             if (!result.IsSuccess)
             {
+                _logger.LogError(result.Error.Message);
+                
                 var notification = new ContactDeletingCanceledNotification(message.ContactId, result.Error.Message);
 
                 await _hubContext.Clients.User(message.RequesterId).ContactDeletingCanceledAsync(notification);
             }            
         }
-        catch
+        catch(Exception e)
         {
+            _logger.LogError(e.Message);
+            
             var notification = new ContactDeletingCanceledNotification(message.ContactId, ResponseMessages.InternalError);
 
             await _hubContext.Clients.User(message.RequesterId).ContactDeletingCanceledAsync(notification);
@@ -146,6 +159,8 @@ public class EventConsumer :
 
             if (!result.IsSuccess)
             {
+                _logger.LogError(result.Error.Message);
+                
                 var notification = new CreditCardAddingCanceledNotification(
                     message.HolderName,
                     message.CardNumber,
@@ -157,8 +172,10 @@ public class EventConsumer :
                 await _hubContext.Clients.User(message.RequesterId).CreditCardAddingCanceledAsync(notification);
             }            
         }
-        catch
+        catch(Exception e)
         {
+            _logger.LogError(e.Message);
+            
             var notification = new CreditCardAddingCanceledNotification(
                 message.HolderName,
                 message.CardNumber,
@@ -191,6 +208,8 @@ public class EventConsumer :
 
             if (!result.IsSuccess)
             {
+                _logger.LogError(result.Error.Message);
+                
                 var notification = new CreditCardChangingCanceledNotification(
                     message.HolderName,
                     message.CardNumber,
@@ -202,8 +221,10 @@ public class EventConsumer :
                 await _hubContext.Clients.User(message.RequesterId).CreditCardChangingCanceledAsync(notification);
             }            
         }
-        catch
+        catch(Exception e)
         {
+            _logger.LogError(e.Message);
+            
             var notification = new CreditCardChangingCanceledNotification(
                 message.HolderName,
                 message.CardNumber,
@@ -229,13 +250,17 @@ public class EventConsumer :
 
             if (!result.IsSuccess)
             {
+                _logger.LogError(result.Error.Message);
+                
                 var notification = new CreditCardDeletingCanceledNotification(message.CardId, result.Error.Message);
 
                 await _hubContext.Clients.User(message.RequesterId).CreditCardDeletingCanceledAsync(notification);
             }            
         }
-        catch
+        catch(Exception e)
         {
+            _logger.LogError(e.Message);
+            
             var notification = new CreditCardDeletingCanceledNotification(message.CardId, ResponseMessages.InternalError);
 
             await _hubContext.Clients.User(message.RequesterId).CreditCardDeletingCanceledAsync(notification);
@@ -260,6 +285,8 @@ public class EventConsumer :
 
             if (!result.IsSuccess)
             {
+                _logger.LogError(result.Error.Message);
+                
                 var notification = new SupportTicketOpeningCanceledNotification(
                     message.WalletId,
                     message.TransactionId,
@@ -269,8 +296,10 @@ public class EventConsumer :
                 await _hubContext.Clients.User(message.RequesterId).SupportTicketOpeningCanceledAsync(notification);
             }            
         }
-        catch
+        catch(Exception e)
         {
+            _logger.LogError(e.Message);
+            
             var notification = new SupportTicketOpeningCanceledNotification(
                 message.WalletId,
                 message.TransactionId,
@@ -294,6 +323,8 @@ public class EventConsumer :
 
             if (!result.IsSuccess)
             {
+                _logger.LogError(result.Error.Message);
+                
                 var notification = new SupportTicketResolvingCanceledNotification(
                     message.TicketId,
                     message.TicketJustification,
@@ -302,8 +333,10 @@ public class EventConsumer :
                 await _hubContext.Clients.User(message.RequesterId).SupportTicketResolvingCanceledAsync(notification);
             }            
         }
-        catch
+        catch(Exception e)
         {
+            _logger.LogError(e.Message);
+            
             var notification = new SupportTicketResolvingCanceledNotification(
                 message.TicketId,
                 message.TicketJustification,
@@ -330,6 +363,8 @@ public class EventConsumer :
 
             if (!result.IsSuccess)
             {
+                _logger.LogError(result.Error.Message);
+                
                 var notification = new TransactionCanceledNotification(
                     message.RequesterId, 
                     message.RequesterId, 
@@ -344,8 +379,10 @@ public class EventConsumer :
             
             await _hubContext.Clients.User(context.Message.RequesterId).TransactionSucceededAsync(result.Response);
         }
-        catch
+        catch(Exception e)
         {
+            _logger.LogError(e.Message);
+            
             var notification = new TransactionCanceledNotification(
                 message.RequesterId, 
                 message.RequesterId, 
@@ -375,6 +412,8 @@ public class EventConsumer :
 
             if (!result.IsSuccess)
             {
+                _logger.LogError(result.Error.Message);
+                
                 var notification = new TransactionCanceledNotification(
                     message.RequesterId, 
                     message.ToUserId, 
@@ -389,8 +428,10 @@ public class EventConsumer :
             
             await _hubContext.Clients.User(context.Message.RequesterId).TransactionSucceededAsync(result.Response);
         }
-        catch
+        catch(Exception e)
         {
+            _logger.LogError(e.Message);
+            
             var notification = new TransactionCanceledNotification(
                 message.RequesterId, 
                 message.ToUserId, 
@@ -416,13 +457,17 @@ public class EventConsumer :
 
             if (!result.IsSuccess)
             {
+                _logger.LogError(result.Error.Message);
+                
                 var notification = new TransactionRollBackCanceledNotification(message.TransactionId, result.Error.Message);
             
                 await _hubContext.Clients.User(context.Message.RequesterId).TransactionRollBackCanceledAsync(notification);
             }
         }
-        catch
+        catch(Exception e)
         {
+            _logger.LogError(e.Message);
+            
             var notification = new TransactionRollBackCanceledNotification(message.TransactionId, ResponseMessages.InternalError);
             
             await _hubContext.Clients.User(context.Message.RequesterId).TransactionRollBackCanceledAsync(notification);
@@ -450,13 +495,17 @@ public class EventConsumer :
 
             if (!result.IsSuccess)
             {
+                _logger.LogError(result.Error.Message);
+                
                 var notification = new UserNotSuspendingCanceledNotification(message.UserId, result.Error.Message);
             
                 await _hubContext.Clients.User(context.Message.RequesterId).UserNotSuspendingCanceledAsync(notification);
             }
         }
-        catch
+        catch(Exception e)
         {
+            _logger.LogError(e.Message);
+            
             var notification = new UserNotSuspendingCanceledNotification(message.UserId, ResponseMessages.InternalError);
             
             await _hubContext.Clients.User(context.Message.RequesterId).UserNotSuspendingCanceledAsync(notification);
@@ -476,6 +525,8 @@ public class EventConsumer :
 
             if (!result.IsSuccess)
             {
+                _logger.LogError(result.Error.Message);
+                
                 var notification = new UserRoleUpdatingCanceledNotification(
                     message.UserId,
                     message.UserRole,
@@ -484,8 +535,10 @@ public class EventConsumer :
                 await _hubContext.Clients.User(context.Message.RequesterId).UserRoleUpdatingCanceledAsync(notification);
             }
         }
-        catch
+        catch(Exception e)
         {
+            _logger.LogError(e.Message);
+            
             var notification = new UserRoleUpdatingCanceledNotification(
                 message.UserId,
                 message.UserRole,
@@ -508,13 +561,17 @@ public class EventConsumer :
 
             if (!result.IsSuccess)
             {
+                _logger.LogError(result.Error.Message);
+                
                 var notification = new UserSuspendingCanceledNotification(message.UserId, result.Error.Message);
             
                 await _hubContext.Clients.User(context.Message.RequesterId).UserSuspendingCanceledAsync(notification);
             }
         }
-        catch
+        catch(Exception e)
         {
+            _logger.LogError(e.Message);
+            
             var notification = new UserSuspendingCanceledNotification(message.UserId, ResponseMessages.InternalError);
             
             await _hubContext.Clients.User(context.Message.RequesterId).UserSuspendingCanceledAsync(notification);
