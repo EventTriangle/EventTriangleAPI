@@ -31,7 +31,7 @@ public class TicketStore : ITicketStore
     private readonly MemoryCacheEntryOptions _memoryCacheEntryOptions;
 
     private readonly User.UserClient _userClient;
-    private ILoggerFactory _loggerFactory;
+    private readonly ILoggerFactory _loggerFactory;
 
     public TicketStore(
         string userGrpcChannelAddress,

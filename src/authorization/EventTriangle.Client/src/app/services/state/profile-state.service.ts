@@ -3,11 +3,15 @@ import {UserDto} from "../../types/models/consumer/UserDto";
 import {WalletDto} from "../../types/models/consumer/WalletDto";
 import {UserRole} from "../../types/enums/UserRole";
 import {UserStatus} from "../../types/enums/UserStatus";
+import { BehaviorSubject } from "rxjs";
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProfileStateService {
+  public wasAuthenticationCheck = false;
+  public isAuthenticated = false;
+
   public user: UserDto;
 
   constructor() {
