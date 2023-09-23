@@ -7,6 +7,7 @@ import {CreditCardAddedEvent} from "../../types/models/sender/CreditCardAddedEve
 import {CreditCardDto} from "../../types/models/consumer/CreditCardDto";
 import {Result} from "../../types/models/Result";
 import {CreditCardsStateService} from "../../services/state/credit-cards-state.service";
+import { ProfileStateService } from 'src/app/services/state/profile-state.service';
 
 @Component({
   selector: 'app-cards-outlet',
@@ -38,12 +39,16 @@ export class CardsOutletComponent implements OnInit {
   public paymentNetwork: PaymentNetwork = PaymentNetwork.Visa;
   public PaymentNetwork = PaymentNetwork;
 
-  constructor(private _creditCardApiService: CreditCardApiService,
-              protected _creditCardsStateService: CreditCardsStateService) {
+  constructor(
+    private _creditCardApiService: CreditCardApiService,
+    protected _creditCardsStateService: CreditCardsStateService,
+    protected _profileStateService: ProfileStateService) {
 
   }
 
   async ngOnInit() {
+    if (!this._profileStateService.isAuthenticated) return;
+
     const getCreditCardsSub$ = this._creditCardApiService.getCreditCards();
     const getCreditCardsResult = await firstValueFrom<Result<CreditCardDto[]>>(getCreditCardsSub$);
     this._creditCardsStateService.cards = getCreditCardsResult.response;

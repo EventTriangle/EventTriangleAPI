@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthorizationApiService } from 'src/app/services/api/authorization-api.service';
+import { ProfileStateService } from 'src/app/services/state/profile-state.service';
 
 @Component({
   selector: 'app-layout',
@@ -8,16 +9,21 @@ import { AuthorizationApiService } from 'src/app/services/api/authorization-api.
 })
 export class LayoutComponent implements OnInit {
   constructor(
-    private authorozationApiService: AuthorizationApiService) { }
-
-  public isAuthenticated = false;
+    private _authorizationApiService: AuthorizationApiService,
+    protected _profileStateService: ProfileStateService) { }
 
   public ngOnInit(): void {
-    const request = this.authorozationApiService.getIsAuthenticated();
+    const request = this._authorizationApiService.getIsAuthenticated();
 
     request.subscribe({
-      next: (res) => this.isAuthenticated = res.authenticated,
-      error: _ => window.location.href = this.authorozationApiService.getLoginPathForRedirection()
+      next: (res) => {
+        this._profileStateService.wasAuthenticationCheck = true;
+        this._profileStateService.isAuthenticated = res.authenticated
+      },
+      error: _ => {
+        this._profileStateService.wasAuthenticationCheck = true;
+        this._profileStateService.isAuthenticated = false;
+      }
     });
   }
 }

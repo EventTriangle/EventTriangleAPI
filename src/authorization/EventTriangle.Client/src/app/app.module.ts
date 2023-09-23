@@ -18,6 +18,7 @@ import { TicketsOutletComponent } from './components/tickets-outlet/tickets-outl
 import { UsersOutletComponent } from './components/users-outlet/users-outlet.component';
 import { APP_BASE_HREF } from '@angular/common';
 import {FormsModule} from "@angular/forms";
+import { LoginWindowComponent } from './components/login-window/login-window.component';
 
 const initializeAppFactory = (): Promise<void> => {
   const configUrl = 'assets/config/config.json';
@@ -46,7 +47,8 @@ const initializeAppFactory = (): Promise<void> => {
     ContactsOutletComponent,
     SupportOutletComponent,
     TicketsOutletComponent,
-    UsersOutletComponent
+    UsersOutletComponent,
+    LoginWindowComponent
   ],
   imports: [
       BrowserModule,

@@ -46,14 +46,17 @@ export class TransactionsOutletComponent implements OnInit {
   protected readonly TransactionType = TransactionType;
   protected readonly TransactionState = TransactionState;
 
-  constructor(private _profileApiService: ProfileApiService,
-              private _transactionsApiService: TransactionsApiService,
-              protected _transactionsStateService: TransactionsStateService,
-              protected _profileStateService: ProfileStateService) {
+  constructor(
+    private _profileApiService: ProfileApiService,
+    private _transactionsApiService: TransactionsApiService,
+    protected _transactionsStateService: TransactionsStateService,
+    protected _profileStateService: ProfileStateService) {
 
   }
 
   async ngOnInit() {
+    if (!this._profileStateService.isAuthenticated) return;
+
     const getProfileSub$ = this._profileApiService.getProfile();
     const getProfileResult = await firstValueFrom<Result<UserDto>>(getProfileSub$);
     this._profileStateService.user = getProfileResult.response;
