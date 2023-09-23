@@ -1,20 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthorizationApiService } from 'src/app/services/api/authorization-api.service';
 import { ProfileStateService } from 'src/app/services/state/profile-state.service';
-import {animate, query, stagger, state, style, transition, trigger} from "@angular/animations";
 
 @Component({
   selector: 'app-layout',
   templateUrl: './layout.component.html',
-  styleUrls: ['./layout.component.scss'],
-  animations: [
-    trigger('loginWindowAnimation', [
-      transition(':enter', [
-        style({ opacity: 0 }),
-        animate('.4s 250ms', style({opacity: 1 }))
-      ]),
-    ])
-  ]
+  styleUrls: ['./layout.component.scss']
 })
 export class LayoutComponent implements OnInit {
   constructor(
@@ -34,9 +25,5 @@ export class LayoutComponent implements OnInit {
         this._profileStateService.isAuthenticated = false;
       }
     });
-  }
-
-  async getLogin() {
-    window.location.href = this._authorizationApiService.getLoginPathForRedirection();
   }
 }

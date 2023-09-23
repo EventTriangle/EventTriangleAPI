@@ -1,33 +1,6 @@
 <div class="layout">
     <ng-container *ngIf="_profileStateService.wasAuthenticationCheck">
-        <div class="loginBackground" *ngIf="!_profileStateService.isAuthenticated">
-            <div class="loginWindow" [@loginWindowAnimation]="">
-                <svg-icon src="../../../assets/svg/logo.svg" class="logoSvg"/>
-                <p class="welcomeString">
-                    Welcome
-                </p>
-                <p class="eventTriangleString">
-                    to <span class="eventTriangleSpan">Event Triangle</span>
-                </p>
-                <div class="advantages">
-                    <div class="advantagesItem">
-                        <svg-icon src="../../../assets/svg/telegram.svg" class="telegramSvg"/>
-                        <p>Send money to friends instantly.</p>
-                    </div>
-                    <div class="advantagesItem">
-                        <svg-icon src="../../../assets/svg/shield.svg" class="shieldSvg"/>
-                        <p>Secure transactions.</p>
-                    </div>
-                    <div class="advantagesItem">
-                        <svg-icon src="../../../assets/svg/assistant.svg" class="assistantSvg"/>
-                        <p>Fast and operative work of moderators.</p>
-                    </div>
-                </div>
-                <button class="signInButton" (click)="getLogin()">
-                    Sign In with Microsoft
-                </button>
-            </div>
-        </div>
+        <app-login-window *ngIf="!_profileStateService.isAuthenticated"></app-login-window>
         <div class="layoutContainer">
             <app-header></app-header>
             <app-navbar></app-navbar>
