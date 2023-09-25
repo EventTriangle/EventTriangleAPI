@@ -19,6 +19,7 @@ import { UsersOutletComponent } from './components/users-outlet/users-outlet.com
 import { APP_BASE_HREF } from '@angular/common';
 import {FormsModule} from "@angular/forms";
 import { LoginWindowComponent } from './components/login-window/login-window.component';
+import { SkeletonModule } from 'primeng/skeleton';
 
 const initializeAppFactory = (): Promise<void> => {
   const configUrl = 'assets/config/config.json';
@@ -57,6 +58,7 @@ const initializeAppFactory = (): Promise<void> => {
       BrowserAnimationsModule,
       AngularSvgIconModule.forRoot(),
       FormsModule,
+      SkeletonModule
   ],
   providers: [
     {

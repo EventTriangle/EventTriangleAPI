@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import {ProfileStateService} from "../../services/state/profile-state.service";
 
 @Component({
   selector: 'app-header',
@@ -6,5 +7,5 @@ import { Component } from '@angular/core';
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent {
-
+  constructor(protected _profileStateService: ProfileStateService) {}
 }

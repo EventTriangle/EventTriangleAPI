@@ -64,13 +64,15 @@ export class TransactionsOutletComponent implements OnInit {
     const threeDaysBefore = new Date();
     threeDaysBefore.setDate(threeDaysBefore.getDate() - 3);
 
-    const getTransactionsSub$ =
-      this._transactionsApiService.getTransactions(threeDaysBefore, 25);
+    const getTransactionsSub$ = this._transactionsApiService.getTransactions(threeDaysBefore, 25);
     const getTransactionsResult = await firstValueFrom<Result<TransactionDto[]>>(getTransactionsSub$);
     this._transactionsStateService.transactions = getTransactionsResult.response;
+    this._transactionsStateService.wasRequested = true;
   }
 
   getTransactionClassName(transaction: TransactionDto) : string {
+    if (!this._profileStateService.user) throw new Error("User is null");
+
     if(transaction.transactionState === TransactionState.Completed)
     {
       if(transaction.toUserId === this._profileStateService.user.id) {
@@ -84,6 +86,8 @@ export class TransactionsOutletComponent implements OnInit {
   }
 
   getTransactionInfoClassName(transaction: TransactionDto) : string {
+    if (!this._profileStateService.user) throw new Error("User is null");
+
     if(transaction.transactionState === TransactionState.Completed)
     {
       if(transaction.toUserId === this._profileStateService.user.id) {
