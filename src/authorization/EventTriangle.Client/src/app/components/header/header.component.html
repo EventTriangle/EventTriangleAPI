@@ -8,7 +8,10 @@
 </div>
 <div class="profile">
   <div class="fullName">
-    William Calhoun
+    <span *ngIf="_profileStateService.user; else userIsNull">{{_profileStateService.user.email.split('@')[0]}}</span>
+    <ng-template #userIsNull>
+      <p-skeleton styleClass="skeletonDefault" />
+    </ng-template>
   </div>
   <div class="avatar">
 

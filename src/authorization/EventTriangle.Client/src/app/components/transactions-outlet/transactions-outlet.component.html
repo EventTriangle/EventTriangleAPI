@@ -8,7 +8,14 @@
     <div class="walletAndUserInfoContainer">
       <div class="wallet">
         <p class="walletTitle">Wallet Balance</p>
-        <p class="walletBalance">€{{_profileStateService.user.wallet.balance}}</p>
+        <p class="walletBalance">
+          <span *ngIf="_profileStateService.user !== null; else userIsNull">
+            €{{_profileStateService.user.wallet.balance}}
+          </span>
+          <ng-template #userIsNull>
+            <p-skeleton styleClass="skeletonDefault" />
+          </ng-template>
+        </p>
         <div class="logo">
           <svg-icon src="../../../assets/svg/logo.svg" class="logoSvg" />
           <p class="logoTitle">Event Triangle</p>
@@ -18,10 +25,20 @@
         <div class="userInfoAvatar"></div>
         <div class="userInfoData">
           <p class="userInfoFullName">
-            {{_profileStateService.user.email.split('@')[0]}}
+            <span *ngIf="_profileStateService.user; else userIsNull">
+              {{_profileStateService.user.email.split('@')[0]}}
+            </span>
+            <ng-template #userIsNull>
+              <p-skeleton styleClass="skeletonDefault" />
+            </ng-template>
           </p>
           <span class="userInfoId">
-            ID: {{_profileStateService.user.id}}
+            <span *ngIf="_profileStateService.user; else userIsNull">
+              ID: {{_profileStateService.user.id}}
+            </span>
+            <ng-template #userIsNull>
+              <p-skeleton styleClass="skeletonDefault" />
+            </ng-template>
           </span>
         </div>
       </div>
@@ -30,13 +47,10 @@
       <input type="text" class="searchTransactionsInput" placeholder="Search Transactions" />
       <svg-icon src="../../../assets/svg/search.svg" class="searchSvg" />
     </div>
-    <div class="transactionList" [@transactionItemAnimation]=""
-         *ngIf="_transactionsStateService.transactions.length > 0; else emptyTransactionsBlock;">
-      <div *ngFor="let transaction of _transactionsStateService.transactions"
-           class="{{getTransactionClassName(transaction)}}">
+    <div class="transactionList" [@transactionItemAnimation]="" *ngIf="_transactionsStateService.transactions.length > 0 && _transactionsStateService.wasRequested">
+      <div *ngFor="let transaction of _transactionsStateService.transactions" class="{{getTransactionClassName(transaction)}}">
         <svg-icon src="../../../assets/svg/transaction.svg" class="transactionSvg" />
-        <div
-          class="{{getTransactionInfoClassName(transaction)}}">
+        <div class="{{getTransactionInfoClassName(transaction)}}">
           <p class="transactionItemFrom">
             From: {{getUserNameById(transaction.fromUserId)}}
           </p>
@@ -52,11 +66,16 @@
         </div>
       </div>
     </div>
-    <ng-template  #emptyTransactionsBlock>
-      <div class="emptyTransactionList">
-        <p>No transactions yet</p>
-      </div>
-    </ng-template>
+    <div class="emptyTransactionList" *ngIf="_transactionsStateService.transactions.length === 0 && _transactionsStateService.wasRequested">
+      <p>No transactions yet</p>
+    </div>
+    <div class="transactionList" [@transactionItemAnimation]="" *ngIf="!_transactionsStateService.wasRequested">
+      <p-skeleton styleClass="skeletonTransactionItem" />
+      <p-skeleton styleClass="skeletonTransactionItem" />
+      <p-skeleton styleClass="skeletonTransactionItem" />
+      <p-skeleton styleClass="skeletonTransactionItem" />
+      <p-skeleton styleClass="skeletonTransactionItem" />
+    </div>
   </div>
 </div>
 <div class="createNewTransaction">

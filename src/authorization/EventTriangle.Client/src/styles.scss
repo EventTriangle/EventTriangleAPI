@@ -1,3 +1,7 @@
+//primeng
+@import "primeng/resources/themes/lara-light-blue/theme.css";
+@import "primeng/resources/primeng.css";
+
 @import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
 
 * {
@@ -61,22 +65,54 @@ body {
   height: 100vh;
 }
 
-$purple: #8A21DC;
-$grey: #F5F6F8;
-$grey-2: #E9EFF2;
+//skeletons
+.skeletonDefault {
+  width: 140px !important;
+  height: 20px !important;
+  border-radius: 500px;
+}
 
-$green-60percent: rgba(0, 165, 0, 0.6);
-$purple-60percent: #8b21dc60;
-$red-60percent: #ec161660;
+.skeletonTransactionItem {
+  width: 100% !important;
+  height: 55px !important;
+  border-radius: 10px !important;
+  margin-bottom: 12px;
+}
 
-$purple-20percent: #8b21dc20;
+.skeletonCardItem {
+  width: 290px !important;
+  height: 183px !important;
+  border-radius: 10px !important;
+}
 
-$red-p: #D64C4C;
-$grey-p: #707782;
-$light-grey-p: #A3A5A7;
+.skeletonContactItem {
+  width: 100% !important;
+  height: 60px !important;
+  margin-bottom: 10px !important;
+  border-radius: 10px !important;
+  padding: 13px !important;
+}
 
-$grey-svg: #707782;
-$light-grey-svg: #A3A5A7;
-$red-svg: #D64C4C;
+.skeletonSupportTicketItem {
+  width: 100% !important;
+  height: 80px !important;
+  border-radius: 10px !important;
+  padding: 27px !important;
+  margin-bottom: 10px !important;
+}
 
-$purple-hover-button: #7f10d4;
+.skeletonTicketItem {
+  width: 100% !important;
+  height: 80px !important;
+  border-radius: 10px !important;
+  padding: 27px !important;
+  margin-bottom: 10px !important;
+}
+
+.skeletonUserItem {
+  width: 100% !important;
+  height: 60px !important;
+  border-radius: 10px !important;
+  padding: 27px !important;
+  margin-bottom: 10px !important;
+}
