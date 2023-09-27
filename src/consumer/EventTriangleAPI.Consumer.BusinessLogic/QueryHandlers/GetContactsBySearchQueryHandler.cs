@@ -34,6 +34,7 @@ public class GetContactsBySearchQueryHandler : ICommandHandler<GetContactsBySear
         var users = await _context.UserEntities
             .Where(x => EF.Functions.Like(x.Email, $"%{command.Email}%"))
             .Where(x => !contactIdList.Contains(x.Id))
+            .Where(x => x.Id != requester.Id)
             .Select(x => new ContactDto(
                 requester.Id,
                 x.Id,

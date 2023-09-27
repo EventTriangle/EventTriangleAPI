@@ -6,22 +6,29 @@
     </span>
     <p class="overview">An overview of contacts</p>
     <div class="search">
-      <input type="text" class="searchInput" placeholder="Search Contacts" />
+      <input type="text" class="searchInput" [ngModel]="searchText | async" (ngModelChange)="searchText.next($event)" placeholder="Search Contacts" />
       <svg-icon src="../../../assets/svg/search.svg" class="searchSvg" />
     </div>
-    <div class="contactsList" [@contactListAnimation]>
-      <div *ngFor="let contact of contacts" class="contactItem">
-        <p class="contactItemUsername">Username: Lewis Farrell</p>
-        <p class="contactItemStatus">Status: Active</p>
-        <svg-icon src="../../../assets/svg/plus.svg" class="plusSvg" />
+    <div class="contactsList" *ngIf="_contactsStateService.contacts.getValue().length > 0 && searchText.getValue().length === 0" [@contactListAnimation]="">
+      <div *ngFor="let contact of _contactsStateService.contacts.getValue()" class="contactItem">
+        <p class="contactItemUsername">Username: {{contact.contact.email.split("@")[0]}}</p>
+        <p class="contactItemStatus">Status: {{contact.contact.userStatus}}</p>
+        <svg-icon src="../../../assets/svg/minus.svg" class="plusSvg" (click)="onClickDeleteContactHandler(contact.contactId)"/>
       </div>
     </div>
-<!--    <div class="contactsList">-->
-<!--      <p-skeleton styleClass="skeletonContactItem" />-->
-<!--      <p-skeleton styleClass="skeletonContactItem" />-->
-<!--      <p-skeleton styleClass="skeletonContactItem" />-->
-<!--      <p-skeleton styleClass="skeletonContactItem" />-->
-<!--    </div>-->
+    <div class="contactsList" *ngIf="_contactsStateService.searchedContacts.getValue().length > 0 && searchText.getValue().length > 0" [@contactListAnimation]="">
+      <div *ngFor="let contact of _contactsStateService.searchedContacts.getValue()" class="contactItem">
+        <p class="contactItemUsername">Username: {{contact.contact.email.split("@")[0]}}</p>
+        <p class="contactItemStatus">Status: {{contact.contact.userStatus}}</p>
+        <svg-icon src="../../../assets/svg/plus.svg" class="plusSvg" (click)="onClickAddContactHandler(contact.contactId)"/>
+      </div>
+    </div>
+    <div class="contactsList" *ngIf="!_contactsStateService.wasContactsRequested">
+      <p-skeleton styleClass="skeletonContactItem" />
+      <p-skeleton styleClass="skeletonContactItem" />
+      <p-skeleton styleClass="skeletonContactItem" />
+      <p-skeleton styleClass="skeletonContactItem" />
+    </div>
   </div>
 </div>
 <div class="emptyBlock"></div>

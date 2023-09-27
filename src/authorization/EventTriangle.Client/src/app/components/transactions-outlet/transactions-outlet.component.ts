@@ -57,10 +57,6 @@ export class TransactionsOutletComponent implements OnInit {
   async ngOnInit() {
     if (!this._profileStateService.isAuthenticated) return;
 
-    const getProfileSub$ = this._profileApiService.getProfile();
-    const getProfileResult = await firstValueFrom<Result<UserDto>>(getProfileSub$);
-    this._profileStateService.user = getProfileResult.response;
-
     const threeDaysBefore = new Date();
     threeDaysBefore.setDate(threeDaysBefore.getDate() - 3);
 

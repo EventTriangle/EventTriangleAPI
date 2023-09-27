@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthorizationApiService } from 'src/app/services/api/authorization-api.service';
 import { ProfileStateService } from 'src/app/services/state/profile-state.service';
 
 @Component({
@@ -9,21 +8,11 @@ import { ProfileStateService } from 'src/app/services/state/profile-state.servic
 })
 export class LayoutComponent implements OnInit {
   constructor(
-    private _authorizationApiService: AuthorizationApiService,
     protected _profileStateService: ProfileStateService) { }
 
-  public ngOnInit(): void {
-    const request = this._authorizationApiService.getIsAuthenticated();
+  public async ngOnInit() {
+    const getAuthenticationResult = await this._profileStateService.getAuthenticationAsync();
 
-    request.subscribe({
-      next: (res) => {
-        this._profileStateService.wasAuthenticationCheck = true;
-        this._profileStateService.isAuthenticated = res.authenticated
-      },
-      error: _ => {
-        this._profileStateService.wasAuthenticationCheck = true;
-        this._profileStateService.isAuthenticated = false;
-      }
-    });
+    if (getAuthenticationResult.authenticated) await this._profileStateService.getProfileAsync();
   }
 }

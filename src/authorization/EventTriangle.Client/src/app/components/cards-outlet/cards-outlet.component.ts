@@ -17,9 +17,7 @@ import { ProfileStateService } from 'src/app/services/state/profile-state.servic
     trigger('cardListAnimation', [
       transition(':enter', [
         query(':enter', style({ transform: 'translateY(-5px)', opacity: 0 }), { optional: true }),
-        query(':enter', stagger('100ms', [
-          animate('200ms', style({ transform: 'translateY(0)', opacity: 1 }))
-        ]), { optional: true })
+        query(':enter', stagger('100ms', [animate('200ms', style({ transform: 'translateY(0)', opacity: 1 }))]), { optional: true })
       ])
     ]),
     trigger('rightBarAnimation', [
