@@ -1,4 +1,4 @@
-export interface UserNotSuspendedEvent {
+export interface IUserSuspendedEvent {
   id: string;
   requesterId: string;
   userId: string;

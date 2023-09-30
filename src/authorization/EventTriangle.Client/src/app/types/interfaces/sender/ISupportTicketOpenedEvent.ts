@@ -1,4 +1,4 @@
-export interface SupportTicketOpenedEvent {
+export interface ISupportTicketOpenedEvent {
   id: string;
   requesterId: string;
   walletId: string;

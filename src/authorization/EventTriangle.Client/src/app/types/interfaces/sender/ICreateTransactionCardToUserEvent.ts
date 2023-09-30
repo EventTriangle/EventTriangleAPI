@@ -1,4 +1,4 @@
-export interface CreateTransactionCardToUserEvent {
+export interface ICreateTransactionCardToUserEvent {
   id: string;
   requesterId: string;
   creditCardId: string;

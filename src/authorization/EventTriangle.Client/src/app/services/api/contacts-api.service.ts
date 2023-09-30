@@ -1,13 +1,13 @@
 import {Injectable} from "@angular/core";
 import ApiBaseService from "./api-base.service";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {ContactDto} from "../../types/models/consumer/ContactDto";
+import {IContactDto} from "../../types/interfaces/consumer/IContactDto";
 import {Observable} from "rxjs";
-import {ContactCreatedEvent} from "../../types/models/sender/ContactCreatedEvent";
+import {IContactCreatedEvent} from "../../types/interfaces/sender/IContactCreatedEvent";
 import {AddContactRequest} from "../../types/requests/AddContactRequest";
 import {DeleteContactRequest} from "../../types/requests/DeleteContactRequest";
-import {ContactDeletedEvent} from "../../types/models/sender/ContactDeletedEvent";
-import {Result} from "../../types/models/Result";
+import {IContactDeletedEvent} from "../../types/interfaces/sender/IContactDeletedEvent";
+import {IResult} from "../../types/interfaces/IResult";
 
 @Injectable({
   providedIn: 'root'
@@ -25,27 +25,35 @@ export class ContactsApiService extends ApiBaseService {
   // requests
 
   // GET consumer/contacts
-  public getContacts() : Observable<Result<ContactDto[]>> {
-    return this.httpClient.get<Result<ContactDto[]>>(
+  public getContacts() : Observable<IResult<IContactDto[]>> {
+    return this.httpClient.get<IResult<IContactDto[]>>(
       this.baseUrl + this.consumerContactsRoute,
       { withCredentials: true }
     );
   }
 
+  // GET consumer/contacts/search
+  public getSearchContacts(email: string) : Observable<IResult<IContactDto[]>> {
+    return this.httpClient.get<IResult<IContactDto[]>>(
+        this.baseUrl + this.consumerContactsRoute + `/search?email=${email}`,
+        { withCredentials: true }
+    );
+  }
+
   // POST sender/contacts
-  public addContact(contactId: string) : Observable<Result<ContactCreatedEvent>> {
+  public addContact(contactId: string) : Observable<IResult<IContactCreatedEvent>> {
     let command : AddContactRequest = {
       contactId: contactId
     };
 
-    return this.httpClient.post<Result<ContactCreatedEvent>>(
+    return this.httpClient.post<IResult<IContactCreatedEvent>>(
       this.baseUrl + this.senderContactsRoute,
       command, { withCredentials: true }
     );
   }
 
   // DELETE sender/contacts
-  public deleteContact(contactId: string) : Observable<Result<ContactDeletedEvent>> {
+  public deleteContact(contactId: string) : Observable<IResult<IContactDeletedEvent>> {
     let command : DeleteContactRequest = {
       contactId: contactId
     };
@@ -57,7 +65,7 @@ export class ContactsApiService extends ApiBaseService {
       body: command
     };
 
-    return this.httpClient.delete<Result<ContactDeletedEvent>>(
+    return this.httpClient.delete<IResult<IContactDeletedEvent>>(
       this.baseUrl + this.senderContactsRoute,
       options
     );

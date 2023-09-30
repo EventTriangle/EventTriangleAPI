@@ -1,15 +1,15 @@
 import {Injectable} from "@angular/core";
 import ApiBaseService from "./api-base.service";
 import {HttpClient} from "@angular/common/http";
-import {TransactionDto} from "../../types/models/consumer/TransactionDto";
+import {ITransactionDto} from "../../types/interfaces/consumer/ITransactionDto";
 import {CreateTransactionUserToUserRequest} from "../../types/requests/CreateTransactionUserToUserRequest";
 import {Observable} from "rxjs";
-import {CreateTransactionUserToUserEvent} from "../../types/models/sender/CreateTransactionUserToUserEvent";
-import {CreateTransactionCardToUserEvent} from "../../types/models/sender/CreateTransactionCardToUserEvent";
+import {ICreateTransactionUserToUserEvent} from "../../types/interfaces/sender/ICreateTransactionUserToUserEvent";
+import {ICreateTransactionCardToUserEvent} from "../../types/interfaces/sender/ICreateTransactionCardToUserEvent";
 import {TopUpAccountBalanceRequest} from "../../types/requests/TopUpAccountBalanceRequest";
 import {RollBackTransactionRequest} from "../../types/requests/RollBackTransactionRequest";
-import {TransactionRolledBackEvent} from "../../types/models/sender/TransactionRolledBackEvent";
-import {Result} from "../../types/models/Result";
+import {ITransactionRolledBackEvent} from "../../types/interfaces/sender/ITransactionRolledBackEvent";
+import {IResult} from "../../types/interfaces/IResult";
 
 @Injectable({
   providedIn: 'root'
@@ -27,8 +27,8 @@ export class TransactionsApiService extends ApiBaseService {
   // requests
 
   // GET consumer/transactions
-  public getTransactions(fromDateTime: Date, limit: number) : Observable<Result<TransactionDto[]>> {
-    return this.httpClient.get<Result<TransactionDto[]>>(
+  public getTransactions(fromDateTime: Date, limit: number) : Observable<IResult<ITransactionDto[]>> {
+    return this.httpClient.get<IResult<ITransactionDto[]>>(
       this.baseUrl + this.consumerTransactionsRoute + `?fromDateTime=${fromDateTime.toJSON()}&limit=${limit}`,
       { withCredentials: true }
     );
@@ -36,38 +36,38 @@ export class TransactionsApiService extends ApiBaseService {
 
   // POST sender/user-to-user
   public createTransactionUserToUser(toUserId: string, amount: number)
-    : Observable<Result<CreateTransactionUserToUserEvent>> {
+    : Observable<IResult<ICreateTransactionUserToUserEvent>> {
     let command : CreateTransactionUserToUserRequest = {
       toUserId: toUserId,
       amount: amount
     };
 
-    return this.httpClient.post<Result<CreateTransactionUserToUserEvent>>(
+    return this.httpClient.post<IResult<ICreateTransactionUserToUserEvent>>(
       this.baseUrl + this.senderTransactionsRoute + "/user-to-user",
       command, { withCredentials: true }
     );
   }
 
   // POST sender/card-to-user
-  public topUpAccountBalance(creditCardId: string, amount: number) : Observable<Result<CreateTransactionCardToUserEvent>> {
+  public topUpAccountBalance(creditCardId: string, amount: number) : Observable<IResult<ICreateTransactionCardToUserEvent>> {
     let command : TopUpAccountBalanceRequest = {
       creditCardId: creditCardId,
       amount: amount
     };
 
-    return this.httpClient.post<Result<CreateTransactionCardToUserEvent>>(
+    return this.httpClient.post<IResult<ICreateTransactionCardToUserEvent>>(
       this.baseUrl + this.senderTransactionsRoute + "/card-to-user",
       command, { withCredentials: true }
     );
   }
 
   // POST sender/transactions/rollback
-  public rollBackTransaction(transactionId: string) : Observable<Result<TransactionRolledBackEvent>> {
+  public rollBackTransaction(transactionId: string) : Observable<IResult<ITransactionRolledBackEvent>> {
     let command : RollBackTransactionRequest = {
       transactionId: transactionId
     };
 
-    return this.httpClient.post<Result<TransactionRolledBackEvent>>(
+    return this.httpClient.post<IResult<ITransactionRolledBackEvent>>(
       this.baseUrl + this.senderTransactionsRoute + "/rollback",
       command, { withCredentials: true }
     );

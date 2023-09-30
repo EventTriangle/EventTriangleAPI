@@ -7,12 +7,14 @@
   <svg-icon src="../../../assets/svg/search.svg" class="searchSvg" />
 </div>
 <div class="profile">
-  <div class="fullName">
-    <span *ngIf="_profileStateService.user; else userIsNull">{{_profileStateService.user.email.split('@')[0]}}</span>
-    <ng-template #userIsNull>
-      <p-skeleton styleClass="skeletonDefault" />
-    </ng-template>
-  </div>
+  <ng-container *ngIf="user$ | async as user">
+    <div class="fullName">
+      <span *ngIf="user; else userIsNull">{{_textService.pullUsernameFromMail(user.email)}}</span>
+      <ng-template #userIsNull>
+        <p-skeleton styleClass="skeletonDefault" />
+      </ng-template>
+    </div>
+  </ng-container>
   <div class="avatar">
 
   </div>

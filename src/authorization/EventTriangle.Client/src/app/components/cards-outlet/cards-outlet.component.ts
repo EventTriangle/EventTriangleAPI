@@ -1,11 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {animate, query, stagger, style, transition, trigger} from "@angular/animations";
-import {CreditCardApiService} from "../../services/api/credit-card-api.service";
 import {PaymentNetwork} from "../../types/enums/PaymentNetwork";
-import {firstValueFrom} from "rxjs";
-import {CreditCardAddedEvent} from "../../types/models/sender/CreditCardAddedEvent";
-import {CreditCardDto} from "../../types/models/consumer/CreditCardDto";
-import {Result} from "../../types/models/Result";
 import {CreditCardsStateService} from "../../services/state/credit-cards-state.service";
 import { ProfileStateService } from 'src/app/services/state/profile-state.service';
 
@@ -17,9 +12,7 @@ import { ProfileStateService } from 'src/app/services/state/profile-state.servic
     trigger('cardListAnimation', [
       transition(':enter', [
         query(':enter', style({ transform: 'translateY(-5px)', opacity: 0 }), { optional: true }),
-        query(':enter', stagger('100ms', [
-          animate('200ms', style({ transform: 'translateY(0)', opacity: 1 }))
-        ]), { optional: true })
+        query(':enter', stagger('100ms', [animate('200ms', style({ transform: 'translateY(0)', opacity: 1 }))]), { optional: true })
       ])
     ]),
     trigger('rightBarAnimation', [
@@ -31,6 +24,9 @@ import { ProfileStateService } from 'src/app/services/state/profile-state.servic
   ]
 })
 export class CardsOutletComponent implements OnInit {
+  //observable
+  public cards$ = this._creditCardsStateService.cards$;
+
   // input data
   public cardHolderName = '';
   public cardNumber = '';
@@ -40,7 +36,6 @@ export class CardsOutletComponent implements OnInit {
   public PaymentNetwork = PaymentNetwork;
 
   constructor(
-    private _creditCardApiService: CreditCardApiService,
     protected _creditCardsStateService: CreditCardsStateService,
     protected _profileStateService: ProfileStateService) {
 
@@ -49,21 +44,15 @@ export class CardsOutletComponent implements OnInit {
   async ngOnInit() {
     if (!this._profileStateService.isAuthenticated) return;
 
-    const getCreditCardsSub$ = this._creditCardApiService.getCreditCards();
-    const getCreditCardsResult = await firstValueFrom<Result<CreditCardDto[]>>(getCreditCardsSub$);
-    this._creditCardsStateService.cards = getCreditCardsResult.response;
+    await this._creditCardsStateService.getCreditCardsAsync();
   }
 
   async onAttachCardOkClick() {
-    const attachCardSub$ = this._creditCardApiService.attachCreditCardToAccount(
-      this.cardHolderName, this.cardNumber,
-      this.expiration, this.cvv, this.paymentNetwork
-    );
-
-    await firstValueFrom<Result<CreditCardAddedEvent>>(attachCardSub$);
-
-    const getCreditCardsSub$ = this._creditCardApiService.getCreditCards();
-    const getCreditCardsResponse = await firstValueFrom<Result<CreditCardDto[]>>(getCreditCardsSub$);
-    this._creditCardsStateService.cards = getCreditCardsResponse.response;
+    await this._creditCardsStateService.attachCreditCardToAccountAsync(
+      this.cardHolderName,
+      this.cardHolderName,
+      this.expiration,
+      this.cvv,
+      this.paymentNetwork);
   }
 }

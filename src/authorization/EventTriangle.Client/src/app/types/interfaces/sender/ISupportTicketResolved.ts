@@ -1,4 +1,4 @@
-export interface SupportTicketResolved {
+export interface ISupportTicketResolved {
   id: string;
   requesterId: string;
   tickedId: string;

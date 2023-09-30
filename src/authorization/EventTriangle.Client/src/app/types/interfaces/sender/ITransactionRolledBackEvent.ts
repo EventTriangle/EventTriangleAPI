@@ -1,4 +1,4 @@
-export interface TransactionRolledBackEvent {
+export interface ITransactionRolledBackEvent {
   id: string;
   requesterId: string;
   transactionId: string;

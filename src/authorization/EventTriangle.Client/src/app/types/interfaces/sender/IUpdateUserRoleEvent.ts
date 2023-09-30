@@ -1,6 +1,6 @@
 import {UserRole} from "../../enums/UserRole";
 
-export interface UpdateUserRoleEvent {
+export interface IUpdateUserRoleEvent {
   id: string;
   requesterId: string;
   userId: string;

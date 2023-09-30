@@ -2,15 +2,15 @@ import {Injectable} from "@angular/core";
 import ApiBaseService from "./api-base.service";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {UserDto} from "../../types/models/consumer/UserDto";
-import {UserSuspendedEvent} from "../../types/models/sender/UserSuspendedEvent";
+import {IUserDto} from "../../types/interfaces/consumer/IUserDto";
+import {IUserSuspendedEvent} from "../../types/interfaces/sender/IUserSuspendedEvent";
 import {SuspendUserCommand} from "../../types/requests/SuspendUserCommand";
 import {NotSuspendUserCommand} from "../../types/requests/NotSuspendUserCommand";
-import {UserNotSuspendedEvent} from "../../types/models/sender/UserNotSuspendedEvent";
+import {IUserNotSuspendedEvent} from "../../types/interfaces/sender/IUserNotSuspendedEvent";
 import {UserRole} from "../../types/enums/UserRole";
-import {UpdateUserRoleEvent} from "../../types/models/sender/UpdateUserRoleEvent";
+import {IUpdateUserRoleEvent} from "../../types/interfaces/sender/IUpdateUserRoleEvent";
 import {UpdateUserRoleRequest} from "../../types/requests/UpdateUserRoleRequest";
-import {Result} from "../../types/models/Result";
+import {IResult} from "../../types/interfaces/IResult";
 
 @Injectable({
   providedIn: 'root'
@@ -28,35 +28,35 @@ export class UsersApiService extends ApiBaseService {
   // requests
 
   // GET consumer/users
-  public getUsers(limit: number, page: number) : Observable<Result<UserDto[]>> {
-    return this.httpClient.get<Result<UserDto[]>>(
+  public getUsers(limit: number, page: number) : Observable<IResult<IUserDto[]>> {
+    return this.httpClient.get<IResult<IUserDto[]>>(
       this.baseUrl + this.consumerUsersRoute + `?limit=${limit}&page=${page}`,
       { withCredentials: true }
     );
   }
 
   // GET consumer/users/search/{searchText}
-  public searchUsers(searchText: string, limit: number, page: number) : Observable<Result<UserDto[]>> {
-    return this.httpClient.get<Result<UserDto[]>>(
+  public searchUsers(searchText: string, limit: number, page: number) : Observable<IResult<IUserDto[]>> {
+    return this.httpClient.get<IResult<IUserDto[]>>(
       this.baseUrl + this.consumerUsersRoute + `/search/${searchText}` + `?limit=${limit}&page=${page}`,
       { withCredentials: true }
     );
   }
 
   // POST sender/users
-  public suspend(userId: string) : Observable<Result<UserSuspendedEvent>> {
+  public suspend(userId: string) : Observable<IResult<IUserSuspendedEvent>> {
     let command : SuspendUserCommand = {
       userId: userId
     }
 
-    return this.httpClient.post<Result<UserSuspendedEvent>>(
+    return this.httpClient.post<IResult<IUserSuspendedEvent>>(
       this.baseUrl + this.senderUsersRoute,
       command,{ withCredentials: true }
     );
   }
 
   // DELETE sender/users
-  public notSuspend(userId: string) : Observable<Result<UserNotSuspendedEvent>> {
+  public notSuspend(userId: string) : Observable<IResult<IUserNotSuspendedEvent>> {
     let command : NotSuspendUserCommand = {
       userId: userId
     };
@@ -68,20 +68,20 @@ export class UsersApiService extends ApiBaseService {
       body: command
     };
 
-    return this.httpClient.delete<Result<UserNotSuspendedEvent>>(
+    return this.httpClient.delete<IResult<IUserNotSuspendedEvent>>(
       this.baseUrl + this.senderUsersRoute,
       options
     );
   }
 
   // PUT sender/users/role
-  public updateUserRole(userId: string, userRole: UserRole) : Observable<Result<UpdateUserRoleEvent>> {
+  public updateUserRole(userId: string, userRole: UserRole) : Observable<IResult<IUpdateUserRoleEvent>> {
     let command : UpdateUserRoleRequest = {
       userId: userId,
       userRole: userRole
     };
 
-    return this.httpClient.put<Result<UpdateUserRoleEvent>>(
+    return this.httpClient.put<IResult<IUpdateUserRoleEvent>>(
       this.baseUrl + this.senderUsersRoute,
       command, { withCredentials: true }
     );

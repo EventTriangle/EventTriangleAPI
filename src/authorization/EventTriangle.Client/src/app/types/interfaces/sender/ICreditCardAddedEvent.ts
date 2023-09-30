@@ -1,11 +1,12 @@
 import {PaymentNetwork} from "../../enums/PaymentNetwork";
 
-export interface CreditCardDto {
+export interface ICreditCardAddedEvent {
   id: string;
-  userId: string;
+  requesterId: string;
   holderName: string;
   cardNumber: string;
   cvv: string;
   expiration: string;
   paymentNetwork: PaymentNetwork;
+  createdAt: string;
 }

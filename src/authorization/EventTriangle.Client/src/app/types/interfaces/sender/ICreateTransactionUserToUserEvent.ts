@@ -1,4 +1,4 @@
-export interface CreateTransactionUserToUserEvent {
+export interface ICreateTransactionUserToUserEvent {
   id: string;
   requesterId: string;
   toUserId: string;

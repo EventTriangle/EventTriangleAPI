@@ -1,6 +1,6 @@
 import {TicketStatus} from "../../enums/TicketStatus";
 
-export interface SupportTicketDto {
+export interface ISupportTicketDto {
   id: string;
   userId: string;
   wallerId: string;

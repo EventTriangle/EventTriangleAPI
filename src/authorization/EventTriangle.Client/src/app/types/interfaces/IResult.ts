@@ -1,4 +1,4 @@
-export interface Result<TResponse> {
+export interface IResult<TResponse> {
   response: TResponse;
   error: Error;
   is_success: boolean;

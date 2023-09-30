@@ -1,5 +1,12 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {animate, query, stagger, style, transition, trigger} from "@angular/animations";
+import {ContactsStateService} from "../../services/state/contacts-state.service";
+import {ProfileStateService} from "../../services/state/profile-state.service";
+import {
+  BehaviorSubject,
+  debounceTime
+} from "rxjs";
+import {TextService} from "../../services/common/text.service";
 
 @Component({
   selector: 'app-contacts-outlet',
@@ -16,6 +23,35 @@ import {animate, query, stagger, style, transition, trigger} from "@angular/anim
     ])
   ]
 })
-export class ContactsOutletComponent {
-  contacts = [1, 1, 1, 1, 1]
+export class ContactsOutletComponent implements OnInit{
+  //observable
+  public contacts$ = this._contactsStateService.contacts$;
+  public searchedContacts$ = this._contactsStateService.searchedContacts$;
+
+  public searchText$ = new BehaviorSubject<string>("");
+
+  constructor(
+      protected _contactsStateService: ContactsStateService,
+      protected _profileStateService: ProfileStateService,
+      protected _textService: TextService
+  ) {}
+
+  async ngOnInit() {
+    if (!this._profileStateService.isAuthenticated) return;
+
+    await this._contactsStateService.getContactsAsync();
+
+    this.searchText$
+        .pipe(debounceTime(400))
+        .subscribe(async x => await this._contactsStateService.getSearchContactsAsync(x));
+  }
+
+  //events
+  async onClickAddContactHandler(contactId: string) {
+    await this._contactsStateService.addContactAsync(contactId);
+  }
+
+  async onClickDeleteContactHandler(contactId: string) {
+    await this._contactsStateService.deleteContactAsync(contactId);
+  }
 }
