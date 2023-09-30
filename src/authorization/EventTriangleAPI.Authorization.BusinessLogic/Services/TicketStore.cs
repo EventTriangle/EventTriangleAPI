@@ -31,7 +31,6 @@ public class TicketStore : ITicketStore
     private readonly MemoryCacheEntryOptions _memoryCacheEntryOptions;
 
     private readonly User.UserClient _userClient;
-    private readonly ILoggerFactory _loggerFactory;
 
     public TicketStore(
         string userGrpcChannelAddress,
@@ -47,13 +46,12 @@ public class TicketStore : ITicketStore
         _httpClient = httpClient;
         _azureAdConfiguration = azureAdConfiguration;
         _memoryCache = memoryCache;
-        _loggerFactory = loggerFactory;
 
         _memoryCacheEntryOptions = new MemoryCacheEntryOptions()
             .SetSlidingExpiration(TimeSpan.FromSeconds(15))
             .SetAbsoluteExpiration(TimeSpan.FromSeconds(100));
 
-        var options = new GrpcChannelOptions { LoggerFactory = _loggerFactory };
+        var options = new GrpcChannelOptions { LoggerFactory = loggerFactory };
         var channel = GrpcChannel.ForAddress(
             userGrpcChannelAddress,
             options);
@@ -206,14 +204,17 @@ public class TicketStore : ITicketStore
             return;
         }
 
+        var newExpiresTime = DateTimeOffset.UtcNow.AddSeconds(response.ExpiresIn);
+        
         deserializedTicket.Properties.UpdateTokenValue(TokenTypes.AccessToken, response.AccessToken);
         deserializedTicket.Properties.UpdateTokenValue(TokenTypes.RefreshToken, response.RefreshToken);
         deserializedTicket.Properties.UpdateTokenValue(TokenTypes.IdentityToken, response.IdentityToken);
+        deserializedTicket.Properties.ExpiresUtc = newExpiresTime;
 
         var serializedTicket = _ticketSerializer.Serialize(deserializedTicket);
 
         userSession.UpdateValue(serializedTicket);
-        userSession.UpdateExpiresAt(userSession.ExpiresAt.AddSeconds(response.ExpiresIn));
+        userSession.UpdateExpiresAt(newExpiresTime);
 
         context.UserSessions.Update(userSession);
         await context.SaveChangesAsync();
@@ -262,14 +263,17 @@ public class TicketStore : ITicketStore
                 return null;
             }
 
+            var newExpiresTime = DateTimeOffset.UtcNow.AddSeconds(response.ExpiresIn);
+            
             deserializedTicket.Properties.UpdateTokenValue(TokenTypes.AccessToken, response.AccessToken);
             deserializedTicket.Properties.UpdateTokenValue(TokenTypes.RefreshToken, response.RefreshToken);
             deserializedTicket.Properties.UpdateTokenValue(TokenTypes.IdentityToken, response.IdentityToken);
+            deserializedTicket.Properties.ExpiresUtc = newExpiresTime;
 
             var serializedTicket = _ticketSerializer.Serialize(deserializedTicket);
 
             userSession.UpdateValue(serializedTicket);
-            userSession.UpdateExpiresAt(DateTimeOffset.UtcNow.AddSeconds(response.ExpiresIn));
+            userSession.UpdateExpiresAt(newExpiresTime);
         }
 
         userSession.UpdateDateOfLastAccess();
