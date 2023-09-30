@@ -2,12 +2,12 @@ import {Injectable} from "@angular/core";
 import ApiBaseService from "./api-base.service";
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {SupportTicketDto} from "../../types/models/consumer/SupportTicketDto";
+import {ISupportTicketDto} from "../../types/interfaces/consumer/ISupportTicketDto";
 import {OpenSupportTicketRequest} from "../../types/requests/OpenSupportTicketRequest";
-import {SupportTicketOpenedEvent} from "../../types/models/sender/SupportTicketOpenedEvent";
-import {SupportTicketResolved} from "../../types/models/sender/SupportTicketResolved";
+import {ISupportTicketOpenedEvent} from "../../types/interfaces/sender/ISupportTicketOpenedEvent";
+import {ISupportTicketResolved} from "../../types/interfaces/sender/ISupportTicketResolved";
 import {ResolveSupportTickerRequest} from "../../types/requests/ResolveSupportTicketRequest";
-import {Result} from "../../types/models/Result";
+import {IResult} from "../../types/interfaces/IResult";
 
 @Injectable({
   providedIn: 'root'
@@ -25,16 +25,16 @@ export class TicketsApiService extends ApiBaseService {
   // requests
 
   // GET consumer/tickets
-  public getTickets(fromDateTime: Date, limit: number) : Observable<Result<SupportTicketDto[]>> {
-    return this.httpClient.get<Result<SupportTicketDto[]>>(
+  public getTickets(fromDateTime: Date, limit: number) : Observable<IResult<ISupportTicketDto[]>> {
+    return this.httpClient.get<IResult<ISupportTicketDto[]>>(
       this.baseUrl + this.consumerTicketsRoute + `?fromDateTime=${fromDateTime}&limit=${limit}`,
       { withCredentials: true }
     )
   }
 
   // GET consumer/tickets/support-ticket
-  public getSupportTickets(fromDateTime: Date, limit: number) : Observable<Result<SupportTicketDto[]>> {
-    return this.httpClient.get<Result<SupportTicketDto[]>>(
+  public getSupportTickets(fromDateTime: Date, limit: number) : Observable<IResult<ISupportTicketDto[]>> {
+    return this.httpClient.get<IResult<ISupportTicketDto[]>>(
       this.baseUrl + this.consumerTicketsRoute + `support-tickets?fromDateTime=${fromDateTime}&limit=${limit}`,
       { withCredentials: true }
     )
@@ -42,14 +42,14 @@ export class TicketsApiService extends ApiBaseService {
 
   // POST sender/tickets
   public openSupportTicket(walletId: string, transactionId: string, ticketReason: string)
-    : Observable<Result<SupportTicketOpenedEvent>> {
+    : Observable<IResult<ISupportTicketOpenedEvent>> {
     let command : OpenSupportTicketRequest = {
       walletId: walletId,
       transactionId: transactionId,
       ticketReason: ticketReason
     };
 
-    return this.httpClient.post<Result<SupportTicketOpenedEvent>>(
+    return this.httpClient.post<IResult<ISupportTicketOpenedEvent>>(
       this.baseUrl + this.senderTicketsRoute,
       command, { withCredentials: true }
     );
@@ -57,13 +57,13 @@ export class TicketsApiService extends ApiBaseService {
 
   // POST sender/tickets/support-ticket
   public resolveSupportTicket(ticketId: string, ticketJustification: string)
-    : Observable<Result<SupportTicketResolved>> {
+    : Observable<IResult<ISupportTicketResolved>> {
     let command : ResolveSupportTickerRequest = {
       ticketId: ticketId,
       ticketJustification: ticketJustification
     }
 
-    return this.httpClient.post<Result<SupportTicketResolved>>(
+    return this.httpClient.post<IResult<ISupportTicketResolved>>(
       this.baseUrl + this.senderTicketsRoute + "sender-ticket",
       command, { withCredentials: true }
     );

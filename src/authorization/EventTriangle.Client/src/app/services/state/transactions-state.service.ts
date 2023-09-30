@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
-import {TransactionDto} from "../../types/models/consumer/TransactionDto";
+import {ITransactionDto} from "../../types/interfaces/consumer/ITransactionDto";
+import {BehaviorSubject, firstValueFrom} from "rxjs";
+import {TransactionsApiService} from "../api/transactions-api.service";
 
 @Injectable({
   providedIn: 'root'
@@ -7,7 +9,19 @@ import {TransactionDto} from "../../types/models/consumer/TransactionDto";
 export class TransactionsStateService {
   public wasRequested = false;
 
-  public transactions: TransactionDto[] = [];
+  public transactions$: BehaviorSubject<ITransactionDto[]> = new BehaviorSubject<ITransactionDto[]>([]);
 
-  constructor() { }
+  constructor(
+      private _transactionsApiService: TransactionsApiService
+  ) { }
+
+  public async getTransactionsAsync(fromDateTime: Date, limit: number) {
+    const getTransactions$ = this._transactionsApiService.getTransactions(fromDateTime, limit);
+    const getTransactionsResult = await firstValueFrom(getTransactions$);
+
+    this.transactions$.next(getTransactionsResult.response);
+    this.wasRequested = true;
+
+    return getTransactionsResult;
+  }
 }

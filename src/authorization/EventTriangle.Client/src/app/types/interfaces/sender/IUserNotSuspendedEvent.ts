@@ -1,4 +1,4 @@
-export interface ContactCreatedEvent {
+export interface IUserNotSuspendedEvent {
   id: string;
   requesterId: string;
   userId: string;

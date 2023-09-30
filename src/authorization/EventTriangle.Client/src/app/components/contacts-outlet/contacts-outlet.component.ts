@@ -6,6 +6,7 @@ import {
   BehaviorSubject,
   debounceTime
 } from "rxjs";
+import {TextService} from "../../services/common/text.service";
 
 @Component({
   selector: 'app-contacts-outlet',
@@ -23,11 +24,16 @@ import {
   ]
 })
 export class ContactsOutletComponent implements OnInit{
-  public searchText = new BehaviorSubject<string>("");
+  //observable
+  public contacts$ = this._contactsStateService.contacts$;
+  public searchedContacts$ = this._contactsStateService.searchedContacts$;
+
+  public searchText$ = new BehaviorSubject<string>("");
 
   constructor(
       protected _contactsStateService: ContactsStateService,
       protected _profileStateService: ProfileStateService,
+      protected _textService: TextService
   ) {}
 
   async ngOnInit() {
@@ -35,7 +41,7 @@ export class ContactsOutletComponent implements OnInit{
 
     await this._contactsStateService.getContactsAsync();
 
-    this.searchText
+    this.searchText$
         .pipe(debounceTime(400))
         .subscribe(async x => await this._contactsStateService.getSearchContactsAsync(x));
   }

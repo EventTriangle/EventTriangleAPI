@@ -1,9 +1,9 @@
 import {Injectable} from "@angular/core";
 import ApiBaseService from "./api-base.service";
 import {HttpClient} from "@angular/common/http";
-import {UserDto} from "../../types/models/consumer/UserDto";
+import {IUserDto} from "../../types/interfaces/consumer/IUserDto";
 import {Observable} from "rxjs";
-import {Result} from "../../types/models/Result";
+import {IResult} from "../../types/interfaces/IResult";
 
 @Injectable({
   providedIn: 'root'
@@ -20,16 +20,16 @@ export class ProfileApiService extends ApiBaseService {
   // requests
 
   // GET consumer/profile
-  getProfile() : Observable<Result<UserDto>> {
-    return this.httpClient.get<Result<UserDto>>(
+  getProfile() : Observable<IResult<IUserDto>> {
+    return this.httpClient.get<IResult<IUserDto>>(
       this.baseUrl + this.consumerProfileRoute,
       { withCredentials: true }
     );
   }
 
   // GET consumer/profile/{userId}
-  getProfileById(userId: string) : Observable<Result<UserDto>> {
-    return this.httpClient.get<Result<UserDto>>(
+  getProfileById(userId: string) : Observable<IResult<IUserDto>> {
+    return this.httpClient.get<IResult<IUserDto>>(
       this.baseUrl + this.consumerProfileRoute + `/${userId}`
     )
   }

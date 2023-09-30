@@ -2,15 +2,15 @@ import {Injectable} from "@angular/core";
 import ApiBaseService from "./api-base.service";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {CreditCardDto} from "../../types/models/consumer/CreditCardDto";
 import {AttachCreditCardToAccountRequest} from "../../types/requests/AttachCreditCardToAccountRequest";
 import {PaymentNetwork} from "../../types/enums/PaymentNetwork";
-import {CreditCardAddedEvent} from "../../types/models/sender/CreditCardAddedEvent";
-import {CreditCardChangedEvent} from "../../types/models/sender/CreditCardChangedEvent";
+import {ICreditCardAddedEvent} from "../../types/interfaces/sender/ICreditCardAddedEvent";
+import {ICreditCardChangedEvent} from "../../types/interfaces/sender/ICreditCardChangedEvent";
 import {EditCreditCardRequest} from "../../types/requests/EditCreditCardRequest";
-import {CreditCardDeletedEvent} from "../../types/models/sender/CreditCardDeletedEvent";
+import {ICreditCardDeletedEvent} from "../../types/interfaces/sender/ICreditCardDeletedEvent";
 import {DeleteCreditCardRequest} from "../../types/requests/DeleteCreditCardRequest";
-import {Result} from "../../types/models/Result";
+import {IResult} from "../../types/interfaces/IResult";
+import {ICreditCardDto} from "../../types/interfaces/consumer/ICreditCardDto";
 
 @Injectable({
   providedIn: 'root'
@@ -26,8 +26,8 @@ export class CreditCardApiService extends ApiBaseService {
   }
 
   // GET consumer/credit-cards
-  public getCreditCards(): Observable<Result<CreditCardDto[]>> {
-    return this.httpClient.get<Result<CreditCardDto[]>>(
+  public getCreditCards(): Observable<IResult<ICreditCardDto[]>> {
+    return this.httpClient.get<IResult<ICreditCardDto[]>>(
       this.baseUrl + this.consumerCreditCardsRoute,
       { withCredentials: true }
     );
@@ -36,7 +36,7 @@ export class CreditCardApiService extends ApiBaseService {
   // POST sender/credit-cards
   public attachCreditCardToAccount(holderName: string, cardNumber: string,
                                    expiration: string, cvv: string, paymentNetwork: PaymentNetwork)
-    : Observable<Result<CreditCardAddedEvent>> {
+    : Observable<IResult<ICreditCardAddedEvent>> {
     let command : AttachCreditCardToAccountRequest = {
       holderName: holderName,
       cardNumber: cardNumber,
@@ -45,7 +45,7 @@ export class CreditCardApiService extends ApiBaseService {
       paymentNetwork: paymentNetwork
     };
 
-    return this.httpClient.post<Result<CreditCardAddedEvent>>(
+    return this.httpClient.post<IResult<ICreditCardAddedEvent>>(
       this.baseUrl + this.senderCreditCardsRoute,
       command, { withCredentials: true }
     );
@@ -54,7 +54,7 @@ export class CreditCardApiService extends ApiBaseService {
   // PUT sender/credit-cards
   public editCreditCard(holderName: string, creditCardNumber: string,
                         expiration: string, cvv: string, paymentNetwork: PaymentNetwork)
-    : Observable<Result<CreditCardChangedEvent>> {
+    : Observable<IResult<ICreditCardChangedEvent>> {
     let command : EditCreditCardRequest = {
       holderName: holderName,
       creditCardNumber: creditCardNumber,
@@ -62,14 +62,14 @@ export class CreditCardApiService extends ApiBaseService {
       cvv: cvv,
       paymentNetwork: paymentNetwork
     }
-    return this.httpClient.put<Result<CreditCardChangedEvent>>(
+    return this.httpClient.put<IResult<ICreditCardChangedEvent>>(
       this.baseUrl + this.senderCreditCardsRoute,
       command, { withCredentials: true }
     );
   }
 
   // DELETE sender/credit-cards
-  public deleteCreditCard(creditCardId: string) : Observable<Result<CreditCardDeletedEvent>> {
+  public deleteCreditCard(creditCardId: string) : Observable<IResult<ICreditCardDeletedEvent>> {
     let command : DeleteCreditCardRequest = {
       creditCardId: creditCardId
     }
@@ -81,7 +81,7 @@ export class CreditCardApiService extends ApiBaseService {
       body: command
     };
 
-    return this.httpClient.delete<Result<CreditCardDeletedEvent>>(
+    return this.httpClient.delete<IResult<ICreditCardDeletedEvent>>(
       this.baseUrl + this.senderCreditCardsRoute,
       options
     );

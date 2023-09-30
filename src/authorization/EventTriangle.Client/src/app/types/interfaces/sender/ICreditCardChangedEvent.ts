@@ -1,6 +1,6 @@
 import {PaymentNetwork} from "../../enums/PaymentNetwork";
 
-export interface CreditCardAddedEvent {
+export interface ICreditCardChangedEvent {
   id: string;
   requesterId: string;
   holderName: string;

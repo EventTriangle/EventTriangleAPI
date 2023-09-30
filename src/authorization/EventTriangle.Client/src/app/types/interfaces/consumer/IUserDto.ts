@@ -1,12 +1,12 @@
 import {UserRole} from "../../enums/UserRole";
 import {UserStatus} from "../../enums/UserStatus";
-import {WalletDto} from "./WalletDto";
+import {IWalletDto} from "./IWalletDto";
 
-export interface UserDto {
+export interface IUserDto {
   id: string;
   email: string;
   userRole: UserRole;
   userStatus: UserStatus;
   walletId: string;
-  wallet: WalletDto;
+  wallet: IWalletDto;
 }

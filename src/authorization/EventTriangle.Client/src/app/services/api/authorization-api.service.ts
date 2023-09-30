@@ -4,7 +4,7 @@ import { IsAuthenticatedResponse } from '../../types/responses/IsAuthenticatedRe
 import ApiBaseService from './api-base.service';
 import {Observable} from "rxjs";
 import {AzureAdAuthResponse} from "../../types/responses/AzureAdAuthResponse";
-import {Result} from "../../types/models/Result";
+import {IResult} from "../../types/interfaces/IResult";
 
 @Injectable({
   providedIn: 'root'
@@ -41,15 +41,15 @@ export class AuthorizationApiService extends ApiBaseService {
   }
 
   // GET api/token
-  public getAuthorizationData() : Observable<Result<AzureAdAuthResponse>> {
-    return this.httpClient.get<Result<AzureAdAuthResponse>>(
+  public getAuthorizationData() : Observable<IResult<AzureAdAuthResponse>> {
+    return this.httpClient.get<IResult<AzureAdAuthResponse>>(
       this.baseUrl + this.authorizationRoute + "token"
     );
   }
 
   // POST api/token?refreshToken=
-  public refreshToken(refreshToken: string) : Observable<Result<AzureAdAuthResponse>> {
-    return this.httpClient.post<Result<AzureAdAuthResponse>>(
+  public refreshToken(refreshToken: string) : Observable<IResult<AzureAdAuthResponse>> {
+    return this.httpClient.post<IResult<AzureAdAuthResponse>>(
       this.baseUrl + this.authorizationRoute + `token?refreshToken=${refreshToken}`,
       {},
       { withCredentials: true }

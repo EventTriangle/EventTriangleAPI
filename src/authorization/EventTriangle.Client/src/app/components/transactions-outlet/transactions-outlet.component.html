@@ -9,9 +9,9 @@
       <div class="wallet">
         <p class="walletTitle">Wallet Balance</p>
         <p class="walletBalance">
-          <span *ngIf="_profileStateService.user !== null; else userIsNull">
-            €{{_profileStateService.user.wallet.balance}}
-          </span>
+          <ng-container *ngIf="user$ | async as user else userIsNull">
+            €{{user.wallet.balance}}
+          </ng-container>
           <ng-template #userIsNull>
             <p-skeleton styleClass="skeletonDefault" />
           </ng-template>
@@ -25,17 +25,17 @@
         <div class="userInfoAvatar"></div>
         <div class="userInfoData">
           <p class="userInfoFullName">
-            <span *ngIf="_profileStateService.user; else userIsNull">
-              {{_profileStateService.user.email.split('@')[0]}}
-            </span>
+            <ng-container *ngIf="user$ | async as user else userIsNull">
+              {{_textService.pullUsernameFromMail(user.email)}}
+            </ng-container>
             <ng-template #userIsNull>
               <p-skeleton styleClass="skeletonDefault" />
             </ng-template>
           </p>
           <span class="userInfoId">
-            <span *ngIf="_profileStateService.user; else userIsNull">
-              ID: {{_profileStateService.user.id}}
-            </span>
+            <ng-container *ngIf="user$ | async as user; else userIsNull">
+              ID: {{user.id}}
+            </ng-container>
             <ng-template #userIsNull>
               <p-skeleton styleClass="skeletonDefault" />
             </ng-template>
@@ -47,28 +47,31 @@
       <input type="text" class="searchTransactionsInput" placeholder="Search Transactions" />
       <svg-icon src="../../../assets/svg/search.svg" class="searchSvg" />
     </div>
-    <div class="transactionList" [@transactionItemAnimation]="" *ngIf="_transactionsStateService.transactions.length > 0 && _transactionsStateService.wasRequested">
-      <div *ngFor="let transaction of _transactionsStateService.transactions" class="{{getTransactionClassName(transaction)}}">
-        <svg-icon src="../../../assets/svg/transaction.svg" class="transactionSvg" />
-        <div class="{{getTransactionInfoClassName(transaction)}}">
-          <p class="transactionItemFrom">
-            From: {{getUserNameById(transaction.fromUserId)}}
-          </p>
-          <p class="transactionItemTo">
-            To: {{getUserNameById(transaction.toUserId)}}
-          </p>
-          <p class="transactionItemAmount">
-            Amount: €{{transaction.amount}}
-          </p>
-          <p class="transactionItemDate">
-            {{transaction.createdAt}}
-          </p>
+    <ng-container *ngIf="transactions$ | async as transactions">
+      <div class="transactionList" [@transactionItemAnimation]=""
+           *ngIf="transactions.length > 0 && _transactionsStateService.wasRequested">
+        <div *ngFor="let transaction of transactions" class="{{getTransactionClassName(transaction)}}">
+          <svg-icon src="../../../assets/svg/transaction.svg" class="transactionSvg" />
+          <div class="{{getTransactionInfoClassName(transaction)}}">
+            <p class="transactionItemFrom">
+              From: {{getUserNameById(transaction.fromUserId)}}
+            </p>
+            <p class="transactionItemTo">
+              To: {{getUserNameById(transaction.toUserId)}}
+            </p>
+            <p class="transactionItemAmount">
+              Amount: €{{transaction.amount}}
+            </p>
+            <p class="transactionItemDate">
+              {{transaction.createdAt}}
+            </p>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="emptyTransactionList" *ngIf="_transactionsStateService.transactions.length === 0 && _transactionsStateService.wasRequested">
-      <p>No transactions yet</p>
-    </div>
+      <div class="emptyTransactionList" *ngIf="transactions.length === 0 && _transactionsStateService.wasRequested">
+        <p>No transactions yet</p>
+      </div>
+    </ng-container>
     <div class="transactionList" [@transactionItemAnimation]="" *ngIf="!_transactionsStateService.wasRequested">
       <p-skeleton styleClass="skeletonTransactionItem" />
       <p-skeleton styleClass="skeletonTransactionItem" />

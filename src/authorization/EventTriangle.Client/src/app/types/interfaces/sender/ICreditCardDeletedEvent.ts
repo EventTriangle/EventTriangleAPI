@@ -1,4 +1,4 @@
-export interface CreditCardDeletedEvent {
+export interface ICreditCardDeletedEvent {
   id: string;
   requesterId: string;
   creditCardId: string;

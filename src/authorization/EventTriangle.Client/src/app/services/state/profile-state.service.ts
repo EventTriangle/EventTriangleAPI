@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
-import {UserDto} from "../../types/models/consumer/UserDto";
-import {firstValueFrom} from "rxjs";
-import {Result} from "../../types/models/Result";
+import {IUserDto} from "../../types/interfaces/consumer/IUserDto";
+import {BehaviorSubject, firstValueFrom} from "rxjs";
+import {IResult} from "../../types/interfaces/IResult";
 import {ProfileApiService} from "../api/profile-api.service";
 import {AuthorizationApiService} from "../api/authorization-api.service";
 import {IsAuthenticatedResponse} from "../../types/responses/IsAuthenticatedResponse";
@@ -14,7 +14,7 @@ export class ProfileStateService {
   public wasAuthenticationCheck = false;
   public isAuthenticated = false;
 
-  public user: UserDto | null = null;
+  public user$: BehaviorSubject<IUserDto | null> = new BehaviorSubject<IUserDto | null>(null);
 
   constructor(
       private _profileApiService: ProfileApiService,
@@ -41,8 +41,8 @@ export class ProfileStateService {
 
   public async getProfileAsync() {
     const getProfileSub$ = this._profileApiService.getProfile();
-    const getProfileResult = await firstValueFrom<Result<UserDto>>(getProfileSub$);
-    this.user = getProfileResult.response;
+    const getProfileResult = await firstValueFrom<IResult<IUserDto>>(getProfileSub$);
+    this.user$.next(getProfileResult.response);
 
     return getProfileResult;
   }

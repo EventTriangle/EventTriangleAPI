@@ -5,19 +5,21 @@
       <svg-icon src="../../../assets/svg/credit-card.svg" class="titleCardSvg"/>
     </span>
     <p class="overview">An overview of cards</p>
-    <div class="cardList" [@cardListAnimation]="" *ngIf="_creditCardsStateService.cards.length > 0">
-      <div *ngFor="let card of _creditCardsStateService.cards" class="cardItem">
-        <p class="cardItemTitle">{{card.paymentNetwork == PaymentNetwork.Visa ? 'Visa' : 'MasterCard'}}</p>
-        <p class="cardItemNumbers">{{card.cardNumber}}</p>
-        <p class="cardItemExpiryDate">{{card.expiration}}</p>
-        <p class="cardItemFullName">{{card.holderName}}</p>
+    <ng-container *ngIf="cards$ | async as cards">
+      <div class="cardList" [@cardListAnimation]="" *ngIf="cards.length > 0">
+          <div *ngFor="let card of cards" class="cardItem">
+            <p class="cardItemTitle">{{card.paymentNetwork == PaymentNetwork.Visa ? 'Visa' : 'MasterCard'}}</p>
+            <p class="cardItemNumbers">{{card.cardNumber}}</p>
+            <p class="cardItemExpiryDate">{{card.expiration}}</p>
+            <p class="cardItemFullName">{{card.holderName}}</p>
+          </div>
       </div>
+    </ng-container>
+    <div class="cardList" *ngIf="!_creditCardsStateService.wereCardsRequested">
+      <p-skeleton styleClass="skeletonCardItem" />
+      <p-skeleton styleClass="skeletonCardItem" />
+      <p-skeleton styleClass="skeletonCardItem" />
     </div>
-<!--    <div class="cardList">-->
-<!--      <p-skeleton styleClass="skeletonCardItem" />-->
-<!--      <p-skeleton styleClass="skeletonCardItem" />-->
-<!--      <p-skeleton styleClass="skeletonCardItem" />-->
-<!--    </div>-->
   </div>
 </div>
 <div class="addNewCard">
