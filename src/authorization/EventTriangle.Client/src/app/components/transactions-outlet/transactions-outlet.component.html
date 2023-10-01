@@ -50,20 +50,20 @@
     <ng-container *ngIf="transactions$ | async as transactions">
       <div class="transactionList" [@transactionItemAnimation]=""
            *ngIf="transactions.length > 0 && _transactionsStateService.wasRequested">
-        <div *ngFor="let transaction of transactions" class="{{getTransactionClassName(transaction)}}">
+        <div *ngFor="let transaction of transactions; trackBy: identifyTransactionDto" class="{{getTransactionClassName(transaction)}}">
           <svg-icon src="../../../assets/svg/transaction.svg" class="transactionSvg" />
           <div class="{{getTransactionInfoClassName(transaction)}}">
             <p class="transactionItemFrom">
-              From: {{getUserNameById(transaction.fromUserId)}}
+              From: {{transaction.fromUserId}}
             </p>
             <p class="transactionItemTo">
-              To: {{getUserNameById(transaction.toUserId)}}
+              To: {{transaction.toUserId}}
             </p>
             <p class="transactionItemAmount">
               Amount: €{{transaction.amount}}
             </p>
             <p class="transactionItemDate">
-              {{transaction.createdAt}}
+              {{_dateService.getTimeAndDate(transaction.createdAt)}}
             </p>
           </div>
         </div>

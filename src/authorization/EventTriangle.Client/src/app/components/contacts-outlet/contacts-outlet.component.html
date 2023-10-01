@@ -15,19 +15,19 @@
     searchedContacts: (searchedContacts$ | async) || [],
     searchText: (searchText$ | async) || ''
     } as data">
-      <div class="contactsList" [@contactListAnimation]=""
+      <div class="contactsList" [@contactListAnimation]="true"
            *ngIf="data.contacts.length > 0 && data.searchText.length === 0" >
-        <div *ngFor="let contact of data.contacts" class="contactItem">
+        <div *ngFor="let contact of data.contacts; trackBy: identifyContactDto" class="contactItem">
           <p class="contactItemUsername">Username: {{_textService.pullUsernameFromMail(contact.contact.email)}}</p>
-          <p class="contactItemStatus">Status: {{contact.contact.userStatus}}</p>
+          <p class="contactItemStatus">Status: {{contact.contact.userStatus === 0 ? 'Active' : "Suspended"}}</p>
           <svg-icon src="../../../assets/svg/minus.svg" class="plusSvg" (click)="onClickDeleteContactHandler(contact.contactId)"/>
         </div>
       </div>
-      <div class="contactsList" [@contactListAnimation]=""
+      <div class="contactsList" [@contactListAnimation]="true"
            *ngIf="data.searchedContacts.length > 0 && data.searchText.length > 0" >
-        <div *ngFor="let contact of data.searchedContacts" class="contactItem">
+        <div *ngFor="let contact of data.searchedContacts; trackBy: identifyContactDto" class="contactItem">
           <p class="contactItemUsername">Username: {{_textService.pullUsernameFromMail(contact.contact.email)}}</p>
-          <p class="contactItemStatus">Status: {{contact.contact.userStatus}}</p>
+          <p class="contactItemStatus">Status: {{contact.contact.userStatus === 0 ? 'Active' : "Suspended"}}</p>
           <svg-icon src="../../../assets/svg/plus.svg" class="plusSvg" (click)="onClickAddContactHandler(contact.contactId)"/>
         </div>
       </div>

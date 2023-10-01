@@ -229,7 +229,6 @@
   display: flex;
   padding-top: 21px;
   padding-left: 36px;
-  width: 100%;
   height: 72px;
   margin-bottom: 12px;
   background-color: $purple-60percent;
@@ -277,26 +276,35 @@
 }
 
 .transactionItemFrom {
+  width: 200px;
   margin-top: 3px;
   margin-left: 35px;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .transactionItemTo {
+  width: 200px;
   margin-top: 3px;
-  margin-left: 110px;
+  margin-left: 50px;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .transactionItemAmount {
+  width: 200px;
   margin-top: 3px;
-  margin-left: 110px;
+  margin-left: 50px;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -304,8 +312,9 @@
 }
 
 .transactionItemDate {
+  width: 200px;
   margin-top: 3px;
-  margin-left: 110px;
+  margin-left: 50px;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;

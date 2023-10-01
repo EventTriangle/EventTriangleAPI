@@ -6,16 +6,9 @@
     </span>
     <p class="overview">An overview of deposit</p>
     <div class="depositForm" [@depositFormAnimation]="">
-      <input type="text" class="depositInput" placeholder="Card Holder Name" />
-      <input type="text" class="depositInput" placeholder="0000-0000-0000-0000" />
-      <input type="text" class="depositInput" placeholder="mm/dd" />
-      <input type="text" class="depositInput" placeholder="Amount" />
-      <input type="text" class="depositInput" placeholder="Cvv" />
-      <select class="depositInput">
-        <option value="Visa">Visa</option>
-        <option value="MasterCard">Master Card</option>
-      </select>
-      <button class="depositOkButton">
+      <input type="text" class="depositInput" [(ngModel)]="creditCardId" placeholder="Credit Card Id"/>
+      <input type="text" class="depositInput" [(ngModel)]="amount" placeholder="Amount"/>
+      <button class="depositOkButton" (click)="onClickTopUpAccountBalanceHandler()">
         Ok
       </button>
     </div>

@@ -3,6 +3,7 @@ import {animate, query, stagger, style, transition, trigger} from "@angular/anim
 import {PaymentNetwork} from "../../types/enums/PaymentNetwork";
 import {CreditCardsStateService} from "../../services/state/credit-cards-state.service";
 import { ProfileStateService } from 'src/app/services/state/profile-state.service';
+import {ICreditCardDto} from "../../types/interfaces/consumer/ICreditCardDto";
 
 @Component({
   selector: 'app-cards-outlet',
@@ -47,12 +48,18 @@ export class CardsOutletComponent implements OnInit {
     await this._creditCardsStateService.getCreditCardsAsync();
   }
 
+  //events
   async onAttachCardOkClick() {
     await this._creditCardsStateService.attachCreditCardToAccountAsync(
       this.cardHolderName,
-      this.cardHolderName,
+      this.cardNumber,
       this.expiration,
       this.cvv,
       this.paymentNetwork);
+  }
+
+  //other
+  identifyCardDto(index: number, item: ICreditCardDto){
+    return item.id;
   }
 }

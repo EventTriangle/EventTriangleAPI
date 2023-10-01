@@ -2,7 +2,6 @@ import {Component, OnInit} from '@angular/core';
 import {animate, query, stagger, style, transition, trigger} from "@angular/animations";
 import {ProfileApiService} from "../../services/api/profile-api.service";
 import {firstValueFrom} from "rxjs";
-import {IUserDto} from "../../types/interfaces/consumer/IUserDto";
 import {IResult} from "../../types/interfaces/IResult";
 import {TransactionsApiService} from "../../services/api/transactions-api.service";
 import {ITransactionDto} from "../../types/interfaces/consumer/ITransactionDto";
@@ -12,6 +11,7 @@ import {ICreateTransactionUserToUserEvent} from "../../types/interfaces/sender/I
 import {TransactionsStateService} from "../../services/state/transactions-state.service";
 import {ProfileStateService} from "../../services/state/profile-state.service";
 import {TextService} from "../../services/common/text.service";
+import {DateService} from "../../services/common/date.service";
 
 @Component({
   selector: 'app-transactions-outlet',
@@ -56,9 +56,8 @@ export class TransactionsOutletComponent implements OnInit {
     private _transactionsApiService: TransactionsApiService,
     protected _transactionsStateService: TransactionsStateService,
     protected _profileStateService: ProfileStateService,
-    protected _textService: TextService) {
-
-  }
+    protected _textService: TextService,
+    protected _dateService: DateService) {}
 
   async ngOnInit() {
     if (!this._profileStateService.isAuthenticated) return;
@@ -89,18 +88,15 @@ export class TransactionsOutletComponent implements OnInit {
     return 'transactionItemFromMeInfo'
   }
 
-  async getUserNameById(userId: string) : Promise<string> {
-    const getUserProfileByIdSub$ = this._profileApiService.getProfileById(userId);
-    const getUserProfileResponse = await firstValueFrom<IResult<IUserDto>>(getUserProfileByIdSub$);
-    const user = getUserProfileResponse.response;
-
-    return user.email.split('@')[0];
-  }
-
   async sendMoneyToUser(toUserId: string, amount: number) : Promise<void> {
-    const sendMoneyToUserSub$ =
-      this._transactionsApiService.createTransactionUserToUser(toUserId,amount);
+    const sendMoneyToUserSub$ = this._transactionsApiService.createTransactionUserToUser(toUserId,amount);
     await firstValueFrom<IResult<ICreateTransactionUserToUserEvent>>(sendMoneyToUserSub$);
     await this.ngOnInit();
   }
+
+  //other
+  identifyTransactionDto(index: number, item: ITransactionDto){
+    return item.id;
+  }
+
 }

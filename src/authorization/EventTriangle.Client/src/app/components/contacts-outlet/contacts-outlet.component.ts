@@ -4,9 +4,10 @@ import {ContactsStateService} from "../../services/state/contacts-state.service"
 import {ProfileStateService} from "../../services/state/profile-state.service";
 import {
   BehaviorSubject,
-  debounceTime
+  debounceTime, filter
 } from "rxjs";
 import {TextService} from "../../services/common/text.service";
+import {IContactDto} from "../../types/interfaces/consumer/IContactDto";
 
 @Component({
   selector: 'app-contacts-outlet',
@@ -42,8 +43,14 @@ export class ContactsOutletComponent implements OnInit{
     await this._contactsStateService.getContactsAsync();
 
     this.searchText$
-        .pipe(debounceTime(400))
+        .pipe(
+            filter(x => x.trim() !== ''),
+            debounceTime(400))
         .subscribe(async x => await this._contactsStateService.getSearchContactsAsync(x));
+
+    this.searchText$
+        .pipe(filter(x => x === ''))
+        .subscribe(_ => this._contactsStateService.clearSearchContacts())
   }
 
   //events
@@ -53,5 +60,10 @@ export class ContactsOutletComponent implements OnInit{
 
   async onClickDeleteContactHandler(contactId: string) {
     await this._contactsStateService.deleteContactAsync(contactId);
+  }
+
+  //other
+  identifyContactDto(index: number, item: IContactDto) {
+    return item.contactId + item.userId;
   }
 }
