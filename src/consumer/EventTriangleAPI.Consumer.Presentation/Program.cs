@@ -16,6 +16,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 var configurationSection = builder.Configuration.GetSection(AppSettingsConstants.AzureAd);
 var databaseConnectionString = builder.Configuration[AppSettingsConstants.DatabaseConnectionString];
+var shouldCreateSeeds = builder.Configuration.GetValue<bool>(AppSettingsConstants.ShouldCreateSeeds);
 
 builder.Services.AddControllers(o =>
 {
@@ -98,5 +99,10 @@ app.MapControllers();
 app.MapHub<NotificationHub>("notify");
 
 app.MigrateDatabase();
+
+if (shouldCreateSeeds)
+{
+    app.InitializeSeeds();
+}
 
 app.Run();
