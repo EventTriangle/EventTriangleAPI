@@ -43,6 +43,7 @@ public class GetUsersBySearchQueryHandler : ICommandHandler<GetUsersBySearchQuer
         var users = await _context.UserEntities
             .Include(x => x.Wallet)
             .Where(x => x.Id != requester.Id)
+            .Where(x => x.UserRole != UserRole.Admin)
             .Where(x => EF.Functions.Like(x.Email, $"%{command.Email}%"))
             .Select(x => new UserDto(
                 x.Id, 

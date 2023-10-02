@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {animate, query, stagger, style, transition, trigger} from "@angular/animations";
+import {animate, group, query, stagger, style, transition, trigger} from "@angular/animations";
 import {ContactsStateService} from "../../services/state/contacts-state.service";
 import {ProfileStateService} from "../../services/state/profile-state.service";
 import {
@@ -20,6 +20,11 @@ import {IContactDto} from "../../types/interfaces/consumer/IContactDto";
         query(':enter', stagger('50ms', [
           animate('150ms', style({ marginTop: 0, opacity: 1 }))
         ]), { optional: true })
+      ])
+    ]),
+    trigger("contactAnimation", [
+      transition(':leave', [
+          animate('0.25s ease', style({ height: 0, opacity: 0, padding: 0, margin: 0 })),
       ])
     ])
   ]
