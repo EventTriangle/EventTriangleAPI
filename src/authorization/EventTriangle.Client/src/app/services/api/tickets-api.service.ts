@@ -27,7 +27,7 @@ export class TicketsApiService extends ApiBaseService {
   // GET consumer/tickets
   public getTickets(fromDateTime: Date, limit: number) : Observable<IResult<ISupportTicketDto[]>> {
     return this.httpClient.get<IResult<ISupportTicketDto[]>>(
-      this.baseUrl + this.consumerTicketsRoute + `?fromDateTime=${fromDateTime}&limit=${limit}`,
+      this.baseUrl + this.consumerTicketsRoute + `?fromDateTime=${fromDateTime.toJSON()}&limit=${limit}`,
       { withCredentials: true }
     )
   }
@@ -35,7 +35,7 @@ export class TicketsApiService extends ApiBaseService {
   // GET consumer/tickets/support-ticket
   public getSupportTickets(fromDateTime: Date, limit: number) : Observable<IResult<ISupportTicketDto[]>> {
     return this.httpClient.get<IResult<ISupportTicketDto[]>>(
-      this.baseUrl + this.consumerTicketsRoute + `support-tickets?fromDateTime=${fromDateTime}&limit=${limit}`,
+      this.baseUrl + this.consumerTicketsRoute + `/support-tickets?fromDateTime=${fromDateTime.toJSON()}&limit=${limit}`,
       { withCredentials: true }
     )
   }
@@ -50,7 +50,7 @@ export class TicketsApiService extends ApiBaseService {
     };
 
     return this.httpClient.post<IResult<ISupportTicketOpenedEvent>>(
-      this.baseUrl + this.senderTicketsRoute,
+      this.baseUrl + this.senderTicketsRoute + "/support-ticket",
       command, { withCredentials: true }
     );
   }
@@ -64,7 +64,7 @@ export class TicketsApiService extends ApiBaseService {
     }
 
     return this.httpClient.post<IResult<ISupportTicketResolved>>(
-      this.baseUrl + this.senderTicketsRoute + "sender-ticket",
+      this.baseUrl + this.senderTicketsRoute + "/sender-ticket",
       command, { withCredentials: true }
     );
   }

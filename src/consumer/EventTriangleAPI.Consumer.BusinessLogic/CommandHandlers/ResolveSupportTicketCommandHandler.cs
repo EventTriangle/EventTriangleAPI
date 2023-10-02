@@ -49,6 +49,7 @@ public class ResolveSupportTicketCommandHandler : ICommandHandler<ResolveSupport
 
         var supportTicketDto = new SupportTicketDto(
             supportTicket.Id,
+            supportTicket.TransactionId,
             supportTicket.UserId,
             supportTicket.WalletId,
             supportTicket.TicketReason,

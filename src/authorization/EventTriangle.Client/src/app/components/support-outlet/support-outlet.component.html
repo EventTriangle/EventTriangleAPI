@@ -5,53 +5,42 @@
       <svg-icon src="../../../assets/svg/support.svg" class="titleSupportSvg" />
     </span>
     <p class="overview">An overview of support</p>
-    <div class="ticketList" [@supportTicketListAnimation]>
-      <div class="ticketItem">
-        <p class="ticketItemTransactionId">
-          Transaction Id: 027241ac-601d-40c2-9f1d-c7feff04183e
-        </p>
-        <p class="ticketItemStatus">
-          Status: Active
-        </p>
-        <p class="ticketItemDescriptionTitle">
-          Description
-        </p>
-        <p class="ticketItemDescriptionText">
-          I would like to cancel my transaction because of an error when entering the username
-        </p>
+    <ng-container *ngIf="supportTickets$ | async as supportTickets">
+      <div class="ticketList" *ngIf="supportTickets.length > 0" [@supportTicketListAnimation]="">
+        <div class="ticketItem" *ngFor="let ticket of supportTickets; trackBy: identifySupportTicketDto">
+          <p class="ticketItemTransactionId">
+            Transaction Id: {{ticket.transactionId}}
+          </p>
+          <p class="ticketItemStatus">
+            Status: {{ticket.ticketStatus === 1 ? 'Open' : 'Resolved'}}
+          </p>
+          <p class="ticketItemDescriptionTitle">
+            Description
+          </p>
+          <p class="ticketItemDescriptionText">
+            {{ticket.ticketReason}}
+          </p>
+        </div>
       </div>
-      <div class="ticketItem">
-        <p class="ticketItemTransactionId">
-          Transaction Id: 027241ac-601d-40c2-9f1d-c7feff04183e</p>
-        <p class="ticketItemStatus">
-          Status: Active</p>
-        <p class="ticketItemDescriptionTitle">
-          Description</p>
-        <p class="ticketItemDescriptionText">
-          I would like to cancel my transaction because of an error when entering the username
-        </p>
-      </div>
+    </ng-container>
+    <div class="ticketList" *ngIf="!_supportTicketStateService.wasRequested">
+      <p-skeleton styleClass="skeletonSupportTicketItem" />
+      <p-skeleton styleClass="skeletonSupportTicketItem" />
+      <p-skeleton styleClass="skeletonSupportTicketItem" />
+      <p-skeleton styleClass="skeletonSupportTicketItem" />
     </div>
-<!--    <div class="ticketList">-->
-<!--      <p-skeleton styleClass="skeletonSupportTicketItem" />-->
-<!--      <p-skeleton styleClass="skeletonSupportTicketItem" />-->
-<!--      <p-skeleton styleClass="skeletonSupportTicketItem" />-->
-<!--      <p-skeleton styleClass="skeletonSupportTicketItem" />-->
-<!--    </div>-->
   </div>
 </div>
 <div class="createTicket">
   <div class="createTicketContainer">
-    <div [@rightBarAnimation]>
+    <div [@rightBarAnimation]="">
       <p class="createTicketTitle">
         Create Ticket
       </p>
-      <input type="text" class="createTicketInput" placeholder="Transaction Id" />
-      <input type="text" class="createTicketInput" placeholder="Username" />
-      <input type="text" class="createTicketInput" placeholder="User Id" />
-      <input type="text" class="createTicketInput" placeholder="Wallet Id" />
-      <textarea class="createTicketTextarea" placeholder="Reason of ticket"></textarea>
-      <button class="createTicketOkButton">
+      <input type="text" class="createTicketInput" [(ngModel)]="transactionId" placeholder="Transaction Id" />
+      <input type="text" class="createTicketInput" [(ngModel)]="walletId" placeholder="Wallet Id" />
+      <textarea class="createTicketTextarea" [(ngModel)]="ticketReason" placeholder="Reason of ticket"></textarea>
+      <button class="createTicketOkButton" (click)="onClickOpenSupportTicketHandler()">
         Ok
       </button>
     </div>

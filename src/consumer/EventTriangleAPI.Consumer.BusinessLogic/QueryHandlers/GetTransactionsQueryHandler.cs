@@ -30,7 +30,7 @@ public class GetTransactionsQueryHandler : ICommandHandler<GetTransactionsQuery,
         var transactions = await _context.TransactionEntities
             .OrderByDescending(x => x.CreatedAt)
             .Where(x => x.FromUserId == command.RequesterId || x.ToUserId == command.RequesterId)
-            .Where(x => x.CreatedAt > command.FromDateTime)
+            .Where(x => x.CreatedAt < command.FromDateTime)
             .Select(x => new TransactionDto(
                 x.Id,
                 x.FromUserId,
