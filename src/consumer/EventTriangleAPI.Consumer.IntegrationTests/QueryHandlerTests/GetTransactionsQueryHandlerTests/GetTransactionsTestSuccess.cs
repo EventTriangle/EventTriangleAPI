@@ -29,8 +29,8 @@ public class GetTransactionsTestSuccess : IntegrationTestBase
         var createTransactionUserToUserResult = 
             await CreateTransactionUserToUserCommandHandler.HandleAsync(createTransactionUserToUserCommand);
 
-        var getTransactionsForDimaQuery = new GetTransactionsQuery(dima.Response.Id, 10, DateTime.UtcNow - TimeSpan.FromHours(2));
-        var getTransactionsForAliceQuery = new GetTransactionsQuery(alice.Response.Id, 10, DateTime.UtcNow - TimeSpan.FromHours(2));
+        var getTransactionsForDimaQuery = new GetTransactionsQuery(dima.Response.Id, 10, DateTime.UtcNow);
+        var getTransactionsForAliceQuery = new GetTransactionsQuery(alice.Response.Id, 10, DateTime.UtcNow);
         var getTransactionsForDimaResult = await GetTransactionsQueryHandler.HandleAsync(getTransactionsForDimaQuery);
         var getTransactionsForAliceResult = await GetTransactionsQueryHandler.HandleAsync(getTransactionsForAliceQuery);
 

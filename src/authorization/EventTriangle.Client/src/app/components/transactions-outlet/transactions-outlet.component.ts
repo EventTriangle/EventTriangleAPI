@@ -62,10 +62,8 @@ export class TransactionsOutletComponent implements OnInit {
   async ngOnInit() {
     if (!this._profileStateService.isAuthenticated) return;
 
-    const threeDaysBefore = new Date();
-    threeDaysBefore.setDate(threeDaysBefore.getDate() - 3);
-
-    await this._transactionsStateService.getTransactionsAsync(threeDaysBefore, 25);
+    const date = new Date();
+    await this._transactionsStateService.getTransactionsAsync(date, 25);
   }
 
   getTransactionClassName(transaction: ITransactionDto) : string {
@@ -98,5 +96,4 @@ export class TransactionsOutletComponent implements OnInit {
   identifyTransactionDto(index: number, item: ITransactionDto){
     return item.id;
   }
-
 }

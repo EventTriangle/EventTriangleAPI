@@ -33,6 +33,7 @@ public class GetSupportTicketsQueryHandler : ICommandHandler<GetSupportsTicketsQ
             .Where(x => x.CreatedAt < command.FromDateTime)
             .Select(x => new SupportTicketDto(
                 x.Id,
+                x.TransactionId,
                 x.UserId,
                 x.WalletId,
                 x.TicketReason,
