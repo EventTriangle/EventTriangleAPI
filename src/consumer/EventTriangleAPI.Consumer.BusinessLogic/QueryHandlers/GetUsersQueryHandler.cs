@@ -43,6 +43,7 @@ public class GetUsersQueryHandler : ICommandHandler<GetUsersQuery, List<UserDto>
         var users = await _context.UserEntities
             .Include(x => x.Wallet)
             .Where(x => x.Id != requester.Id)
+            .Where(x => x.UserRole != UserRole.Admin)
             .Select(x => new UserDto(
                 x.Id,
                 x.Email,

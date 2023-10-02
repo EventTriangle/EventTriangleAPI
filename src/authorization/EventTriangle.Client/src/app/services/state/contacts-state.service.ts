@@ -16,6 +16,12 @@ export class ContactsStateService {
       private _contactsApiService: ContactsApiService
   ) {}
 
+  //action
+  clearSearchContacts() {
+    this.searchedContacts$.next([]);
+  }
+
+  //requests
   async getContactsAsync() {
     const getContacts$ = this._contactsApiService.getContacts();
     const getContactsResult = await firstValueFrom(getContacts$);

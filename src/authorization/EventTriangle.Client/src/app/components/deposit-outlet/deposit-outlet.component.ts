@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
-import { animate, query, stagger, state, style, transition, trigger } from "@angular/animations";
+import { animate, style, transition, trigger } from "@angular/animations";
+import {TransactionsApiService} from "../../services/api/transactions-api.service";
+import {firstValueFrom} from "rxjs";
 
 @Component({
   selector: 'app-deposit-outlet',
@@ -15,5 +17,17 @@ import { animate, query, stagger, state, style, transition, trigger } from "@ang
   ]
 })
 export class DepositOutletComponent {
+  public creditCardId: string = "";
+  public amount: number = 0;
 
+  constructor(
+      private _transactionsApiService: TransactionsApiService
+  ) {}
+
+  //events
+  public async onClickTopUpAccountBalanceHandler() {
+    console.log(this.amount);
+    const topUpAccountBalance$ = this._transactionsApiService.topUpAccountBalance(this.creditCardId, this.amount);
+    await firstValueFrom(topUpAccountBalance$);
+  }
 }
