@@ -9,26 +9,32 @@
       <input type="text" class="searchInput" placeholder="Search Users" />
       <svg-icon src="../../../assets/svg/search.svg" class="searchSvg" />
     </div>
-    <div class="userList" [@userListAnimation]="">
-      <div *ngFor="let user of users" class="userItem">
-        <p class="userItemUsername">
-          Username: Levis Farrell
-        </p>
-        <p class="userItemBalance">
-          Balance: €1000
-        </p>
-        <p class="userItemRole">
-          Role: User
-        </p>
-        <p class="userItemStatus">
-          <span>Status:</span>
-          <select class="userItemStatusSelect">
-            <option value="Active">Active</option>
-            <option value="Suspended">Suspended</option>
-          </select>
-        </p>
+    <ng-container *ngIf="{
+      users: (users$ | async) || [],
+      searchedUsers: (searchedUsers$ | async) || [],
+      searchText: (searchText$ | async) || ''
+    } as data">
+      <div class="userList" *ngIf="data.users.length > 0 && data.searchText.length === 0" [@userListAnimation]="">
+        <div *ngFor="let user of data.users; trackBy: identifyUserDto" class="userItem">
+          <p class="userItemUsername">
+            Username: {{_textService.pullUsernameFromMail(user.email)}}
+          </p>
+          <p class="userItemBalance">
+            Balance: €{{user.wallet.balance}}
+          </p>
+          <p class="userItemRole">
+            Role: {{user.userRole === 0 ? "User" : "Admin"}}
+          </p>
+          <p class="userItemStatus">
+            <span>Status:</span>
+            <select class="userItemStatusSelect">
+              <option value="Active">Active</option>
+              <option value="Suspended">Suspended</option>
+            </select>
+          </p>
+        </div>
       </div>
-    </div>
+    </ng-container>
 <!--    <div class="userList">-->
 <!--      <p-skeleton styleClass="skeletonUserItem" />-->
 <!--      <p-skeleton styleClass="skeletonUserItem" />-->
