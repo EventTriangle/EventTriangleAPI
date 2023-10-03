@@ -16,7 +16,7 @@ public static class SwaggerServices
             c.EnableAnnotations();
 
             c.SwaggerDoc("v1",
-                new OpenApiInfo { Title = "EventTriangle Authorization API", Version = $"v{version}" });
+                new OpenApiInfo { Title = $"EventTriangle Authorization API {version}", Version = $"v{version}" });
         });
 
         return serviceCollection;

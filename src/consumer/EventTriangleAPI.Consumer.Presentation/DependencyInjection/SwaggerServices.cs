@@ -17,7 +17,7 @@ public static class SwaggerServices
             c.EnableAnnotations();
 
             c.SwaggerDoc("v1",
-                new OpenApiInfo { Title = "EventTriangle Consumer API", Version = $"v{version}" });
+                new OpenApiInfo { Title = $"EventTriangle Consumer API {version}", Version = $"v{version}" });
             
             c.AddSecurityDefinition(
                 "token",
