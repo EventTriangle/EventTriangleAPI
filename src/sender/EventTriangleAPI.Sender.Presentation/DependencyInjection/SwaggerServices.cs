@@ -6,14 +6,20 @@ namespace EventTriangleAPI.Sender.Presentation.DependencyInjection;
 
 public static class SwaggerServices
 {
+    private const string DefaultVersion = "1.0.0.0";
+    
     public static IServiceCollection AddSwagger(this IServiceCollection serviceCollection)
     {
-        serviceCollection.AddSwaggerGen(options =>
+        serviceCollection.AddSwaggerGen(c =>
         {
-            var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-            options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+            var version = Assembly.GetEntryAssembly()?.GetName().Version?.ToString() ?? DefaultVersion;
+            
+            c.EnableAnnotations();
 
-            options.AddSecurityDefinition(
+            c.SwaggerDoc("v1",
+                new OpenApiInfo { Title = "EventTriangle Sender API", Version = $"v{version}" });
+            
+            c.AddSecurityDefinition(
                 "token",
                 new OpenApiSecurityScheme
                 {
@@ -25,7 +31,7 @@ public static class SwaggerServices
                 }
             );
 
-            options.AddSecurityRequirement(
+            c.AddSecurityRequirement(
                 new OpenApiSecurityRequirement
                 {
                     {

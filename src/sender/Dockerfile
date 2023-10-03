@@ -16,7 +16,8 @@ COPY ["shared/EventTriangleAPI.Shared.DTO/EventTriangleAPI.Shared.DTO.csproj", "
 RUN dotnet restore "sender/EventTriangleAPI.Sender.Presentation/EventTriangleAPI.Sender.Presentation.csproj"
 COPY . .
 WORKDIR "sender/EventTriangleAPI.Sender.Presentation"
-RUN dotnet publish "EventTriangleAPI.Sender.Presentation.csproj" -c Release -o /app/publish /p:UseAppHost=false --no-cache
+ARG VERSION
+RUN dotnet publish "EventTriangleAPI.Sender.Presentation.csproj" -c Release -p:Version=$VERSION -o /app/publish /p:UseAppHost=false --no-cache
 
 FROM base AS final
 WORKDIR /app

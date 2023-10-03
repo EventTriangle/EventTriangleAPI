@@ -16,19 +16,20 @@ spec:
       containers:
         - name: event-triangle-auth-api
           image: kaminome/consumer-service:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 80
           env:
             - name: RabbitMqHost
               valueFrom:
-                configMapKeyRef:
-                  name: event-triangle-consumer-configmap
+                secretKeyRef:
+                  name: connection-creds
                   key: RabbitMqHost
 
             - name: DatabaseConnectionString
               valueFrom:
-                configMapKeyRef:
-                  name: event-triangle-consumer-configmap
+                secretKeyRef:
+                  name: connection-creds
                   key: DatabaseConnectionString
                   
             - name: ASPNETCORE_ENVIRONMENT

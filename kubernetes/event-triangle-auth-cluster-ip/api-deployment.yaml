@@ -16,20 +16,21 @@ spec:
       containers:
         - name: event-triangle-auth-api
           image: kaminome/auth-service:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 80
             - containerPort: 81
           env:
             - name: EVENT_TRIANGLE_AD_CLIENT_SECRET
               valueFrom:
-                configMapKeyRef:
-                  name: event-triangle-auth-configmap
+                secretKeyRef:
+                  name: connection-creds
                   key: EVENT_TRIANGLE_AD_CLIENT_SECRET
 
             - name: DatabaseConnectionString
               valueFrom:
-                configMapKeyRef:
-                  name: event-triangle-auth-configmap
+                secretKeyRef:
+                  name: connection-creds
                   key: DatabaseConnectionString
                   
             - name: ASPNETCORE_ENVIRONMENT
