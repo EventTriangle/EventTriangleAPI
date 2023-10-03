@@ -1,5 +1,9 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {animate, query, stagger, style, transition, trigger} from "@angular/animations";
+import {UsersStateService} from "../../services/state/users-state.service";
+import {BehaviorSubject} from "rxjs";
+import {TextService} from "../../services/common/text.service";
+import {IUserDto} from "../../types/interfaces/consumer/IUserDto";
 
 @Component({
   selector: 'app-users-outlet',
@@ -16,6 +20,24 @@ import {animate, query, stagger, style, transition, trigger} from "@angular/anim
     ]),
   ]
 })
-export class UsersOutletComponent {
-  users = [1, 1, 1, 1, 1];
+export class UsersOutletComponent implements OnInit {
+  //observable
+  public users$ = this._usersStateService.users$;
+  public searchedUsers$ = this._usersStateService.searchedUsers$;
+
+  public searchText$ = new BehaviorSubject<string>("");
+
+  constructor(
+      protected _usersStateService: UsersStateService,
+      protected _textService: TextService
+  ) {}
+
+  async ngOnInit() {
+    await this._usersStateService.getUsersAsync(25, 1);
+  }
+
+  //other
+  identifyUserDto(index: number, item: IUserDto){
+    return item.id;
+  }
 }
