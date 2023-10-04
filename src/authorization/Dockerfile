@@ -31,7 +31,8 @@ COPY ["shared/EventTriangleAPI.Shared.DTO/EventTriangleAPI.Shared.DTO.csproj", "
 RUN dotnet restore "authorization/EventTriangleAPI.Authorization.Presentation/EventTriangleAPI.Authorization.Presentation.csproj"
 COPY . .
 WORKDIR "authorization/EventTriangleAPI.Authorization.Presentation"
-RUN dotnet publish "EventTriangleAPI.Authorization.Presentation.csproj" -c Release -o /app/publish /p:UseAppHost=false --no-cache
+ARG VERSION
+RUN dotnet publish "EventTriangleAPI.Authorization.Presentation.csproj" -c Release -p:Version=$VERSION -o /app/publish /p:UseAppHost=false --no-cache
 
 FROM base AS final
 WORKDIR /app

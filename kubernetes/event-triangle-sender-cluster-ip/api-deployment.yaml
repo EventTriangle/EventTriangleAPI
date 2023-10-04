@@ -16,24 +16,25 @@ spec:
       containers:
         - name: event-triangle-sender-api
           image: kaminome/sender-service:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 80
             - containerPort: 81
           env:
             - name: RabbitMqHost
               valueFrom:
-                configMapKeyRef:
-                  name: event-triangle-sender-configmap
+                secretKeyRef:
+                  name: connection-creds
                   key: RabbitMqHost
 
             - name: DatabaseConnectionString
               valueFrom:
-                configMapKeyRef:
-                  name: event-triangle-sender-configmap
-                  key: DatabaseConnectionString            
+                secretKeyRef:
+                  name: connection-creds
+                  key: SenderDatabaseConnectionString            
                     
             - name: ASPNETCORE_ENVIRONMENT
               valueFrom:
                 configMapKeyRef:
-                  name: event-triangle-sender-configmap
+                  name: event-triangle-consumer-configmap
                   key: ASPNETCORE_ENVIRONMENT

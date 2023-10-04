@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace EventTriangleAPI.Authorization.Presentation.Controllers;
 
@@ -30,6 +31,7 @@ public class AuthorizationController : ControllerBase
     }
 
     [HttpGet("login")]
+    [SwaggerOperation(Summary = "Logs user in via Azure AD.")]
     public async Task<IActionResult> Login()
     {
         var authN = await HttpContext.AuthenticateAsync(AuthConstants.AppOidc);
@@ -50,11 +52,12 @@ public class AuthorizationController : ControllerBase
     public async Task<IActionResult> Logout()
     {
         var devFrontendUrl = _configuration[AppSettingsConstants.DevFrontendUrl];
-        
+
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
         return _hostEnvironment.IsDevelopment()
-            ? SignOut(new AuthenticationProperties{ RedirectUri = devFrontendUrl + SpaRouting.Transactions }, AuthConstants.AppOidc)
+            ? SignOut(new AuthenticationProperties { RedirectUri = devFrontendUrl + SpaRouting.Transactions },
+                AuthConstants.AppOidc)
             : SignOut(AuthConstants.AppOidc);
     }
 
