@@ -5,6 +5,7 @@ services:
     build:
       context: src
       args:
+        VERSION: '1.0.0.0'
         FRONT_API_URL: 'http://localhost:7000/'
       dockerfile: authorization/Dockerfile
     ports:
@@ -18,6 +19,8 @@ services:
   consumer-service:
     build:
       context: src
+      args:
+        VERSION: '1.0.0.0'
       dockerfile: consumer/Dockerfile
     ports:
       - "7001:80"
@@ -30,6 +33,8 @@ services:
   sender-service:
     build:
       context: src
+      args:
+        VERSION: '1.0.0.0'
       dockerfile: sender/Dockerfile
     ports:
       - "7002:80"
