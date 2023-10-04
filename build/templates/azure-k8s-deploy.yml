@@ -19,6 +19,9 @@ parameters:
 
   - name: namespace
     type: string
+    
+  - name: deploymentName
+    type: string
 
 jobs:
   - deployment: 'Deploy_To_AKS_${{ parameters.appName }}'
@@ -41,5 +44,5 @@ jobs:
                 command: 'login'
 
             - bash: |
-                kubectl get nodes
-              displayName: 'Kubectl get nodes'
+                kubectl rollout restart deploy ${{ parameters.deploymentName }}
+              displayName: 'Rollout deployment'

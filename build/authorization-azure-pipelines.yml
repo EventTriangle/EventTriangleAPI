@@ -28,6 +28,7 @@ pr:
 variables:
   - name: appName
     value: 'AuthorizationAPI'
+  - group: 'AKS_Settings'
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -60,6 +61,7 @@ stages:
           vmImage: 'ubuntu-latest'
           environment: 'aks'
           serviceConnection: 'Azure_Connection'
-          azureResourceGroup: 'rg-aks-terraform-mov01'
-          kubernetesCluster: 'my-aks-cluster-mov01'
+          azureResourceGroup: '$(AKS_RG)'
+          kubernetesCluster: '$(AKS_NAME)'
           namespace: 'default'
+          deploymentName: 'event-triangle-auth-deployment'
