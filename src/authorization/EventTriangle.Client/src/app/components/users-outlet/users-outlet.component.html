@@ -6,7 +6,8 @@
     </span>
     <p class="overview">An overview of users</p>
     <div class="search">
-      <input type="text" class="searchInput" placeholder="Search Users" />
+      <input type="text" class="searchInput"
+             [ngModel]="searchText$ | async" (ngModelChange)="searchText$.next($event)" placeholder="Search Users" />
       <svg-icon src="../../../assets/svg/search.svg" class="searchSvg" />
     </div>
     <ng-container *ngIf="{
@@ -14,7 +15,7 @@
       searchedUsers: (searchedUsers$ | async) || [],
       searchText: (searchText$ | async) || ''
     } as data">
-      <div class="userList" *ngIf="data.users.length > 0 && data.searchText.length === 0" [@userListAnimation]="">
+      <div class="userList" *ngIf="data.users.length > 0 && data.searchText.length === 0; else noUsers" [@userListAnimation]="">
         <div *ngFor="let user of data.users; trackBy: identifyUserDto" class="userItem">
           <p class="userItemUsername">
             Username: {{_textService.pullUsernameFromMail(user.email)}}
@@ -27,13 +28,35 @@
           </p>
           <p class="userItemStatus">
             <span>Status:</span>
-            <select class="userItemStatusSelect">
-              <option value="Active">Active</option>
-              <option value="Suspended">Suspended</option>
+            <select class="userItemStatusSelect" [(ngModel)]="user.userStatus" (change)="onChangeSuspendOrMakeActiveHandler(user)">
+              <option value="{{UserStatus.Active}}">Active</option>
+              <option value="{{UserStatus.Suspended}}">Suspended</option>
             </select>
           </p>
         </div>
       </div>
+      <ng-template #noUsers>
+        <div class="userList" *ngIf="data.searchedUsers.length > 0 && data.searchText.length > 0" [@userListAnimation]="">
+          <div *ngFor="let user of data.searchedUsers; trackBy: identifyUserDto" class="userItem">
+            <p class="userItemUsername">
+              Username: {{_textService.pullUsernameFromMail(user.email)}}
+            </p>
+            <p class="userItemBalance">
+              Balance: €{{user.wallet.balance}}
+            </p>
+            <p class="userItemRole">
+              Role: {{user.userRole === 0 ? "User" : "Admin"}}
+            </p>
+            <p class="userItemStatus">
+              <span>Status:</span>
+              <select class="userItemStatusSelect" [(ngModel)]="user.userStatus" (change)="onChangeSuspendOrMakeActiveHandler(user)">
+                <option value="{{UserStatus.Active}}">Active</option>
+                <option value="{{UserStatus.Suspended}}">Suspended</option>
+              </select>
+            </p>
+          </div>
+        </div>
+      </ng-template>
     </ng-container>
 <!--    <div class="userList">-->
 <!--      <p-skeleton styleClass="skeletonUserItem" />-->

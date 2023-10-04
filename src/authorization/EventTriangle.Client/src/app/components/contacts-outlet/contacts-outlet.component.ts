@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
 import {animate, animateChild, query, stagger, style, transition, trigger} from "@angular/animations";
 import {ContactsStateService} from "../../services/state/contacts-state.service";
 import {ProfileStateService} from "../../services/state/profile-state.service";
@@ -8,7 +8,7 @@ import {
 } from "rxjs";
 import {TextService} from "../../services/common/text.service";
 import {IContactDto} from "../../types/interfaces/consumer/IContactDto";
-import {NavigationEnd, NavigationStart, Router} from "@angular/router";
+import {NavigationStart, Router} from "@angular/router";
 
 @Component({
   selector: 'app-contacts-outlet',
@@ -23,7 +23,7 @@ import {NavigationEnd, NavigationStart, Router} from "@angular/router";
         ]), { optional: true })
       ]),
       transition(":leave", [
-          query("@contactAnimation", animateChild({duration: "0.25s"}), {optional: true})
+          query("@contactAnimation", animateChild({duration: "0.25s"}), {optional: true}),
       ])
     ]),
     trigger("contactAnimation", [
@@ -34,7 +34,6 @@ import {NavigationEnd, NavigationStart, Router} from "@angular/router";
   ]
 })
 export class ContactsOutletComponent implements OnInit, OnDestroy{
-
   //observable
   public contacts$ = this._contactsStateService.contacts$;
   public searchedContacts$ = this._contactsStateService.searchedContacts$;
@@ -53,10 +52,15 @@ export class ContactsOutletComponent implements OnInit, OnDestroy{
       protected _contactsStateService: ContactsStateService,
       protected _profileStateService: ProfileStateService,
       protected _textService: TextService,
-      protected _router: Router
+      protected _router: Router,
+      protected _changeDetectorRef: ChangeDetectorRef
   ) {
-    this.routerSubscription = this._router.events.pipe(filter((event): event is NavigationStart => event instanceof NavigationStart))
-        .subscribe(x => this.isAnimationAllowed = false)
+    this.routerSubscription = this._router.events
+        .pipe(filter((event): event is NavigationStart => event instanceof NavigationStart))
+        .subscribe(x => {
+          this.isAnimationAllowed = false;
+          this._changeDetectorRef.detectChanges();
+        })
   }
 
   async ngOnInit() {

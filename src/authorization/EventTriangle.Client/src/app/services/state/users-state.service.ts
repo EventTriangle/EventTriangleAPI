@@ -16,6 +16,12 @@ export class UsersStateService {
      private _usersApiService: UsersApiService
   ) {}
 
+  //actions
+  public clearSearchedUsers() {
+    this.searchedUsers$.next([]);
+  }
+
+  //requests
   public async getUsersAsync(limit: number, page: number) {
     const getUsers$ = this._usersApiService.getUsers(limit, page);
     const getUsersResult = await firstValueFrom(getUsers$);
