@@ -51,8 +51,8 @@ stages:
 
   - stage: 'AKS_Deploy_${{ variables.appName }}'
     displayName: 'Deploy ${{ variables.appName }} to AKS'
-    dependsOn: 'Build_And_Test_${{ variables.appName }}'
-    condition: succeeded('Build_And_Test_${{ variables.appName }}')
+#    dependsOn: 'Build_And_Test_${{ variables.appName }}'
+#    condition: succeeded('Build_And_Test_${{ variables.appName }}')
     jobs:
       - template: templates/azure-k8s-deploy.yml
         parameters:
