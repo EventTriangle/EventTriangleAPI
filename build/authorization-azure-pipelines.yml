@@ -34,26 +34,26 @@ pool:
   vmImage: 'ubuntu-latest'
 
 stages:
-#  - stage: 'Build_And_Test_${{ variables.appName }}'
-#    displayName: 'Build ${{ variables.appName }}'
-#    jobs:
-#      - template: templates/dotnet-build-and-test-job-template.yml
-#        parameters:
-#          solution: 'EventTriangleAPI.sln'
-#          buildConfiguration: 'Release'
-#          backendProjectPath: 'src/authorization/EventTriangleAPI.Authorization.Presentation'
-#          unitTestsProjectPath: 'src/authorization/EventTriangleAPI.Authorization.UnitTests/EventTriangleAPI.Authorization.UnitTests.csproj'
-#          shouldRunIntegrationTests: 'false'
-#          integrationTestsProjectPath: ''
-#          dockerUsername: 'kaminome'
-#          imageRepository: 'auth-service'
-#          dockerfilePath: 'authorization/Dockerfile'
-#          dockerfileServiceConnection: 'Docker_Hub_Connection'
+  - stage: 'Build_And_Test_${{ variables.appName }}'
+    displayName: 'Build ${{ variables.appName }}'
+    jobs:
+      - template: templates/dotnet-build-and-test-job-template.yml
+        parameters:
+          solution: 'EventTriangleAPI.sln'
+          buildConfiguration: 'Release'
+          backendProjectPath: 'src/authorization/EventTriangleAPI.Authorization.Presentation'
+          unitTestsProjectPath: 'src/authorization/EventTriangleAPI.Authorization.UnitTests/EventTriangleAPI.Authorization.UnitTests.csproj'
+          shouldRunIntegrationTests: 'false'
+          integrationTestsProjectPath: ''
+          dockerUsername: 'kaminome'
+          imageRepository: 'auth-service'
+          dockerfilePath: 'authorization/Dockerfile'
+          dockerfileServiceConnection: 'Docker_Hub_Connection'
 
   - stage: 'AKS_Deploy_${{ variables.appName }}'
     displayName: 'Deploy ${{ variables.appName }} to AKS'
-#    dependsOn: 'Build_And_Test_${{ variables.appName }}'
-#    condition: succeeded('Build_And_Test_${{ variables.appName }}')
+    dependsOn: 'Build_And_Test_${{ variables.appName }}'
+    condition: succeeded('Build_And_Test_${{ variables.appName }}')
     jobs:
       - template: templates/azure-k8s-deploy.yml
         parameters:
