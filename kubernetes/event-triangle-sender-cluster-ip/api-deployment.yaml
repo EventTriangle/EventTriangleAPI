@@ -31,7 +31,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: connection-creds
-                  key: DatabaseConnectionString            
+                  key: SenderDatabaseConnectionString            
                     
             - name: ASPNETCORE_ENVIRONMENT
               valueFrom:
