@@ -25,22 +25,41 @@ pr:
       - src/shared/EventTriangleAPI.Shared.Application
       - src/shared/EventTriangleAPI.Shared.DTO
 
+variables:
+  - name: appName
+    value: 'AuthorizationAPI'
+
 pool:
   vmImage: 'ubuntu-latest'
 
 stages:
-  - stage: 'Build_And_Test_AuthorizationAPI'
-    displayName: 'Build and Test Consumer API and Drop Artifacts'
+#  - stage: 'Build_And_Test_${{ variables.appName }}'
+#    displayName: 'Build ${{ variables.appName }}'
+#    jobs:
+#      - template: templates/dotnet-build-and-test-job-template.yml
+#        parameters:
+#          solution: 'EventTriangleAPI.sln'
+#          buildConfiguration: 'Release'
+#          backendProjectPath: 'src/authorization/EventTriangleAPI.Authorization.Presentation'
+#          unitTestsProjectPath: 'src/authorization/EventTriangleAPI.Authorization.UnitTests/EventTriangleAPI.Authorization.UnitTests.csproj'
+#          shouldRunIntegrationTests: 'false'
+#          integrationTestsProjectPath: ''
+#          dockerUsername: 'kaminome'
+#          imageRepository: 'auth-service'
+#          dockerfilePath: 'authorization/Dockerfile'
+#          dockerfileServiceConnection: 'Docker_Hub_Connection'
+
+  - stage: 'AKS_Deploy_${{ variables.appName }}'
+    displayName: 'Deploy ${{ variables.appName }} to AKS'
+    dependsOn: 'Build_And_Test_${{ variables.appName }}'
+    condition: succeeded('Build_And_Test_${{ variables.appName }}')
     jobs:
-      - template: templates/dotnet-build-and-test-job-template.yml
+      - template: templates/azure-k8s-deploy.yml
         parameters:
-          solution: 'EventTriangleAPI.sln'
-          buildConfiguration: 'Release'
-          backendProjectPath: 'src/authorization/EventTriangleAPI.Authorization.Presentation'
-          unitTestsProjectPath: 'src/authorization/EventTriangleAPI.Authorization.UnitTests/EventTriangleAPI.Authorization.UnitTests.csproj'
-          shouldRunIntegrationTests: 'false'
-          integrationTestsProjectPath: ''
-          dockerUsername: 'kaminome'
-          imageRepository: 'auth-service'
-          dockerfilePath: 'authorization/Dockerfile'
-          dockerfileServiceConnection: 'Docker_Hub_Connection'
+          appName: ${{ variables.appName }}
+          vmImage: 'ubuntu-latest'
+          environment: 'aks'
+          serviceConnection: 'Azure_Connection'
+          azureResourceGroup: 'rg-aks-terraform-mov01'
+          kubernetesCluster: 'my-aks-cluster-mov01'
+          namespace: 'default'
