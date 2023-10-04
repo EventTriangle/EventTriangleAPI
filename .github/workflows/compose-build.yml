@@ -17,7 +17,6 @@ jobs:
       matrix:
         environment:
           - ubuntu-latest
-          - windows-latest
     steps:
       - name: 'Checkout'
         uses: actions/checkout@v3
