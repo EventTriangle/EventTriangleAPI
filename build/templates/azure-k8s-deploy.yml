@@ -44,5 +44,5 @@ jobs:
                 command: 'login'
 
             - bash: |
-                kubectl rollout restart deploy ${{ parameters.deploymentName }}
+                kubectl rollout restart deploy ${{ parameters.deploymentName }} --namespace event-triangle
               displayName: 'Rollout deployment'
