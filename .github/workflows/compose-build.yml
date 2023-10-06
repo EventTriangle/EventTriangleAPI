@@ -26,3 +26,9 @@ jobs:
       - name: Docker compose build
         run: |
           docker compose build
+          
+      - name: Docker compose up
+        run: |
+          docker compose up -d
+        env:
+          EVENT_TRIANGLE_AD_CLIENT_SECRET: 'TEST_SECRET'
