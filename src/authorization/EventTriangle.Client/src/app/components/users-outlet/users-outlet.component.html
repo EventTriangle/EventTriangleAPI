@@ -58,12 +58,12 @@
         </div>
       </ng-template>
     </ng-container>
-<!--    <div class="userList">-->
-<!--      <p-skeleton styleClass="skeletonUserItem" />-->
-<!--      <p-skeleton styleClass="skeletonUserItem" />-->
-<!--      <p-skeleton styleClass="skeletonUserItem" />-->
-<!--      <p-skeleton styleClass="skeletonUserItem" />-->
-<!--    </div>-->
+    <div class="userList" *ngIf="!_usersStateService.wasRequested">
+      <p-skeleton styleClass="skeletonUserItem" />
+      <p-skeleton styleClass="skeletonUserItem" />
+      <p-skeleton styleClass="skeletonUserItem" />
+      <p-skeleton styleClass="skeletonUserItem" />
+    </div>
   </div>
 </div>
 <div class="emptyBlock"></div>
