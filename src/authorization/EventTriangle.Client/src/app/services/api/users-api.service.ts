@@ -50,7 +50,7 @@ export class UsersApiService extends ApiBaseService {
     }
 
     return this.httpClient.post<IResult<IUserSuspendedEvent>>(
-      this.baseUrl + this.senderUsersRoute,
+      this.baseUrl + this.senderUsersRoute + "/suspend",
       command,{ withCredentials: true }
     );
   }
@@ -61,15 +61,12 @@ export class UsersApiService extends ApiBaseService {
       userId: userId
     };
     let options = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json'
-      }),
       withCredentials: true,
       body: command
     };
 
     return this.httpClient.delete<IResult<IUserNotSuspendedEvent>>(
-      this.baseUrl + this.senderUsersRoute,
+      this.baseUrl + this.senderUsersRoute + "/suspend",
       options
     );
   }
