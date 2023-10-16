@@ -3,7 +3,6 @@ import { animate, style, transition, trigger } from "@angular/animations";
 import {TicketsApiService} from "../../services/api/tickets-api.service";
 import {firstValueFrom} from "rxjs";
 import {SupportTicketStateService} from "../../services/state/support-ticket-state.service";
-import {ITransactionDto} from "../../types/interfaces/consumer/ITransactionDto";
 import {ISupportTicketDto} from "../../types/interfaces/consumer/ISupportTicketDto";
 
 @Component({

@@ -1,5 +1,8 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {animate, style, transition, trigger} from "@angular/animations";
+import {TicketStateService} from "../../services/state/ticket-state.service";
+import {ISupportTicketDto} from "../../types/interfaces/consumer/ISupportTicketDto";
+import {firstValueFrom} from "rxjs";
 
 @Component({
   selector: 'app-tickets-outlet',
@@ -14,6 +17,26 @@ import {animate, style, transition, trigger} from "@angular/animations";
     ])
   ]
 })
-export class TicketsOutletComponent {
+export class TicketsOutletComponent implements OnInit {
+  //observable
+  public tickets$ = this._ticketStateService.tickets$;
 
+  constructor(
+      protected _ticketStateService: TicketStateService
+  ) {}
+
+  async ngOnInit() {
+    const date = new Date();
+    await this._ticketStateService.getTicketsAsync(date, 25);
+  }
+
+  //events
+  async onClickResolveTicketHandler(ticketId: string, ticketJustification: string) {
+    await this._ticketStateService.resolveTicketAsync(ticketId, ticketJustification);
+  }
+
+  //other
+  identifyTicketDto(index: number, item: ISupportTicketDto){
+    return item.id;
+  }
 }

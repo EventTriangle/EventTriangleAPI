@@ -5,40 +5,39 @@
       <svg-icon src="../../../assets/svg/ticket.svg" class="titleTicketsSvg" />
     </span>
     <p class="overview">An overview of tickets</p>
-    <div class="ticketList" [@ticketListAnimation]>
-      <div class="ticketItem">
-        <p class="ticketItemTransactionId">
-          Transaction Id: 027241ac-601d-40c2-9f1d-c7feff04183e
-        </p>
-        <p class="ticketItemStatus">
-          <span>Status: </span>
-          <select class="ticketItemStatusSelect">
-            <option value="Open">Open</option>
-            <option value="Resolved">Resolve</option>
-          </select>
-        </p>
-        <p class="ticketItemDescriptionTitle">
-          Description
-        </p>
-        <p class="ticketItemDescriptionText">
-          I would like to cancel my transaction because of an error when entering the username
-        </p>
-        <p class="ticketItemResponseToUser">
-          Response to user
-        </p>
-        <textarea class="ticketItemResponseToUserTextarea"
-          placeholder="Write Response">Hello, your transaction is cancelled</textarea>
-        <button class="ticketItemOkButton">
-          Ok
-        </button>
+    <ng-container *ngIf="tickets$ | async as tickets">
+      <div class="ticketList" *ngIf="tickets.length > 0" [@ticketListAnimation]="">
+        <div class="ticketItem" *ngFor="let ticket of tickets; trackBy: identifyTicketDto">
+          <p class="ticketItemTransactionId">
+            Transaction Id: {{ticket.id}}
+          </p>
+          <p class="ticketItemStatus">
+            <span>Status: {{ticket.ticketStatus == 1 ? "Open" : "Resolved"}}</span>
+          </p>
+          <p class="ticketItemDescriptionTitle">
+            Description
+          </p>
+          <p class="ticketItemDescriptionText">
+            {{ticket.ticketReason}}
+          </p>
+          <p class="ticketItemResponseToUser">
+            Response to user
+          </p>
+          <textarea class="ticketItemResponseToUserTextarea"
+                    placeholder="Write Response"
+                    [(ngModel)]="ticket.ticketJustification">Hello, your transaction is cancelled</textarea>
+          <button class="ticketItemOkButton" (click)="onClickResolveTicketHandler(ticket.id, ticket.ticketJustification)">
+            Ok
+          </button>
+        </div>
       </div>
+    </ng-container>
+    <div class="ticketList" *ngIf="!_ticketStateService.wasRequested">
+      <p-skeleton styleClass="skeletonTicketItem" />
+      <p-skeleton styleClass="skeletonTicketItem" />
+      <p-skeleton styleClass="skeletonTicketItem" />
+      <p-skeleton styleClass="skeletonTicketItem" />
     </div>
-<!--    <div class="ticketList">-->
-<!--      <p-skeleton styleClass="skeletonTicketItem" />-->
-<!--      <p-skeleton styleClass="skeletonTicketItem" />-->
-<!--      <p-skeleton styleClass="skeletonTicketItem" />-->
-<!--      <p-skeleton styleClass="skeletonTicketItem" />-->
-<!--    </div>-->
   </div>
 </div>
 <div class="emptyBlock"></div>

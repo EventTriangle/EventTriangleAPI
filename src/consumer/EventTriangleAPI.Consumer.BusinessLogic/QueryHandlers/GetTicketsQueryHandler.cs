@@ -36,6 +36,7 @@ public class GetTicketsQueryHandler : ICommandHandler<GetTicketsQuery, List<Supp
         var supportTickets = await _context.SupportTicketEntities
             .OrderByDescending(x => x.CreatedAt)
             .Where(x => x.CreatedAt < command.FromDateTime)
+            .Where(x => x.TicketStatus == TicketStatus.Open)
             .Select(x => new SupportTicketDto(
                 x.Id,
                 x.TransactionId,
