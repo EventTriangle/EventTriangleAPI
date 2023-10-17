@@ -3,8 +3,8 @@ import { animate, style, transition, trigger } from "@angular/animations";
 import {TicketsApiService} from "../../services/api/tickets-api.service";
 import {firstValueFrom} from "rxjs";
 import {SupportTicketStateService} from "../../services/state/support-ticket-state.service";
-import {ITransactionDto} from "../../types/interfaces/consumer/ITransactionDto";
 import {ISupportTicketDto} from "../../types/interfaces/consumer/ISupportTicketDto";
+import {ProfileStateService} from "../../services/state/profile-state.service";
 
 @Component({
   selector: 'app-support-outlet',
@@ -26,7 +26,6 @@ import {ISupportTicketDto} from "../../types/interfaces/consumer/ISupportTicketD
   ]
 })
 export class SupportOutletComponent implements OnInit{
-  public walletId: string = "";
   public transactionId: string = "";
   public ticketReason: string = "";
 
@@ -35,7 +34,8 @@ export class SupportOutletComponent implements OnInit{
 
   constructor(
       private _ticketsApiService: TicketsApiService,
-      protected _supportTicketStateService: SupportTicketStateService
+      protected _supportTicketStateService: SupportTicketStateService,
+      protected _profileStateService : ProfileStateService
   ) {}
 
   async ngOnInit() {
@@ -45,7 +45,11 @@ export class SupportOutletComponent implements OnInit{
 
   //events
   async onClickOpenSupportTicketHandler() {
-    const openSupportTicket$ = this._ticketsApiService.openSupportTicket(this.walletId, this.transactionId, this.ticketReason);
+    const walletId = this._profileStateService.user$.getValue()?.walletId ?? "";
+    this.transactionId = "";
+    this.ticketReason = "";
+
+    const openSupportTicket$ = this._ticketsApiService.openSupportTicket(walletId, this.transactionId, this.ticketReason);
     await firstValueFrom(openSupportTicket$);
   }
 

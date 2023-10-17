@@ -63,8 +63,8 @@ export class TicketsApiService extends ApiBaseService {
       ticketJustification: ticketJustification
     }
 
-    return this.httpClient.post<IResult<ISupportTicketResolved>>(
-      this.baseUrl + this.senderTicketsRoute + "/sender-ticket",
+    return this.httpClient.put<IResult<ISupportTicketResolved>>(
+      this.baseUrl + this.senderTicketsRoute + "/support-ticket",
       command, { withCredentials: true }
     );
   }

@@ -101,6 +101,28 @@
 }
 
 .ticketItemDescriptionText {
+  margin-bottom: 20px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.ticketItemResponseTitle {
+  margin-bottom: 12px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.ticketItemResponseText {
+  background-color: $grey-2;
+  padding: 20px;
+  font-weight: 700;
+  font-size: 20px;
+  color: $grey-p;
+  border-radius: 10px;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
