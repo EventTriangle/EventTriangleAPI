@@ -1,51 +1,61 @@
-<div class="navBarContainer" [@navbarAnimation]="true">
+
+<div class="navBarContainer">
   <p class="title">Menu</p>
-  <a routerLink="/transactions" class="item" routerLinkActive="itemActive">
-    <div class="itemIcon">
-      <svg-icon src="../../../assets/svg/transaction.svg" class="transactionSvg" />
-    </div>
-    <p class="itemTitle">Transactions</p>
-  </a>
-  <a routerLink="/cards" class="item" routerLinkActive="itemActive">
-    <div class="itemIcon">
-      <svg-icon src="../../../assets/svg/credit-card.svg" class="cardSvg" />
-    </div>
-    <p class="itemTitle">Cards</p>
-  </a>
-  <a routerLink="/deposit" class="item" routerLinkActive="itemActive">
-    <div class="itemIcon">
-      <svg-icon src="../../../assets/svg/money.svg" class="depostionSvg" />
-    </div>
-    <p class="itemTitle">Deposit</p>
-  </a>
-  <a routerLink="/contacts" class="item" routerLinkActive="itemActive">
-    <div class="itemIcon">
-      <svg-icon src="../../../assets/svg/contacts.svg" class="contactsSvg" />
-    </div>
-    <p class="itemTitle">Contacts</p>
-  </a>
-  <a routerLink="/support" class="item" routerLinkActive="itemActive">
-    <div class="itemIcon">
-      <svg-icon src="../../../assets/svg/support.svg" class="supportSvg" />
-    </div>
-    <p class="itemTitle">Support</p>
-  </a>
-  <a routerLink="/tickets" class="item" routerLinkActive="itemActive">
-    <div class="itemIcon">
-      <svg-icon src="../../../assets/svg/ticket.svg" class="ticketSvg" />
-    </div>
-    <p class="itemTitle">Tickets</p>
-  </a>
-  <a routerLink="/users" class="item" routerLinkActive="itemActive">
-    <div class="itemIcon">
-      <svg-icon src="../../../assets/svg/user.svg" class="ticketSvg" />
-    </div>
-    <p class="itemTitle">Users</p>
-  </a>
-  <a class="item" (click)="getLogout()">
-    <div class="itemIcon">
-      <svg-icon src="../../../assets/svg/logout.svg" class="logoutSvg" />
-    </div>
-    <p class="itemTitle">Log out</p>
-  </a>
+  <ng-container *ngIf="user$ | async as user; else noUser">
+    <a routerLink="/transactions" class="item" routerLinkActive="itemActive" [@navbarLinkAnimation]="">
+      <div class="itemIcon">
+        <svg-icon src="../../../assets/svg/transaction.svg" class="transactionSvg" />
+      </div>
+      <p class="itemTitle">Transactions</p>
+    </a>
+    <a routerLink="/cards" class="item" routerLinkActive="itemActive" [@navbarLinkAnimation]="">
+      <div class="itemIcon">
+        <svg-icon src="../../../assets/svg/credit-card.svg" class="cardSvg" />
+      </div>
+      <p class="itemTitle">Cards</p>
+    </a>
+    <a routerLink="/deposit" class="item" routerLinkActive="itemActive" [@navbarLinkAnimation]="">
+      <div class="itemIcon">
+        <svg-icon src="../../../assets/svg/money.svg" class="depostionSvg" />
+      </div>
+      <p class="itemTitle">Deposit</p>
+    </a>
+    <a routerLink="/contacts" class="item" routerLinkActive="itemActive" [@navbarLinkAnimation]="">
+      <div class="itemIcon">
+        <svg-icon src="../../../assets/svg/contacts.svg" class="contactsSvg" />
+      </div>
+      <p class="itemTitle">Contacts</p>
+    </a>
+    <a routerLink="/support" class="item" routerLinkActive="itemActive" [@navbarLinkAnimation]="">
+      <div class="itemIcon">
+        <svg-icon src="../../../assets/svg/support.svg" class="supportSvg" />
+      </div>
+      <p class="itemTitle">Support</p>
+    </a>
+    <a routerLink="/tickets" class="item" routerLinkActive="itemActive" *ngIf="user.userRole === UserRole.Admin" [@navbarLinkAnimation]="">
+      <div class="itemIcon">
+        <svg-icon src="../../../assets/svg/ticket.svg" class="ticketSvg" />
+      </div>
+      <p class="itemTitle">Tickets</p>
+    </a>
+    <a routerLink="/users" class="item" routerLinkActive="itemActive" *ngIf="user.userRole === UserRole.Admin"  [@navbarLinkAnimation]="">
+      <div class="itemIcon">
+        <svg-icon src="../../../assets/svg/user.svg" class="ticketSvg" />
+      </div>
+      <p class="itemTitle">Users</p>
+    </a>
+    <a class="item" (click)="getLogout()"  [@navbarLinkAnimation]="">
+      <div class="itemIcon">
+        <svg-icon src="../../../assets/svg/logout.svg" class="logoutSvg" />
+      </div>
+      <p class="itemTitle">Log out</p>
+    </a>
+  </ng-container>
+  <ng-template #noUser>
+    <p-skeleton styleClass="skeletonNavLink" />
+    <p-skeleton styleClass="skeletonNavLink" />
+    <p-skeleton styleClass="skeletonNavLink" />
+    <p-skeleton styleClass="skeletonNavLink" />
+    <p-skeleton styleClass="skeletonNavLink" />
+  </ng-template>
 </div>
