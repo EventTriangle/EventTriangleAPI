@@ -23,9 +23,9 @@
           <p class="ticketItemResponseToUser">
             Response to user
           </p>
-          <textarea class="ticketItemResponseToUserTextarea"
-                    placeholder="Write Response"
-                    [(ngModel)]="ticket.ticketJustification">Hello, your transaction is cancelled</textarea>
+          <textarea class="ticketItemResponseToUserTextarea" placeholder="Write Response" (keydown.enter)="$event.preventDefault()"
+                    [(ngModel)]="ticket.ticketJustification" (keyup.enter)="onClickResolveTicketHandler(ticket.id, ticket.ticketJustification)">
+          </textarea>
           <button class="ticketItemOkButton" (click)="onClickResolveTicketHandler(ticket.id, ticket.ticketJustification)">
             Ok
           </button>

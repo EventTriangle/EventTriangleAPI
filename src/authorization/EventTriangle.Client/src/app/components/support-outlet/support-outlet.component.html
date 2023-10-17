@@ -20,12 +20,14 @@
           <p class="ticketItemDescriptionText">
             {{ticket.ticketReason}}
           </p>
-          <p class="ticketItemResponseTitle">
-            Response
-          </p>
-          <p class="ticketItemResponseText">
-            {{ticket.ticketJustification}}
-          </p>
+          <ng-container *ngIf="ticket.ticketJustification">
+            <p class="ticketItemResponseTitle">
+              Response
+            </p>
+            <p class="ticketItemResponseText">
+              {{ticket.ticketJustification}}
+            </p>
+          </ng-container>
         </div>
       </div>
     </ng-container>
@@ -43,9 +45,10 @@
       <p class="createTicketTitle">
         Create Ticket
       </p>
-      <input type="text" class="createTicketInput" [(ngModel)]="transactionId" placeholder="Transaction Id" />
-      <input type="text" class="createTicketInput" [(ngModel)]="walletId" placeholder="Wallet Id" />
-      <textarea class="createTicketTextarea" [(ngModel)]="ticketReason" placeholder="Reason of ticket"></textarea>
+      <input type="text" class="createTicketInput" placeholder="Transaction Id" (keydown.enter)="$event.preventDefault()"
+             [(ngModel)]="transactionId" (keyup.enter)="onClickOpenSupportTicketHandler()" />
+      <textarea class="createTicketTextarea" placeholder="Reason of ticket" (keydown.enter)="$event.preventDefault()"
+                [(ngModel)]="ticketReason" (keyup.enter)="onClickOpenSupportTicketHandler()"></textarea>
       <button class="createTicketOkButton" (click)="onClickOpenSupportTicketHandler()">
         Ok
       </button>
