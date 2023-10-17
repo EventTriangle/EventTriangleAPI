@@ -32,13 +32,13 @@
              placeholder="Card Holder Name" id="CardHolderName"
              [(ngModel)]="cardHolderName"/>
       <input type="text" class="addNewCardInput"
-             placeholder="0000-0000-0000-0000" id="CardNumber"
+             placeholder="0000 0000 0000 0000" id="CardNumber" mask="0000 0000 0000 0000"
              [(ngModel)]="cardNumber"/>
       <input type="text" class="addNewCardInput"
-             placeholder="mm/dd" id="Expiration"
+             placeholder="mm/dd" id="Expiration" mask="00/00"
              [(ngModel)]="expiration"/>
       <input type="text" class="addNewCardInput"
-             placeholder="CVV/CVC" id="Cvv"
+             placeholder="CVV/CVC" id="Cvv" mask="000"
              [(ngModel)]="cvv"/>
       <select [(ngModel)]="paymentNetwork" class="addNewCardInput">
         <option [ngValue]="PaymentNetwork.Visa">Visa</option>

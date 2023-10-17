@@ -18,7 +18,7 @@ import {firstValueFrom} from "rxjs";
 })
 export class DepositOutletComponent {
   public creditCardId: string = "";
-  public amount: number = 0;
+  public amount: string = "";
 
   constructor(
       private _transactionsApiService: TransactionsApiService
@@ -26,8 +26,7 @@ export class DepositOutletComponent {
 
   //events
   public async onClickTopUpAccountBalanceHandler() {
-    console.log(this.amount);
-    const topUpAccountBalance$ = this._transactionsApiService.topUpAccountBalance(this.creditCardId, this.amount);
+    const topUpAccountBalance$ = this._transactionsApiService.topUpAccountBalance(this.creditCardId, +this.amount);
     await firstValueFrom(topUpAccountBalance$);
   }
 }

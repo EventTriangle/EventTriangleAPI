@@ -50,10 +50,14 @@ export class CardsOutletComponent implements OnInit {
 
   //events
   async onAttachCardOkClick() {
+    if (this.expiration.length < 4) return;
+
+    const expiration = this.expiration.slice(0, 2) + "/" + this.expiration.slice(2);
+
     await this._creditCardsStateService.attachCreditCardToAccountAsync(
       this.cardHolderName,
       this.cardNumber,
-      this.expiration,
+      expiration,
       this.cvv,
       this.paymentNetwork);
   }
