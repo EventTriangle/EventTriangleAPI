@@ -20,6 +20,7 @@ import { APP_BASE_HREF } from '@angular/common';
 import {FormsModule} from "@angular/forms";
 import { LoginWindowComponent } from './components/login-window/login-window.component';
 import { SkeletonModule } from 'primeng/skeleton';
+import {NgxMaskDirective, NgxMaskPipe, provideEnvironmentNgxMask} from "ngx-mask";
 
 const initializeAppFactory = (): Promise<void> => {
   const configUrl = 'assets/config/config.json';
@@ -58,7 +59,9 @@ const initializeAppFactory = (): Promise<void> => {
       BrowserAnimationsModule,
       AngularSvgIconModule.forRoot(),
       FormsModule,
-      SkeletonModule
+      SkeletonModule,
+      NgxMaskDirective,
+      NgxMaskPipe
   ],
   providers: [
     {
@@ -70,7 +73,9 @@ const initializeAppFactory = (): Promise<void> => {
       useFactory: () => initializeAppFactory,
       deps: [HttpClient],
       multi: true
-    }],
+    },
+    provideEnvironmentNgxMask()
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

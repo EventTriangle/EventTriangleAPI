@@ -7,7 +7,7 @@
     <p class="overview">An overview of deposit</p>
     <div class="depositForm" [@depositFormAnimation]="">
       <input type="text" class="depositInput" [(ngModel)]="creditCardId" placeholder="Credit Card Id"/>
-      <input type="text" class="depositInput" [(ngModel)]="amount" placeholder="Amount"/>
+      <input type="text" class="depositInput" [(ngModel)]="amount" placeholder="Amount" mask="0000000000000"/>
       <button class="depositOkButton" (click)="onClickTopUpAccountBalanceHandler()">
         Ok
       </button>
