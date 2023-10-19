@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ProfileStateService } from 'src/app/services/state/profile-state.service';
+import * as signalR from '@microsoft/signalr';
 
 @Component({
   selector: 'app-layout',
@@ -13,6 +14,20 @@ export class LayoutComponent implements OnInit {
   public async ngOnInit() {
     const getAuthenticationResult = await this._profileStateService.getAuthenticationAsync();
 
-    if (getAuthenticationResult.authenticated) await this._profileStateService.getProfileAsync();
+    if (getAuthenticationResult.authenticated) {
+      await this._profileStateService.getProfileAsync();
+
+      const connectionBuilder = new signalR.HubConnectionBuilder();
+      const connection = connectionBuilder
+          .configureLogging(signalR.LogLevel.Information)
+          .withUrl("https://localhost:7000/consumer" + "/notify")
+          .build();
+
+      await connection.start();
+
+      console.log(connection);
+
+      await connection.send("Join");
+    }
   }
 }
