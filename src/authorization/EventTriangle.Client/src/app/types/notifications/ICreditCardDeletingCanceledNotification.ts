@@ -1,5 +1,5 @@
 
-export interface CreditCardDeletingCanceledNotification {
+export interface ICreditCardDeletingCanceledNotification {
     cardId: string;
     reason: string;
 }

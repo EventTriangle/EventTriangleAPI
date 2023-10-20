@@ -46,10 +46,12 @@ export class SupportOutletComponent implements OnInit{
   //events
   async onClickOpenSupportTicketHandler() {
     const walletId = this._profileStateService.user$.getValue()?.walletId ?? "";
+
+    const openSupportTicket$ = this._ticketsApiService.openSupportTicket(walletId, this.transactionId, this.ticketReason);
+
     this.transactionId = "";
     this.ticketReason = "";
 
-    const openSupportTicket$ = this._ticketsApiService.openSupportTicket(walletId, this.transactionId, this.ticketReason);
     await firstValueFrom(openSupportTicket$);
   }
 

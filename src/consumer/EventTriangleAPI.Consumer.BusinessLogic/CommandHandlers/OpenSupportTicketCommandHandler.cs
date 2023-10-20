@@ -35,11 +35,19 @@ public class OpenSupportTicketCommandHandler : ICommandHandler<OpenSupportTicket
             return new Result<SupportTicketDto>(new DbEntityNotFoundError(ResponseMessages.WalletNotFound));
         }
 
-        var transaction = await _context.TransactionEntities.FirstOrDefaultAsync(x => x.Id == command.TransactionId);
+        var transaction = await _context.TransactionEntities
+            .FirstOrDefaultAsync(x => x.Id == command.TransactionId);
 
         if (transaction == null)
         {
             return new Result<SupportTicketDto>(new DbEntityNotFoundError(ResponseMessages.TransactionNotFound));
+        }
+
+        var isThereSupportTicket = await _context.SupportTicketEntities.AnyAsync(x => x.TransactionId == command.TransactionId);
+
+        if (isThereSupportTicket)
+        {
+            return new Result<SupportTicketDto>(new ConflictError(ResponseMessages.SupportTicketAlreadyExists));
         }
         
         var supportTicket = new SupportTicketEntity(

@@ -1,6 +1,29 @@
 import { Injectable } from '@angular/core';
 import * as signalR from "@microsoft/signalr";
 import {SignalRMethodsName} from "../../constants/SignalRMethodNames";
+import {ITransactionDto} from "../../types/interfaces/consumer/ITransactionDto";
+import {IContactCreatingCanceledNotification} from "../../types/notifications/IContactCreatingCanceledNotification";
+import {IContactDeletingCanceledNotification} from "../../types/notifications/IContactDeletingCanceledNotification";
+import {ICreditCardAddingCanceledNotification} from "../../types/notifications/ICreditCardAddingCanceledNotification";
+import {
+  ICreditCardChangingCanceledNotification
+} from "../../types/notifications/ICreditCardChangingCanceledNotification";
+import {
+  ICreditCardDeletingCanceledNotification
+} from "../../types/notifications/ICreditCardDeletingCanceledNotification";
+import {
+  ISupportTicketOpeningCanceledNotification
+} from "../../types/notifications/ISupportTicketOpeningCanceledNotification";
+import {
+  ISupportTicketResolvingCanceledNotification
+} from "../../types/notifications/ISupportTicketResolvingCanceledNotification";
+import {
+  ITransactionRollBackCanceledNotification
+} from "../../types/notifications/ITransactionRollBackCanceledNotification";
+import {IUserNotSuspendingCanceledNotification} from "../../types/notifications/IUserNotSuspendingCanceledNotification";
+import {IUserSuspendingCanceledNotification} from "../../types/notifications/IUserSuspendingCanceledNotification";
+import {IUserRoleUpdatingCanceledNotification} from "../../types/notifications/IUserRoleUpdatingCanceledNotification";
+import {ITransactionCanceledNotification} from "../../types/notifications/ITransactionCanceledNotification";
 
 @Injectable({
   providedIn: 'root'
@@ -27,18 +50,44 @@ export class SignalrService {
   public configure() {
     if (!this.connection) throw new Error("SignalR connection is undefined");
 
-    this.connection.on(SignalRMethodsName.TransactionSucceededAsync, () => {});
-    this.connection.on(SignalRMethodsName.ContactCreatingCanceledAsync, () => {});
-    this.connection.on(SignalRMethodsName.ContactDeletingCanceledAsync, () => {});
-    this.connection.on(SignalRMethodsName.CreditCardAddingCanceledAsync, () => {});
-    this.connection.on(SignalRMethodsName.CreditCardChangingCanceledAsync, () => {});
-    this.connection.on(SignalRMethodsName.CreditCardDeletingCanceledAsync, () => {});
-    this.connection.on(SignalRMethodsName.SupportTicketOpeningCanceledAsync, () => {});
-    this.connection.on(SignalRMethodsName.SupportTicketResolvingCanceledAsync, () => {});
-    this.connection.on(SignalRMethodsName.TransactionRollBackCanceledAsync, () => {});
-    this.connection.on(SignalRMethodsName.UserNotSuspendingCanceledAsync, () => {});
-    this.connection.on(SignalRMethodsName.UserSuspendingCanceledAsync, () => {});
-    this.connection.on(SignalRMethodsName.UserRoleUpdatingCanceledAsync, () => {});
-    this.connection.on(SignalRMethodsName.TransactionCanceledAsync, () => {});
+    this.connection.on(SignalRMethodsName.TransactionSucceededAsync, (transactionDto: ITransactionDto) => {
+
+    });
+    this.connection.on(SignalRMethodsName.ContactCreatingCanceledAsync, (notification: IContactCreatingCanceledNotification) => {
+
+    });
+    this.connection.on(SignalRMethodsName.ContactDeletingCanceledAsync, (notification: IContactDeletingCanceledNotification) => {
+
+    });
+    this.connection.on(SignalRMethodsName.CreditCardAddingCanceledAsync, (notification: ICreditCardAddingCanceledNotification) => {
+
+    });
+    this.connection.on(SignalRMethodsName.CreditCardChangingCanceledAsync, (notification: ICreditCardChangingCanceledNotification) => {
+
+    });
+    this.connection.on(SignalRMethodsName.CreditCardDeletingCanceledAsync, (notification: ICreditCardDeletingCanceledNotification) => {
+
+    });
+    this.connection.on(SignalRMethodsName.SupportTicketOpeningCanceledAsync, (notification: ISupportTicketOpeningCanceledNotification) => {
+
+    });
+    this.connection.on(SignalRMethodsName.SupportTicketResolvingCanceledAsync, (notification: ISupportTicketResolvingCanceledNotification) => {
+
+    });
+    this.connection.on(SignalRMethodsName.TransactionRollBackCanceledAsync, (notification: ITransactionRollBackCanceledNotification) => {
+
+    });
+    this.connection.on(SignalRMethodsName.UserNotSuspendingCanceledAsync, (notification: IUserNotSuspendingCanceledNotification) => {
+
+    });
+    this.connection.on(SignalRMethodsName.UserSuspendingCanceledAsync, (notification: IUserSuspendingCanceledNotification) => {
+
+    });
+    this.connection.on(SignalRMethodsName.UserRoleUpdatingCanceledAsync, (notification: IUserRoleUpdatingCanceledNotification) => {
+
+    });
+    this.connection.on(SignalRMethodsName.TransactionCanceledAsync, (notification: ITransactionCanceledNotification) => {
+
+    });
   }
 }

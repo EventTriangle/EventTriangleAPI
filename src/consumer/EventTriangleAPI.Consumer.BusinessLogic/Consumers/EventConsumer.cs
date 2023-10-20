@@ -427,6 +427,7 @@ public class EventConsumer :
             }
             
             await _hubContext.Clients.User(context.Message.RequesterId).TransactionSucceededAsync(result.Response);
+            await _hubContext.Clients.User(context.Message.ToUserId).TransactionSucceededAsync(result.Response);
         }
         catch(Exception e)
         {
