@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as signalR from "@microsoft/signalr";
 import {SignalRMethodsName} from "../../constants/SignalRMethodNames";
-import {ITransactionDto} from "../../types/interfaces/consumer/ITransactionDto";
 
 @Injectable({
   providedIn: 'root'
@@ -28,7 +27,7 @@ export class SignalrService {
   public configure() {
     if (!this.connection) throw new Error("SignalR connection is undefined");
 
-    this.connection.on(SignalRMethodsName.TransactionSucceededAsync, () => );
+    this.connection.on(SignalRMethodsName.TransactionSucceededAsync, () => {});
     this.connection.on(SignalRMethodsName.ContactCreatingCanceledAsync, () => {});
     this.connection.on(SignalRMethodsName.ContactDeletingCanceledAsync, () => {});
     this.connection.on(SignalRMethodsName.CreditCardAddingCanceledAsync, () => {});
