@@ -21,20 +21,26 @@ import {FormsModule} from "@angular/forms";
 import { LoginWindowComponent } from './components/login-window/login-window.component';
 import { SkeletonModule } from 'primeng/skeleton';
 import {NgxMaskDirective, NgxMaskPipe, provideEnvironmentNgxMask} from "ngx-mask";
+import {ToastModule} from "primeng/toast";
+import {MessageService} from "primeng/api";
+import {ConfigService} from "./services/common/config.service";
+import {Observable} from "rxjs";
 
-const initializeAppFactory = (): Promise<void> => {
-  const configUrl = 'assets/config/config.json';
-  const key = 'baseUrl';
+interface IConfig {
+    baseUrl: string
+}
 
-  return fetch(configUrl, {
-    method: 'GET'
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      localStorage.setItem(key, data.baseUrl);
-    });
-};
+function initializeAppFactory(httpClient: HttpClient): () => Observable<any> {
+    const configUrl = 'assets/config/config.json';
 
+    return () => {
+        const result = httpClient.get<IConfig>(configUrl)
+
+        result.subscribe(x => localStorage.setItem("serverUrl", x.baseUrl));
+
+        return result;
+    };
+}
 
 @NgModule({
   declarations: [
@@ -52,29 +58,31 @@ const initializeAppFactory = (): Promise<void> => {
     UsersOutletComponent,
     LoginWindowComponent
   ],
-  imports: [
-      BrowserModule,
-      AppRoutingModule,
-      HttpClientModule,
-      BrowserAnimationsModule,
-      AngularSvgIconModule.forRoot(),
-      FormsModule,
-      SkeletonModule,
-      NgxMaskDirective,
-      NgxMaskPipe
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        HttpClientModule,
+        BrowserAnimationsModule,
+        AngularSvgIconModule.forRoot(),
+        FormsModule,
+        SkeletonModule,
+        NgxMaskDirective,
+        NgxMaskPipe,
+        ToastModule
+    ],
   providers: [
-    {
-      provide: APP_BASE_HREF,
-      useValue: "/app"
-    },
-    {
-      provide: APP_INITIALIZER,
-      useFactory: () => initializeAppFactory,
-      deps: [HttpClient],
-      multi: true
-    },
-    provideEnvironmentNgxMask()
+      {
+          provide: APP_BASE_HREF,
+          useValue: "/app"
+      },
+      {
+          provide: APP_INITIALIZER,
+          useFactory: initializeAppFactory,
+          deps: [HttpClient],
+          multi: true
+      },
+      provideEnvironmentNgxMask(),
+      MessageService
   ],
   bootstrap: [AppComponent]
 })

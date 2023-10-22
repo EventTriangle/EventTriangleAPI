@@ -4,6 +4,7 @@ import {HttpClient} from "@angular/common/http";
 import {IUserDto} from "../../types/interfaces/consumer/IUserDto";
 import {Observable} from "rxjs";
 import {IResult} from "../../types/interfaces/IResult";
+import {ConfigService} from "../common/config.service";
 
 @Injectable({
   providedIn: 'root'
@@ -12,9 +13,11 @@ export class ProfileApiService extends ApiBaseService {
   private readonly consumerProfileRoute = "consumer/profile";
   private readonly baseUrl: string;
 
-  constructor(private httpClient: HttpClient) {
+  constructor(
+      private httpClient: HttpClient,
+      private _configService: ConfigService) {
     super()
-    this.baseUrl = super.getUrl();
+    this.baseUrl = _configService.getServerUrl();
   }
 
   // requests

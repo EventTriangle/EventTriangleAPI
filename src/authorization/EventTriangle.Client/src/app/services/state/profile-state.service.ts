@@ -17,21 +17,43 @@ export class ProfileStateService {
   public user$: BehaviorSubject<IUserDto | null> = new BehaviorSubject<IUserDto | null>(null);
 
   constructor(
-      private _profileApiService: ProfileApiService,
-      private _authorizationApiService: AuthorizationApiService,
+    private _profileApiService: ProfileApiService,
+    private _authorizationApiService: AuthorizationApiService,
   ) {}
 
+  //actions
+  public plusToBalance(value: number) {
+    const user = this.user$.getValue();
+
+    if (!user) throw new Error("User is not defined");
+
+    user.wallet.balance += value;
+
+    this.user$.next(user);
+  }
+
+  public minusFromBalance(value: number) {
+    const user = this.user$.getValue();
+
+    if (!user) throw new Error("User is not defined");
+
+    user.wallet.balance -= value;
+
+    this.user$.next(user);
+  }
+
+  //requests
   public async getAuthenticationAsync() {
     const getAuthenticationSub$ = this._authorizationApiService.getIsAuthenticated();
     const getAuthenticationResult = await firstValueFrom<IsAuthenticatedResponse>(getAuthenticationSub$)
-        .catch((e: HttpErrorResponse) => {
-          const getAuthenticationResult = e.error as IsAuthenticatedResponse;
+      .catch((e: HttpErrorResponse) => {
+        const getAuthenticationResult = e.error as IsAuthenticatedResponse;
 
-          this.wasAuthenticationCheck = true;
-          this.isAuthenticated = getAuthenticationResult.authenticated;
+        this.wasAuthenticationCheck = true;
+        this.isAuthenticated = getAuthenticationResult.authenticated;
 
-          return getAuthenticationResult;
-        });
+        return getAuthenticationResult;
+      });
 
     this.wasAuthenticationCheck = true;
     this.isAuthenticated = getAuthenticationResult.authenticated;

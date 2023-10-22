@@ -7,7 +7,7 @@
     <p class="overview">An overview of cards</p>
     <ng-container *ngIf="cards$ | async as cards">
       <div class="cardList" [@cardListAnimation]="" *ngIf="cards.length > 0">
-          <div *ngFor="let card of cards; trackBy: identifyCardDto" class="cardItem">
+          <div *ngFor="let card of cards; trackBy: identifyCardDto" class="cardItem" [@cardItemAnimation]="">
             <p class="cardItemTitle">{{card.paymentNetwork == PaymentNetwork.Visa ? 'Visa' : 'MasterCard'}}</p>
             <p class="cardItemNumbers">{{card.cardNumber}}</p>
             <p class="cardItemExpiryDate">{{card.expiration}}</p>
@@ -29,15 +29,19 @@
         Add New Card
       </p>
       <input type="text" class="addNewCardInput"
+             (keydown.enter)="$event.preventDefault()" (keyup.enter)="onAttachCardOkClick()"
              placeholder="Card Holder Name" id="CardHolderName"
              [(ngModel)]="cardHolderName"/>
       <input type="text" class="addNewCardInput"
+             (keydown.enter)="$event.preventDefault()" (keyup.enter)="onAttachCardOkClick()"
              placeholder="0000 0000 0000 0000" id="CardNumber" mask="0000 0000 0000 0000"
              [(ngModel)]="cardNumber"/>
       <input type="text" class="addNewCardInput"
+             (keydown.enter)="$event.preventDefault()" (keyup.enter)="onAttachCardOkClick()"
              placeholder="mm/dd" id="Expiration" mask="00/00"
              [(ngModel)]="expiration"/>
       <input type="text" class="addNewCardInput"
+             (keydown.enter)="$event.preventDefault()" (keyup.enter)="onAttachCardOkClick()"
              placeholder="CVV/CVC" id="Cvv" mask="000"
              [(ngModel)]="cvv"/>
       <select [(ngModel)]="paymentNetwork" class="addNewCardInput">

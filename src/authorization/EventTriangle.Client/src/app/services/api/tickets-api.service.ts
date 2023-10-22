@@ -8,6 +8,7 @@ import {ISupportTicketOpenedEvent} from "../../types/interfaces/sender/ISupportT
 import {ISupportTicketResolved} from "../../types/interfaces/sender/ISupportTicketResolved";
 import {ResolveSupportTickerRequest} from "../../types/requests/ResolveSupportTicketRequest";
 import {IResult} from "../../types/interfaces/IResult";
+import {ConfigService} from "../common/config.service";
 
 @Injectable({
   providedIn: 'root'
@@ -17,9 +18,12 @@ export class TicketsApiService extends ApiBaseService {
   private readonly senderTicketsRoute = "sender/tickets";
   private readonly baseUrl: string;
 
-  constructor(private httpClient: HttpClient) {
+  constructor(
+      private httpClient: HttpClient,
+      private _configService: ConfigService
+  ) {
     super()
-    this.baseUrl = super.getUrl();
+    this.baseUrl = _configService.getServerUrl();
   }
 
   // requests

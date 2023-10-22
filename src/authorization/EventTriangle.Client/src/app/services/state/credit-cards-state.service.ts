@@ -18,6 +18,14 @@ export class CreditCardsStateService {
       private _creditCardApiService: CreditCardApiService
   ) { }
 
+  //actions
+  public addCreditCard(creditCardDto: ICreditCardDto) {
+    const cards = this.cards$.getValue();
+    cards.push(creditCardDto);
+    this.cards$.next(cards);
+  }
+
+  //requests
   public async getCreditCardsAsync() {
     const getCreditCardsSub$ = this._creditCardApiService.getCreditCards();
     const getCreditCardsResult = await firstValueFrom<IResult<ICreditCardDto[]>>(getCreditCardsSub$);

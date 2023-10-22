@@ -170,7 +170,10 @@ public class EventConsumer :
                     result.Error.Message);
 
                 await _hubContext.Clients.User(message.RequesterId).CreditCardAddingCanceledAsync(notification);
-            }            
+                return;
+            }    
+            
+            await _hubContext.Clients.User(message.RequesterId).CreditCardAddedAsync(result.Response);
         }
         catch(Exception e)
         {
@@ -294,7 +297,10 @@ public class EventConsumer :
                     result.Error.Message);
 
                 await _hubContext.Clients.User(message.RequesterId).SupportTicketOpeningCanceledAsync(notification);
-            }            
+                return;
+            }
+            
+            await _hubContext.Clients.User(message.RequesterId).SupportTicketOpenedAsync(result.Response);
         }
         catch(Exception e)
         {
@@ -427,6 +433,7 @@ public class EventConsumer :
             }
             
             await _hubContext.Clients.User(context.Message.RequesterId).TransactionSucceededAsync(result.Response);
+            await _hubContext.Clients.User(context.Message.ToUserId).TransactionSucceededAsync(result.Response);
         }
         catch(Exception e)
         {

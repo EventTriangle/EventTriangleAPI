@@ -31,6 +31,7 @@ public class GetTransactionsQueryHandler : ICommandHandler<GetTransactionsQuery,
             .OrderByDescending(x => x.CreatedAt)
             .Where(x => x.FromUserId == command.RequesterId || x.ToUserId == command.RequesterId)
             .Where(x => x.CreatedAt < command.FromDateTime)
+            .Take(command.Limit)
             .Select(x => new TransactionDto(
                 x.Id,
                 x.FromUserId,

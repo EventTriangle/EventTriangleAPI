@@ -27,6 +27,10 @@ export class DepositOutletComponent {
   //events
   public async onClickTopUpAccountBalanceHandler() {
     const topUpAccountBalance$ = this._transactionsApiService.topUpAccountBalance(this.creditCardId, +this.amount);
+
+    this.creditCardId = "";
+    this.amount = "";
+
     await firstValueFrom(topUpAccountBalance$);
   }
 }

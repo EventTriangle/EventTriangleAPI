@@ -202,7 +202,12 @@
   stroke: $light-grey-svg;
 }
 
-.transactionList {}
+.transactionList {
+  height: 600px;
+  overflow-y: scroll;
+  scrollbar-width: none;
+  margin-bottom: 15px
+}
 
 .transactionItemToMe {
   display: flex;
@@ -352,6 +357,7 @@
   height: 60px;
   outline: none;
   margin-bottom: 32px;
+  padding: 0 20px;
   font-weight: 700;
   font-size: 20px;
   border: none;
@@ -369,6 +375,7 @@
   height: 60px;
   outline: none;
   margin-bottom: 32px;
+  padding: 0 20px;
   font-weight: 700;
   font-size: 20px;
   border: none;

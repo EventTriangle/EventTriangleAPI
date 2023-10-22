@@ -15,6 +15,14 @@ export class TransactionsStateService {
       private _transactionsApiService: TransactionsApiService
   ) { }
 
+  //actions
+  public addTransactionInTransactions(transaction: ITransactionDto) {
+    const transactions = this.transactions$.getValue();
+    transactions.unshift(transaction);
+    this.transactions$.next(transactions);
+  }
+
+  //requests
   public async getTransactionsAsync(fromDateTime: Date, limit: number) {
     const getTransactions$ = this._transactionsApiService.getTransactions(fromDateTime, limit);
     const getTransactionsResult = await firstValueFrom(getTransactions$);

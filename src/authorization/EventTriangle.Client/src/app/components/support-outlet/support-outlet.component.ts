@@ -17,6 +17,12 @@ import {ProfileStateService} from "../../services/state/profile-state.service";
         animate(".3s", style({ transform: 'translateY(0)', opacity: 1 }))
       ])
     ]),
+    trigger('supportTicketItemAnimation', [
+      transition(':enter', [
+        style({ height: 0, opacity: 0, "padding-top": 0, "padding-bottom": 0, margin: 0, "min-height": 0 }),
+        animate('.4s', style({ height: "*", opacity: "*", "padding-top": "*", "padding-bottom": "*", margin: "*", "min-height": "*" }))
+      ])
+    ]),
     trigger('rightBarAnimation', [
       transition(':enter', [
         style({ transform: 'translateY(10px)', opacity: 0 }),
@@ -46,10 +52,12 @@ export class SupportOutletComponent implements OnInit{
   //events
   async onClickOpenSupportTicketHandler() {
     const walletId = this._profileStateService.user$.getValue()?.walletId ?? "";
+
+    const openSupportTicket$ = this._ticketsApiService.openSupportTicket(walletId, this.transactionId, this.ticketReason);
+
     this.transactionId = "";
     this.ticketReason = "";
 
-    const openSupportTicket$ = this._ticketsApiService.openSupportTicket(walletId, this.transactionId, this.ticketReason);
     await firstValueFrom(openSupportTicket$);
   }
 
