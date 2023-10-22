@@ -8,6 +8,7 @@ import {AddContactRequest} from "../../types/requests/AddContactRequest";
 import {DeleteContactRequest} from "../../types/requests/DeleteContactRequest";
 import {IContactDeletedEvent} from "../../types/interfaces/sender/IContactDeletedEvent";
 import {IResult} from "../../types/interfaces/IResult";
+import {ConfigService} from "../common/config.service";
 
 @Injectable({
   providedIn: 'root'
@@ -17,9 +18,12 @@ export class ContactsApiService extends ApiBaseService {
   private readonly senderContactsRoute = "sender/contacts";
   private readonly baseUrl: string;
 
-  constructor(private httpClient: HttpClient) {
+  constructor(
+      private httpClient: HttpClient,
+      private _configService: ConfigService
+  ) {
     super()
-    this.baseUrl = super.getUrl();
+    this.baseUrl = _configService.getServerUrl();
   }
 
   // requests

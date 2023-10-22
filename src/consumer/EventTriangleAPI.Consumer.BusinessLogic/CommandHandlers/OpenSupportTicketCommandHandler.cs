@@ -36,6 +36,7 @@ public class OpenSupportTicketCommandHandler : ICommandHandler<OpenSupportTicket
         }
 
         var transaction = await _context.TransactionEntities
+            .Where(x => x.FromUserId == command.RequesterId || x.ToUserId == command.RequesterId)
             .FirstOrDefaultAsync(x => x.Id == command.TransactionId);
 
         if (transaction == null)

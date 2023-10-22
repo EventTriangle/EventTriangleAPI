@@ -10,6 +10,7 @@ import {TopUpAccountBalanceRequest} from "../../types/requests/TopUpAccountBalan
 import {RollBackTransactionRequest} from "../../types/requests/RollBackTransactionRequest";
 import {ITransactionRolledBackEvent} from "../../types/interfaces/sender/ITransactionRolledBackEvent";
 import {IResult} from "../../types/interfaces/IResult";
+import {ConfigService} from "../common/config.service";
 
 @Injectable({
   providedIn: 'root'
@@ -19,9 +20,12 @@ export class TransactionsApiService extends ApiBaseService {
   private readonly senderTransactionsRoute = "sender/transactions";
   private readonly baseUrl: string;
 
-  constructor(private httpClient: HttpClient) {
+  constructor(
+      private httpClient: HttpClient,
+      private _configService: ConfigService
+  ) {
     super()
-    this.baseUrl = super.getUrl();
+    this.baseUrl = _configService.getServerUrl();
   }
 
   // requests

@@ -16,6 +16,12 @@ import {ICreditCardDto} from "../../types/interfaces/consumer/ICreditCardDto";
         query(':enter', stagger('100ms', [animate('200ms', style({ transform: 'translateY(0)', opacity: 1 }))]), { optional: true })
       ])
     ]),
+    trigger("cardItemAnimation", [
+      transition(":enter", [
+        style({opacity: 0}),
+        animate(".3s", style({opacity: "*"}))
+      ])
+    ]),
     trigger('rightBarAnimation', [
       transition(':enter', [
         style({ transform: 'translateY(10px)', opacity: 0 }),
@@ -54,11 +60,19 @@ export class CardsOutletComponent implements OnInit {
 
     const expiration = this.expiration.slice(0, 2) + "/" + this.expiration.slice(2);
 
+    const cardHolderName = this.cardHolderName;
+    const cardNumber = this.cardNumber;
+    const cvv = this.cvv;
+
+    this.cardHolderName = "";
+    this.cardNumber = "";
+    this.cvv = "";
+
     await this._creditCardsStateService.attachCreditCardToAccountAsync(
-      this.cardHolderName,
-      this.cardNumber,
+      cardHolderName,
+      cardNumber,
       expiration,
-      this.cvv,
+      cvv,
       this.paymentNetwork);
   }
 

@@ -2,10 +2,10 @@ import {PaymentNetwork} from "../enums/PaymentNetwork";
 
 
 export interface ICreditCardAddingCanceledNotification {
-    HolderName: string,
-    CardNumber: string,
-    Cvv: string,
-    Expiration: string,
-    PaymentNetwork: PaymentNetwork,
-    Reason: string
+    holderName: string,
+    cardNumber: string,
+    cvv: string,
+    expiration: string,
+    paymentNetwork: PaymentNetwork,
+    reason: string
 }

@@ -48,9 +48,10 @@
       <svg-icon src="../../../assets/svg/search.svg" class="searchSvg" />
     </div>
     <ng-container *ngIf="transactions$ | async as transactions">
-      <div class="transactionList" [@transactionItemAnimation]=""
+      <div class="transactionList" [@transactionsAnimation]=""
            *ngIf="transactions.length > 0 && _transactionsStateService.wasRequested">
-        <div *ngFor="let transaction of transactions; trackBy: identifyTransactionDto" class="{{getTransactionClassName(transaction)}}">
+        <div *ngFor="let transaction of transactions; trackBy: identifyTransactionDto"
+             class="{{getTransactionClassName(transaction)}}" [@transactionItemAnimation]="">
           <svg-icon src="../../../assets/svg/transaction.svg" class="transactionSvg" />
           <div class="{{getTransactionInfoClassName(transaction)}}">
             <p class="transactionItemFrom">
@@ -72,7 +73,7 @@
         <p>No transactions yet</p>
       </div>
     </ng-container>
-    <div class="transactionList" [@transactionItemAnimation]="" *ngIf="!_transactionsStateService.wasRequested">
+    <div class="transactionList" *ngIf="!_transactionsStateService.wasRequested">
       <p-skeleton styleClass="skeletonTransactionItem" />
       <p-skeleton styleClass="skeletonTransactionItem" />
       <p-skeleton styleClass="skeletonTransactionItem" />
@@ -89,8 +90,8 @@
       </p>
       <input type="text" class="createNewTransactionToInput"
              placeholder="To: Receiver" [(ngModel)]="toUserId"/>
-      <input type="text" class="createNewTransactionAmountInput"
-             placeholder="Amount: €0"  [(ngModel)]="amount"/>
+      <input type="text" class="createNewTransactionAmountInput" (keydown.enter)="$event.preventDefault()" mask="0000000000000"
+             placeholder="Amount: €0" [(ngModel)]="amount" (keyup.enter)="sendMoneyToUser(toUserId, amount)"/>
       <button class="createNewTransactionOkButton" (click)="sendMoneyToUser(toUserId, amount)">
         Ok
       </button>

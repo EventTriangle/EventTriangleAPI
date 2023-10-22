@@ -8,6 +8,10 @@ public interface INotificationHub
     //success 
     Task TransactionSucceededAsync(TransactionDto transaction);
     
+    Task CreditCardAddedAsync(CreditCardDto creditCardDto);
+
+    Task SupportTicketOpenedAsync(SupportTicketDto supportTicketDto);
+    
     //fail
     Task ContactCreatingCanceledAsync(ContactCreatingCanceledNotification notification);
 

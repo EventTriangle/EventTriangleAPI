@@ -11,6 +11,7 @@ import {ICreditCardDeletedEvent} from "../../types/interfaces/sender/ICreditCard
 import {DeleteCreditCardRequest} from "../../types/requests/DeleteCreditCardRequest";
 import {IResult} from "../../types/interfaces/IResult";
 import {ICreditCardDto} from "../../types/interfaces/consumer/ICreditCardDto";
+import {ConfigService} from "../common/config.service";
 
 @Injectable({
   providedIn: 'root'
@@ -20,9 +21,12 @@ export class CreditCardApiService extends ApiBaseService {
   private readonly senderCreditCardsRoute = "sender/credit-cards";
   private readonly baseUrl: string;
 
-  constructor(private httpClient: HttpClient) {
+  constructor(
+      private httpClient: HttpClient,
+      private _configService: ConfigService
+  ) {
     super()
-    this.baseUrl = super.getUrl();
+    this.baseUrl = _configService.getServerUrl();
   }
 
   // GET consumer/credit-cards

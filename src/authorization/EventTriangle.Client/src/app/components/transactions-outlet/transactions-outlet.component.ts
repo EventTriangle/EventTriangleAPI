@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import {animate, query, stagger, style, transition, trigger} from "@angular/animations";
-import {ProfileApiService} from "../../services/api/profile-api.service";
 import {firstValueFrom} from "rxjs";
 import {IResult} from "../../types/interfaces/IResult";
 import {TransactionsApiService} from "../../services/api/transactions-api.service";
@@ -24,12 +23,18 @@ import {DateService} from "../../services/common/date.service";
         animate('.5s', style({opacity: 1}))
       ])
     ]),
-    trigger('transactionItemAnimation', [
+    trigger('transactionsAnimation', [
       transition(':enter', [
         query(':enter', style({transform: 'translateY(-5px)', opacity: 0}), {optional: true}),
         query(':enter', stagger('50ms', [
           animate('200ms', style({transform: 'translateY(0)', opacity: 1}))
         ]), {optional: true})
+      ])
+    ]),
+    trigger('transactionItemAnimation', [
+      transition(':enter', [
+        style({ height: 0, opacity: 0, padding: 0, margin: 0 }),
+        animate('.25s', style({ height: "*", opacity: "*", padding: "*", margin: "*" }))
       ])
     ]),
     trigger('rightBarAnimation', [
@@ -45,14 +50,13 @@ export class TransactionsOutletComponent implements OnInit {
   public user$ = this._profileStateService.user$;
   public transactions$ = this._transactionsStateService.transactions$;
 
-  amount: number = 0;
+  amount: string = '';
   toUserId: string = '';
 
   protected readonly TransactionType = TransactionType;
   protected readonly TransactionState = TransactionState;
 
   constructor(
-    private _profileApiService: ProfileApiService,
     private _transactionsApiService: TransactionsApiService,
     protected _transactionsStateService: TransactionsStateService,
     protected _profileStateService: ProfileStateService,
@@ -86,8 +90,13 @@ export class TransactionsOutletComponent implements OnInit {
     return 'transactionItemFromMeInfo'
   }
 
-  async sendMoneyToUser(toUserId: string, amount: number) : Promise<void> {
-    const sendMoneyToUserSub$ = this._transactionsApiService.createTransactionUserToUser(toUserId,amount);
+  async sendMoneyToUser(toUserId: string, amount: string) : Promise<void> {
+    if (isNaN(+this.amount) || +this.amount <= 0) throw new Error("Amount value is incorrect");
+
+    const sendMoneyToUserSub$ = this._transactionsApiService.createTransactionUserToUser(toUserId.trim(), +amount);
+
+    this.amount = "";
+
     await firstValueFrom<IResult<ICreateTransactionUserToUserEvent>>(sendMoneyToUserSub$);
     await this.ngOnInit();
   }

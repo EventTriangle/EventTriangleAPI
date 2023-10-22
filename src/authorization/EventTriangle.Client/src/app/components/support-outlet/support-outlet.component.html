@@ -7,7 +7,7 @@
     <p class="overview">An overview of support</p>
     <ng-container *ngIf="supportTickets$ | async as supportTickets">
       <div class="ticketList" *ngIf="supportTickets.length > 0" [@supportTicketListAnimation]="">
-        <div class="ticketItem" *ngFor="let ticket of supportTickets; trackBy: identifySupportTicketDto">
+        <div class="ticketItem" *ngFor="let ticket of supportTickets; trackBy: identifySupportTicketDto" [@supportTicketItemAnimation]="">
           <p class="ticketItemTransactionId">
             Transaction Id: {{ticket.transactionId}}
           </p>

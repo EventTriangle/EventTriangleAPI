@@ -15,6 +15,13 @@ export class SupportTicketStateService {
       private _ticketsApiService: TicketsApiService
   ) { }
 
+  //actions
+  public addSupportTicket(supportTicketDto: ISupportTicketDto) {
+    const supportTickets = this.supportTickets$.getValue();
+    supportTickets.unshift(supportTicketDto);
+    this.supportTickets$.next(supportTickets);
+  }
+
   //requests
   public async getSupportTicketsAsync(fromDateTime: Date, limit: number) {
     const getSupportTickets$ = this._ticketsApiService.getSupportTickets(fromDateTime, limit);

@@ -1,4 +1,5 @@
 <div class="layout">
+    <p-toast></p-toast>
     <ng-container *ngIf="_profileStateService.wasAuthenticationCheck">
         <app-login-window *ngIf="!_profileStateService.isAuthenticated"></app-login-window>
         <div class="layoutContainer">

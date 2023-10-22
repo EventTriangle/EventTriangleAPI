@@ -11,6 +11,7 @@ import {UserRole} from "../../types/enums/UserRole";
 import {IUpdateUserRoleEvent} from "../../types/interfaces/sender/IUpdateUserRoleEvent";
 import {UpdateUserRoleRequest} from "../../types/requests/UpdateUserRoleRequest";
 import {IResult} from "../../types/interfaces/IResult";
+import {ConfigService} from "../common/config.service";
 
 @Injectable({
   providedIn: 'root'
@@ -20,9 +21,12 @@ export class UsersApiService extends ApiBaseService {
   private readonly senderUsersRoute = "sender/users";
   private readonly baseUrl: string;
 
-  constructor(private httpClient: HttpClient) {
+  constructor(
+      private httpClient: HttpClient,
+      private _configService: ConfigService
+  ) {
     super()
-    this.baseUrl = super.getUrl();
+    this.baseUrl = _configService.getServerUrl();
   }
 
   // requests
