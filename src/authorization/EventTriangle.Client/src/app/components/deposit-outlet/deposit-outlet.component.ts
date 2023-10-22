@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { animate, style, transition, trigger } from "@angular/animations";
 import {TransactionsApiService} from "../../services/api/transactions-api.service";
 import {firstValueFrom} from "rxjs";
+import {CreditCardsStateService} from "../../services/state/credit-cards-state.service";
 
 @Component({
   selector: 'app-deposit-outlet',
@@ -16,13 +17,21 @@ import {firstValueFrom} from "rxjs";
     ])
   ]
 })
-export class DepositOutletComponent {
+export class DepositOutletComponent implements OnInit{
+  //common
   public creditCardId: string = "";
   public amount: string = "";
+  public creditCardIdArray: string[] = [];
 
   constructor(
-      private _transactionsApiService: TransactionsApiService
+      private _transactionsApiService: TransactionsApiService,
+      private _creditCardStateService: CreditCardsStateService
   ) {}
+
+  async ngOnInit() {
+    await this._creditCardStateService.getCreditCardsAsync();
+    this.creditCardIdArray = this._creditCardStateService.cards$.getValue().map(x => x.id);
+  }
 
   //events
   public async onClickTopUpAccountBalanceHandler() {

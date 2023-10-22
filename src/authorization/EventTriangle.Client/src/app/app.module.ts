@@ -25,6 +25,7 @@ import {ToastModule} from "primeng/toast";
 import {MessageService} from "primeng/api";
 import {ConfigService} from "./services/common/config.service";
 import {Observable} from "rxjs";
+import {DropdownModule} from "primeng/dropdown";
 
 interface IConfig {
     baseUrl: string
@@ -68,7 +69,8 @@ function initializeAppFactory(httpClient: HttpClient): () => Observable<any> {
         SkeletonModule,
         NgxMaskDirective,
         NgxMaskPipe,
-        ToastModule
+        ToastModule,
+        DropdownModule
     ],
   providers: [
       {
