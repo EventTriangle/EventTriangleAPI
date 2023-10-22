@@ -11,6 +11,7 @@ import {TransactionsStateService} from "../../services/state/transactions-state.
 import {ProfileStateService} from "../../services/state/profile-state.service";
 import {TextService} from "../../services/common/text.service";
 import {DateService} from "../../services/common/date.service";
+import {ContactsStateService} from "../../services/state/contacts-state.service";
 
 @Component({
   selector: 'app-transactions-outlet',
@@ -50,9 +51,13 @@ export class TransactionsOutletComponent implements OnInit {
   public user$ = this._profileStateService.user$;
   public transactions$ = this._transactionsStateService.transactions$;
 
-  amount: string = '';
-  toUserId: string = '';
+  //common
+  public amount: string = '';
+  public toUserId: string = '';
+  public contacts: string[] = [];
 
+
+  //types
   protected readonly TransactionType = TransactionType;
   protected readonly TransactionState = TransactionState;
 
@@ -60,11 +65,15 @@ export class TransactionsOutletComponent implements OnInit {
     private _transactionsApiService: TransactionsApiService,
     protected _transactionsStateService: TransactionsStateService,
     protected _profileStateService: ProfileStateService,
+    protected _contactStateService: ContactsStateService,
     protected _textService: TextService,
     protected _dateService: DateService) {}
 
   async ngOnInit() {
     if (!this._profileStateService.isAuthenticated) return;
+
+    await this._contactStateService.getContactsAsync();
+    this.contacts = this._contactStateService.contacts$.getValue().map(x => x.contactId);
 
     const date = new Date();
     await this._transactionsStateService.getTransactionsAsync(date, 25);
@@ -90,10 +99,10 @@ export class TransactionsOutletComponent implements OnInit {
     return 'transactionItemFromMeInfo'
   }
 
-  async sendMoneyToUser(toUserId: string, amount: string) : Promise<void> {
+  async sendMoneyToUser() : Promise<void> {
     if (isNaN(+this.amount) || +this.amount <= 0) throw new Error("Amount value is incorrect");
 
-    const sendMoneyToUserSub$ = this._transactionsApiService.createTransactionUserToUser(toUserId.trim(), +amount);
+    const sendMoneyToUserSub$ = this._transactionsApiService.createTransactionUserToUser(this.toUserId.trim(), +this.amount);
 
     this.amount = "";
 
