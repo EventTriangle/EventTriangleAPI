@@ -27,7 +27,10 @@ export class SupportTicketStateService {
     const getSupportTickets$ = this._ticketsApiService.getSupportTickets(fromDateTime, limit);
     const getSupportTicketsResult = await firstValueFrom(getSupportTickets$);
 
-    this.supportTickets$.next(getSupportTicketsResult.response);
+    const supportTickets = this.supportTickets$.getValue();
+    supportTickets.push(...getSupportTicketsResult.response);
+
+    this.supportTickets$.next(supportTickets);
     this.wasRequested = true;
 
     return getSupportTicketsResult;

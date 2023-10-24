@@ -27,7 +27,10 @@ export class TransactionsStateService {
     const getTransactions$ = this._transactionsApiService.getTransactions(fromDateTime, limit);
     const getTransactionsResult = await firstValueFrom(getTransactions$);
 
-    this.transactions$.next(getTransactionsResult.response);
+    const transactions = this.transactions$.getValue();
+    transactions.push(...getTransactionsResult.response);
+
+    this.transactions$.next(transactions);
     this.wasRequested = true;
 
     return getTransactionsResult;

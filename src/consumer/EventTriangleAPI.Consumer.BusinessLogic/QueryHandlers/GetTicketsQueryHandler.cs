@@ -44,7 +44,8 @@ public class GetTicketsQueryHandler : ICommandHandler<GetTicketsQuery, List<Supp
                 x.WalletId,
                 x.TicketReason,
                 x.TicketJustification,
-                x.TicketStatus)
+                x.TicketStatus,
+                x.CreatedAt)
             )
             .Take(command.Limit)
             .ToListAsync();

@@ -1,7 +1,8 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {animate, style, transition, trigger} from "@angular/animations";
 import {TicketStateService} from "../../services/state/ticket-state.service";
 import {ISupportTicketDto} from "../../types/interfaces/consumer/ISupportTicketDto";
+import {debounceTime, fromEvent, Subscription} from "rxjs";
 
 @Component({
   selector: 'app-tickets-outlet',
@@ -22,9 +23,10 @@ import {ISupportTicketDto} from "../../types/interfaces/consumer/ISupportTicketD
     ]),
   ]
 })
-export class TicketsOutletComponent implements OnInit {
+export class TicketsOutletComponent implements OnInit, OnDestroy {
   //observable
   public tickets$ = this._ticketStateService.tickets$;
+  public documentScrollSub$: Subscription | undefined;
 
   constructor(
       protected _ticketStateService: TicketStateService
@@ -32,7 +34,25 @@ export class TicketsOutletComponent implements OnInit {
 
   async ngOnInit() {
     const date = new Date();
-    await this._ticketStateService.getTicketsAsync(date, 25);
+    if (this.tickets$.getValue().length === 0) await this._ticketStateService.getTicketsAsync(date, 10);
+
+    this.documentScrollSub$ = fromEvent(document, "scroll")
+      .pipe(
+        debounceTime(400))
+      .subscribe(async e => {
+        const event = e as Event;
+        const target = event.target as Document;
+        if (target.body.scrollHeight - window.innerHeight <= window.scrollY + 15) {
+          const tickets = this._ticketStateService.tickets$.getValue();
+          const lastTicket = tickets[tickets.length - 1];
+          const date = new Date(lastTicket.createdAt);
+          await this._ticketStateService.getTicketsAsync(date, 10);
+        }
+      });
+  }
+
+  ngOnDestroy() {
+    this.documentScrollSub$?.unsubscribe();
   }
 
   //events

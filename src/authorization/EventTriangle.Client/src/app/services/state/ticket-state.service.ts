@@ -20,7 +20,10 @@ export class TicketStateService {
     const getTickets$ = this._ticketsApiService.getTickets(fromDateTime, limit);
     const getTicketsResult = await firstValueFrom(getTickets$);
 
-    this.tickets$.next(getTicketsResult.response);
+    const tickets = this.tickets$.getValue();
+    tickets.push(...getTicketsResult.response);
+
+    this.tickets$.next(tickets);
     this.wasRequested = true;
 
     return getTicketsResult;
