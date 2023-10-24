@@ -54,7 +54,8 @@ public class ResolveSupportTicketCommandHandler : ICommandHandler<ResolveSupport
             supportTicket.WalletId,
             supportTicket.TicketReason,
             supportTicket.TicketJustification,
-            supportTicket.TicketStatus);
+            supportTicket.TicketStatus,
+            supportTicket.CreatedAt);
         
         return new Result<SupportTicketDto>(supportTicketDto);
     }

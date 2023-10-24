@@ -1,7 +1,7 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import { animate, style, transition, trigger } from "@angular/animations";
 import {TicketsApiService} from "../../services/api/tickets-api.service";
-import {firstValueFrom} from "rxjs";
+import {debounceTime, firstValueFrom, fromEvent, Subscription} from "rxjs";
 import {SupportTicketStateService} from "../../services/state/support-ticket-state.service";
 import {ISupportTicketDto} from "../../types/interfaces/consumer/ISupportTicketDto";
 import {ProfileStateService} from "../../services/state/profile-state.service";
@@ -31,12 +31,13 @@ import {ProfileStateService} from "../../services/state/profile-state.service";
     ])
   ]
 })
-export class SupportOutletComponent implements OnInit{
+export class SupportOutletComponent implements OnInit, OnDestroy {
   public transactionId: string = "";
   public ticketReason: string = "";
 
   //observable
   public supportTickets$ = this._supportTicketStateService.supportTickets$;
+  public documentScrollSub$: Subscription | undefined;
 
   constructor(
       private _ticketsApiService: TicketsApiService,
@@ -46,7 +47,25 @@ export class SupportOutletComponent implements OnInit{
 
   async ngOnInit() {
     const date = new Date();
-    await this._supportTicketStateService.getSupportTicketsAsync(date, 25);
+    if (this.supportTickets$.getValue().length === 0) await this._supportTicketStateService.getSupportTicketsAsync(date, 10);
+
+    this.documentScrollSub$ = fromEvent(document, "scroll")
+      .pipe(
+        debounceTime(400))
+      .subscribe(async e => {
+        const event = e as Event;
+        const target = event.target as Document;
+        if (target.body.scrollHeight - window.innerHeight <= window.scrollY + 15) {
+          const tickets = this._supportTicketStateService.supportTickets$.getValue();
+          const lastTicket = tickets[tickets.length - 1];
+          const date = new Date(lastTicket.createdAt);
+          await this._supportTicketStateService.getSupportTicketsAsync(date, 10);
+        }
+      });
+  }
+
+  ngOnDestroy() {
+    this.documentScrollSub$?.unsubscribe();
   }
 
   //events

@@ -1,6 +1,12 @@
-import {Component, OnInit} from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import {animate, query, stagger, style, transition, trigger} from "@angular/animations";
-import {firstValueFrom} from "rxjs";
+import {debounceTime, firstValueFrom, fromEvent} from "rxjs";
 import {IResult} from "../../types/interfaces/IResult";
 import {TransactionsApiService} from "../../services/api/transactions-api.service";
 import {ITransactionDto} from "../../types/interfaces/consumer/ITransactionDto";
@@ -47,6 +53,8 @@ import {ContactsStateService} from "../../services/state/contacts-state.service"
   ]
 })
 export class TransactionsOutletComponent implements OnInit {
+  @ViewChild("transactionListRef") transactionListRef!: ElementRef;
+
   //observable
   public user$ = this._profileStateService.user$;
   public transactions$ = this._transactionsStateService.transactions$;
@@ -56,13 +64,13 @@ export class TransactionsOutletComponent implements OnInit {
   public toUserId: string = '';
   public contacts: string[] = [];
 
-
   //types
   protected readonly TransactionType = TransactionType;
   protected readonly TransactionState = TransactionState;
 
   constructor(
     private _transactionsApiService: TransactionsApiService,
+    private _changeDetectorRef: ChangeDetectorRef,
     protected _transactionsStateService: TransactionsStateService,
     protected _profileStateService: ProfileStateService,
     protected _contactStateService: ContactsStateService,
@@ -76,9 +84,26 @@ export class TransactionsOutletComponent implements OnInit {
     this.contacts = this._contactStateService.contacts$.getValue().map(x => x.contactId);
 
     const date = new Date();
-    await this._transactionsStateService.getTransactionsAsync(date, 25);
+    if (this.transactions$.getValue().length === 0) await this._transactionsStateService.getTransactionsAsync(date, 20);
+
+    this._changeDetectorRef.detectChanges();
+
+    fromEvent(this.transactionListRef.nativeElement, "scroll")
+      .pipe(
+        debounceTime(400))
+      .subscribe(async e => {
+        const event = e as Event;
+        const target = event.target as HTMLElement;
+        if (target.offsetHeight + target.scrollTop >= target.scrollHeight - 1) {
+          const transactions = this._transactionsStateService.transactions$.getValue();
+          const lastTransaction = transactions[transactions.length - 1];
+          const date = new Date(lastTransaction.createdAt);
+          await this._transactionsStateService.getTransactionsAsync(date, 20);
+        }
+      });
   }
 
+  //common
   getTransactionClassName(transaction: ITransactionDto) : string {
     const userProfile = this._profileStateService.user$.getValue();
 

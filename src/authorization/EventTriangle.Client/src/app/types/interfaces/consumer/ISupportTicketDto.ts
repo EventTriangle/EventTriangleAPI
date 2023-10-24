@@ -8,4 +8,5 @@ export interface ISupportTicketDto {
   ticketReason: string;
   ticketJustification: string;
   ticketStatus: TicketStatus;
+  createdAt: string;
 }

@@ -9,4 +9,5 @@ public record SupportTicketDto(
     Guid WalletId,
     string TicketReason,
     string TicketJustification,
-    TicketStatus TicketStatus);
+    TicketStatus TicketStatus,
+    DateTime CreatedAt);

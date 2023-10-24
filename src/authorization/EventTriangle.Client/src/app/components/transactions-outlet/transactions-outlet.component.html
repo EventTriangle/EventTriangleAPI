@@ -49,7 +49,7 @@
     </div>
     <ng-container *ngIf="transactions$ | async as transactions">
       <div class="transactionList" [@transactionsAnimation]=""
-           *ngIf="transactions.length > 0 && _transactionsStateService.wasRequested">
+           *ngIf="transactions.length > 0 && _transactionsStateService.wasRequested" #transactionListRef>
         <div *ngFor="let transaction of transactions; trackBy: identifyTransactionDto"
              class="{{getTransactionClassName(transaction)}}" [@transactionItemAnimation]="">
           <svg-icon src="../../../assets/svg/transaction.svg" class="transactionSvg" />

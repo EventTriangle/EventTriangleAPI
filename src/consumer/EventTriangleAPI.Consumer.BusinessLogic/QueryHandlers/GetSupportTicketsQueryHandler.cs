@@ -38,7 +38,8 @@ public class GetSupportTicketsQueryHandler : ICommandHandler<GetSupportsTicketsQ
                 x.WalletId,
                 x.TicketReason,
                 x.TicketJustification,
-                x.TicketStatus)
+                x.TicketStatus,
+                x.CreatedAt)
             )
             .Take(command.Limit)
             .ToListAsync();
