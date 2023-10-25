@@ -49,6 +49,16 @@ import {ContactsStateService} from "../../services/state/contacts-state.service"
         style({transform: 'translateY(10px)', opacity: 0}),
         animate('.25s', style({transform: 'translateY(0px)', opacity: 1}))
       ])
+    ]),
+    trigger("transactionListAnimation", [
+      transition(":enter", [
+        style({transform: 'translateY(10px)', opacity: 0}),
+        animate('.25s', style({transform: 'translateY(0px)', opacity: 1}))
+      ]),
+      transition(":leave", [
+        style({transform: 'translateY(0px)', opacity: 1}),
+        animate('.25s', style({transform: 'translateY(10px)', opacity: 0}))
+      ])
     ])
   ]
 })
@@ -63,6 +73,9 @@ export class TransactionsOutletComponent implements OnInit {
   public amount: string = '';
   public toUserId: string = '';
   public contacts: string[] = [];
+
+  //state
+  public transactionListLoader = false;
 
   //types
   protected readonly TransactionType = TransactionType;
@@ -95,10 +108,12 @@ export class TransactionsOutletComponent implements OnInit {
         const event = e as Event;
         const target = event.target as HTMLElement;
         if (target.offsetHeight + target.scrollTop >= target.scrollHeight - 1) {
+          this.transactionListLoader = true;
           const transactions = this._transactionsStateService.transactions$.getValue();
           const lastTransaction = transactions[transactions.length - 1];
           const date = new Date(lastTransaction.createdAt);
           await this._transactionsStateService.getTransactionsAsync(date, 20);
+          this.transactionListLoader = false;
         }
       });
   }
