@@ -68,6 +68,9 @@
             </p>
           </div>
         </div>
+        <div class="transactionListLoaderBackground" [@transactionListLoaderAnimation]="" *ngIf="transactionListLoader">
+          <span class="transactionListLoader"></span>
+        </div>
       </div>
       <div class="emptyTransactionList" *ngIf="transactions.length === 0 && _transactionsStateService.wasRequested">
         <p>No transactions yet</p>

@@ -21,9 +21,22 @@ import {debounceTime, fromEvent, Subscription} from "rxjs";
         animate('.3s', style({ height: 0, opacity: 0, "padding-top": 0, "padding-bottom": 0, "min-height": 0 }))
       ])
     ]),
+    trigger("ticketListLoaderAnimation", [
+      transition(":enter", [
+        style({transform: 'translateY(10px)', opacity: 0}),
+        animate('.25s', style({transform: 'translateY(0px)', opacity: 1}))
+      ]),
+      transition(":leave", [
+        style({transform: 'translateY(0px)', opacity: 1}),
+        animate('.25s', style({transform: 'translateY(10px)', opacity: 0}))
+      ])
+    ])
   ]
 })
 export class TicketsOutletComponent implements OnInit, OnDestroy {
+  //state
+  public ticketListLoaderAnimation = false;
+
   //observable
   public tickets$ = this._ticketStateService.tickets$;
   public documentScrollSub$: Subscription | undefined;
@@ -43,10 +56,12 @@ export class TicketsOutletComponent implements OnInit, OnDestroy {
         const event = e as Event;
         const target = event.target as Document;
         if (target.body.scrollHeight - window.innerHeight <= window.scrollY + 15) {
+          this.ticketListLoaderAnimation = true;
           const tickets = this._ticketStateService.tickets$.getValue();
           const lastTicket = tickets[tickets.length - 1];
           const date = new Date(lastTicket.createdAt);
           await this._ticketStateService.getTicketsAsync(date, 10);
+          this.ticketListLoaderAnimation = false;
         }
       });
   }
