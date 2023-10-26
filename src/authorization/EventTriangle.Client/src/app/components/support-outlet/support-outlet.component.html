@@ -29,6 +29,9 @@
             </p>
           </ng-container>
         </div>
+        <div class="ticketListLoaderBackground" [@ticketListLoaderAnimation]="" *ngIf="ticketListLoaderAnimation">
+          <span class="ticketListLoader"></span>
+        </div>
       </div>
     </ng-container>
     <div class="ticketList" *ngIf="!_supportTicketStateService.wasRequested">

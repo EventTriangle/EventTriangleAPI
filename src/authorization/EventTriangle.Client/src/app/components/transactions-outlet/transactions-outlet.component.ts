@@ -50,7 +50,7 @@ import {ContactsStateService} from "../../services/state/contacts-state.service"
         animate('.25s', style({transform: 'translateY(0px)', opacity: 1}))
       ])
     ]),
-    trigger("transactionListAnimation", [
+    trigger("transactionListLoaderAnimation", [
       transition(":enter", [
         style({transform: 'translateY(10px)', opacity: 0}),
         animate('.25s', style({transform: 'translateY(0px)', opacity: 1}))
