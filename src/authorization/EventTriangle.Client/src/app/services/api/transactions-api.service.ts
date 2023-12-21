@@ -38,6 +38,14 @@ export class TransactionsApiService extends ApiBaseService {
     );
   }
 
+  // GET consumer/transactions/{userId}
+  public getTransactionsByUserId(userId: string, fromDateTime: Date, limit: number) : Observable<IResult<ITransactionDto[]>> {
+    return this.httpClient.get<IResult<ITransactionDto[]>>(
+      this.baseUrl + this.consumerTransactionsRoute + `/${userId}` + `?fromDateTime=${fromDateTime.toJSON()}&limit=${limit}`,
+      { withCredentials: true }
+    );
+  }
+
   // POST sender/user-to-user
   public createTransactionUserToUser(toUserId: string, amount: number)
     : Observable<IResult<ICreateTransactionUserToUserEvent>> {
