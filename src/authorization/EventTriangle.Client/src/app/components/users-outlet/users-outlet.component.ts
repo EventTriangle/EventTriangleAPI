@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {animate, query, stagger, style, transition, trigger} from "@angular/animations";
 import {UsersStateService} from "../../services/state/users-state.service";
-import {BehaviorSubject, debounceTime, filter, firstValueFrom} from "rxjs";
+import {BehaviorSubject, debounceTime, filter, firstValueFrom, Subject} from "rxjs";
 import {TextService} from "../../services/common/text.service";
 import {IUserDto} from "../../types/interfaces/consumer/IUserDto";
 import {ProfileStateService} from "../../services/state/profile-state.service";
@@ -28,6 +28,9 @@ import {TransactionState} from "../../types/enums/TransactionState";
   ]
 })
 export class UsersOutletComponent implements OnInit {
+  //test
+  public transactionListScrolledToEndNotifier$ = new Subject<void>();
+
   //observable
   public users$ = this._usersStateService.users$;
   public currentUserInfo$ = new BehaviorSubject<IUserDto | null>(null);
@@ -65,6 +68,22 @@ export class UsersOutletComponent implements OnInit {
     this.searchText$
         .pipe(filter(x => x === ''))
         .subscribe(_ => this._usersStateService.clearSearchedUsers())
+
+    this.transactionListScrolledToEndNotifier$
+      .pipe(
+        debounceTime(400))
+      .subscribe(async _ => {
+        const currentUser = this.currentUserInfo$.getValue();
+        if (!currentUser) throw new Error("User not found");
+        const transactionsInfo = this.currentUserTransactionsInfo$.getValue();
+        const lastTransactionInTransactionsInfo = transactionsInfo[transactionsInfo.length - 1];
+        const date = new Date(lastTransactionInTransactionsInfo.createdAt);
+        const getTransactionsByUserId$ = this._transactionsApiService.getTransactionsByUserId(currentUser.id, date, 15);
+        const transactions = await firstValueFrom(getTransactionsByUserId$);
+        const currentUserTransactionsInfo = this.currentUserTransactionsInfo$.getValue();
+        currentUserTransactionsInfo.push(...transactions.response);
+        this.currentUserTransactionsInfo$.next(currentUserTransactionsInfo);
+      });
   }
 
   //events
@@ -94,6 +113,13 @@ export class UsersOutletComponent implements OnInit {
     this.currentUserTransactionsInfoLoader = false;
   }
 
+  public onScrollTransactionInfoHandler(e: Event) {
+    const target = e.target as HTMLElement;
+    if (target.offsetHeight + target.scrollTop >= target.scrollHeight - 1) {
+      this.transactionListScrolledToEndNotifier$.next(undefined);
+    }
+  }
+
   //actions
   public closeUserTransactionsInfo() {
     this.showUserInfoWindow = false;
@@ -119,6 +145,4 @@ export class UsersOutletComponent implements OnInit {
   identifyUserDto(index: number, item: IUserDto){
     return item.id;
   }
-
-  protected readonly console = console;
 }

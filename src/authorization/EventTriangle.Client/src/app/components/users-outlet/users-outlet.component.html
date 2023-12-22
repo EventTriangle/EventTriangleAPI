@@ -5,14 +5,14 @@
       <p class="userInfoWindowHeaderUsername">{{_textService.pullUsernameFromMail(currentUserInfo.email)}}</p>
       <p class="userInfoWindowHeaderBalance">€{{currentUserInfo.wallet.balance}}</p>
     </div>
-    <div class="userInfoWindowBody" *ngIf="(currentUserTransactionsInfo$ | async) as currentUserTransactionsInfo">
+    <div class="userInfoWindowBody" *ngIf="(currentUserTransactionsInfo$ | async) as currentUserTransactionsInfo" (scroll)="onScrollTransactionInfoHandler($event)">
       <span class="userInfoWindowBodyLoader" *ngIf="currentUserTransactionsInfoLoader"></span>
-      <div class="{{getTransactionClassName(currentUserInfo.id, transaction)}}" *ngFor="let transaction of currentUserTransactionsInfo">
+      <div class="{{getTransactionClassName(currentUserInfo.id, transaction)}} " *ngFor="let transaction of currentUserTransactionsInfo">
         <div class="transactionSvgContainer">
           <svg-icon src="../../../assets/svg/transaction.svg" class="transactionSvg" />
         </div>
-        <p class="userInfoWindowBodyTransactionFrom">{{transaction.fromUserId}}</p>
-        <p class="userInfoWindowBodyTransactionTo">{{transaction.toUserId}}</p>
+        <p class="userInfoWindowBodyTransactionFrom" pTooltip="{{transaction.fromUserId}}">From: {{transaction.fromUserId}}</p>
+        <p class="userInfoWindowBodyTransactionTo" pTooltip="{{transaction.toUserId}}">To: {{transaction.toUserId}}</p>
         <p class="userInfoWindowBodyTransactionAmount">€{{transaction.amount}}</p>
         <p class="userInfoWindowBodyTransactionDate">{{_dateService.getTimeAndDate(transaction.createdAt)}}</p>
       </div>

@@ -54,10 +54,10 @@
              class="{{getTransactionClassName(transaction)}}" [@transactionItemAnimation]="">
           <svg-icon src="../../../assets/svg/transaction.svg" class="transactionSvg" />
           <div class="{{getTransactionInfoClassName(transaction)}}">
-            <p class="transactionItemFrom">
+            <p class="transactionItemFrom" pTooltip="{{transaction.fromUserId}}">
               From: {{transaction.fromUserId}}
             </p>
-            <p class="transactionItemTo">
+            <p class="transactionItemTo" pTooltip="{{transaction.toUserId}}">
               To: {{transaction.toUserId}}
             </p>
             <p class="transactionItemAmount">
