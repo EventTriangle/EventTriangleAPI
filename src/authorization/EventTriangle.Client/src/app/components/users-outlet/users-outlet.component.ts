@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {animate, query, stagger, style, transition, trigger} from "@angular/animations";
 import {UsersStateService} from "../../services/state/users-state.service";
 import {BehaviorSubject, debounceTime, filter, firstValueFrom, Subject} from "rxjs";
@@ -11,6 +11,8 @@ import {TransactionsApiService} from "../../services/api/transactions-api.servic
 import {ITransactionDto} from "../../types/interfaces/consumer/ITransactionDto";
 import {DateService} from "../../services/common/date.service";
 import {TransactionState} from "../../types/enums/TransactionState";
+import {MenuItem} from "primeng/api";
+import {ContextMenu} from "primeng/contextmenu";
 
 @Component({
   selector: 'app-users-outlet',
@@ -28,7 +30,9 @@ import {TransactionState} from "../../types/enums/TransactionState";
   ]
 })
 export class UsersOutletComponent implements OnInit {
-  //test
+  @ViewChildren('userInfoWindowBodyTransactionContextMenu') ch!: QueryList<ContextMenu>
+
+  //notifiers
   public transactionListScrolledToEndNotifier$ = new Subject<void>();
 
   //observable
@@ -41,6 +45,23 @@ export class UsersOutletComponent implements OnInit {
   //state
   public currentUserTransactionsInfoLoader = false;
   public showUserInfoWindow = false;
+  public selectedTransactionForContextMenu: ITransactionDto | undefined;
+
+  //contextmenu
+  public contextMenuItems: MenuItem[] = [
+    {label: 'Rollback', command: async () => {
+      if (!this.selectedTransactionForContextMenu) throw new Error("Transaction is not selected");
+      const transactionId = this.selectedTransactionForContextMenu.id;
+      const rollBackTransaction$ = this._transactionsApiService.rollBackTransaction(transactionId);
+      await firstValueFrom(rollBackTransaction$);
+      const transactionList = this.currentUserTransactionsInfo$.getValue();
+      transactionList.map(x => {
+        if (x.id !== transactionId) return;
+
+        x.transactionState = TransactionState.RolledBack;
+      });
+    }},
+  ];
 
   //types
   public UserStatus = UserStatus;
@@ -127,6 +148,10 @@ export class UsersOutletComponent implements OnInit {
     this.currentUserTransactionsInfo$.next([]);
   }
 
+  public setSelectedTransactionForContextMenu(transaction: ITransactionDto) {
+    this.selectedTransactionForContextMenu = transaction;
+  }
+
   //common
   public getTransactionClassName(userId: string, transaction: ITransactionDto) : string {
     let user = this._usersStateService.users$.getValue().find(x => x.id === userId);
@@ -144,5 +169,10 @@ export class UsersOutletComponent implements OnInit {
   //other
   identifyUserDto(index: number, item: IUserDto){
     return item.id;
+  }
+
+  hideAllContextMenu() {
+    const r = this.ch.toArray()
+    r.map(x => x.hide());
   }
 }

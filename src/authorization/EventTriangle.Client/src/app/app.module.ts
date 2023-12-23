@@ -26,6 +26,7 @@ import {MessageService} from "primeng/api";
 import {Observable} from "rxjs";
 import {DropdownModule} from "primeng/dropdown";
 import { TooltipModule } from 'primeng/tooltip';
+import { ContextMenuModule } from 'primeng/contextmenu';
 
 interface IConfig {
   baseUrl: string
@@ -71,7 +72,8 @@ function initializeAppFactory(httpClient: HttpClient): () => Observable<any> {
     NgxMaskPipe,
     ToastModule,
     DropdownModule,
-    TooltipModule
+    TooltipModule,
+    ContextMenuModule
   ],
   providers: [
     {

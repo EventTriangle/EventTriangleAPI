@@ -45,6 +45,11 @@ public class RollBackTransactionCommandHandler : ICommandHandler<RollBackTransac
             return new Result<TransactionDto>(new DbEntityNotFoundError(ResponseMessages.TransactionTicketNotFound));
         }
         
+        if (transaction.TransactionState == TransactionState.RolledBack)
+        {
+            return new Result<TransactionDto>(new ConflictError(ResponseMessages.TransactionHasAlreadyBeenRolledBack));
+        }
+        
         transaction.UpdateTransactionState(TransactionState.RolledBack);
         transaction.FromUser.Wallet.UpdateBalance(transaction.FromUser.Wallet.Balance + transaction.Amount);
         transaction.ToUser.Wallet.UpdateBalance(transaction.FromUser.Wallet.Balance + transaction.Amount);

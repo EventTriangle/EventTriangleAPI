@@ -1,13 +1,15 @@
 <div class="userInfoWindowBackground" *ngIf="showUserInfoWindow" (click)="closeUserTransactionsInfo()">
-  <div class="userInfoWindow" *ngIf="(currentUserInfo$ | async) as currentUserInfo" (click)="$event.stopPropagation()">
+  <div class="userInfoWindow" *ngIf="(currentUserInfo$ | async) as currentUserInfo" (click)="hideAllContextMenu(); $event.stopPropagation()">
     <div class="userInfoWindowHeader">
       <div class="userInfoWindowHeaderAvatar"></div>
       <p class="userInfoWindowHeaderUsername">{{_textService.pullUsernameFromMail(currentUserInfo.email)}}</p>
       <p class="userInfoWindowHeaderBalance">€{{currentUserInfo.wallet.balance}}</p>
     </div>
-    <div class="userInfoWindowBody" *ngIf="(currentUserTransactionsInfo$ | async) as currentUserTransactionsInfo" (scroll)="onScrollTransactionInfoHandler($event)">
+    <div class="userInfoWindowBody" *ngIf="(currentUserTransactionsInfo$ | async) as currentUserTransactionsInfo"
+         (scroll)="onScrollTransactionInfoHandler($event)">
       <span class="userInfoWindowBodyLoader" *ngIf="currentUserTransactionsInfoLoader"></span>
-      <div class="{{getTransactionClassName(currentUserInfo.id, transaction)}} " *ngFor="let transaction of currentUserTransactionsInfo">
+      <div #transactionItem class="{{getTransactionClassName(currentUserInfo.id, transaction)}}"
+           *ngFor="let transaction of currentUserTransactionsInfo">
         <div class="transactionSvgContainer">
           <svg-icon src="../../../assets/svg/transaction.svg" class="transactionSvg" />
         </div>
@@ -15,6 +17,9 @@
         <p class="userInfoWindowBodyTransactionTo" pTooltip="{{transaction.toUserId}}">To: {{transaction.toUserId}}</p>
         <p class="userInfoWindowBodyTransactionAmount">€{{transaction.amount}}</p>
         <p class="userInfoWindowBodyTransactionDate">{{_dateService.getTimeAndDate(transaction.createdAt)}}</p>
+        <p-contextMenu #userInfoWindowBodyTransactionContextMenu [target]="transactionItem" (onShow)="setSelectedTransactionForContextMenu(transaction)"
+                       [autoZIndex]="true" [model]="contextMenuItems" appendTo="body">
+        </p-contextMenu>
       </div>
     </div>
   </div>

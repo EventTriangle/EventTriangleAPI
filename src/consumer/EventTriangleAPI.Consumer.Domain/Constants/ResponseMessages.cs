@@ -18,5 +18,6 @@ public static class ResponseMessages
     public const string RequesterIsSuspended = "Requester is suspended.";
     public const string CannotSuspendAdmin = "You can't suspend an admin.";
     public const string SupportTicketAlreadyExists = "Support ticket already exists.";
+    public const string TransactionHasAlreadyBeenRolledBack = "Transaction has already been rolled back.";
     public const string InternalError = "Internal error.";
 }
