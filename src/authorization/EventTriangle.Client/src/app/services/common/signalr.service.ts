@@ -33,6 +33,7 @@ import {ICreditCardDto} from "../../types/interfaces/consumer/ICreditCardDto";
 import {ISupportTicketDto} from "../../types/interfaces/consumer/ISupportTicketDto";
 import {CreditCardsStateService} from "../state/credit-cards-state.service";
 import {SupportTicketStateService} from "../state/support-ticket-state.service";
+import {ErrorMessageConstants} from "../../constants/ErrorMessageConstants";
 
 @Injectable({
   providedIn: 'root'
@@ -60,18 +61,18 @@ export class SignalrService {
   }
 
   public async start() {
-    if (!this.connection) throw new Error("SignalR connection is undefined");
+    if (!this.connection) throw new Error(ErrorMessageConstants.SignalRConnectionIsUndefined);
 
     await this.connection.start();
   }
 
   public configure() {
-    if (!this.connection) throw new Error("SignalR connection is undefined");
+    if (!this.connection) throw new Error(ErrorMessageConstants.SignalRConnectionIsUndefined);
 
     this.connection.on(SignalRMethodsName.TransactionSucceededAsync, (transactionDto: ITransactionDto) => {
       const user = this._profileStateService.user$.getValue();
 
-      if (!user) throw new Error("User is not defined");
+      if (!user) throw new Error(ErrorMessageConstants.UserNotFound);
 
       this._transactionStateService.addTransactionInTransactions(transactionDto);
 

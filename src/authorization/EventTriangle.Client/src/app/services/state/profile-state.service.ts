@@ -6,6 +6,7 @@ import {ProfileApiService} from "../api/profile-api.service";
 import {AuthorizationApiService} from "../api/authorization-api.service";
 import {IsAuthenticatedResponse} from "../../types/responses/IsAuthenticatedResponse";
 import {HttpErrorResponse} from "@angular/common/http";
+import {ErrorMessageConstants} from "../../constants/ErrorMessageConstants";
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +26,7 @@ export class ProfileStateService {
   public plusToBalance(value: number) {
     const user = this.user$.getValue();
 
-    if (!user) throw new Error("User is not defined");
+    if (!user) throw new Error(ErrorMessageConstants.UserNotFound);
 
     user.wallet.balance += value;
 
@@ -35,7 +36,7 @@ export class ProfileStateService {
   public minusFromBalance(value: number) {
     const user = this.user$.getValue();
 
-    if (!user) throw new Error("User is not defined");
+    if (!user) throw new Error(ErrorMessageConstants.UserNotFound);
 
     user.wallet.balance -= value;
 

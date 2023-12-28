@@ -13,6 +13,7 @@ import {DateService} from "../../services/common/date.service";
 import {TransactionState} from "../../types/enums/TransactionState";
 import {MenuItem} from "primeng/api";
 import {ContextMenu} from "primeng/contextmenu";
+import {ErrorMessageConstants} from "../../constants/ErrorMessageConstants";
 
 @Component({
   selector: 'app-users-outlet',
@@ -50,7 +51,7 @@ export class UsersOutletComponent implements OnInit {
   //contextmenu
   public contextMenuItems: MenuItem[] = [
     {label: 'Rollback', command: async () => {
-      if (!this.selectedTransactionForContextMenu) throw new Error("Transaction is not selected");
+      if (!this.selectedTransactionForContextMenu) throw new Error(ErrorMessageConstants.TransactionIsNotSelected);
       const transactionId = this.selectedTransactionForContextMenu.id;
       const rollBackTransaction$ = this._transactionsApiService.rollBackTransaction(transactionId);
       await firstValueFrom(rollBackTransaction$);
@@ -95,7 +96,7 @@ export class UsersOutletComponent implements OnInit {
         debounceTime(400))
       .subscribe(async _ => {
         const currentUser = this.currentUserInfo$.getValue();
-        if (!currentUser) throw new Error("User not found");
+        if (!currentUser) throw new Error(ErrorMessageConstants.UserNotFound);
         const transactionsInfo = this.currentUserTransactionsInfo$.getValue();
         const lastTransactionInTransactionsInfo = transactionsInfo[transactionsInfo.length - 1];
         const date = new Date(lastTransactionInTransactionsInfo.createdAt);
@@ -125,7 +126,7 @@ export class UsersOutletComponent implements OnInit {
     if (!user) {
       user = this._usersStateService.searchedUsers$.getValue().find(x => x.id === userId);
     }
-    if (!user) throw new Error("User not found");
+    if (!user) throw new Error(ErrorMessageConstants.UserNotFound);
     this.currentUserInfo$.next(user);
     this.currentUserTransactionsInfoLoader = true;
     const getTransactionsByUserId$ = this._transactionsApiService.getTransactionsByUserId(userId, new Date(Date.now()), 15);
@@ -154,14 +155,8 @@ export class UsersOutletComponent implements OnInit {
 
   //common
   public getTransactionClassName(userId: string, transaction: ITransactionDto) : string {
-    let user = this._usersStateService.users$.getValue().find(x => x.id === userId);
-    if (!user) {
-      user = this._usersStateService.searchedUsers$.getValue().find(x => x.id === userId);
-    }
-
-    if (!user) throw new Error("User not found");
     if (transaction.transactionState === TransactionState.RolledBack) return "userInfoWindowBodyTransactionRolledBack";
-    if (transaction.toUserId === user.id) return 'userInfoWindowBodyTransactionToMe';
+    if (transaction.toUserId === userId) return 'userInfoWindowBodyTransactionToMe';
 
     return 'userInfoWindowBodyTransactionFromMe'
   }
