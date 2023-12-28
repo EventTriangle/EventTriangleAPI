@@ -86,6 +86,11 @@ export class TicketsOutletComponent implements OnInit, OnDestroy {
     await firstValueFrom(rollBackTransaction$);
   }
 
+  //common
+  isTransactionRollBacked(transactionId: string) {
+    return this.rollBackedTransactionIds.includes(transactionId);
+  }
+
   //other
   identifyTicketDto(index: number, item: ISupportTicketDto){
     return item.id;

@@ -28,9 +28,9 @@
           </textarea>
           <div class="ticketItemButtonContainer">
             <button class="ticketItemRollBackButton"
-                    [disabled]="rollBackedTransactionIds.includes(ticket.transactionId)"
+                    [disabled]="isTransactionRollBacked(ticket.transactionId)"
                     (click)="onClickRollBackHandler(ticket.transactionId)">
-              {{rollBackedTransactionIds.includes(ticket.transactionId) ? "Roll Backed" : "Roll Back"}}
+              {{isTransactionRollBacked(ticket.transactionId) ? "Roll Backed" : "Roll Back"}}
             </button>
             <button class="ticketItemOkButton" (click)="onClickResolveTicketHandler(ticket.id, ticket.ticketJustification)">
               Ok

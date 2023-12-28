@@ -203,6 +203,11 @@
   &:hover {
     background-color: $red-hover-button;
   }
+
+  &:disabled {
+    background-color: $red-disabled-button;
+    cursor: default;
+  }
 }
 
 .ticketItemOkButton {
