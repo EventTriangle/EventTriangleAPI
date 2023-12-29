@@ -9,7 +9,7 @@
       <div class="ticketList" *ngIf="tickets.length > 0" [@ticketListAnimation]="">
         <div class="ticketItem" *ngFor="let ticket of tickets; trackBy: identifyTicketDto" [@ticketItemAnimation]="">
           <p class="ticketItemTransactionId">
-            Transaction Id: {{ticket.id}}
+            Transaction Id: {{ticket.transactionId}}
           </p>
           <p class="ticketItemStatus">
             <span>Status: {{ticket.ticketStatus == 1 ? "Open" : "Resolved"}}</span>
@@ -26,9 +26,16 @@
           <textarea class="ticketItemResponseToUserTextarea" placeholder="Write Response" (keydown.enter)="$event.preventDefault()"
                     [(ngModel)]="ticket.ticketJustification" (keyup.enter)="onClickResolveTicketHandler(ticket.id, ticket.ticketJustification)">
           </textarea>
-          <button class="ticketItemOkButton" (click)="onClickResolveTicketHandler(ticket.id, ticket.ticketJustification)">
-            Ok
-          </button>
+          <div class="ticketItemButtonContainer">
+            <button class="ticketItemRollBackButton"
+                    [disabled]="isTransactionRollBacked(ticket.transactionId)"
+                    (click)="onClickRollBackHandler(ticket.transactionId)">
+              {{isTransactionRollBacked(ticket.transactionId) ? "Roll Backed" : "Roll Back"}}
+            </button>
+            <button class="ticketItemOkButton" (click)="onClickResolveTicketHandler(ticket.id, ticket.ticketJustification)">
+              Ok
+            </button>
+          </div>
         </div>
         <div class="ticketListLoaderBackground" [@ticketListLoaderAnimation]="" *ngIf="ticketListLoaderAnimation">
           <span class="ticketListLoader"></span>

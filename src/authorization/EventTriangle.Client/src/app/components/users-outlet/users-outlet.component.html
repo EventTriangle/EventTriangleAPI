@@ -1,3 +1,29 @@
+<div class="userInfoWindowBackground" *ngIf="showUserInfoWindow" (click)="closeUserTransactionsInfo()">
+  <div class="userInfoWindow" *ngIf="(currentUserInfo$ | async) as currentUserInfo" (click)="hideAllContextMenu(); $event.stopPropagation()">
+    <div class="userInfoWindowHeader">
+      <div class="userInfoWindowHeaderAvatar"></div>
+      <p class="userInfoWindowHeaderUsername">{{_textService.pullUsernameFromMail(currentUserInfo.email)}}</p>
+      <p class="userInfoWindowHeaderBalance">€{{currentUserInfo.wallet.balance}}</p>
+    </div>
+    <div class="userInfoWindowBody" *ngIf="(currentUserTransactionsInfo$ | async) as currentUserTransactionsInfo"
+         (scroll)="onScrollTransactionInfoHandler($event)">
+      <span class="userInfoWindowBodyLoader" *ngIf="currentUserTransactionsInfoLoader"></span>
+      <div #transactionItem class="{{getTransactionClassName(currentUserInfo.id, transaction)}}"
+           *ngFor="let transaction of currentUserTransactionsInfo">
+        <div class="transactionSvgContainer">
+          <svg-icon src="../../../assets/svg/transaction.svg" class="transactionSvg" />
+        </div>
+        <p class="userInfoWindowBodyTransactionFrom" pTooltip="{{transaction.fromUserId}}">From: {{transaction.fromUserId}}</p>
+        <p class="userInfoWindowBodyTransactionTo" pTooltip="{{transaction.toUserId}}">To: {{transaction.toUserId}}</p>
+        <p class="userInfoWindowBodyTransactionAmount">€{{transaction.amount}}</p>
+        <p class="userInfoWindowBodyTransactionDate">{{_dateService.getTimeAndDate(transaction.createdAt)}}</p>
+        <p-contextMenu #userInfoWindowBodyTransactionContextMenu [target]="transactionItem" (onShow)="setSelectedTransactionForContextMenu(transaction)"
+                       [autoZIndex]="true" [model]="contextMenuItems" appendTo="body">
+        </p-contextMenu>
+      </div>
+    </div>
+  </div>
+</div>
 <div class="usersInfo">
   <div class="usersInfoContainer">
     <span class="titleSpan">
@@ -16,7 +42,7 @@
       searchText: (searchText$ | async) || ''
     } as data">
       <div class="userList" *ngIf="data.users.length > 0 && data.searchText.length === 0; else noUsers" [@userListAnimation]="">
-        <div *ngFor="let user of data.users; trackBy: identifyUserDto" class="userItem">
+        <div *ngFor="let user of data.users; trackBy: identifyUserDto" class="userItem" (click)="onClickGetUserTransactionsInfoHandler(user.id)">
           <p class="userItemUsername">
             Username: {{_textService.pullUsernameFromMail(user.email)}}
           </p>
@@ -28,7 +54,7 @@
           </p>
           <p class="userItemStatus">
             <span>Status:</span>
-            <select class="userItemStatusSelect" [(ngModel)]="user.userStatus" (change)="onChangeSuspendOrMakeActiveHandler(user)">
+            <select class="userItemStatusSelect" [(ngModel)]="user.userStatus" (click)="$event.stopPropagation();" (change)="onChangeSuspendOrMakeActiveHandler(user)">
               <option value="{{UserStatus.Active}}">Active</option>
               <option value="{{UserStatus.Suspended}}">Suspended</option>
             </select>
@@ -37,7 +63,7 @@
       </div>
       <ng-template #noUsers>
         <div class="userList" *ngIf="data.searchedUsers.length > 0 && data.searchText.length > 0" [@userListAnimation]="">
-          <div *ngFor="let user of data.searchedUsers; trackBy: identifyUserDto" class="userItem">
+          <div *ngFor="let user of data.searchedUsers; trackBy: identifyUserDto" class="userItem" (click)="onClickGetUserTransactionsInfoHandler(user.id)">
             <p class="userItemUsername">
               Username: {{_textService.pullUsernameFromMail(user.email)}}
             </p>

@@ -33,7 +33,8 @@ export class ProfileApiService extends ApiBaseService {
   // GET consumer/profile/{userId}
   getProfileById(userId: string) : Observable<IResult<IUserDto>> {
     return this.httpClient.get<IResult<IUserDto>>(
-      this.baseUrl + this.consumerProfileRoute + `/${userId}`
+      this.baseUrl + this.consumerProfileRoute + `/${userId}`,
+      { withCredentials: true }
     )
   }
 }

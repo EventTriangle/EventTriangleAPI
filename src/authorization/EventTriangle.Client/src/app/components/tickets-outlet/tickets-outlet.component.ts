@@ -2,7 +2,8 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {animate, style, transition, trigger} from "@angular/animations";
 import {TicketStateService} from "../../services/state/ticket-state.service";
 import {ISupportTicketDto} from "../../types/interfaces/consumer/ISupportTicketDto";
-import {debounceTime, fromEvent, Subscription} from "rxjs";
+import {debounceTime, firstValueFrom, fromEvent, Subscription} from "rxjs";
+import {TransactionsApiService} from "../../services/api/transactions-api.service";
 
 @Component({
   selector: 'app-tickets-outlet',
@@ -34,6 +35,9 @@ import {debounceTime, fromEvent, Subscription} from "rxjs";
   ]
 })
 export class TicketsOutletComponent implements OnInit, OnDestroy {
+  //common
+  public rollBackedTransactionIds: string[] = [];
+
   //state
   public ticketListLoaderAnimation = false;
 
@@ -42,7 +46,8 @@ export class TicketsOutletComponent implements OnInit, OnDestroy {
   public documentScrollSub$: Subscription | undefined;
 
   constructor(
-      protected _ticketStateService: TicketStateService
+    protected _ticketStateService: TicketStateService,
+    private _transactionApiService: TransactionsApiService
   ) {}
 
   async ngOnInit() {
@@ -73,6 +78,17 @@ export class TicketsOutletComponent implements OnInit, OnDestroy {
   //events
   async onClickResolveTicketHandler(ticketId: string, ticketJustification: string) {
     await this._ticketStateService.resolveTicketAsync(ticketId, ticketJustification);
+  }
+
+  async onClickRollBackHandler(transactionId: string) {
+    this.rollBackedTransactionIds.push(transactionId);
+    const rollBackTransaction$ = this._transactionApiService.rollBackTransaction(transactionId);
+    await firstValueFrom(rollBackTransaction$);
+  }
+
+  //common
+  isTransactionRollBacked(transactionId: string) {
+    return this.rollBackedTransactionIds.includes(transactionId);
   }
 
   //other

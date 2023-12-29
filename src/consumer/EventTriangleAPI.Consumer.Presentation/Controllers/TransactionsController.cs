@@ -14,14 +14,17 @@ namespace EventTriangleAPI.Consumer.Presentation.Controllers;
 public class TransactionsController : ControllerBase
 {
     private readonly GetTransactionsQueryHandler _getTransactionsQueryHandler;
+    private readonly GetTransactionsByUserIdQueryHandler _getTransactionsByUserIdQueryHandler;
     private readonly UserClaimsService _userClaimsService;
 
     public TransactionsController(
         UserClaimsService userClaimsService, 
-        GetTransactionsQueryHandler getTransactionsQueryHandler)
+        GetTransactionsQueryHandler getTransactionsQueryHandler, 
+        GetTransactionsByUserIdQueryHandler getTransactionsByUserIdQueryHandler)
     {
         _userClaimsService = userClaimsService;
         _getTransactionsQueryHandler = getTransactionsQueryHandler;
+        _getTransactionsByUserIdQueryHandler = getTransactionsByUserIdQueryHandler;
     }
 
     /// <summary>
@@ -38,6 +41,22 @@ public class TransactionsController : ControllerBase
         
         var query = new GetTransactionsQuery(requesterId, limit, fromDateTime);
         var result = await _getTransactionsQueryHandler.HandleAsync(query);
+
+        return result.ToActionResult();
+    }
+    
+    [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(List<TransactionDto>), StatusCodes.Status200OK)]
+    [HttpGet("{userId}")]
+    public async Task<IActionResult> GetTransactionsByUserId(
+        string userId,
+        [FromQuery] DateTime fromDateTime,
+        [FromQuery] int limit = 25)
+    {
+        var requesterId = _userClaimsService.GetUserId();
+        
+        var query = new GetTransactionsByUserIdQuery(requesterId, userId, limit, fromDateTime);
+        var result = await _getTransactionsByUserIdQueryHandler.HandleAsync(query);
 
         return result.ToActionResult();
     }

@@ -18,6 +18,7 @@ import {ProfileStateService} from "../../services/state/profile-state.service";
 import {TextService} from "../../services/common/text.service";
 import {DateService} from "../../services/common/date.service";
 import {ContactsStateService} from "../../services/state/contacts-state.service";
+import {ErrorMessageConstants} from "../../constants/ErrorMessageConstants";
 
 @Component({
   selector: 'app-transactions-outlet',
@@ -122,7 +123,7 @@ export class TransactionsOutletComponent implements OnInit {
   getTransactionClassName(transaction: ITransactionDto) : string {
     const userProfile = this._profileStateService.user$.getValue();
 
-    if (!userProfile) throw new Error("User is null");
+    if (!userProfile) throw new Error(ErrorMessageConstants.UserNotFound);
     if (transaction.transactionState === TransactionState.RolledBack) return "transactionItemRolledBack";
     if (transaction.toUserId === userProfile.id) return 'transactionItemToMe';
 
@@ -132,7 +133,7 @@ export class TransactionsOutletComponent implements OnInit {
   getTransactionInfoClassName(transaction: ITransactionDto) : string {
     const userProfile = this._profileStateService.user$.getValue();
 
-    if (!userProfile) throw new Error("User is null");
+    if (!userProfile) throw new Error(ErrorMessageConstants.UserNotFound);
     if (transaction.transactionState === TransactionState.RolledBack) return "transactionItemRolledBackInfo";
     if (transaction.toUserId === userProfile.id) return 'transactionItemToMeInfo';
 
@@ -140,7 +141,7 @@ export class TransactionsOutletComponent implements OnInit {
   }
 
   async sendMoneyToUser() : Promise<void> {
-    if (isNaN(+this.amount) || +this.amount <= 0) throw new Error("Amount value is incorrect");
+    if (isNaN(+this.amount) || +this.amount <= 0) throw new Error(ErrorMessageConstants.AmountValueIsIncorrect);
 
     const sendMoneyToUserSub$ = this._transactionsApiService.createTransactionUserToUser(this.toUserId.trim(), +this.amount);
 

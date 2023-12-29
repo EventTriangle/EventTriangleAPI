@@ -114,10 +114,6 @@
 
 .ticketItemTransactionId {
   margin-bottom: 35px;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
 }
 
 .ticketItemStatus {
@@ -187,6 +183,33 @@
   margin-bottom: 12px;
 }
 
+.ticketItemButtonContainer {
+  display: flex;
+}
+
+.ticketItemRollBackButton {
+  width: 30%;
+  height: 50px;
+  background-color: $red;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 20px;
+  margin: 0 5px 0 auto;
+  cursor: pointer;
+  transition: .2s;
+
+  &:hover {
+    background-color: $red-hover-button;
+  }
+
+  &:disabled {
+    background-color: $red-disabled-button;
+    cursor: default;
+  }
+}
+
 .ticketItemOkButton {
   width: 100%;
   height: 50px;
@@ -198,7 +221,7 @@
   font-size: 20px;
   margin: 0 auto;
   cursor: pointer;
-  transition: .1s;
+  transition: .2s;
 
   &:hover {
     background-color: $purple-hover-button;

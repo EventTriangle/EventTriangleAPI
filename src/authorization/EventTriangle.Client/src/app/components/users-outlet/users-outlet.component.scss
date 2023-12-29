@@ -16,6 +16,240 @@
   grid-area: maininfo;
 }
 
+.userInfoWindowBackground {
+  position: absolute;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  background-color: rgba(0, 0, 0, 0.29);
+  z-index: 3;
+  cursor: pointer;
+}
+
+.userInfoWindow {
+  display: flex;
+  flex-direction: column;
+  width: 1400px;
+  height: 800px;
+  margin: auto;
+  background-color: $grey;
+  border-radius: 15px;
+  cursor: auto;
+
+  .userInfoWindowHeader {
+    position: relative;
+    display: flex;
+    background-color: white;
+    width: 100%;
+    height: 80px;
+    border-radius: 15px 15px 0 0;
+
+    .userInfoWindowHeaderAvatar {
+      position: relative;
+      width: 55px;
+      height: 55px;
+      left: 10px;
+      top: 13px;
+      background-color: $purple;
+      border-radius: 100%;
+    }
+
+    .userInfoWindowHeaderUsername {
+      font-size: 23px;
+      margin-top: 28px;
+      margin-left: 20px;
+    }
+
+    .userInfoWindowHeaderBalance {
+      position: absolute;
+      font-size: 23px;
+      top: 30px;
+      right: 20px;
+    }
+  }
+
+  .userInfoWindowBody {
+    display: flex;
+    flex-direction: column;
+    width: calc(100% - 30px);
+    height: calc(100% - 100px);
+    overflow-y: auto;
+    margin: auto;
+
+    .userInfoWindowBodyLoader {
+      width: 20px;
+      height: 20px;
+      margin: auto;
+      border: 5px solid $purple;
+      border-bottom-color: transparent;
+      border-radius: 50%;
+      display: inline-block;
+      box-sizing: border-box;
+      animation: rotation 1s linear infinite;
+
+      @keyframes rotation {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    }
+
+    .userInfoWindowBodyTransactionFromMe {
+      display: flex;
+      flex-shrink: 0;
+      width: 100%;
+      height: 65px;
+      background-color: $green-60percent;
+      border-radius: 10px;
+      margin-bottom: 10px;
+
+      .transactionSvgContainer {
+        display: flex;
+
+        .transactionSvg {
+          width: 30px;
+          height: 30px;
+          margin-top: 17px;
+          margin-left: 20px;
+
+          path {
+            stroke: white
+          }
+        }
+      }
+
+      p {
+        display: inline-block;
+        margin: 20px auto 0;
+        font-weight: 700;
+        font-size: 20px;
+        color: white;
+      }
+
+      p:nth-child(2){
+        margin-left: 100px;
+      }
+
+      p:last-child{
+        margin-right: 40px;
+      }
+
+      .userInfoWindowBodyTransactionFrom, .userInfoWindowBodyTransactionTo {
+        width: 200px;
+        user-select: none;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap
+      }
+    }
+    .userInfoWindowBodyTransactionToMe {
+      display: flex;
+      flex-shrink: 0;
+      width: 100%;
+      height: 65px;
+      background-color: $purple-60percent;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      font-weight: 700;
+      font-size: 20px;
+
+      .transactionSvgContainer {
+        display: flex;
+
+        .transactionSvg {
+          width: 30px;
+          height: 30px;
+          margin-top: 17px;
+          margin-left: 20px;
+
+          path {
+            stroke: white
+          }
+        }
+      }
+
+      p {
+        display: inline-block;
+        margin: 20px auto 0;
+        font-weight: 700;
+        font-size: 20px;
+        color: white;
+      }
+
+      p:nth-child(2){
+        margin-left: 100px;
+      }
+
+      p:last-child{
+        margin-right: 40px;
+      }
+
+      .userInfoWindowBodyTransactionFrom, .userInfoWindowBodyTransactionTo {
+        width: 200px;
+        user-select: none;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap
+      }
+    }
+    .userInfoWindowBodyTransactionRolledBack {
+      display: flex;
+      flex-shrink: 0;
+      width: 100%;
+      height: 65px;
+      background-color: $red-60percent;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      font-weight: 700;
+      font-size: 20px;
+
+      .transactionSvgContainer {
+        display: flex;
+
+        .transactionSvg {
+          width: 30px;
+          height: 30px;
+          margin-top: 17px;
+          margin-left: 20px;
+
+          path {
+            stroke: white
+          }
+        }
+      }
+
+      p {
+        display: inline-block;
+        margin: 20px auto 0;
+        font-weight: 700;
+        font-size: 20px;
+        color: white;
+      }
+
+      p:nth-child(2){
+        margin-left: 100px;
+      }
+
+      p:last-child{
+        margin-right: 40px;
+      }
+
+      .userInfoWindowBodyTransactionFrom, .userInfoWindowBodyTransactionTo {
+        width: 200px;
+        user-select: none;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap
+      }
+    }
+  }
+}
+
 .usersInfoContainer {
   margin-top: 54px;
   margin-left: 48px;
@@ -105,51 +339,54 @@
   font-weight: 700;
   font-size: 20px;
   margin-bottom: 20px;
-}
+  cursor: pointer;
 
-.userItemUsername {
-  margin-top: 12px;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
+  .userItemUsername {
+    width: 180px;
+    margin: 12px auto 0 0;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
 
-.userItemBalance {
-  margin-top: 12px;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
+  .userItemBalance {
+    margin: 12px auto 0;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
 
-.userItemRole {
-  margin-top: 12px;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
+  .userItemRole {
+    margin: 12px auto 0;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
 
-.userItemStatus {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
+  .userItemStatus {
+    margin: 0 0 0 auto;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
 
-.userItemStatusSelect {
-  width: 150px;
-  height: 40px;
-  border: none;
-  outline: none;
-  font-weight: 700;
-  font-size: 20px;
-  text-align: center;
-  background-color: $purple;
-  color: white;
-  border-radius: 10px;
-  margin-left: 10px;
+  .userItemStatusSelect {
+    margin: 0 0 0 10px;
+    width: 150px;
+    height: 40px;
+    border: none;
+    outline: none;
+    font-weight: 700;
+    font-size: 20px;
+    text-align: center;
+    background-color: $purple;
+    color: white;
+    border-radius: 10px;
+  }
 }
 
 .emptyBlock {
