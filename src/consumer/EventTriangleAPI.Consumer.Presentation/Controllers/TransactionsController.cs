@@ -20,8 +20,7 @@ public class TransactionsController : ControllerBase
 
     public TransactionsController(
         UserClaimsService userClaimsService, 
-        GetTransactionsQueryHandler getTransactionsQueryHandler, 
-        GetTransactionsBySearchQueryHandler getTransactionsBySearchQueryHandler)
+        GetTransactionsBySearchQueryHandler getTransactionsBySearchQueryHandler,
         GetTransactionsQueryHandler getTransactionsQueryHandler, 
         GetTransactionsByUserIdQueryHandler getTransactionsByUserIdQueryHandler)
     {
