@@ -38,6 +38,14 @@ export class TransactionsApiService extends ApiBaseService {
     );
   }
 
+  // GET consumer/transactions/search/{searchText}
+  public getTransactionsBySearch(searchText: string, fromDateTime: Date, limit: number) : Observable<IResult<ITransactionDto[]>> {
+    return this.httpClient.get<IResult<ITransactionDto[]>>(
+      this.baseUrl + this.consumerTransactionsRoute + `/search/${searchText}` + `?fromDateTime=${fromDateTime.toJSON()}&limit=${limit}`,
+      { withCredentials: true }
+    );
+  }
+
   // GET consumer/transactions/{userId}
   public getTransactionsByUserId(userId: string, fromDateTime: Date, limit: number) : Observable<IResult<ITransactionDto[]>> {
     return this.httpClient.get<IResult<ITransactionDto[]>>(

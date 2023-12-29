@@ -38,6 +38,7 @@ public class IntegrationTestBase : IAsyncLifetime
     protected readonly GetSupportTicketsQueryHandler GetSupportTicketsQueryHandler;
     protected readonly GetTicketsQueryHandler GetTicketsQueryHandler;
     protected readonly GetTransactionsQueryHandler GetTransactionsQueryHandler;
+    protected readonly GetTransactionsBySearchQueryHandler GetTransactionsBySearchQueryHandler;
     protected readonly GetTransactionsByUserIdQueryHandler GetTransactionsByUserIdQueryHandler;
     protected readonly GetUsersBySearchQueryHandler GetUsersBySearchQueryHandler;
     protected readonly GetUsersQueryHandler GetUsersQueryHandler;
@@ -79,6 +80,7 @@ public class IntegrationTestBase : IAsyncLifetime
         GetTicketsQueryHandler = serviceProvider.GetRequiredService<GetTicketsQueryHandler>();
         GetTransactionsQueryHandler = serviceProvider.GetRequiredService<GetTransactionsQueryHandler>();
         GetTransactionsByUserIdQueryHandler = serviceProvider.GetRequiredService<GetTransactionsByUserIdQueryHandler>();
+        GetTransactionsBySearchQueryHandler = serviceProvider.GetRequiredService<GetTransactionsBySearchQueryHandler>();
         GetUsersBySearchQueryHandler = serviceProvider.GetRequiredService<GetUsersBySearchQueryHandler>();
         GetUsersQueryHandler = serviceProvider.GetRequiredService<GetUsersQueryHandler>();
     }
