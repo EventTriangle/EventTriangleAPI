@@ -14,6 +14,7 @@ public static class QueryHandlersDependencyInjection
         serviceCollection.AddScoped<GetSupportTicketsQueryHandler>();
         serviceCollection.AddScoped<GetTicketsQueryHandler>();
         serviceCollection.AddScoped<GetTransactionsQueryHandler>();
+        serviceCollection.AddScoped<GetTransactionsBySearchQueryHandler>();
         serviceCollection.AddScoped<GetTransactionsByUserIdQueryHandler>();
         serviceCollection.AddScoped<GetUsersBySearchQueryHandler>();
         serviceCollection.AddScoped<GetUsersQueryHandler>();

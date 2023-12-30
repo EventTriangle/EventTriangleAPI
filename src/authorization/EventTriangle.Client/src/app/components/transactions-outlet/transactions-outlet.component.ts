@@ -1,12 +1,10 @@
 import {
   ChangeDetectorRef,
   Component,
-  ElementRef,
   OnInit,
-  ViewChild,
 } from '@angular/core';
 import {animate, query, stagger, style, transition, trigger} from "@angular/animations";
-import {debounceTime, firstValueFrom, fromEvent} from "rxjs";
+import {BehaviorSubject, debounceTime, filter, firstValueFrom, Subject} from "rxjs";
 import {IResult} from "../../types/interfaces/IResult";
 import {TransactionsApiService} from "../../services/api/transactions-api.service";
 import {ITransactionDto} from "../../types/interfaces/consumer/ITransactionDto";
@@ -18,6 +16,7 @@ import {ProfileStateService} from "../../services/state/profile-state.service";
 import {TextService} from "../../services/common/text.service";
 import {DateService} from "../../services/common/date.service";
 import {ContactsStateService} from "../../services/state/contacts-state.service";
+import {UserStatus} from "../../types/enums/UserStatus";
 import {ErrorMessageConstants} from "../../constants/ErrorMessageConstants";
 
 @Component({
@@ -39,12 +38,6 @@ import {ErrorMessageConstants} from "../../constants/ErrorMessageConstants";
         ]), {optional: true})
       ])
     ]),
-    trigger('transactionItemAnimation', [
-      transition(':enter', [
-        style({ height: 0, opacity: 0, padding: 0, margin: 0 }),
-        animate('.25s', style({ height: "*", opacity: "*", padding: "*", margin: "*" }))
-      ])
-    ]),
     trigger('rightBarAnimation', [
       transition(':enter', [
         style({transform: 'translateY(10px)', opacity: 0}),
@@ -64,11 +57,15 @@ import {ErrorMessageConstants} from "../../constants/ErrorMessageConstants";
   ]
 })
 export class TransactionsOutletComponent implements OnInit {
-  @ViewChild("transactionListRef") transactionListRef!: ElementRef;
+  // notifiers
+  public transactionListScrolledToEndNotifier$ = new Subject<void>();
+  public searchTransactionListScrolledToEndNotifier$ = new Subject<void>();
 
   //observable
+  public searchText$ = new BehaviorSubject<string>("");
   public user$ = this._profileStateService.user$;
   public transactions$ = this._transactionsStateService.transactions$;
+  public searchedTransactions$ = new BehaviorSubject<ITransactionDto[]>([]);
 
   //common
   public amount: string = '';
@@ -81,6 +78,7 @@ export class TransactionsOutletComponent implements OnInit {
   //types
   protected readonly TransactionType = TransactionType;
   protected readonly TransactionState = TransactionState;
+  protected readonly UserStatus = UserStatus;
 
   constructor(
     private _transactionsApiService: TransactionsApiService,
@@ -102,21 +100,63 @@ export class TransactionsOutletComponent implements OnInit {
 
     this._changeDetectorRef.detectChanges();
 
-    fromEvent(this.transactionListRef.nativeElement, "scroll")
+    this.searchText$
       .pipe(
+        filter(x => x.trim() !== ''),
         debounceTime(400))
-      .subscribe(async e => {
-        const event = e as Event;
-        const target = event.target as HTMLElement;
-        if (target.offsetHeight + target.scrollTop >= target.scrollHeight - 1) {
-          this.transactionListLoader = true;
-          const transactions = this._transactionsStateService.transactions$.getValue();
-          const lastTransaction = transactions[transactions.length - 1];
-          const date = new Date(lastTransaction.createdAt);
-          await this._transactionsStateService.getTransactionsAsync(date, 20);
-          this.transactionListLoader = false;
-        }
+      .subscribe(async x => {
+        const getTransactionsBySearch$ = await this._transactionsApiService.getTransactionsBySearch(x, new Date(Date.now()), 20)
+        const getTransactionsBySearchResult = await firstValueFrom(getTransactionsBySearch$);
+        this.searchedTransactions$ = new BehaviorSubject<ITransactionDto[]>([]);
+        setTimeout(() => {
+          this.searchedTransactions$.next(getTransactionsBySearchResult.response);
+        }, 10);
       });
+
+    this.searchText$
+      .pipe(filter(x => x === ''))
+      .subscribe(_ => this.searchedTransactions$ = new BehaviorSubject<ITransactionDto[]>([]));
+
+    this.transactionListScrolledToEndNotifier$
+      .pipe(debounceTime(400))
+      .subscribe(async _ => {
+              this.transactionListLoader = true;
+              const transactions = this._transactionsStateService.transactions$.getValue();
+              const lastTransaction = transactions[transactions.length - 1];
+              const date = new Date(lastTransaction.createdAt);
+              await this._transactionsStateService.getTransactionsAsync(date, 20);
+              this.transactionListLoader = false;
+      });
+
+    this.searchTransactionListScrolledToEndNotifier$
+      .pipe(debounceTime(400))
+      .subscribe(async _ => {
+        this.transactionListLoader = true;
+        const searchText = this.searchText$.getValue();
+        const searchTransactions = this.searchedTransactions$.getValue();
+        const lastSearchTransaction = searchTransactions[searchTransactions.length - 1];
+        const date = new Date(lastSearchTransaction.createdAt);
+        const getTransactionsBySearch$ = this._transactionsApiService.getTransactionsBySearch(searchText, date, 20);
+        const result = await firstValueFrom(getTransactionsBySearch$);
+        searchTransactions.push(...result.response);
+        this.searchedTransactions$.next(searchTransactions);
+        this.transactionListLoader = false;
+      });
+  }
+
+  //events
+  public onScrollTransactionsHandler(e: Event) {
+    const target = e.target as HTMLElement;
+    if (target.offsetHeight + target.scrollTop >= target.scrollHeight - 1) {
+      this.transactionListScrolledToEndNotifier$.next(undefined);
+    }
+  }
+
+  public onScrollSearchTransactionsHandler(e: Event) {
+    const target = e.target as HTMLElement;
+    if (target.offsetHeight + target.scrollTop >= target.scrollHeight - 1) {
+      this.searchTransactionListScrolledToEndNotifier$.next(undefined);
+    }
   }
 
   //common

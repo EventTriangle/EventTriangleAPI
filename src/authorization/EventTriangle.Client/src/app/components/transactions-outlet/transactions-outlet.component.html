@@ -44,14 +44,21 @@
       </div>
     </div>
     <div class="searchTransactions">
-      <input type="text" class="searchTransactionsInput" placeholder="Search Transactions" />
+      <input type="text" class="searchTransactionsInput"
+             [ngModel]="searchText$ | async" (ngModelChange)="searchText$.next($event)"
+             placeholder="Search Transactions" />
       <svg-icon src="../../../assets/svg/search.svg" class="searchSvg" />
     </div>
-    <ng-container *ngIf="transactions$ | async as transactions">
+    <ng-container *ngIf="{
+      transactions: (transactions$ | async) || [],
+      searchTransactions: (searchedTransactions$ | async) || [],
+      searchText: (searchText$ | async) || ''
+    } as data">
       <div class="transactionList" [@transactionsAnimation]=""
-           *ngIf="transactions.length > 0 && _transactionsStateService.wasRequested" #transactionListRef>
-        <div *ngFor="let transaction of transactions; trackBy: identifyTransactionDto"
-             class="{{getTransactionClassName(transaction)}}" [@transactionItemAnimation]="">
+           *ngIf="data.transactions.length > 0 && data.searchText.length === 0 && _transactionsStateService.wasRequested; else searchTransactionTemplate"
+           (scroll)="onScrollTransactionsHandler($event)">
+        <div *ngFor="let transaction of data.transactions; trackBy: identifyTransactionDto"
+             class="{{getTransactionClassName(transaction)}}">
           <svg-icon src="../../../assets/svg/transaction.svg" class="transactionSvg" />
           <div class="{{getTransactionInfoClassName(transaction)}}">
             <p class="transactionItemFrom" pTooltip="{{transaction.fromUserId}}">
@@ -72,7 +79,33 @@
           <span class="transactionListLoader"></span>
         </div>
       </div>
-      <div class="emptyTransactionList" *ngIf="transactions.length === 0 && _transactionsStateService.wasRequested">
+      <ng-template #searchTransactionTemplate>
+        <div class="transactionList" [@transactionsAnimation]="" (scroll)="onScrollSearchTransactionsHandler($event)"
+             *ngIf="data.searchTransactions.length > 0 && data.searchText.length > 0">
+          <div *ngFor="let transaction of data.searchTransactions; trackBy: identifyTransactionDto"
+               class="{{getTransactionClassName(transaction)}}">
+            <svg-icon src="../../../assets/svg/transaction.svg" class="transactionSvg" />
+            <div class="{{getTransactionInfoClassName(transaction)}}">
+              <p class="transactionItemFrom">
+                From: {{transaction.fromUserId}}
+              </p>
+              <p class="transactionItemTo">
+                To: {{transaction.toUserId}}
+              </p>
+              <p class="transactionItemAmount">
+                Amount: €{{transaction.amount}}
+              </p>
+              <p class="transactionItemDate">
+                {{_dateService.getTimeAndDate(transaction.createdAt)}}
+              </p>
+            </div>
+          </div>
+          <div class="transactionListLoaderBackground" [@transactionListLoaderAnimation]="" *ngIf="transactionListLoader">
+            <span class="transactionListLoader"></span>
+          </div>
+        </div>
+      </ng-template>
+      <div class="emptyTransactionList" *ngIf="data.transactions.length === 0 && data.searchTransactions.length === 0 && _transactionsStateService.wasRequested">
         <p>No transactions yet</p>
       </div>
     </ng-container>
