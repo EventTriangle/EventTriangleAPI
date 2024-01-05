@@ -1,6 +1,7 @@
 
 export enum ErrorMessageConstants {
-  UserNotFound = "UserNotFound",
+  UserNotFound = "User not found",
+  CardNotFound = "Card not found",
   InvalidMail = "Invalid mail",
   SignalRConnectionIsUndefined = "SignalR connection is undefined",
   ServerUrlIsUndefined = "Server url is undefined",

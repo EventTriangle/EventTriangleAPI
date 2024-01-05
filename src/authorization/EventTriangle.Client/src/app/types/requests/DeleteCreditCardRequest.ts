@@ -1,3 +1,3 @@
 export interface DeleteCreditCardRequest {
-  creditCardId: string;
+  cardId: string;
 }

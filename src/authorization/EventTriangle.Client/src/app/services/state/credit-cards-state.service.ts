@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {BehaviorSubject, firstValueFrom} from "rxjs";
+import {BehaviorSubject, first, firstValueFrom} from "rxjs";
 import {CreditCardApiService} from "../api/credit-card-api.service";
 import {IResult} from "../../types/interfaces/IResult";
 import {ICreditCardAddedEvent} from "../../types/interfaces/sender/ICreditCardAddedEvent";
@@ -45,8 +45,15 @@ export class CreditCardsStateService {
         cvv,
         paymentNetwork
     );
-    const attachCardResult = await firstValueFrom<IResult<ICreditCardAddedEvent>>(attachCard$);
+    return await firstValueFrom<IResult<ICreditCardAddedEvent>>(attachCard$);
+  }
 
-    return attachCardResult;
+  public async deleteCreditCardAsync(creditCardId: string) {
+    const deleteCreditCard$ = this._creditCardApiService.deleteCreditCard(creditCardId);
+
+    const cards = this.cards$.getValue().filter(x => x.id !== creditCardId);
+    this.cards$.next(cards);
+
+    return await firstValueFrom(deleteCreditCard$);
   }
 }
