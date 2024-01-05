@@ -49,7 +49,6 @@
   outline: none;
   border: none;
   border-radius: 10px;
-  text-indent: 25px;
   font-size: 18px;
   font-weight: 700;
   background-color: $grey;
@@ -90,4 +89,16 @@
   height: 40px;
   border-radius: 100%;
   background-color: $purple;
+}
+
+::ng-deep {
+  .searchInput {
+    & span {
+      width: 100%
+    }
+
+    & input {
+      width: 100%;
+    }
+  }
 }
