@@ -3,7 +3,8 @@
   <p class="logoName">Event Triangle</p>
 </a>
 <div class="search">
-  <input type="text" class="searchInput" placeholder="Search" />
+  <p-autoComplete class="searchInput" placeholder="Search" [(ngModel)]="selectedItem"
+                  [suggestions]="suggestions" (completeMethod)="search($event)" (onSelect)="onSelectAutocompletedItemHandler($event)"></p-autoComplete>
   <svg-icon src="../../../assets/svg/search.svg" class="searchSvg" />
 </div>
 <div class="profile">

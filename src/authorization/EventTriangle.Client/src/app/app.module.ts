@@ -27,6 +27,7 @@ import {Observable} from "rxjs";
 import {DropdownModule} from "primeng/dropdown";
 import { TooltipModule } from 'primeng/tooltip';
 import { ContextMenuModule } from 'primeng/contextmenu';
+import { AutoCompleteModule } from 'primeng/autocomplete';
 
 interface IConfig {
   baseUrl: string
@@ -73,7 +74,8 @@ function initializeAppFactory(httpClient: HttpClient): () => Observable<any> {
     ToastModule,
     DropdownModule,
     TooltipModule,
-    ContextMenuModule
+    ContextMenuModule,
+    AutoCompleteModule
   ],
   providers: [
     {
