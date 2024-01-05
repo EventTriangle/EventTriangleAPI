@@ -4,6 +4,8 @@ import {PaymentNetwork} from "../../types/enums/PaymentNetwork";
 import {CreditCardsStateService} from "../../services/state/credit-cards-state.service";
 import { ProfileStateService } from 'src/app/services/state/profile-state.service';
 import {ICreditCardDto} from "../../types/interfaces/consumer/ICreditCardDto";
+import {MenuItem} from "primeng/api";
+import {ErrorMessageConstants} from "../../constants/ErrorMessageConstants";
 
 @Component({
   selector: 'app-cards-outlet',
@@ -42,6 +44,20 @@ export class CardsOutletComponent implements OnInit {
   public paymentNetwork: PaymentNetwork = PaymentNetwork.Visa;
   public PaymentNetwork = PaymentNetwork;
 
+  // state
+  public selectedForContextMenuCard: ICreditCardDto | undefined;
+
+  // context menu
+  public contextMenuItems: MenuItem[] = [
+    {label: 'Delete', command: async () => {
+        const currentCardId = this.selectedForContextMenuCard?.id
+
+        if (!currentCardId) throw new Error(ErrorMessageConstants.CardNotFound);
+
+        await this._creditCardsStateService.deleteCreditCardAsync(currentCardId);
+    }}
+  ]
+
   constructor(
     protected _creditCardsStateService: CreditCardsStateService,
     protected _profileStateService: ProfileStateService) {
@@ -74,6 +90,11 @@ export class CardsOutletComponent implements OnInit {
       expiration,
       cvv,
       this.paymentNetwork);
+  }
+
+  // action
+  public setSelectedCardForContextMenu(card: ICreditCardDto) {
+    this.selectedForContextMenuCard = card;
   }
 
   //other

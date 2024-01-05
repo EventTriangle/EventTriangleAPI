@@ -75,7 +75,7 @@ export class CreditCardApiService extends ApiBaseService {
   // DELETE sender/credit-cards
   public deleteCreditCard(creditCardId: string) : Observable<IResult<ICreditCardDeletedEvent>> {
     let command : DeleteCreditCardRequest = {
-      creditCardId: creditCardId
+      cardId: creditCardId
     }
     let options = {
       headers: new HttpHeaders({
