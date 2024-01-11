@@ -108,61 +108,61 @@
   font-weight: 700;
   font-size: 20px;
   margin-bottom: 27px;
-}
 
-.ticketItemTransactionId {
-  margin-bottom: 35px;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
+  .ticketItemTransactionId {
+    margin-bottom: 35px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
 
-.ticketItemStatus {
-  position: absolute;
-  top: 27px;
-  right: 27px;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
+  .ticketItemStatus {
+    position: absolute;
+    top: 27px;
+    right: 27px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
 
-.ticketItemDescriptionTitle {
-  margin-bottom: 12px;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
+  .ticketItemDescriptionTitle {
+    margin-bottom: 12px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
 
-.ticketItemDescriptionText {
-  margin-bottom: 20px;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
+  .ticketItemDescriptionText {
+    margin-bottom: 20px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
 
-.ticketItemResponseTitle {
-  margin-bottom: 12px;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
+  .ticketItemResponseTitle {
+    margin-bottom: 12px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
 
-.ticketItemResponseText {
-  background-color: $grey-2;
-  padding: 20px;
-  font-weight: 700;
-  font-size: 20px;
-  color: $grey-p;
-  border-radius: 10px;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
+  .ticketItemResponseText {
+    background-color: $grey-2;
+    padding: 20px;
+    font-weight: 700;
+    font-size: 20px;
+    color: $grey-p;
+    border-radius: 10px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
 }
 
 .createTicket {
@@ -236,5 +236,156 @@
 
   &:hover {
     background-color: $purple-hover-button;
+  }
+}
+
+@media screen and (max-width: 1880px) {
+  :host {
+    grid-template-columns: auto 380px;
+  }
+
+  .supportInfoContainer {
+    margin-top: 30px;
+  }
+
+  .title {
+    font-size: 35px;
+  }
+
+  .titleSupportSvg {
+    width: 30px;
+    height: 30px;
+  }
+
+  .ticketItem {
+    min-height: 160px;
+    padding: 24px;
+    font-size: 18px;
+    margin-bottom: 20px;
+
+    .ticketItemTransactionId {
+      margin-bottom: 25px;
+    }
+
+    .ticketItemResponseText {
+      padding: 15px;
+      font-size: 18px;
+      border-radius: 5px;
+    }
+  }
+
+  .createTicket {
+    width: 100%;
+    height: 100%;
+
+    .createTicketContainer {
+      width: 90%;
+    }
+
+    .createTicketTitle {
+      width: 100%;
+      font-weight: 700;
+      font-size: 25px;
+      margin-bottom: 25px;
+    }
+
+    input {
+      width: 100%;
+      height: 50px;
+      margin-bottom: 20px;
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    textarea {
+      font-size: 18px;
+    }
+
+    .createTicketOkButton {
+      height: 50px;
+      font-weight: 700;
+      font-size: 18px;
+    }
+  }
+}
+
+@media screen and (max-width: 1670px) {
+  :host {
+    grid-template-columns: auto 300px;
+  }
+
+  .supportInfoContainer {
+    margin-top: 30px;
+  }
+
+  .title {
+    font-size: 26px;
+    margin-bottom: 8px;
+  }
+
+  .titleSupportSvg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .overview {
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+
+  .ticketItem {
+    min-height: 160px;
+    padding: 15px;
+    font-size: 14px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+
+    .ticketItemTransactionId {
+      margin-bottom: 20px;
+    }
+
+    .ticketItemResponseText {
+      padding: 10px;
+      font-size: 14px;
+      border-radius: 3px;
+    }
+  }
+
+  .createTicket {
+    .createTicketTitle {
+      width: 100%;
+      font-weight: 700;
+      font-size: 18px;
+      margin-bottom: 25px;
+    }
+
+    input {
+      height: 45px;
+      margin-bottom: 10px;
+      font-size: 17px;
+      border-radius: 8px;
+    }
+
+    textarea {
+      height: 120px;
+      padding-top: 10px;
+      font-size: 17px;
+    }
+
+    .createTicketOkButton {
+      height: 50px;
+      font-weight: 700;
+      font-size: 18px;
+    }
+  }
+
+  ::ng-deep {
+    .skeletonSupportTicketItem {
+      width: 100% !important;
+      height: 50px !important;
+      border-radius: 7px !important;
+      padding: 27px !important;
+      margin-bottom: 10px !important;
+    }
   }
 }

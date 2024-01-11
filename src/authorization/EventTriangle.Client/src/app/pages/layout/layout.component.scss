@@ -51,3 +51,16 @@
     transform: translateX(-99%);
   }
 }
+
+@media screen and (max-width: 1880px) {
+  .layoutContainer {
+    grid-template-columns: 300px auto;
+  }
+}
+
+@media screen and (max-width: 1670px) {
+  .layoutContainer {
+    grid-template-rows: 60px auto;
+    grid-template-columns: 240px auto;
+  }
+}

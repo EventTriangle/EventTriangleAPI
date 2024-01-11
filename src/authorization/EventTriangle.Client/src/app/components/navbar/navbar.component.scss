@@ -43,97 +43,97 @@
   &:hover {
     background-color: $grey-2;
   }
-}
 
-.itemIcon {
-  display: flex;
-  width: 40px;
-  height: 40px;
-  margin-top: 14px;
-  margin-left: 56px;
-  border-radius: 10px;
-  background-color: $grey-2;
-}
-
-.itemTitle {
-  margin-top: 25px;
-  margin-left: 15px;
-  color: $grey-p;
-  font-size: 18px;
-  font-weight: 700;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-
-.transactionSvg {
-  width: 30px;
-  height: 30px;
-  margin: auto;
-
-  path {
-    stroke: black;
+  .itemIcon {
+    display: flex;
+    width: 40px;
+    height: 40px;
+    margin-top: 14px;
+    margin-left: 56px;
+    border-radius: 10px;
+    background-color: $grey-2;
   }
-}
 
-.cardSvg {
-  width: 30px;
-  height: 30px;
-  margin: auto;
-
-  path {
-    fill: black;
+  .itemTitle {
+    margin-top: 25px;
+    margin-left: 15px;
+    color: $grey-p;
+    font-size: 18px;
+    font-weight: 700;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
   }
-}
 
-.depostionSvg {
-  width: 30px;
-  height: 30px;
-  margin: auto;
+  .transactionSvg {
+    width: 30px;
+    height: 30px;
+    margin: auto;
 
-  path {
-    fill: black;
+    path {
+      stroke: black;
+    }
   }
-}
 
-.contactsSvg {
-  width: 30px;
-  height: 30px;
-  margin: auto;
+  .cardSvg {
+    width: 30px;
+    height: 30px;
+    margin: auto;
 
-  path {
-    stroke: black;
+    path {
+      fill: black;
+    }
   }
-}
 
-.supportSvg {
-  width: 30px;
-  height: 30px;
-  margin: auto;
+  .depostionSvg {
+    width: 30px;
+    height: 30px;
+    margin: auto;
 
-  g {
-    fill: black;
+    path {
+      fill: black;
+    }
   }
-}
 
-.ticketSvg {
-  width: 30px;
-  height: 30px;
-  margin: auto;
+  .contactsSvg {
+    width: 30px;
+    height: 30px;
+    margin: auto;
 
-  path {
-    stroke: black;
+    path {
+      stroke: black;
+    }
   }
-}
 
-.usersSvg {
-  width: 30px;
-  height: 30px;
-  margin: auto;
+  .supportSvg {
+    width: 30px;
+    height: 30px;
+    margin: auto;
 
-  path {
-    stroke: black;
+    g {
+      fill: black;
+    }
+  }
+
+  .ticketSvg {
+    width: 30px;
+    height: 30px;
+    margin: auto;
+
+    path {
+      stroke: black;
+    }
+  }
+
+  .usersSvg {
+    width: 30px;
+    height: 30px;
+    margin: auto;
+
+    path {
+      stroke: black;
+    }
   }
 }
 
@@ -144,7 +144,6 @@
 
   fill: $red-svg;
 }
-
 
 .itemActive {
   display: flex;
@@ -240,6 +239,229 @@
 
     path {
       stroke: white;
+    }
+  }
+}
+
+@media screen and (max-width: 1880px) {
+  .navBarContainer {
+    margin-top: 30px;
+    width: 300px;
+  }
+
+  .title {
+    font-size: 16px;
+  }
+
+  .item {
+    height: 50px;
+    margin-bottom: 8px;
+
+    .itemIcon {
+      width: 30px;
+      height: 30px;
+      margin-top: 10px;
+    }
+
+    .itemTitle {
+      font-size: 15px;
+      margin-top: 17px;
+    }
+
+    .transactionSvg {
+      width: 20px;
+      height: 20px;
+      margin: auto;
+
+      path {
+        stroke: black;
+      }
+    }
+
+    .cardSvg {
+      width: 20px;
+      height: 20px;
+      margin: auto;
+
+      path {
+        fill: black;
+      }
+    }
+
+    .depostionSvg {
+      width: 20px;
+      height: 20px;
+      margin: auto;
+
+      path {
+        fill: black;
+      }
+    }
+
+    .contactsSvg {
+      width: 20px;
+      height: 20px;
+      margin: auto;
+
+      path {
+        stroke: black;
+      }
+    }
+
+    .supportSvg {
+      width: 20px;
+      height: 20px;
+      margin: auto;
+
+      g {
+        fill: black;
+      }
+    }
+
+    .ticketSvg {
+      width: 20px;
+      height: 20px;
+      margin: auto;
+
+      path {
+        stroke: black;
+      }
+    }
+
+    .usersSvg {
+      width: 20px;
+      height: 20px;
+      margin: auto;
+
+      path {
+        stroke: black;
+      }
+    }
+
+    .logoutSvg {
+      width: 20px;
+      height: 20px;
+      margin: auto;
+
+      fill: $red-svg;
+    }
+  }
+
+  .itemActive {
+    height: 50px;
+    margin-bottom: 8px;
+
+    .itemIcon {
+      width: 30px;
+      height: 30px;
+      margin-top: 10px;
+    }
+
+    .itemTitle {
+      font-size: 15px;
+      margin-top: 17px;
+    }
+
+    .transactionSvg {
+      width: 20px;
+      height: 20px;
+
+      path {
+        stroke: white;
+      }
+    }
+
+    .cardSvg {
+      width: 20px;
+      height: 20px;
+
+      path {
+        fill: white;
+      }
+    }
+
+    .depostionSvg {
+      width: 20px;
+      height: 20px;
+
+      path {
+        fill: white;
+      }
+    }
+
+    .contactsSvg {
+      width: 20px;
+      height: 20px;
+
+      path {
+        stroke: white;
+      }
+    }
+
+    .supportSvg {
+      width: 20px;
+      height: 20px;
+
+      g {
+        fill: white;
+      }
+    }
+
+    .ticketSvg {
+      width: 20px;
+      height: 20px;
+
+      path {
+        stroke: white;
+      }
+    }
+
+    .usersSvg {
+      width: 20px;
+      height: 20px;
+
+      path {
+        stroke: white;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 1670px) {
+  .navBarContainer {
+    width: 240px;
+  }
+
+  .title {
+    margin-left: 30px;
+  }
+
+  .item {
+    .itemIcon {
+      margin-left: 30px;
+    }
+
+    .itemTitle {
+      margin-top: 17px;
+    }
+  }
+
+  .itemActive {
+    .itemIcon {
+      margin-left: 27px;
+    }
+
+    .itemTitle {
+      margin-top: 17px;
+    }
+  }
+
+  ::ng-deep {
+    .skeletonNavLink {
+      width: 90% !important;
+      height: 35px !important;
+      margin: 0 auto 10px;
+      border-radius: 5px !important;
     }
   }
 }

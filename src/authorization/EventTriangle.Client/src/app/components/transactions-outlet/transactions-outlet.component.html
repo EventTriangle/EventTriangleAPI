@@ -32,9 +32,9 @@
               <p-skeleton styleClass="skeletonDefault" />
             </ng-template>
           </p>
-          <span class="userInfoId">
+          <span>
             <ng-container *ngIf="user$ | async as user; else userIsNull">
-              ID: {{user.id}}
+              <p class="userInfoId" appCopyText="{{user.id}}">ID: {{user.id}}</p>
             </ng-container>
             <ng-template #userIsNull>
               <p-skeleton styleClass="skeletonDefault" />
@@ -58,9 +58,9 @@
            *ngIf="data.transactions.length > 0 && data.searchText.length === 0 && _transactionsStateService.wasRequested; else searchTransactionTemplate"
            (scroll)="onScrollTransactionsHandler($event)">
         <div *ngFor="let transaction of data.transactions; trackBy: identifyTransactionDto"
-             class="{{getTransactionClassName(transaction)}}">
+             class="transactionItem {{getTransactionColorClassName(transaction)}}">
           <svg-icon src="../../../assets/svg/transaction.svg" class="transactionSvg" />
-          <div class="{{getTransactionInfoClassName(transaction)}}">
+          <div class="transactionItemInfo">
             <p class="transactionItemFrom" pTooltip="{{transaction.fromUserId}}">
               From: {{transaction.fromUserId}}
             </p>
@@ -83,9 +83,9 @@
         <div class="transactionList" [@transactionsAnimation]="" (scroll)="onScrollSearchTransactionsHandler($event)"
              *ngIf="data.searchTransactions.length > 0 && data.searchText.length > 0">
           <div *ngFor="let transaction of data.searchTransactions; trackBy: identifyTransactionDto"
-               class="{{getTransactionClassName(transaction)}}">
+               class="transactionItem {{getTransactionColorClassName(transaction)}}">
             <svg-icon src="../../../assets/svg/transaction.svg" class="transactionSvg" />
-            <div class="{{getTransactionInfoClassName(transaction)}}">
+            <div class="transactionItemInfo">
               <p class="transactionItemFrom">
                 From: {{transaction.fromUserId}}
               </p>

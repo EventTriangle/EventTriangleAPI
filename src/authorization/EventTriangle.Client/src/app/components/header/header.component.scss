@@ -16,22 +16,22 @@
   left: 35px;
   display: flex;
   text-decoration: none;
-}
 
-.logoSvg {
-  width: 26px;
-  height: 13px;
-  stroke: $purple;
-  fill: white;
-  margin-top: 3px;
-}
+  .logoSvg {
+    width: 26px;
+    height: 13px;
+    stroke: $purple;
+    fill: white;
+    margin-top: 3px;
+  }
 
-.logoName {
-  padding-top: 1px;
-  margin-left: 5px;
-  font-size: 18px;
-  font-weight: 700;
-  color: $purple;
+  .logoName {
+    padding-top: 1px;
+    margin-left: 5px;
+    font-size: 18px;
+    font-weight: 700;
+    color: $purple;
+  }
 }
 
 .search {
@@ -41,31 +41,31 @@
   height: 50px;
   margin-top: 15px;
   grid-area: search;
-}
 
-.searchInput {
-  width: 100%;
-  height: 100%;
-  outline: none;
-  border: none;
-  border-radius: 10px;
-  font-size: 18px;
-  font-weight: 700;
-  background-color: $grey;
-  color: $grey-p;
+  .searchInput {
+    width: 100%;
+    height: 100%;
+    outline: none;
+    border: none;
+    border-radius: 10px;
+    font-size: 18px;
+    font-weight: 700;
+    background-color: $grey;
+    color: $grey-p;
 
-  &::placeholder {
-    color: $light-grey-p;
+    &::placeholder {
+      color: $light-grey-p;
+    }
   }
-}
 
-.searchSvg {
-  position: absolute;
-  width: 30px;
-  height: 30px;
-  top: 9px;
-  right: 15px;
-  stroke: $light-grey-svg;
+  .searchSvg {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    top: 9px;
+    right: 15px;
+    stroke: $light-grey-svg;
+  }
 }
 
 .profile {
@@ -73,22 +73,22 @@
   position: absolute;
   top: 17px;
   right: 35px;
-}
 
-.fullName {
-  margin: 12px;
-  font-size: 18px;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
+  .fullName {
+    margin: 12px;
+    font-size: 18px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
 
-.avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 100%;
-  background-color: $purple;
+  .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 100%;
+    background-color: $purple;
+  }
 }
 
 ::ng-deep {
@@ -99,6 +99,77 @@
 
     & input {
       width: 100%;
+    }
+  }
+}
+
+@media screen and (max-width: 1880px) {
+  :host {
+    grid-template-columns: 300px auto 380px;
+  }
+}
+
+@media screen and (max-width: 1670px) {
+  :host {
+    grid-template-columns: 240px auto 300px;
+  }
+
+  .logo {
+    top: 23px;
+    left: 30px;
+
+    .logoSvg {
+      width: 20px;
+      height: 10px;
+      margin-top: -1px;
+    }
+
+    .logoName {
+      margin-left: 5px;
+      font-size: 14px;
+    }
+  }
+
+  ::ng-deep {
+    .search {
+      &.p-autocomplete {
+        height: 40px;
+        margin-bottom: 10px;
+        border-radius: 8px;
+      }
+
+      & input {
+        height: 40px;
+        font-size: 14px;
+      }
+    }
+  }
+
+  .search {
+    height: 40px;
+    margin-top: 10px;
+
+    .searchSvg {
+      width: 20px;
+      height: 20px;
+      top: 10px;
+      right: 10px;
+    }
+  }
+
+  .profile {
+    top: 10px;
+    right: 30px;
+
+    .fullName {
+      margin-top: 12px;
+      font-size: 14px;
+    }
+
+    .avatar {
+      width: 25px;
+      height: 25px;
+      margin-top: 6px;
     }
   }
 }

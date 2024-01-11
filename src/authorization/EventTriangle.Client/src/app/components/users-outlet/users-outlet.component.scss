@@ -297,33 +297,32 @@
   width: 100%;
   height: 72px;
   margin-bottom: 20px;
-}
 
-.searchInput {
-  width: 100%;
-  height: 100%;
-  outline: none;
-  border: none;
-  color: $grey-p;
-  font-weight: 700;
-  font-size: 20px;
-  text-indent: 35px;
-  border-radius: 10px;
+  .searchInput {
+    width: 100%;
+    height: 100%;
+    outline: none;
+    border: none;
+    color: $grey-p;
+    font-weight: 700;
+    font-size: 20px;
+    text-indent: 35px;
+    border-radius: 10px;
 
-  &::placeholder {
-    color: $light-grey-p;
+    &::placeholder {
+      color: $light-grey-p;
+    }
+  }
+
+  .searchSvg {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    top: 19px;
+    right: 19px;
+    stroke: $light-grey-svg;
   }
 }
-
-.searchSvg {
-  position: absolute;
-  width: 30px;
-  height: 30px;
-  top: 19px;
-  right: 19px;
-  stroke: $light-grey-svg;
-}
-
 
 .userList {
   width: 100%;
@@ -367,7 +366,7 @@
   }
 
   .userItemStatus {
-    margin: 0 0 0 auto;
+    margin: 12px 0 0 auto;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
@@ -395,4 +394,119 @@
   height: 100%;
   background-color: white;
   grid-area: rightbar;
+}
+
+@media screen and (max-width: 1880px) {
+  :host {
+    grid-template-columns: auto 380px;
+  }
+
+  .usersInfoContainer {
+    margin-top: 30px;
+  }
+
+  .title {
+    font-size: 35px;
+  }
+
+  .titleUsersSvg {
+    width: 27px;
+    height: 27px;
+  }
+
+  .search {
+    height: 55px;
+    margin-bottom: 15px;
+
+    .searchInput {
+      font-size: 18px;
+    }
+
+    .searchSvg {
+      width: 25px;
+      height: 25px;
+      top: 15px;
+      right: 15px;
+    }
+  }
+
+  .userItem {
+    height: 60px;
+    padding: 10px 32px;
+    font-size: 18px;
+    margin-bottom: 10px;
+
+    .userItemStatusSelect {
+      width: 130px;
+      height: 20px;
+      font-size: 16px;
+      border-radius: 7px;
+    }
+  }
+}
+
+@media screen and (max-width: 1670px) {
+  :host {
+    grid-template-columns: auto 300px;
+  }
+
+  .usersInfoContainer {
+    margin-top: 30px;
+  }
+
+  .title {
+    font-size: 26px;
+    margin-bottom: 8px;
+  }
+
+  .titleUsersSvg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .overview {
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+
+  .search {
+    height: 40px;
+    margin-bottom: 10px;
+
+    .searchInput {
+      font-size: 14px;
+      text-indent: 20px;
+    }
+
+    .searchSvg {
+      width: 20px;
+      height: 20px;
+      top: 10px;
+      right: 10px;
+    }
+  }
+
+  .userItem {
+    height: 45px;
+    padding: 5px 20px;
+    font-size: 14px;
+    margin-bottom: 10px;
+
+    .userItemStatusSelect {
+      width: 120px;
+      height: 20px;
+      font-size: 14 px;
+      border-radius: 7px;
+    }
+  }
+
+  ::ng-deep {
+    .skeletonUserItem {
+      width: 100% !important;
+      height: 40px !important;
+      border-radius: 7px !important;
+      padding: 27px !important;
+      margin-bottom: 10px !important;
+    }
+  }
 }

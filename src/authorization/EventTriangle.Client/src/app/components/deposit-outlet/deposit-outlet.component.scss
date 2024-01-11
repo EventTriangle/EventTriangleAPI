@@ -62,34 +62,68 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-}
 
-.depositInput {
-  width: 100%;
-  height: 65px;
-  outline: none;
-  border: none;
-  margin-bottom: 34px;
-  border-radius: 10px;
-  font-weight: 700;
-  font-size: 20px;
-  text-align: center;
+  ::ng-deep {
+    .depositInput {
+      &.p-dropdown {
+        width: 100%;
+        height: 65px;
+        outline: none;
+        border: none;
+        margin-bottom: 34px;
+        border-radius: 10px;
+        text-align: center;
 
-  &::placeholder {
-    color: $light-grey-p;
+        & input {
+          font-weight: 700;
+          font-size: 20px;
+          color: black;
+          padding-left: 55px;
+          text-align: center;
+          &::placeholder {
+            color: $light-grey-p;
+          }
+          &:hover {
+            cursor: text;
+          }
+        }
+      }
+
+      &.p-dropdown-trigger {
+        position: absolute;
+        right: 200px;
+        top: 25px
+      }
+    }
   }
-}
 
-.depositOkButton {
-  width: 100%;
-  height: 65px;
-  border: none;
-  border-radius: 10px;
-  font-weight: 700;
-  font-size: 20px;
-  color: white;
-  text-align: center;
-  background-color: $purple;
+  .depositInput {
+    width: 100%;
+    height: 65px;
+    outline: none;
+    border: none;
+    margin-bottom: 34px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 20px;
+    text-align: center;
+
+    &::placeholder {
+      color: $light-grey-p;
+    }
+  }
+
+  .depositOkButton {
+    width: 100%;
+    height: 65px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 20px;
+    color: white;
+    text-align: center;
+    background-color: $purple;
+  }
 }
 
 .emptyBlock {
@@ -100,36 +134,105 @@
   grid-area: rightbar;
 }
 
-::ng-deep {
-  .depositInput {
-    &.p-dropdown {
-      width: 100%;
-      height: 65px;
-      outline: none;
-      border: none;
-      margin-bottom: 34px;
-      border-radius: 10px;
-      text-align: center;
+@media screen and (max-width: 1880px) {
+  :host {
+    grid-template-columns: auto 380px;
+  }
 
-      & input {
-        font-weight: 700;
-        font-size: 20px;
-        color: black;
-        text-align: center;
-        //padding-left: 50px;
-        &::placeholder {
-          color: $light-grey-p;
-        }
-        &:hover {
-          cursor: text;
+  .depositInfoContainer {
+    margin-top: 30px;
+  }
+
+  .title {
+    font-size: 35px;
+  }
+
+  .titleMoneySvg {
+    width: 27px;
+    height: 27px;
+  }
+
+  .depositForm {
+    ::ng-deep {
+      .depositInput {
+        &.p-dropdown {
+          height: 50px;
+          margin-bottom: 20px;
+
+          & input {
+            font-size: 18px;
+          }
         }
       }
     }
 
-    &.p-dropdown-trigger {
-      position: absolute;
-      right: 0px;
-      top: 25px
+    .depositInput {
+      height: 50px;
+      margin-bottom: 20px;
+      font-size: 18px;
+    }
+
+    .depositOkButton {
+      height: 50px;
+      font-size: 18px;
+    }
+  }
+}
+
+@media screen and (max-width: 1670px) {
+  :host {
+    grid-template-columns: auto 300px;
+  }
+
+  .depositInfoContainer {
+    margin-top: 30px;
+  }
+
+  .title {
+    font-size: 26px;
+    margin-bottom: 8px;
+  }
+
+  .titleMoneySvg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .overview {
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+
+  .depositForm {
+    ::ng-deep {
+      .depositInput {
+        &.p-dropdown {
+          height: 40px;
+          border-radius: 10px;
+          margin-bottom: 10px;
+          font-size: 14px;
+
+          & input {
+            height: 40px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            font-size: 14px;
+          }
+        }
+      }
+    }
+
+    .depositInput {
+      height: 40px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+
+    .depositOkButton {
+      height: 40px;
+      font-size: 14px;
+      border-radius: 8px;
     }
   }
 }
