@@ -432,6 +432,12 @@
       border-radius: 10px;
     }
 
+    .p-ripple {
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
     & input {
       font-weight: 700;
       font-size: 20px;
@@ -543,6 +549,10 @@
         height: 50px;
         margin-bottom: 20px;
         padding: 0 20px;
+      }
+
+      .p-overlay {
+        width: 320px;
       }
 
       & input {
@@ -697,6 +707,10 @@
         padding: 0 10px;
         font-size: 17px;
         border-radius: 8px;
+      }
+
+      .p-overlay {
+        width: 200px;
       }
 
       & input {

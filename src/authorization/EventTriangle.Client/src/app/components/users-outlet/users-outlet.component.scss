@@ -26,225 +26,225 @@
   background-color: rgba(0, 0, 0, 0.29);
   z-index: 3;
   cursor: pointer;
-}
 
-.userInfoWindow {
-  display: flex;
-  flex-direction: column;
-  width: 1400px;
-  height: 800px;
-  margin: auto;
-  background-color: $grey;
-  border-radius: 15px;
-  cursor: auto;
-
-  .userInfoWindowHeader {
-    position: relative;
-    display: flex;
-    background-color: white;
-    width: 100%;
-    height: 80px;
-    border-radius: 15px 15px 0 0;
-
-    .userInfoWindowHeaderAvatar {
-      position: relative;
-      width: 55px;
-      height: 55px;
-      left: 10px;
-      top: 13px;
-      background-color: $purple;
-      border-radius: 100%;
-    }
-
-    .userInfoWindowHeaderUsername {
-      font-size: 23px;
-      margin-top: 28px;
-      margin-left: 20px;
-    }
-
-    .userInfoWindowHeaderBalance {
-      position: absolute;
-      font-size: 23px;
-      top: 30px;
-      right: 20px;
-    }
-  }
-
-  .userInfoWindowBody {
+  .userInfoWindow {
     display: flex;
     flex-direction: column;
-    width: calc(100% - 30px);
-    height: calc(100% - 100px);
-    overflow-y: auto;
+    width: 1400px;
+    height: 800px;
     margin: auto;
+    background-color: $grey;
+    border-radius: 15px;
+    cursor: auto;
 
-    .userInfoWindowBodyLoader {
-      width: 20px;
-      height: 20px;
+    .userInfoWindowHeader {
+      position: relative;
+      display: flex;
+      background-color: white;
+      width: 100%;
+      height: 80px;
+      border-radius: 15px 15px 0 0;
+
+      .userInfoWindowHeaderAvatar {
+        position: relative;
+        width: 55px;
+        height: 55px;
+        left: 10px;
+        top: 13px;
+        background-color: $purple;
+        border-radius: 100%;
+      }
+
+      .userInfoWindowHeaderUsername {
+        font-size: 23px;
+        margin-top: 28px;
+        margin-left: 20px;
+      }
+
+      .userInfoWindowHeaderBalance {
+        position: absolute;
+        font-size: 23px;
+        top: 30px;
+        right: 20px;
+      }
+    }
+
+    .userInfoWindowBody {
+      display: flex;
+      flex-direction: column;
+      width: calc(100% - 30px);
+      height: calc(100% - 100px);
+      overflow-y: auto;
       margin: auto;
-      border: 5px solid $purple;
-      border-bottom-color: transparent;
-      border-radius: 50%;
-      display: inline-block;
-      box-sizing: border-box;
-      animation: rotation 1s linear infinite;
 
-      @keyframes rotation {
-        0% {
-          transform: rotate(0deg);
-        }
-        100% {
-          transform: rotate(360deg);
-        }
-      }
-    }
+      .userInfoWindowBodyLoader {
+        width: 20px;
+        height: 20px;
+        margin: auto;
+        border: 5px solid $purple;
+        border-bottom-color: transparent;
+        border-radius: 50%;
+        display: inline-block;
+        box-sizing: border-box;
+        animation: rotation 1s linear infinite;
 
-    .userInfoWindowBodyTransactionFromMe {
-      display: flex;
-      flex-shrink: 0;
-      width: 100%;
-      height: 65px;
-      background-color: $green-60percent;
-      border-radius: 10px;
-      margin-bottom: 10px;
-
-      .transactionSvgContainer {
-        display: flex;
-
-        .transactionSvg {
-          width: 30px;
-          height: 30px;
-          margin-top: 17px;
-          margin-left: 20px;
-
-          path {
-            stroke: white
+        @keyframes rotation {
+          0% {
+            transform: rotate(0deg);
+          }
+          100% {
+            transform: rotate(360deg);
           }
         }
       }
 
-      p {
-        display: inline-block;
-        margin: 20px auto 0;
-        font-weight: 700;
-        font-size: 20px;
-        color: white;
-      }
-
-      p:nth-child(2){
-        margin-left: 100px;
-      }
-
-      p:last-child{
-        margin-right: 40px;
-      }
-
-      .userInfoWindowBodyTransactionFrom, .userInfoWindowBodyTransactionTo {
-        width: 200px;
-        user-select: none;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        white-space: nowrap
-      }
-    }
-    .userInfoWindowBodyTransactionToMe {
-      display: flex;
-      flex-shrink: 0;
-      width: 100%;
-      height: 65px;
-      background-color: $purple-60percent;
-      border-radius: 10px;
-      margin-bottom: 10px;
-      font-weight: 700;
-      font-size: 20px;
-
-      .transactionSvgContainer {
+      .userInfoWindowBodyTransactionFromMe {
         display: flex;
+        flex-shrink: 0;
+        width: 100%;
+        height: 65px;
+        background-color: $green-60percent;
+        border-radius: 10px;
+        margin-bottom: 10px;
 
-        .transactionSvg {
-          width: 30px;
-          height: 30px;
-          margin-top: 17px;
-          margin-left: 20px;
+        .transactionSvgContainer {
+          display: flex;
 
-          path {
-            stroke: white
+          .transactionSvg {
+            width: 30px;
+            height: 30px;
+            margin-top: 17px;
+            margin-left: 20px;
+
+            path {
+              stroke: white
+            }
           }
         }
-      }
 
-      p {
-        display: inline-block;
-        margin: 20px auto 0;
-        font-weight: 700;
-        font-size: 20px;
-        color: white;
-      }
+        p {
+          display: inline-block;
+          margin: 20px auto 0;
+          font-weight: 700;
+          font-size: 20px;
+          color: white;
+        }
 
-      p:nth-child(2){
-        margin-left: 100px;
-      }
+        p:nth-child(2){
+          margin-left: 50px;
+        }
 
-      p:last-child{
-        margin-right: 40px;
-      }
+        p:last-child{
+          margin-right: 40px;
+        }
 
-      .userInfoWindowBodyTransactionFrom, .userInfoWindowBodyTransactionTo {
-        width: 200px;
-        user-select: none;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        white-space: nowrap
-      }
-    }
-    .userInfoWindowBodyTransactionRolledBack {
-      display: flex;
-      flex-shrink: 0;
-      width: 100%;
-      height: 65px;
-      background-color: $red-60percent;
-      border-radius: 10px;
-      margin-bottom: 10px;
-      font-weight: 700;
-      font-size: 20px;
-
-      .transactionSvgContainer {
-        display: flex;
-
-        .transactionSvg {
-          width: 30px;
-          height: 30px;
-          margin-top: 17px;
-          margin-left: 20px;
-
-          path {
-            stroke: white
-          }
+        .userInfoWindowBodyTransactionFrom, .userInfoWindowBodyTransactionTo {
+          width: 200px;
+          user-select: none;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          white-space: nowrap
         }
       }
-
-      p {
-        display: inline-block;
-        margin: 20px auto 0;
+      .userInfoWindowBodyTransactionToMe {
+        display: flex;
+        flex-shrink: 0;
+        width: 100%;
+        height: 65px;
+        background-color: $purple-60percent;
+        border-radius: 10px;
+        margin-bottom: 10px;
         font-weight: 700;
         font-size: 20px;
-        color: white;
-      }
 
-      p:nth-child(2){
-        margin-left: 100px;
-      }
+        .transactionSvgContainer {
+          display: flex;
 
-      p:last-child{
-        margin-right: 40px;
-      }
+          .transactionSvg {
+            width: 30px;
+            height: 30px;
+            margin-top: 17px;
+            margin-left: 20px;
 
-      .userInfoWindowBodyTransactionFrom, .userInfoWindowBodyTransactionTo {
-        width: 200px;
-        user-select: none;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        white-space: nowrap
+            path {
+              stroke: white
+            }
+          }
+        }
+
+        p {
+          display: inline-block;
+          margin: 20px auto 0;
+          font-weight: 700;
+          font-size: 20px;
+          color: white;
+        }
+
+        p:nth-child(2){
+          margin-left: 50px;
+        }
+
+        p:last-child{
+          margin-right: 40px;
+        }
+
+        .userInfoWindowBodyTransactionFrom, .userInfoWindowBodyTransactionTo {
+          width: 200px;
+          user-select: none;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          white-space: nowrap
+        }
+      }
+      .userInfoWindowBodyTransactionRolledBack {
+        display: flex;
+        flex-shrink: 0;
+        width: 100%;
+        height: 65px;
+        background-color: $red-60percent;
+        border-radius: 10px;
+        margin-bottom: 10px;
+        font-weight: 700;
+        font-size: 20px;
+
+        .transactionSvgContainer {
+          display: flex;
+
+          .transactionSvg {
+            width: 30px;
+            height: 30px;
+            margin-top: 17px;
+            margin-left: 20px;
+
+            path {
+              stroke: white
+            }
+          }
+        }
+
+        p {
+          display: inline-block;
+          margin: 20px auto 0;
+          font-weight: 700;
+          font-size: 20px;
+          color: white;
+        }
+
+        p:nth-child(2){
+          margin-left: 50px;
+        }
+
+        p:last-child{
+          margin-right: 40px;
+        }
+
+        .userInfoWindowBodyTransactionFrom, .userInfoWindowBodyTransactionTo {
+          width: 200px;
+          user-select: none;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          white-space: nowrap
+        }
       }
     }
   }
@@ -443,6 +443,83 @@
       border-radius: 7px;
     }
   }
+
+  .userInfoWindowBackground {
+    .userInfoWindow {
+      width: 1000px;
+      height: 600px;
+
+      .userInfoWindowHeader {
+        height: 60px;
+
+        .userInfoWindowHeaderAvatar {
+          width: 35px;
+          height: 35px;
+        }
+
+        .userInfoWindowHeaderUsername {
+          font-size: 17px;
+          margin-top: 22px;
+        }
+
+        .userInfoWindowHeaderBalance {
+          font-size: 17px;
+          top: 22px;
+        }
+      }
+
+      .userInfoWindowBody {
+        .userInfoWindowBodyTransactionFromMe {
+          height: 55px;
+          border-radius: 8px;
+
+          .transactionSvgContainer {
+            .transactionSvg {
+              width: 25px;
+              height: 25px;
+              margin-top: 15px;
+            }
+          }
+
+          p {
+            font-size: 18px;
+          }
+        }
+        .userInfoWindowBodyTransactionToMe {
+          height: 55px;
+          border-radius: 8px;
+
+          .transactionSvgContainer {
+            .transactionSvg {
+              width: 25px;
+              height: 25px;
+              margin-top: 15px;
+            }
+          }
+
+          p {
+            font-size: 18px;
+          }
+        }
+        .userInfoWindowBodyTransactionRolledBack {
+          height: 55px;
+          border-radius: 8px;
+
+          .transactionSvgContainer {
+            .transactionSvg {
+              width: 25px;
+              height: 25px;
+              margin-top: 15px;
+            }
+          }
+
+          p {
+            font-size: 18px;
+          }
+        }
+      }
+    }
+  }
 }
 
 @media screen and (max-width: 1670px) {
@@ -495,8 +572,89 @@
     .userItemStatusSelect {
       width: 120px;
       height: 20px;
-      font-size: 14 px;
+      font-size: 14px;
       border-radius: 7px;
+    }
+  }
+
+  .userInfoWindowBackground {
+    .userInfoWindow {
+      width: 900px;
+      height: 550px;
+
+      .userInfoWindowHeader {
+        height: 50px;
+
+        .userInfoWindowHeaderAvatar {
+          width: 30px;
+          height: 30px;
+          top: 10px;
+        }
+
+        .userInfoWindowHeaderUsername {
+          font-size: 14px;
+          margin-top: 18px;
+        }
+
+        .userInfoWindowHeaderBalance {
+          font-size: 14px;
+          top: 18px;
+        }
+      }
+
+      .userInfoWindowBody {
+        .userInfoWindowBodyTransactionFromMe {
+          height: 45px;
+          border-radius: 8px;
+
+          .transactionSvgContainer {
+            .transactionSvg {
+              width: 20px;
+              height: 20px;
+              margin-top: 13px;
+            }
+          }
+
+          p {
+            font-size: 14px;
+            margin: 15px auto 0;
+          }
+        }
+        .userInfoWindowBodyTransactionToMe {
+          height: 45px;
+          border-radius: 8px;
+
+          .transactionSvgContainer {
+            .transactionSvg {
+              width: 20px;
+              height: 20px;
+              margin-top: 13px;
+            }
+          }
+
+          p {
+            font-size: 14px;
+            margin: 15px auto 0;
+          }
+        }
+        .userInfoWindowBodyTransactionRolledBack {
+          height: 45px;
+          border-radius: 8px;
+
+          .transactionSvgContainer {
+            .transactionSvg {
+              width: 20px;
+              height: 20px;
+              margin-top: 13px;
+            }
+          }
+
+          p {
+            font-size: 14px;
+            margin: 15px auto 0;
+          }
+        }
+      }
     }
   }
 
@@ -507,6 +665,11 @@
       border-radius: 7px !important;
       padding: 27px !important;
       margin-bottom: 10px !important;
+    }
+
+    .p-contextmenu {
+      width: 100px;
+      height: 50px;
     }
   }
 }
