@@ -160,24 +160,14 @@ export class TransactionsOutletComponent implements OnInit {
   }
 
   //common
-  getTransactionClassName(transaction: ITransactionDto) : string {
+  getTransactionColorClassName(transaction: ITransactionDto) : string {
     const userProfile = this._profileStateService.user$.getValue();
 
     if (!userProfile) throw new Error(ErrorMessageConstants.UserNotFound);
-    if (transaction.transactionState === TransactionState.RolledBack) return "transactionItemRolledBack";
-    if (transaction.toUserId === userProfile.id) return 'transactionItemToMe';
+    if (transaction.transactionState === TransactionState.RolledBack) return "transactionItemColorRed";
+    if (transaction.toUserId === userProfile.id) return 'transactionItemColorGreen';
 
-    return 'transactionItemFromMe'
-  }
-
-  getTransactionInfoClassName(transaction: ITransactionDto) : string {
-    const userProfile = this._profileStateService.user$.getValue();
-
-    if (!userProfile) throw new Error(ErrorMessageConstants.UserNotFound);
-    if (transaction.transactionState === TransactionState.RolledBack) return "transactionItemRolledBackInfo";
-    if (transaction.toUserId === userProfile.id) return 'transactionItemToMeInfo';
-
-    return 'transactionItemFromMeInfo'
+    return 'transactionItemColorPurple'
   }
 
   async sendMoneyToUser() : Promise<void> {

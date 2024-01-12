@@ -28,6 +28,7 @@ import {DropdownModule} from "primeng/dropdown";
 import { TooltipModule } from 'primeng/tooltip';
 import { ContextMenuModule } from 'primeng/contextmenu';
 import { AutoCompleteModule } from 'primeng/autocomplete';
+import { CopyTextDirective } from './directives/copy-text.directive';
 
 interface IConfig {
   baseUrl: string
@@ -59,7 +60,8 @@ function initializeAppFactory(httpClient: HttpClient): () => Observable<any> {
     SupportOutletComponent,
     TicketsOutletComponent,
     UsersOutletComponent,
-    LoginWindowComponent
+    LoginWindowComponent,
+    CopyTextDirective
   ],
   imports: [
     BrowserModule,
