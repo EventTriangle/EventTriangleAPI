@@ -102,7 +102,7 @@ app.MigrateDatabase();
 
 if (shouldCreateSeeds)
 {
-    app.InitializeSeeds();
+    await app.InitializeSeeds();
 }
 
 app.Run();

@@ -11,10 +11,14 @@
       <div #transactionItem class="{{getTransactionClassName(currentUserInfo.id, transaction)}}"
            *ngFor="let transaction of currentUserTransactionsInfo">
         <div class="transactionSvgContainer">
-          <svg-icon src="../../../assets/svg/transaction.svg" class="transactionSvg" />
+          <svg-icon src="../../../assets/svg/transaction.svg" appCopyText="{{transaction.id}}" class="transactionSvg" />
         </div>
-        <p class="userInfoWindowBodyTransactionFrom" pTooltip="{{transaction.fromUserId}}">From: {{transaction.fromUserId}}</p>
-        <p class="userInfoWindowBodyTransactionTo" pTooltip="{{transaction.toUserId}}">To: {{transaction.toUserId}}</p>
+        <p class="userInfoWindowBodyTransactionFrom" appCopyText="{{transaction.fromUserId}}" pTooltip="{{transaction.fromUserId}}">
+          From: {{transaction.fromUserId}}
+        </p>
+        <p class="userInfoWindowBodyTransactionTo" appCopyText="{{transaction.toUserId}}" pTooltip="{{transaction.toUserId}}">
+          To: {{transaction.toUserId}}
+        </p>
         <p class="userInfoWindowBodyTransactionAmount">€{{transaction.amount}}</p>
         <p class="userInfoWindowBodyTransactionDate">{{_dateService.getTimeAndDate(transaction.createdAt)}}</p>
         <p-contextMenu #userInfoWindowBodyTransactionContextMenu [target]="transactionItem" (onShow)="setSelectedTransactionForContextMenu(transaction)"

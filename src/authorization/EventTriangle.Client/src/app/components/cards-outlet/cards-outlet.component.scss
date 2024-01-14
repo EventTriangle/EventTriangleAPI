@@ -96,10 +96,14 @@
   }
 
   .cardItemFullName {
+    max-width: 90px;
     position: absolute;
     font-size: 16px;
     top: 147px;
     left: 22px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
   }
 }
 
