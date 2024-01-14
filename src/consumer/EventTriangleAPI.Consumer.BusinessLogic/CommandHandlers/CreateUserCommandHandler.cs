@@ -67,27 +67,27 @@ public class CreateUserCommandHandler : ICommandHandler<CreateUserCommand, UserD
 
         var transactionList = new List<TransactionEntity>();
 
-        for (int i = 0; i < 15; i++)
+        var random = new Random();
+        
+        for (var i = 0; i < 30; i++)
         {
-            var transaction = new TransactionEntity(userId, alice.Id, 5000, TransactionType.FromUserToUser, DateTime.UtcNow);
+            var num = random.Next(1, 3);
+
+            var transaction = num == 1 
+                ? new TransactionEntity(userId, alice.Id, 5000, TransactionType.FromUserToUser, DateTime.UtcNow) 
+                : new TransactionEntity(alice.Id, userId, 5000, TransactionType.FromUserToUser, DateTime.UtcNow);
+
             transactionList.Add(transaction);
         }
         
-        for (int i = 0; i < 10; i++)
+        for (var i = 0; i < 30; i++)
         {
-            var transaction = new TransactionEntity(alice.Id, userId, 1000, TransactionType.FromUserToUser, DateTime.UtcNow);
-            transactionList.Add(transaction);
-        }
-        
-        for (int i = 0; i < 10; i++)
-        {
-            var transaction = new TransactionEntity(userId, bob.Id, 10000, TransactionType.FromUserToUser, DateTime.UtcNow);
-            transactionList.Add(transaction);
-        }
-        
-        for (int i = 0; i < 10; i++)
-        {
-            var transaction = new TransactionEntity(bob.Id, userId, 5500, TransactionType.FromUserToUser, DateTime.UtcNow);
+            var num = random.Next(1, 3);
+
+            var transaction = num == 1 
+                ? new TransactionEntity(userId, bob.Id, 10000, TransactionType.FromUserToUser, DateTime.UtcNow) 
+                : new TransactionEntity(bob.Id, userId, 10000, TransactionType.FromUserToUser, DateTime.UtcNow);
+
             transactionList.Add(transaction);
         }
         
@@ -103,8 +103,6 @@ public class CreateUserCommandHandler : ICommandHandler<CreateUserCommand, UserD
         
         // creditCards
         var creditCardList = new List<CreditCardEntity>();
-
-        var random = new Random();
 
         for (int i = 0; i < 5; i++)
         {

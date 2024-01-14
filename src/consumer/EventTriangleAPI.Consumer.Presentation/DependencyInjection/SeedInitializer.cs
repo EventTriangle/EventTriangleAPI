@@ -41,63 +41,77 @@ public static class SeedInitializer
         await context.SaveChangesAsync();
         
         // transaction seeds
-        var transactionsDimaToAlice = new List<TransactionEntity>();
-        var transactionsAliceToDima = new List<TransactionEntity>();
-        var transactionsAlexToAlice = new List<TransactionEntity>();
-        var transactionsSashaToDima = new List<TransactionEntity>();
-        var transactionsDimaToBob = new List<TransactionEntity>();
-        var transactionsBobToSasha = new List<TransactionEntity>();
-        var transactionsDimaToAlex = new List<TransactionEntity>();
+        var transactionList = new List<TransactionEntity>();
+
+        var random = new Random();
         
-        for (int i = 0; i < 30; i++)
+        for (var i = 0; i < 45; i++)
         {
-            var transaction = new TransactionEntity(dima.Id, alice.Id, 5000, TransactionType.FromUserToUser, DateTime.UtcNow);
-            transactionsDimaToAlice.Add(transaction);
+            var num = random.Next(1, 3);
+
+            var transaction = num == 1 
+                ? new TransactionEntity(dima.Id, bob.Id, 10000, TransactionType.FromUserToUser, DateTime.UtcNow) 
+                : new TransactionEntity(bob.Id, dima.Id, 10000, TransactionType.FromUserToUser, DateTime.UtcNow);
+
+            transactionList.Add(transaction);
         }
         
-        for (int i = 0; i < 15; i++)
+        for (int i = 0; i < 20; i++)
         {
-            var transaction = new TransactionEntity(alice.Id, dima.Id, 100, TransactionType.FromUserToUser, DateTime.UtcNow);
-            transactionsAliceToDima.Add(transaction);
+            var num = random.Next(1, 3);
+
+            var transaction = num == 1 
+                ? new TransactionEntity(alex.Id, alice.Id, 1000, TransactionType.FromUserToUser, DateTime.UtcNow)
+                : new TransactionEntity(alice.Id, alex.Id, 1000, TransactionType.FromUserToUser, DateTime.UtcNow);
+
+            transactionList.Add(transaction);
+        }
+        
+        for (int i = 0; i < 20; i++)
+        {
+            var num = random.Next(1, 3);
+
+            var transaction = num == 1 
+                ? new TransactionEntity(dima.Id, sasha.Id, 700, TransactionType.FromUserToUser, DateTime.UtcNow)
+                : new TransactionEntity(sasha.Id, dima.Id, 700, TransactionType.FromUserToUser, DateTime.UtcNow);
+
+            transactionList.Add(transaction);
         }
         
         for (int i = 0; i < 10; i++)
         {
-            var transaction = new TransactionEntity(alex.Id, alice.Id, 1000, TransactionType.FromUserToUser, DateTime.UtcNow);
-            transactionsAlexToAlice.Add(transaction);
-        }
-        
-        for (int i = 0; i < 10; i++)
-        {
-            var transaction = new TransactionEntity(sasha.Id, dima.Id, 700, TransactionType.FromUserToUser, DateTime.UtcNow);
-            transactionsSashaToDima.Add(transaction);
-        }
-        
-        for (int i = 0; i < 10; i++)
-        {
-            var transaction = new TransactionEntity(dima.Id, bob.Id, 8000, TransactionType.FromUserToUser, DateTime.UtcNow);
-            transactionsDimaToBob.Add(transaction);
+            var num = random.Next(1, 3);
+
+            var transaction = num == 1 
+                ? new TransactionEntity(dima.Id, bob.Id, 8000, TransactionType.FromUserToUser, DateTime.UtcNow)
+                : new TransactionEntity(bob.Id, dima.Id, 8000, TransactionType.FromUserToUser, DateTime.UtcNow);
+
+            transactionList.Add(transaction);
         }
         
         for (int i = 0; i < 15; i++)
         {
-            var transaction = new TransactionEntity(bob.Id, sasha.Id, 1000, TransactionType.FromUserToUser, DateTime.UtcNow);
-            transactionsBobToSasha.Add(transaction);
+            var num = random.Next(1, 3);
+
+            var transaction = num == 1 
+                ? new TransactionEntity(bob.Id, sasha.Id, 1000, TransactionType.FromUserToUser, DateTime.UtcNow)
+                : new TransactionEntity(sasha.Id, bob.Id, 1000, TransactionType.FromUserToUser, DateTime.UtcNow);
+
+            transactionList.Add(transaction);
         }
         
         for (int i = 0; i < 15; i++)
         {
-            var transaction = new TransactionEntity(dima.Id, alex.Id, 7775, TransactionType.FromUserToUser, DateTime.UtcNow);
-            transactionsDimaToAlex.Add(transaction);
+            var num = random.Next(1, 3);
+
+            var transaction = num == 1 
+                ? new TransactionEntity(dima.Id, alex.Id, 7775, TransactionType.FromUserToUser, DateTime.UtcNow)
+                : new TransactionEntity(alex.Id, dima.Id, 7775, TransactionType.FromUserToUser, DateTime.UtcNow);
+
+            transactionList.Add(transaction);
         }
 
-        context.TransactionEntities.AddRange(transactionsDimaToAlice);
-        context.TransactionEntities.AddRange(transactionsAliceToDima);
-        context.TransactionEntities.AddRange(transactionsAlexToAlice);
-        context.TransactionEntities.AddRange(transactionsSashaToDima);
-        context.TransactionEntities.AddRange(transactionsDimaToBob);
-        context.TransactionEntities.AddRange(transactionsBobToSasha);
-        context.TransactionEntities.AddRange(transactionsDimaToAlex);
+        context.TransactionEntities.AddRange(transactionList);
         
         await context.SaveChangesAsync();
         
