@@ -59,12 +59,12 @@
            (scroll)="onScrollTransactionsHandler($event)">
         <div *ngFor="let transaction of data.transactions; trackBy: identifyTransactionDto"
              class="transactionItem {{getTransactionColorClassName(transaction)}}">
-          <svg-icon src="../../../assets/svg/transaction.svg" class="transactionSvg" />
+          <svg-icon src="../../../assets/svg/transaction.svg" appCopyText="{{transaction.id}}" class="transactionSvg" />
           <div class="transactionItemInfo">
-            <p class="transactionItemFrom" pTooltip="{{transaction.fromUserId}}">
+            <p class="transactionItemFrom" appCopyText="{{transaction.fromUserId}}" pTooltip="{{transaction.fromUserId}}">
               From: {{transaction.fromUserId}}
             </p>
-            <p class="transactionItemTo" pTooltip="{{transaction.toUserId}}">
+            <p class="transactionItemTo" appCopyText="{{transaction.toUserId}}" pTooltip="{{transaction.toUserId}}">
               To: {{transaction.toUserId}}
             </p>
             <p class="transactionItemAmount">

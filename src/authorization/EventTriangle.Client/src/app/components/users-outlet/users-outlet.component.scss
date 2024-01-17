@@ -115,6 +115,7 @@
             height: 30px;
             margin-top: 17px;
             margin-left: 20px;
+            cursor: pointer;
 
             path {
               stroke: white
@@ -143,7 +144,8 @@
           user-select: none;
           text-overflow: ellipsis;
           overflow: hidden;
-          white-space: nowrap
+          white-space: nowrap;
+          cursor: pointer;
         }
       }
       .userInfoWindowBodyTransactionToMe {
@@ -165,6 +167,7 @@
             height: 30px;
             margin-top: 17px;
             margin-left: 20px;
+            cursor: pointer;
 
             path {
               stroke: white
@@ -193,7 +196,8 @@
           user-select: none;
           text-overflow: ellipsis;
           overflow: hidden;
-          white-space: nowrap
+          white-space: nowrap;
+          cursor: pointer;
         }
       }
       .userInfoWindowBodyTransactionRolledBack {
@@ -215,6 +219,7 @@
             height: 30px;
             margin-top: 17px;
             margin-left: 20px;
+            cursor: pointer;
 
             path {
               stroke: white
@@ -243,7 +248,8 @@
           user-select: none;
           text-overflow: ellipsis;
           overflow: hidden;
-          white-space: nowrap
+          white-space: nowrap;
+          cursor: pointer;
         }
       }
     }

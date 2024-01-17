@@ -298,6 +298,7 @@
   .transactionSvg {
     width: 30px;
     height: 30px;
+    cursor: pointer;
 
     path {
       stroke: white
@@ -313,6 +314,7 @@
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
+    cursor: pointer;
   }
 
   .transactionItemTo {
@@ -324,6 +326,7 @@
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
+    cursor: pointer;
   }
 
   .transactionItemAmount {

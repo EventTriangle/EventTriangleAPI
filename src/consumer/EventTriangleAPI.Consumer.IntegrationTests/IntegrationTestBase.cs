@@ -5,6 +5,7 @@ using EventTriangleAPI.Consumer.IntegrationTests.Configuration;
 using EventTriangleAPI.Consumer.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
@@ -49,10 +50,14 @@ public class IntegrationTestBase : IAsyncLifetime
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonFile("appsettings.json")
             .Build();
-        
+
         var databaseConnectionString = configuration[AppSettingsConstants.DatabaseConnectionStringIntegrationTests];
 
-        var serviceProvider = _consumerStartup.Initialize(databaseConnectionString);
+        var jsonConfigProvider = configuration.Providers.First(x => x.GetType() == typeof(JsonConfigurationProvider));
+        jsonConfigProvider.Set(AppSettingsConstants.ShouldCreateSeeds, "false");
+        jsonConfigProvider.Set(AppSettingsConstants.ShouldCreateSeedsForAdmin, "false");
+        
+        var serviceProvider = _consumerStartup.Initialize(databaseConnectionString, configuration);
 
         DatabaseContextFixture = serviceProvider.GetRequiredService<DatabaseContext>();
 

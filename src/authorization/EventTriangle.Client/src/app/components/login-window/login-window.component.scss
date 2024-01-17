@@ -101,3 +101,87 @@
     }
   }
 }
+
+@media screen and (max-width: 1880px) {
+  .loginWindow {
+    width: 500px;
+    height: 630px;
+    border-radius: 15px;
+
+    .logoSvg {
+      width: 140px;
+      height: 140px;
+    }
+
+    .welcomeString {
+      margin-top: 0px;
+      font-size: 50px;
+    }
+
+    .advantages {
+      margin: 25px auto 0;
+    }
+
+    .signInButton {
+      width: 230px;
+      height: 45px;
+      font-size: 20px;
+      margin: 40px auto 0;
+    }
+  }
+}
+
+@media screen and (max-width: 1670px) {
+  .loginWindow {
+    width: 350px;
+    height: 450px;
+    border-radius: 10px;
+
+    .logoSvg {
+      width: 100px;
+      height: 100px;
+      margin: 20px auto 0;
+    }
+
+    .welcomeString {
+      font-size: 35px;
+    }
+
+    .eventTriangleString {
+      margin-top: 10px;
+      font-size: 30px;
+    }
+
+    .eventTriangleSpan {
+    }
+
+    .advantages {
+      p {
+        font-size: 14px;
+        margin-top: 13px;
+      }
+
+      .telegramSvg {
+        width: 17px;
+        height: 17px;
+      }
+
+      .shieldSvg {
+        width: 17px;
+        height: 17px;
+      }
+
+      .assistantSvg {
+        width: 17px;
+        height: 17px;
+      }
+    }
+
+    .signInButton {
+      width: 200px;
+      height: 35px;
+      font-size: 14px;
+      margin: 25px auto 0;
+    }
+  }
+}
