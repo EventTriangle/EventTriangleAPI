@@ -3,6 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: event-triangle-sender-deployment
+  namespace: event-triangle
 spec:
   selector:
     matchLabels:
@@ -36,5 +37,5 @@ spec:
             - name: ASPNETCORE_ENVIRONMENT
               valueFrom:
                 configMapKeyRef:
-                  name: event-triangle-consumer-configmap
+                  name: event-triangle-sender-configmap
                   key: ASPNETCORE_ENVIRONMENT

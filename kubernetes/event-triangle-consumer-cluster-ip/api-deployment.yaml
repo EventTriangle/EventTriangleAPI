@@ -3,6 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: event-triangle-consumer-deployment
+  namespace: event-triangle
 spec:
   selector:
     matchLabels:

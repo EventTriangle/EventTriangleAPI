@@ -3,6 +3,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: event-triangle-auth-service
+  namespace: event-triangle
 spec:
   selector:
     app: event-triangle-auth-api

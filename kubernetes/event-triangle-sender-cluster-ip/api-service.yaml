@@ -3,6 +3,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: sender-service
+  namespace: event-triangle
 spec:
   selector:
     app: event-triangle-sender-api
