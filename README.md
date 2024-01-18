@@ -92,7 +92,6 @@ EventTriangleAPI offers realtime communication using SignalR.
 - **Persistence:**
     - Database: `PostgreSQL 15`
     - ORM: `Entity Framework Core`
-    - Storage: `Azure Blob Storage`
 - **Authorization:** `Azure AD`
 - **Presentation:**
     - API Documentation: `OpenAPI (Swagger)`
