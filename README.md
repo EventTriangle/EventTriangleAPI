@@ -6,6 +6,36 @@
 
 Repository that contains API for both event publisher and event consumer applications
 
+## Screenshots
+
+### Transactions
+
+![./img/transactions.png](./img/transactions.png)
+
+### Cards
+
+![./img/cards.png](./img/cards.png)
+
+### Deposit
+
+![./img/deposit.png](./img/deposit.png)
+
+### Contacts
+
+![./img/contacts.png](./img/contacts.png)
+
+### Support
+
+![./img/support.png](./img/support.png)
+
+### Tickets
+
+![./img/tickets.png](./img/tickets.png)
+
+### Users
+
+![./img/users.png](./img/users.png)
+
 ## Required Software
 
 - **.NET SDK 6.0.202 or later:** https://dotnet.microsoft.com/en-us/download
