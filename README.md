@@ -10,7 +10,7 @@
 
 Repository that contains API for both event publisher and event consumer applications
 
-## Infrastructure diagram and details
+## Infrastructure diagram
 
 ![./img/infrastructure_diagram.png](./img/infrastructure_diagram.png)
 
