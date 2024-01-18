@@ -6,7 +6,7 @@
   <h1>EventTriangleAPI</h1>
 </div>
 
-EventTriangleAPI is a project that leverages the power of event sourcing using
+Event Triangle is a project that leverages the power of event sourcing using
 .NET and Angular frameworks to manage and track currency transactions. 
 This project employs a cutting-edge approach to data storage and retrieval, capturing each state-changing event 
 in the system to create a comprehensive and reliable transaction history. 
@@ -85,12 +85,33 @@ EventTriangleAPI offers realtime communication using SignalR.
 
 ![./img/users.png](./img/users.png)
 
+## Technology stack
+
+- **SDK:** `.NET 6`
+- **Frameworks:** `ASP .NET Core`, `Angular 15`
+- **Persistence:**
+    - Database: `PostgreSQL 15`
+    - ORM: `Entity Framework Core`
+    - Storage: `Azure Blob Storage`
+- **Authorization:** `Azure AD`
+- **Presentation:**
+    - API Documentation: `OpenAPI (Swagger)`
+    - Realtime Communication: `SignalR`
+    - Frontend Development: `Angular 15`
+    - Microservices communication: `RabbitMQ`, `GRPC`
+- **Unit and Integration Testing:** `XUnit`, `FluentAssertions`
+- **Containerization:** `Docker`, `k8s`
+- **Continuous Integration:** `Azure Pipelines`, `GitHub Actions`
+- **Continuous Deployment:** `Azure Pipelines`, `GitHub Actions`, `Azure DevOps`, `Azure K8s Service`
+- **Programming languages:** `C#`, `SQL`, `TypeScript`
+- **Tools & IDE:** `Visual Studio`, `Rider`, `VS Code`, `WebStorm`, `SMSS`, `Postman`
+
 ## Useful links
 
 - Docker images: https://hub.docker.com/u/kaminome
 - Azure DevOps project: https://dev.azure.com/EventTriangle/EventTriangleAPI
 
-## Run Docker compose
+## How to run Docker compose
 
 ### Windows
 
@@ -102,7 +123,7 @@ EventTriangleAPI offers realtime communication using SignalR.
 - `export EVENT_TRIANGLE_AD_CLIENT_SECRET=<YOUR_AD_SECRET>`
 - `docker compose up`
 
-## To build docker images
+## How to build docker images
 
 From `src` folder run:
 
