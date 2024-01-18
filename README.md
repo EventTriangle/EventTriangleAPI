@@ -1,10 +1,18 @@
 # EventTriangleAPI
 
+<p align="center">
+  <img src="./img/logo.png" width="150" height="150"  alt="Mango Messenger Logo"/>
+</p>
+
 [![Build And Test Auth API](https://github.com/EventTriangle/EventTriangleAPI/actions/workflows/auth-build-and-test.yml/badge.svg)](https://github.com/EventTriangle/EventTriangleAPI/actions/workflows/auth-build-and-test.yml)
 [![Build And Test Sender API](https://github.com/EventTriangle/EventTriangleAPI/actions/workflows/sender-build-and-test.yml/badge.svg)](https://github.com/EventTriangle/EventTriangleAPI/actions/workflows/sender-build-and-test.yml)
 [![Build And Test Consumer API](https://github.com/EventTriangle/EventTriangleAPI/actions/workflows/consumer-build-and-test.yml/badge.svg)](https://github.com/EventTriangle/EventTriangleAPI/actions/workflows/consumer-build-and-test.yml)
 
 Repository that contains API for both event publisher and event consumer applications
+
+## Infrastructure diagram
+
+![./img/infrastructure_diagram.png](./img/infrastructure_diagram.png)
 
 ## Screenshots
 
