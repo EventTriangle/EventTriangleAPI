@@ -3,7 +3,6 @@ WORKDIR /app
 EXPOSE 80
 EXPOSE 81
 
-ARG FRONT_API_URL
 ENV ASPNETCORE_FORWARDEDHEADERS_ENABLED=true
 
 FROM node:18.15.0-alpine AS angularBuild
@@ -16,6 +15,7 @@ WORKDIR /angular
 COPY ["authorization/EventTriangle.Client", "EventTriangle.Client/"]
 RUN npm install -g @angular/cli@15.2.7
 WORKDIR "EventTriangle.Client"
+ARG FRONT_API_URL
 RUN sed -i "s|https://localhost:7000/|$FRONT_API_URL|" ./src/assets/config/config.json
 RUN ng build --output-path "dist/client"
 
