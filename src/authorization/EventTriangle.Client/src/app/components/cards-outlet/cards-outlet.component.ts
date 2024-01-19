@@ -82,6 +82,7 @@ export class CardsOutletComponent implements OnInit {
 
     this.cardHolderName = "";
     this.cardNumber = "";
+    this.expiration = "";
     this.cvv = "";
 
     await this._creditCardsStateService.attachCreditCardToAccountAsync(

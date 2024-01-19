@@ -14,8 +14,8 @@ public static class CreditCardPredicates
         if (!int.TryParse(intArray[0], out var int1)) return false;
         if (!int.TryParse(intArray[1], out var int2)) return false;
 
-        if (int1 is < 0 or > 31) return false;
-        if (int2 is < 0 or > 12) return false;
+        if (int1 is < 0 or > 12) return false;
+        if (int2 is < 0 or > 99) return false;
 
         return true;
     }

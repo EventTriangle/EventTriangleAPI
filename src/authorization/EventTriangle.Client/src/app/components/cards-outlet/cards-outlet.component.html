@@ -40,7 +40,7 @@
              [(ngModel)]="cardNumber"/>
       <input type="text" class="addNewCardInput"
              (keydown.enter)="$event.preventDefault()" (keyup.enter)="onAttachCardOkClick()"
-             placeholder="mm/dd" id="Expiration" mask="00/00"
+             placeholder="mm/yy" id="Expiration" mask="00/00"
              [(ngModel)]="expiration"/>
       <input type="text" class="addNewCardInput"
              (keydown.enter)="$event.preventDefault()" (keyup.enter)="onAttachCardOkClick()"

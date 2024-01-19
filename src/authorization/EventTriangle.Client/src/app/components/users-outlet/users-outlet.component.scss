@@ -347,8 +347,11 @@
   cursor: pointer;
 
   .userItemUsername {
-    width: 180px;
+    max-width: 250px;
     margin: 12px auto 0 0;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
