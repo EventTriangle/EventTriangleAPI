@@ -93,7 +93,7 @@ export class TransactionsOutletComponent implements OnInit {
     if (!this._profileStateService.isAuthenticated) return;
 
     await this._contactStateService.getContactsAsync();
-    this.contacts = this._contactStateService.contacts$.getValue().map(x => x.contactId);
+    this.contacts = this._contactStateService.contacts$.getValue().map(x => `${this._textService.pullUsernameFromMail(x.contact.email)} - ${x.contactId}`);
 
     const date = new Date();
     if (this.transactions$.getValue().length === 0) await this._transactionsStateService.getTransactionsAsync(date, 20);
@@ -157,6 +157,14 @@ export class TransactionsOutletComponent implements OnInit {
     if (target.offsetHeight + target.scrollTop >= target.scrollHeight - 1) {
       this.searchTransactionListScrolledToEndNotifier$.next(undefined);
     }
+  }
+
+  public onChangeDropDownHandler(event: any) {
+    const value = event.value as string;
+    const userId = value.split(" - ")[1];
+
+    this.toUserId = userId ?? value;
+    console.log(`new value: ${this.toUserId}`);
   }
 
   //common
