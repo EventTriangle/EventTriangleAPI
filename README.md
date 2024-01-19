@@ -13,6 +13,8 @@ in the system to create a comprehensive and reliable transaction history.
 With a focus on real-time updates and seamless integration between the backend and frontend, 
 EventTriangleAPI offers realtime communication using SignalR.
 
+- **Video**: https://www.youtube.com/watch?v=9Deyui0g1RY
+
 ## Required Software
 
 - **.NET SDK 6.0.202 or later:** https://dotnet.microsoft.com/en-us/download
