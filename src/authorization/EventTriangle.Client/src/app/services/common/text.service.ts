@@ -13,4 +13,10 @@ export class TextService {
 
     return username;
   }
+
+  public reformatCardNumbers(cardNumbers: string) {
+    const array = cardNumbers.split('').map((x, i) => (i + 1) % 4 === 0 ? x + " " : x);
+
+    return array.join('');
+  }
 }

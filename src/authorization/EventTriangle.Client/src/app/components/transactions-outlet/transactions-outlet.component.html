@@ -124,7 +124,8 @@
       <p class="createNewTransactionTitle">
         Create New Transaction
       </p>
-      <p-dropdown styleClass="createNewTransactionToInput" [options]="contacts" [(ngModel)]="toUserId" placeholder="To: Receiver" [editable]="true" />
+      <p-dropdown styleClass="createNewTransactionToInput" [options]="contacts" [(ngModel)]="toUserId" (onChange)="onChangeDropDownHandler($event)"
+                  placeholder="To: Receiver" [editable]="true" />
       <input type="text" class="createNewTransactionAmountInput" (keydown.enter)="$event.preventDefault()" mask="0000000000000"
              placeholder="Amount: €0" [(ngModel)]="amount" (keyup.enter)="sendMoneyToUser()"/>
       <button class="createNewTransactionOkButton" (click)="sendMoneyToUser()">

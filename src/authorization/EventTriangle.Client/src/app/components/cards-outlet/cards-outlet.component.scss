@@ -69,7 +69,7 @@
   position: relative;
   width: 290px;
   height: 183px;
-  background-color: $purple;
+  background: linear-gradient(to bottom right, #6102a4, #9e6fc2);
   border-radius: 10px;
   color: white;
   font-weight: 700;
@@ -85,7 +85,7 @@
     position: absolute;
     font-size: 24px;
     top: 70px;
-    left: 35px;
+    left: 25px;
   }
 
   .cardItemExpiryDate {
@@ -204,7 +204,7 @@
     .cardItemNumbers {
       font-size: 18px;
       top: 50px;
-      left: 30px;
+      left: 25px;
     }
 
     .cardItemExpiryDate {

@@ -106,9 +106,11 @@ public class CreateUserCommandHandler : ICommandHandler<CreateUserCommand, UserD
 
         for (int i = 0; i < 5; i++)
         {
+            var name = user.Email.Split('@')[0];
+            
             var randomCardNumber = string.Concat(random.Next(1000, 9999), random.Next(1000, 9999), random.Next(1000, 9999), random.Next(1000, 9999));
             var randomCvv = random.Next(100, 999).ToString();
-            var creditCard = new CreditCardEntity(userId, Guid.NewGuid().ToString(), randomCardNumber, randomCvv, "01/11", PaymentNetwork.MasterCard);
+            var creditCard = new CreditCardEntity(userId, name, randomCardNumber, randomCvv, "01/11", PaymentNetwork.MasterCard);
             creditCardList.Add(creditCard);
         }
 

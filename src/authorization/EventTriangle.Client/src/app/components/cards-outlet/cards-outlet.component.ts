@@ -6,6 +6,7 @@ import { ProfileStateService } from 'src/app/services/state/profile-state.servic
 import {ICreditCardDto} from "../../types/interfaces/consumer/ICreditCardDto";
 import {MenuItem} from "primeng/api";
 import {ErrorMessageConstants} from "../../constants/ErrorMessageConstants";
+import {TextService} from "../../services/common/text.service";
 
 @Component({
   selector: 'app-cards-outlet',
@@ -60,7 +61,8 @@ export class CardsOutletComponent implements OnInit {
 
   constructor(
     protected _creditCardsStateService: CreditCardsStateService,
-    protected _profileStateService: ProfileStateService) {
+    protected _profileStateService: ProfileStateService,
+    protected _textService: TextService) {
 
   }
 
