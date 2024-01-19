@@ -11,7 +11,7 @@
       <div #transactionItem class="{{getTransactionClassName(currentUserInfo.id, transaction)}}"
            *ngFor="let transaction of currentUserTransactionsInfo">
         <div class="transactionSvgContainer">
-          <svg-icon src="../../../assets/svg/transaction.svg" appCopyText="{{transaction.id}}" class="transactionSvg" />
+          <svg-icon src="../../../assets/svg/transaction.svg" appCopyText="{{transaction.id}}" pTooltip="{{transaction.id}}" class="transactionSvg" />
         </div>
         <p class="userInfoWindowBodyTransactionFrom" appCopyText="{{transaction.fromUserId}}" pTooltip="{{transaction.fromUserId}}">
           From: {{transaction.fromUserId}}

@@ -34,7 +34,7 @@
           </p>
           <span>
             <ng-container *ngIf="user$ | async as user; else userIsNull">
-              <p class="userInfoId" appCopyText="{{user.id}}">ID: {{user.id}}</p>
+              <p class="userInfoId" appCopyText="{{user.id}}" pTooltip="{{user.id}}">ID: {{user.id}}</p>
             </ng-container>
             <ng-template #userIsNull>
               <p-skeleton styleClass="skeletonDefault" />
@@ -59,7 +59,7 @@
            (scroll)="onScrollTransactionsHandler($event)">
         <div *ngFor="let transaction of data.transactions; trackBy: identifyTransactionDto"
              class="transactionItem {{getTransactionColorClassName(transaction)}}">
-          <svg-icon src="../../../assets/svg/transaction.svg" appCopyText="{{transaction.id}}" class="transactionSvg" />
+          <svg-icon src="../../../assets/svg/transaction.svg" appCopyText="{{transaction.id}}" pTooltip="{{transaction.id}}" class="transactionSvg" />
           <div class="transactionItemInfo">
             <p class="transactionItemFrom" appCopyText="{{transaction.fromUserId}}" pTooltip="{{transaction.fromUserId}}">
               From: {{transaction.fromUserId}}
