@@ -50,7 +50,7 @@ stages:
           integrationTestsProjectPath: ''
           dockerRegistryUrl: 'myaksacr01aks01.azurecr.io'
           imageRepository: 'auth-service'
-          dockerfilePath: '$(System.DefaultWorkingDirectory)/authorization/Dockerfile'
+          dockerfilePath: '$(System.DefaultWorkingDirectory)/src/authorization/Dockerfile'
           dockerServiceConnection: 'Azure_ACR_Connection'
 
   - stage: 'AKS_Deploy_${{ variables.appName }}'
