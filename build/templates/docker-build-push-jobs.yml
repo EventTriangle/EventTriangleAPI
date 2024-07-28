@@ -40,7 +40,7 @@ parameters:
 
   - name: dockerRegistryUrl
     type: string
-    displayName: 'Docker Registry URL. For Docker Hub it is username: kaminome. 
+    displayName: 'Docker Registry URL. For Docker Hub it is: docker.io/kaminome.
                   For ACR it is FQDN URL of container registry: myaksacr01aks01.azurecr.io'
 
   - name: imageRepository

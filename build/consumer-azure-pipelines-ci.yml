@@ -47,16 +47,17 @@ stages:
     jobs: 
       - template: templates/docker-build-push-jobs.yml
         parameters:
-          solution: 'EventTriangleAPI.sln'
+          JobName: 'Build_${{ variables.appName }}'
+          solution: '$(System.DefaultWorkingDirectory)/EventTriangleAPI.sln'
           buildConfiguration: 'Release'
-          backendProjectPath: 'src/consumer/EventTriangleAPI.Consumer.Presentation'
-          unitTestsProjectPath: 'src/consumer/EventTriangleAPI.Consumer.UnitTests/EventTriangleAPI.Consumer.UnitTests.csproj'
+          backendProjectPath: '$(System.DefaultWorkingDirectory)/src/consumer/EventTriangleAPI.Consumer.Presentation'
+          unitTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/consumer/EventTriangleAPI.Consumer.UnitTests/EventTriangleAPI.Consumer.UnitTests.csproj'
           shouldRunIntegrationTests: 'true'
-          integrationTestsProjectPath: 'src/consumer/EventTriangleAPI.Consumer.IntegrationTests/EventTriangleAPI.Consumer.IntegrationTests.csproj'
-          dockerUsername: 'kaminome'
+          integrationTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/consumer/EventTriangleAPI.Consumer.IntegrationTests/EventTriangleAPI.Consumer.IntegrationTests.csproj'
+          dockerRegistryUrl: 'docker.io/kaminome'
           imageRepository: 'consumer-service'
-          dockerfilePath: 'consumer/Dockerfile'
-          dockerfileServiceConnection: 'Docker_Hub_Connection'
+          dockerfilePath: '$(System.DefaultWorkingDirectory)/consumer/Dockerfile'
+          dockerServiceConnection: 'Docker_Hub_Connection'
           
   - stage: 'AKS_Deploy_${{ variables.appName }}'
     displayName: 'AKS_Deploy_${{ variables.appName }}'
