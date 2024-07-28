@@ -49,7 +49,7 @@ stages:
           shouldRunIntegrationTests: 'true'
           integrationTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/sender/EventTriangleAPI.Sender.IntegrationTests/EventTriangleAPI.Sender.IntegrationTests.csproj'
           dockerRegistryUrl: 'myaksacr01aks01.azurecr.io'
-          dockerBuildParameterUrl: 'https://auth.eventtriangle.devtest.team/'
+          dockerBuildParameterUrl: 'https://auth.eventtriangle.razumovsky.me/'
           imageRepository: 'sender-service'
           dockerfilePath: '$(System.DefaultWorkingDirectory)/src/sender/Dockerfile'
           dockerServiceConnection: 'Azure_ACR_Connection'
