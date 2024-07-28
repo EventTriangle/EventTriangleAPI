@@ -144,15 +144,14 @@ jobs:
           containerRegistry: ${{ parameters.dockerServiceConnection }}
 
       - bash: |
-          IMAGE_FULL_NAME="$DOCKERUSERNAME/$REPOSITORY:$VERSION"
-          echo "Image full name: $IMAGE_FULL_NAME"
-          docker build --build-arg FRONT_API_URL="https://eventtriangleauth.devtest.team/" --build-arg VERSION=$VERSION -t "$IMAGE_FULL_NAME" -f "$DOCKERFILEPATH" .
-          docker tag "$DOCKERUSERNAME/$REPOSITORY:$VERSION" "$DOCKERUSERNAME/$REPOSITORY:latest"
-        env:
-          REPOSITORY: ${{ parameters.imageRepository }}
-          DOCKERFILEPATH: ${{ parameters.dockerfilePath }}
-          VERSION: $(GitVersion.SemVer)
-          DOCKERUSERNAME: ${{ parameters.dockerRegistryUrl }}
+          GIT_VERSION_IMAGE="${{ parameters.dockerRegistryUrl }}/${{ parameters.imageRepository }}:$(GitVersion.SemVer)"
+          LATEST_VERSION_IMAGE="${{ parameters.dockerRegistryUrl }}/${{ parameters.imageRepository }}:latest"
+          echo "GIT_VERSION_IMAGE: $GIT_VERSION_IMAGE"
+          echo "LATEST_VERSION_IMAGE: $LATEST_VERSION_IMAGE"
+          docker build --build-arg FRONT_API_URL="https://eventtriangleauth.devtest.team/" \
+                       --build-arg VERSION=$(GitVersion.SemVer) -t "$GIT_VERSION_IMAGE" \
+                       -f ${{ parameters.dockerfilePath }} .
+          docker tag "$GIT_VERSION_IMAGE" "$LATEST_VERSION_IMAGE"
         workingDirectory: ${{ parameters.workingDirectory }}
         displayName: 'Build Docker Image'
 
