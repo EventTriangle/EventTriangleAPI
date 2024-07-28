@@ -39,16 +39,17 @@ stages:
     jobs:
       - template: templates/docker-build-push-jobs.yml
         parameters:
-          solution: 'EventTriangleAPI.sln'
+          JobName: 'Build_${{ variables.appName }}'
+          solution: '$(System.DefaultWorkingDirectory)/EventTriangleAPI.sln'
           buildConfiguration: 'Release'
-          backendProjectPath: 'src/authorization/EventTriangleAPI.Authorization.Presentation'
-          unitTestsProjectPath: 'src/authorization/EventTriangleAPI.Authorization.UnitTests/EventTriangleAPI.Authorization.UnitTests.csproj'
+          backendProjectPath: '$(System.DefaultWorkingDirectory)/src/authorization/EventTriangleAPI.Authorization.Presentation'
+          unitTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/authorization/EventTriangleAPI.Authorization.UnitTests/EventTriangleAPI.Authorization.UnitTests.csproj'
           shouldRunIntegrationTests: 'false'
           integrationTestsProjectPath: ''
-          dockerUsername: 'kaminome'
+          dockerRegistryUrl: 'kaminome'
           imageRepository: 'auth-service'
           dockerfilePath: 'authorization/Dockerfile'
-          dockerfileServiceConnection: 'Docker_Hub_Connection'
+          dockerServiceConnection: 'Docker_Hub_Connection'
 
   - stage: 'AKS_Deploy_${{ variables.appName }}'
     displayName: 'AKS_Deploy_${{ variables.appName }}'
