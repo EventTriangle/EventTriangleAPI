@@ -48,7 +48,7 @@ stages:
           integrationTestsProjectPath: ''
           dockerRegistryUrl: 'docker.io/kaminome'
           imageRepository: 'auth-service'
-          dockerfilePath: 'authorization/Dockerfile'
+          dockerfilePath: '$(System.DefaultWorkingDirectory)/authorization/Dockerfile'
           dockerServiceConnection: 'Docker_Hub_Connection'
 
   - stage: 'AKS_Deploy_${{ variables.appName }}'
