@@ -16,6 +16,8 @@ public class TransactionUserToUserCreatedEvent
     
     public DateTime CreatedAt { get; private set; }
 
+    private static readonly TransactionUserToUserCreatedEventValidator Validator = new(); 
+
     public TransactionUserToUserCreatedEvent(string requesterId, string toUserId, decimal amount)
     {
         Id = Guid.NewGuid();
@@ -24,7 +26,7 @@ public class TransactionUserToUserCreatedEvent
         Amount = amount;
         CreatedAt = DateTime.UtcNow;
         
-        new TransactionUserToUserCreatedEventValidator().ValidateAndThrow(this);
+        Validator.ValidateAndThrow(this);
     }
 
     public TransactionUserToUserCreatedEventMessage CreateEventMessage()

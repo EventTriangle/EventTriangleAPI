@@ -28,6 +28,8 @@ public class SupportTicketEntity
     
     public DateTime CreatedAt { get; private set; }
 
+    private static readonly SupportTicketEntityValidator Validator = new(); 
+    
     public SupportTicketEntity(string userId, Guid walletId, Guid transactionId, string ticketReason, DateTime createdAt)
     {
         Id = Guid.NewGuid();
@@ -38,20 +40,20 @@ public class SupportTicketEntity
         TicketStatus = TicketStatus.Open;
         CreatedAt = createdAt;
         
-        new SupportTicketEntityValidator().ValidateAndThrow(this);
+        Validator.ValidateAndThrow(this);
     }
 
     public void UpdateTicketJustification(string ticketJustification)
     {
         TicketJustification = ticketJustification;
         
-        new SupportTicketEntityValidator().ValidateAndThrow(this);
+        Validator.ValidateAndThrow(this);
     }
     
     public void UpdateTicketStatus(TicketStatus ticketStatus)
     {
         TicketStatus = ticketStatus;
         
-        new SupportTicketEntityValidator().ValidateAndThrow(this);
+        Validator.ValidateAndThrow(this);
     }
 }

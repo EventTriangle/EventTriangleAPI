@@ -22,6 +22,8 @@ public class CreditCardEntity
     
     public PaymentNetwork PaymentNetwork { get; private set; }
 
+    private static readonly CreditCardEntityValidator Validator = new(); 
+    
     public CreditCardEntity(string userId, string holderName, string cardNumber, string cvv, string expiration, PaymentNetwork paymentNetwork)
     {
         Id = Guid.NewGuid();
@@ -32,41 +34,41 @@ public class CreditCardEntity
         Expiration = expiration;
         PaymentNetwork = paymentNetwork;
         
-        new CreditCardEntityValidator().ValidateAndThrow(this);
+        Validator.ValidateAndThrow(this);
     }
 
     public void UpdateHolderName(string holderName)
     {
         HolderName = holderName;
         
-        new CreditCardEntityValidator().ValidateAndThrow(this);
+        Validator.ValidateAndThrow(this);
     }
     
     public void UpdateCardNumber(string cardNumber)
     {
         CardNumber = cardNumber;
         
-        new CreditCardEntityValidator().ValidateAndThrow(this);
+        Validator.ValidateAndThrow(this);
     }
     
     public void UpdateCvv(string cvv)
     {
         Cvv = cvv;
         
-        new CreditCardEntityValidator().ValidateAndThrow(this);
+        Validator.ValidateAndThrow(this);
     }
 
     public void UpdateExpiration(string expiration)
     {
         Expiration = expiration;
         
-        new CreditCardEntityValidator().ValidateAndThrow(this);
+        Validator.ValidateAndThrow(this);
     }
     
     public void UpdatePaymentNetwork(PaymentNetwork paymentNetwork)
     {
         PaymentNetwork = paymentNetwork;
         
-        new CreditCardEntityValidator().ValidateAndThrow(this);
+        Validator.ValidateAndThrow(this);
     }
 }

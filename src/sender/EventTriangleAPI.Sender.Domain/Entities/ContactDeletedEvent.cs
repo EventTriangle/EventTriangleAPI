@@ -14,6 +14,8 @@ public class ContactDeletedEvent
 
     public DateTime CreatedAt { get; private set; }
     
+    private static readonly ContactDeletedEventValidator Validator = new(); 
+    
     public ContactDeletedEvent(string requesterId, string contactId)
     {
         Id = Guid.NewGuid();
@@ -21,7 +23,7 @@ public class ContactDeletedEvent
         ContactId = contactId;
         CreatedAt = DateTime.UtcNow;
         
-        new ContactDeletedEventValidator().ValidateAndThrow(this);
+        Validator.ValidateAndThrow(this);
     }
 
     public ContactDeletedEventMessage CreateEventMessage()

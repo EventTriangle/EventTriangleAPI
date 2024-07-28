@@ -18,6 +18,8 @@ public class SupportTicketOpenedEvent
     
     public DateTime CreatedAt { get; private set; }
 
+    private static readonly SupportTicketOpenedEventValidator Validator = new(); 
+    
     public SupportTicketOpenedEvent(string requesterId, Guid walletId, Guid transactionId, string ticketReason)
     {
         Id = Guid.NewGuid();
@@ -27,7 +29,7 @@ public class SupportTicketOpenedEvent
         TicketReason = ticketReason;
         CreatedAt = DateTime.UtcNow;
         
-        new SupportTicketOpenedEventValidator().ValidateAndThrow(this);
+        Validator.ValidateAndThrow(this);
     }
 
     public SupportTicketOpenedEventMessage CreateEventMessage()

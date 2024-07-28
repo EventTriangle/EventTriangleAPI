@@ -14,6 +14,8 @@ public class UserSuspendedEvent
     
     public DateTime CreatedAt { get; private set; }
 
+    private static readonly UserSuspendedEventValidator Validator = new(); 
+
     public UserSuspendedEvent(string requesterId, string userId)
     {
         Id = Guid.NewGuid();
@@ -21,7 +23,7 @@ public class UserSuspendedEvent
         UserId = userId;
         CreatedAt = DateTime.UtcNow;
         
-        new UserSuspendedEventValidator().ValidateAndThrow(this);
+        Validator.ValidateAndThrow(this);
     }
 
     public UserSuspendedEventMessage CreateEventMessage()

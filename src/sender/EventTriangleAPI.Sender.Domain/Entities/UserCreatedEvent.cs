@@ -19,6 +19,8 @@ public class UserCreatedEvent
     
     public DateTime CreatedAt { get; private set; }
 
+    private static readonly UserCreatedEventValidator Validator = new(); 
+
     public UserCreatedEvent(string userId, string email, UserRole userRole, UserStatus userStatus)
     {
         Id = Guid.NewGuid();
@@ -28,7 +30,7 @@ public class UserCreatedEvent
         UserStatus = userStatus;
         CreatedAt = DateTime.UtcNow;
         
-        new UserCreatedEventValidator().ValidateAndThrow(this);
+        Validator.ValidateAndThrow(this);
     }
 
     public UserCreatedEventMessage CreateEventMessage()

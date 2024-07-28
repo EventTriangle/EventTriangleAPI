@@ -23,6 +23,8 @@ public class CreditCardAddedEvent
     
     public DateTime CreatedAt { get; private set;  }
 
+    private static readonly CreditCardAddedEventValidator Validator = new(); 
+    
     public CreditCardAddedEvent(
         string requesterId, 
         string holderName, 
@@ -40,7 +42,7 @@ public class CreditCardAddedEvent
         Expiration = expiration;
         CreatedAt = DateTime.UtcNow;
 
-        new CreditCardAddedEventValidator().ValidateAndThrow(this);
+        Validator.ValidateAndThrow(this);
     }
 
     public CreditCardAddedEventMessage CreateEventMessage()

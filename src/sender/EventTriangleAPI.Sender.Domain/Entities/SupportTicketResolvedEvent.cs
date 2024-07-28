@@ -16,6 +16,8 @@ public class SupportTicketResolvedEvent
     
     public DateTime CreatedAt { get; private set; }
 
+    private static readonly SupportTicketResolvedEventValidator Validator = new(); 
+    
     public SupportTicketResolvedEvent(string requesterId, Guid ticketId, string ticketJustification)
     {
         Id = Guid.NewGuid();
@@ -24,7 +26,7 @@ public class SupportTicketResolvedEvent
         TicketJustification = ticketJustification;
         CreatedAt = DateTime.UtcNow;
         
-        new SupportTicketResolvedEventValidator().ValidateAndThrow(this);
+        Validator.ValidateAndThrow(this);
     }
 
     public SupportTicketResolvedEventMessage CreateEventMessage()

@@ -21,6 +21,8 @@ public class UserSessionEntity
     
     public UserEntity User { get; private set; }
 
+    private static readonly UserSessionEntityValidator Validator = new(); 
+    
     public UserSessionEntity(Guid id, DateTimeOffset expiresAt, byte[] value, string userId)
     {
         Id = id;
@@ -28,7 +30,7 @@ public class UserSessionEntity
         Value = value;
         UserId = userId;
         
-        new UserSessionEntityValidator().ValidateAndThrow(this);
+        Validator.ValidateAndThrow(this);
     }
 
     public void UpdateValue(byte[] value)
@@ -36,7 +38,7 @@ public class UserSessionEntity
         Value = value;
         UpdatedAt = DateTimeOffset.UtcNow;
         
-        new UserSessionEntityValidator().ValidateAndThrow(this);
+        Validator.ValidateAndThrow(this);
     }
     
     public void UpdateExpiresAt(DateTimeOffset expiresAt)
@@ -44,7 +46,7 @@ public class UserSessionEntity
         ExpiresAt = expiresAt;
         UpdatedAt = DateTimeOffset.UtcNow;
         
-        new UserSessionEntityValidator().ValidateAndThrow(this);
+        Validator.ValidateAndThrow(this);
     }
 
     public void UpdateDateOfLastAccess()
@@ -52,6 +54,6 @@ public class UserSessionEntity
         DateOfLastAccess = DateTimeOffset.UtcNow;
         UpdatedAt = DateTimeOffset.UtcNow;
         
-        new UserSessionEntityValidator().ValidateAndThrow(this);
+        Validator.ValidateAndThrow(this);
     }
 }
