@@ -16,10 +16,10 @@ spec:
   ingressClassName: nginx
   tls:
     - hosts:
-      - eventtriangleauth.devtest.team
+      - auth.eventtriangle.razumovsky.me
       secretName: my-tls-secret
   rules:
-    - host: eventtriangleauth.devtest.team
+    - host: auth.eventtriangle.razumovsky.me
       http:
         paths:
           - path: /
