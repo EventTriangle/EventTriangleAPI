@@ -1,0 +1,76 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - develop
+      - main
+  paths:
+    include:
+      - build
+      - src/consumer/EventTriangleAPI.Consumer.Application
+      - src/consumer/EventTriangleAPI.Consumer.BusinessLogic
+      - src/consumer/EventTriangleAPI.Consumer.Domain
+      - src/consumer/EventTriangleAPI.Consumer.Presentation
+      - src/consumer/EventTriangleAPI.Consumer.IntegrationTests
+      - src/consumer/EventTriangleAPI.Consumer.UnitTests
+      - src/shared/EventTriangleAPI.Shared.Application
+      - src/shared/EventTriangleAPI.Shared.DTO
+
+pr:
+  branches:
+    include:
+      - develop
+      - main
+  paths:
+    include:
+      - build
+      - src/consumer/EventTriangleAPI.Consumer.Application
+      - src/consumer/EventTriangleAPI.Consumer.BusinessLogic
+      - src/consumer/EventTriangleAPI.Consumer.Domain
+      - src/consumer/EventTriangleAPI.Consumer.Presentation
+      - src/consumer/EventTriangleAPI.Consumer.IntegrationTests
+      - src/consumer/EventTriangleAPI.Consumer.UnitTests
+      - src/shared/EventTriangleAPI.Shared.Application
+      - src/shared/EventTriangleAPI.Shared.DTO
+        
+variables:
+  - name: appName
+    value: 'ConsumerAPI'
+  - group: 'AKS_Settings'
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+stages:
+  - stage: 'Build_${{ variables.appName }}'
+    displayName: 'Build_${{ variables.appName }}'
+    jobs: 
+      - template: templates/docker-build-push-jobs.yml
+        parameters:
+          JobName: 'Build_${{ variables.appName }}'
+          solution: '$(System.DefaultWorkingDirectory)/EventTriangleAPI.sln'
+          buildConfiguration: 'Release'
+          backendProjectPath: '$(System.DefaultWorkingDirectory)/src/consumer/EventTriangleAPI.Consumer.Presentation'
+          unitTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/consumer/EventTriangleAPI.Consumer.UnitTests/EventTriangleAPI.Consumer.UnitTests.csproj'
+          shouldRunIntegrationTests: 'true'
+          integrationTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/consumer/EventTriangleAPI.Consumer.IntegrationTests/EventTriangleAPI.Consumer.IntegrationTests.csproj'
+          dockerRegistryUrl: 'docker.io/kaminome'
+          imageRepository: 'consumer-service'
+          dockerfilePath: '$(System.DefaultWorkingDirectory)/src/consumer/Dockerfile'
+          dockerServiceConnection: 'Docker_Hub_Connection'
+          
+  - stage: 'AKS_Deploy_${{ variables.appName }}'
+    displayName: 'AKS_Deploy_${{ variables.appName }}'
+    dependsOn: 'Build_${{ variables.appName }}'
+    condition: succeeded('Build_${{ variables.appName }}')
+    jobs:
+      - template: templates/azure-k8s-deploy.yml
+        parameters:
+          appName: ${{ variables.appName }}
+          vmImage: 'ubuntu-latest'
+          environment: 'aks'
+          serviceConnection: 'Azure_Connection'
+          azureResourceGroup: '$(AKS_RG)'
+          kubernetesCluster: '$(AKS_NAME)'
+          namespace: 'default'
+          deploymentName: 'event-triangle-consumer-deployment'
