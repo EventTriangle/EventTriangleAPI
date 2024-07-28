@@ -35,7 +35,7 @@ pr:
         
 variables:
   - name: appName
-    value: 'SenderAPI'
+    value: 'ConsumerAPI'
   - group: 'AKS_Settings'
 
 pool:
@@ -56,7 +56,7 @@ stages:
           integrationTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/consumer/EventTriangleAPI.Consumer.IntegrationTests/EventTriangleAPI.Consumer.IntegrationTests.csproj'
           dockerRegistryUrl: 'docker.io/kaminome'
           imageRepository: 'consumer-service'
-          dockerfilePath: '$(System.DefaultWorkingDirectory)/consumer/Dockerfile'
+          dockerfilePath: '$(System.DefaultWorkingDirectory)/src/consumer/Dockerfile'
           dockerServiceConnection: 'Docker_Hub_Connection'
           
   - stage: 'AKS_Deploy_${{ variables.appName }}'
