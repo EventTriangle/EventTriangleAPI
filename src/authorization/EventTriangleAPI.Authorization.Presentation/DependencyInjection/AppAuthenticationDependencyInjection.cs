@@ -1,7 +1,10 @@
 using System.IdentityModel.Tokens.Jwt;
 using EventTriangleAPI.Authorization.Domain.Constants;
+using EventTriangleAPI.Shared.Application.Constants;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.Identity.Web;
+using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace EventTriangleAPI.Authorization.Presentation.DependencyInjection;
 
@@ -53,9 +56,9 @@ public static class AppAuthenticationDependencyInjection
                 options.NonceCookie.IsEssential = true;
                 
                 // to map params of the token properly
-                var jwtHandler = new JwtSecurityTokenHandler();
+                var jwtHandler = new JsonWebTokenHandler();
                 jwtHandler.InboundClaimTypeMap.Clear();
-                options.SecurityTokenValidator = jwtHandler;
+                options.TokenHandler = jwtHandler;
                 options.TokenValidationParameters.NameClaimType = "name";
                 options.TokenValidationParameters.RoleClaimType = "role";
                 options.TokenValidationParameters.AuthenticationType = AuthConstants.AppOidc;
@@ -85,7 +88,7 @@ public static class AppAuthenticationDependencyInjection
                 options.ClaimActions.DeleteClaim("uti");
                 
                 // map claims
-                options.ClaimActions.MapUniqueJsonKey("sub", "sub");
+                options.ClaimActions.MapUniqueJsonKey("sub", ClaimConstants.NameIdentifierId);
                 options.ClaimActions.MapUniqueJsonKey("name", "name");
                 options.ClaimActions.MapUniqueJsonKey("given_name", "given_name");
                 options.ClaimActions.MapUniqueJsonKey("family_name", "family_name");
