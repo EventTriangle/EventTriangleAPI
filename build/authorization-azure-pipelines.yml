@@ -47,6 +47,7 @@ stages:
           shouldRunIntegrationTests: 'false'
           integrationTestsProjectPath: ''
           dockerRegistryUrl: 'docker.io/kaminome'
+          dockerBuildParameterUrl: 'https://eventtriangleauth.devtest.team/'
           imageRepository: 'auth-service'
           dockerfilePath: '$(System.DefaultWorkingDirectory)/src/authorization/Dockerfile'
           dockerServiceConnection: 'Docker_Hub_Connection'

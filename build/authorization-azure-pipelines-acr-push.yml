@@ -49,6 +49,7 @@ stages:
           shouldRunIntegrationTests: 'false'
           integrationTestsProjectPath: ''
           dockerRegistryUrl: 'myaksacr01aks01.azurecr.io'
+          dockerBuildParameterUrl: 'https://eventtriangleauth.devtest.team/'
           imageRepository: 'auth-service'
           dockerfilePath: '$(System.DefaultWorkingDirectory)/src/authorization/Dockerfile'
           dockerServiceConnection: 'Azure_ACR_Connection'

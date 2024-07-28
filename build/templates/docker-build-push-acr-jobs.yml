@@ -54,6 +54,11 @@ parameters:
   - name: dockerServiceConnection
     displayName: 'Docker container registry service connection in Azure DevOps.'
     type: string
+    
+  - name: dockerBuildParameterUrl
+    displayName: 'Build parameter for Docker: Base URL'
+    default: 'https://eventtriangleauth.devtest.team/'
+    type: string
 
 jobs:
   - job: ${{ parameters.JobName }}
@@ -148,7 +153,7 @@ jobs:
           LATEST_VERSION_IMAGE="${{ parameters.dockerRegistryUrl }}/${{ parameters.imageRepository }}:latest"
           echo "GIT_VERSION_IMAGE: $GIT_VERSION_IMAGE"
           echo "LATEST_VERSION_IMAGE: $LATEST_VERSION_IMAGE"
-          docker build --build-arg FRONT_API_URL="https://eventtriangleauth.devtest.team/" \
+          docker build --build-arg FRONT_API_URL="${{ parameters.dockerBuildParameterUrl }}" \
                        --build-arg VERSION=$(GitVersion.SemVer) -t "$GIT_VERSION_IMAGE" \
                        -f ${{ parameters.dockerfilePath }} .
           docker tag "$GIT_VERSION_IMAGE" "$LATEST_VERSION_IMAGE"
