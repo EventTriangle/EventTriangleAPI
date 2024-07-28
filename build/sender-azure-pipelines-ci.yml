@@ -55,7 +55,7 @@ stages:
           shouldRunIntegrationTests: 'true'
           integrationTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/sender/EventTriangleAPI.Sender.IntegrationTests/EventTriangleAPI.Sender.IntegrationTests.csproj'
           dockerRegistryUrl: 'docker.io/kaminome'
-          dockerBuildParameterUrl: 'https://eventtriangleauth.devtest.team/'
+          dockerBuildParameterUrl: 'https://auth.eventtriangle.devtest.team/'
           imageRepository: 'sender-service'
           dockerfilePath: '$(System.DefaultWorkingDirectory)/src/sender/Dockerfile'
           dockerServiceConnection: 'Docker_Hub_Connection'
