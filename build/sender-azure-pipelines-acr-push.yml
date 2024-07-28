@@ -1,37 +1,31 @@
-trigger:
-  batch: true
-  branches:
-    include:
-      - develop
-      - main
-  paths:
-    include:
-      - build
-      - src/sender/EventTriangleAPI.Sender.Application
-      - src/sender/EventTriangleAPI.Sender.BusinessLogic
-      - src/sender/EventTriangleAPI.Sender.Domain
-      - src/sender/EventTriangleAPI.Sender.Presentation
-      - src/sender/EventTriangleAPI.Sender.IntegrationTests
-      - src/sender/EventTriangleAPI.Sender.UnitTests
-      - src/shared/EventTriangleAPI.Shared.Application
-      - src/shared/EventTriangleAPI.Shared.DTO
+trigger: none
+#trigger:
+#  batch: true
+#  branches:
+#    include:
+#      - develop
+#      - main
+#  paths:
+#    include:
+#      - build
+#      - src/authorization/EventTriangleAPI.Authorization.BusinessLogic
+#      - src/authorization/EventTriangleAPI.Authorization.Presentation
+#      - src/shared/EventTriangleAPI.Shared.Application
+#      - src/shared/EventTriangleAPI.Shared.DTO
 
-pr:
-  branches:
-    include:
-      - develop
-      - main
-  paths:
-    include:
-      - build
-      - src/sender/EventTriangleAPI.Sender.Application
-      - src/sender/EventTriangleAPI.Sender.BusinessLogic
-      - src/sender/EventTriangleAPI.Sender.Domain
-      - src/sender/EventTriangleAPI.Sender.Presentation
-      - src/sender/EventTriangleAPI.Sender.IntegrationTests
-      - src/sender/EventTriangleAPI.Sender.UnitTests
-      - src/shared/EventTriangleAPI.Shared.Application
-      - src/shared/EventTriangleAPI.Shared.DTO
+pr: none
+#pr:
+#  branches:
+#    include:
+#      - develop
+#      - main
+#  paths:
+#    include:
+#      - build
+#      - src/authorization/EventTriangleAPI.Authorization.BusinessLogic
+#      - src/authorization/EventTriangleAPI.Authorization.Presentation
+#      - src/shared/EventTriangleAPI.Shared.Application
+#      - src/shared/EventTriangleAPI.Shared.DTO
         
 variables:
   - name: appName
@@ -54,10 +48,10 @@ stages:
           unitTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/sender/EventTriangleAPI.Sender.UnitTests/EventTriangleAPI.Sender.UnitTests.csproj'
           shouldRunIntegrationTests: 'true'
           integrationTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/sender/EventTriangleAPI.Sender.IntegrationTests/EventTriangleAPI.Sender.IntegrationTests.csproj'
-          dockerRegistryUrl: 'docker.io/kaminome'
+          dockerRegistryUrl: 'myaksacr01aks01.azurecr.io'
           imageRepository: 'sender-service'
           dockerfilePath: '$(System.DefaultWorkingDirectory)/src/sender/Dockerfile'
-          dockerServiceConnection: 'Docker_Hub_Connection'
+          dockerServiceConnection: 'Azure_ACR_Connection'
           
   - stage: 'AKS_Deploy_${{ variables.appName }}'
     displayName: 'AKS_Deploy_${{ variables.appName }}'
