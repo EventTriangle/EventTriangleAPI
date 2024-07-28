@@ -3,7 +3,7 @@ parameters:
     displayName: 'Job Name'
     type: string
 
-  - name: workingDirectory
+  - name: workingDirectoryForDocker
     displayName: 'Working directory for Docker Build'
     default: '$(System.DefaultWorkingDirectory)/src'
     type: string
@@ -152,7 +152,7 @@ jobs:
                        --build-arg VERSION=$(GitVersion.SemVer) -t "$GIT_VERSION_IMAGE" \
                        -f ${{ parameters.dockerfilePath }} .
           docker tag "$GIT_VERSION_IMAGE" "$LATEST_VERSION_IMAGE"
-        workingDirectory: ${{ parameters.workingDirectory }}
+        workingDirectory: ${{ parameters.workingDirectoryForDocker }}
         displayName: 'Build Docker Image'
 
       - task: Docker@2
