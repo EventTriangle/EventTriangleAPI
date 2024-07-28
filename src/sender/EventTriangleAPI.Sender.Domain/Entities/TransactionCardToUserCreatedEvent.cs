@@ -16,6 +16,8 @@ public class TransactionCardToUserCreatedEvent
     
     public DateTime CreatedAt { get; private set; }
 
+    private static readonly TransactionCardToUserCreatedEventValidator Validator = new(); 
+
     public TransactionCardToUserCreatedEvent(string requesterId, Guid creditCardId, decimal amount)
     {
         Id = Guid.NewGuid();
@@ -24,7 +26,7 @@ public class TransactionCardToUserCreatedEvent
         Amount = amount;
         CreatedAt = DateTime.UtcNow;
         
-        new TransactionCardToUserCreatedEventValidator().ValidateAndThrow(this);
+        Validator.ValidateAndThrow(this);
     }
 
     public TransactionCardToUserCreatedEventMessage CreateEventMessage()

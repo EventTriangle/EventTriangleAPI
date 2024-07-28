@@ -15,18 +15,20 @@ public class WalletEntity
     
     public TransactionEntity LastTransaction { get; private set; }
 
+    private static readonly WalletEntityValidator Validator = new(); 
+    
     public WalletEntity(decimal balance)
     {
         Id = Guid.NewGuid();
         Balance = balance;
         
-        new WalletEntityValidator().ValidateAndThrow(this);
+        Validator.ValidateAndThrow(this);
     }
 
     public void UpdateBalance(decimal balance)
     {
         Balance = balance;
         
-        new WalletEntityValidator().ValidateAndThrow(this);
+        Validator.ValidateAndThrow(this);
     }
 }

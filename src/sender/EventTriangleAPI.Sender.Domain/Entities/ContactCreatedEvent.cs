@@ -14,6 +14,8 @@ public class ContactCreatedEvent
 
     public DateTime CreatedAt { get; private set; }
     
+    private static readonly ContactCreatedEventValidator Validator = new(); 
+    
     public ContactCreatedEvent(string requesterId, string contactId)
     {
         Id = Guid.NewGuid();
@@ -21,7 +23,7 @@ public class ContactCreatedEvent
         ContactId = contactId;
         CreatedAt = DateTime.UtcNow;
         
-        new ContactCreatedEventValidator().ValidateAndThrow(this);
+        Validator.ValidateAndThrow(this);
     }
 
     public ContactCreatedEventMessage CreateEventMessage()

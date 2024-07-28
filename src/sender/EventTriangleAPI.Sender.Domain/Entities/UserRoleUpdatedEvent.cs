@@ -17,6 +17,8 @@ public class UserRoleUpdatedEvent
     
     public DateTime CreatedAt { get; private set; }
 
+    private static readonly UserRoleUpdatedEventValidator Validator = new(); 
+
     public UserRoleUpdatedEvent(string requesterId, string userId, UserRole userRole)
     {
         Id = Guid.NewGuid();
@@ -25,7 +27,7 @@ public class UserRoleUpdatedEvent
         UserRole = userRole;
         CreatedAt = DateTime.UtcNow;
         
-        new UserRoleUpdatedEventValidator().ValidateAndThrow(this);
+        Validator.ValidateAndThrow(this);
     }
 
     public UserRoleUpdatedEventMessage CreateEventMessage()

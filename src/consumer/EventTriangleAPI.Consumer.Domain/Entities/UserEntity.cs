@@ -20,6 +20,8 @@ public class UserEntity
 
     public List<ContactEntity> Contacts { get; private set; } = new();
     
+    private static readonly UserEntityValidator Validator = new(); 
+    
     public UserEntity(string id, string email, Guid walletId, UserRole userRole, UserStatus userStatus)
     {
         Id = id;
@@ -28,20 +30,20 @@ public class UserEntity
         UserStatus = userStatus;
         WalletId = walletId;
 
-        new UserEntityValidator().ValidateAndThrow(this);
+        Validator.ValidateAndThrow(this);
     }
 
     public void UpdateUserRole(UserRole userRole)
     {
         UserRole = userRole;
         
-        new UserEntityValidator().ValidateAndThrow(this);
+        Validator.ValidateAndThrow(this);
     }
     
     public void UpdateUserStatus(UserStatus userStatus)
     {
         UserStatus = userStatus;
 
-        new UserEntityValidator().ValidateAndThrow(this);
+        Validator.ValidateAndThrow(this);
     }
 }

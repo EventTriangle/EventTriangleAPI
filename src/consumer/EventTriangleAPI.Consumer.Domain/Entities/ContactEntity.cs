@@ -13,11 +13,13 @@ public class ContactEntity
 
     public UserEntity Contact { get; private set; }
 
+    private static readonly ContactEntityValidator Validator = new(); 
+    
     public ContactEntity(string userId, string contactId)
     {
         UserId = userId;
         ContactId = contactId;
 
-        new ContactEntityValidator().ValidateAndThrow(this);
+        Validator.ValidateAndThrow(this);
     }
 }

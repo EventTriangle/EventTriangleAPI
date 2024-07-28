@@ -14,6 +14,8 @@ public class TransactionRollBackedEvent
     
     public DateTime CreatedAt { get; private set; }
 
+    private static readonly TransactionRollBackedEventValidator Validator = new(); 
+
     public TransactionRollBackedEvent(string requesterId, Guid transactionId)
     {
         Id = Guid.NewGuid();
@@ -21,7 +23,7 @@ public class TransactionRollBackedEvent
         TransactionId = transactionId;
         CreatedAt = DateTime.UtcNow;
         
-        new TransactionRollBackedEventValidator().ValidateAndThrow(this);
+        Validator.ValidateAndThrow(this);
     }
 
     public TransactionRollBackedEventMessage CreateEventMessage()

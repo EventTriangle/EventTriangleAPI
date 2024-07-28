@@ -24,6 +24,8 @@ public class TransactionEntity
 
     public DateTime CreatedAt { get; private set; }
 
+    private static readonly TransactionEntityValidator Validator = new(); 
+    
     public TransactionEntity(
         string fromUserId, 
         string toUserId, 
@@ -39,13 +41,13 @@ public class TransactionEntity
         TransactionType = transactionType;
         CreatedAt = createdAt;
         
-        new TransactionEntityValidator().ValidateAndThrow(this);
+        Validator.ValidateAndThrow(this);
     }
 
     public void UpdateTransactionState(TransactionState transactionState)
     {
         TransactionState = transactionState;
         
-        new TransactionEntityValidator().ValidateAndThrow(this);
+        Validator.ValidateAndThrow(this);
     }
 }

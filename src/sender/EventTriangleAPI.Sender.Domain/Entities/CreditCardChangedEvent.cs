@@ -25,6 +25,8 @@ public class CreditCardChangedEvent
     
     public DateTime CreatedAt { get; private set;  }
     
+    private static readonly CreditCardChangedEventValidator Validator = new(); 
+    
     public CreditCardChangedEvent(
         Guid cardId, 
         string requesterId, 
@@ -44,7 +46,7 @@ public class CreditCardChangedEvent
         Expiration = expiration;
         CreatedAt = DateTime.UtcNow;
 
-        new CreditCardChangedEventValidator().ValidateAndThrow(this);
+        Validator.ValidateAndThrow(this);
     }
     
     public CreditCardChangedEventMessage CreateEventMessage()

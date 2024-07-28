@@ -14,6 +14,8 @@ public class CreditCardDeletedEvent
     
     public DateTime CreatedAt { get; private set; }
 
+    private static readonly CreditCardDeletedEventValidator Validator = new(); 
+    
     public CreditCardDeletedEvent(string requesterId, Guid cardId)
     {
         Id = Guid.NewGuid();
@@ -21,7 +23,7 @@ public class CreditCardDeletedEvent
         CardId = cardId;
         CreatedAt = DateTime.UtcNow;
         
-        new CreditCardDeletedEventValidator().ValidateAndThrow(this);
+        Validator.ValidateAndThrow(this);
     }
 
     public CreditCardDeletedEventMessage CreateEventMessage()

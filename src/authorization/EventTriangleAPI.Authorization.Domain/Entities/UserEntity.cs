@@ -10,12 +10,14 @@ public class UserEntity
     public string Email { get; private set; }
     
     public List<UserSessionEntity> UserSessionEntities { get; private set; } = new();
+    
+    private static readonly UserEntityValidator Validator = new(); 
 
     public UserEntity(string id, string email)
     {
         Id = id;
         Email = email;
         
-        new UserEntityValidator().ValidateAndThrow(this);
+        Validator.ValidateAndThrow(this);
     }
 }
