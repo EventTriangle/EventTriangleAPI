@@ -62,7 +62,8 @@ stages:
                   inputs:
                     rootDirectory: '${{ parameters.workingDirectory }}'
                     targetFiles: |
-                      secrets/secrets.yaml
+                      secrets/connection-secrets.yaml
+                      secrets/rabbit-mq-secrets.yaml
                     tokenPattern: 'doublebraces'
                     writeBOM: false
 

@@ -6,8 +6,7 @@ helm repo update
 
 helm install event-rabbitmq bitnami/rabbitmq `
   --namespace event-triangle `
-  --set auth.username=guest `
-  --set auth.password=guest `
+  --values rabbitmq-values.yaml `
   --set service.type=LoadBalancer
 
 helm upgrade event-rabbitmq bitnami/rabbitmq `
@@ -19,6 +18,3 @@ helm uninstall event-rabbitmq
 kubectl get endpoints
 
 kubectl describe service "event-rabbitmq"
-
-http://$SERVICE_IP:15672/
-http://20.13.249.2:15672/
