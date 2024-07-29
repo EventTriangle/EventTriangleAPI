@@ -25,6 +25,14 @@ parameters:
   - name: transformTargetFiles
     displayName: 'Target files for token replacement'
     type: string
+    
+  - name: rabbitMqUser
+    displayName: 'RabbitMQ User'
+    type: string
+    
+  - name: rabbitMqPassword
+    displayName: 'RabbitMQ Password'
+    type: string
 
   - name: dependsOn
     displayName: 'Depends On'
@@ -83,9 +91,9 @@ stages:
                     helm repo add bitnami https://charts.bitnami.com/bitnami
                     helm repo update
                     helm install event-rabbitmq bitnami/rabbitmq \
-                      --namespace {{ parameters.namespace }} \
-                      --set auth.username=$(library-rabbitmq-user) \
-                      --set auth.password=$(library-rabbitmq-password) \
+                      --namespace ${{ parameters.namespace }} \
+                      --set auth.username=${{ parameters.rabbitMqUser }} \
+                      --set auth.password=${{ parameters.rabbitMqPassword }} \
                       --set service.type=LoadBalancer
                   workingDirectory: '${{ parameters.workingDirectory }}'
                   displayName: 'Helm install RabbitMQ'
