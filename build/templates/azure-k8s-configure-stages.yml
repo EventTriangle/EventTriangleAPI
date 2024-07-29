@@ -1,0 +1,64 @@
+parameters:
+  - name: vmImage
+    type: string
+
+  - name: environment
+    type: string
+
+  - name: serviceConnection
+    type: string
+
+  - name: azureResourceGroup
+    type: string
+
+  - name: kubernetesCluster
+    type: string
+
+  - name: namespace
+    type: string
+    default: 'event-triangle'
+
+  - name: dependsOn
+    displayName: 'Depends On'
+    type: object
+
+  - name: condition
+    displayName: 'Condition'
+    type: string
+
+stages:
+  - stage: 'Configure_AKS_${{ parameters.environment }}'
+    displayName: 'Configure_AKS_${{ parameters.environment }}'
+    dependsOn: ${{ parameters.dependsOn }}
+    condition: succeeded('${{ parameters.condition }}')
+    jobs:
+      - deployment: 'Configure_AKS_${{ parameters.environment }}'
+        displayName: 'Configure_AKS_${{ parameters.environment }}'
+        pool:
+          vmImage: ${{ parameters.vmImage }}
+        environment: ${{ parameters.environment }}
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - task: Kubernetes@1
+                  displayName: 'Kubernetes Login'
+                  inputs:
+                    connectionType: 'Azure Resource Manager'
+                    azureSubscriptionEndpoint: ${{ parameters.serviceConnection }}
+                    azureResourceGroup: ${{ parameters.azureResourceGroup }}
+                    kubernetesCluster: ${{ parameters.kubernetesCluster }}
+                    command: 'login'
+
+                - task: replacetokens@5
+                  displayName: 'Replace tokens in secrets'
+                  inputs:
+                    rootDirectory: '${{ parameters.workingDirectory }}'
+                    targetFiles: |
+                      secrets.yaml
+                    tokenPattern: 'doublebraces'
+                    writeBOM: false
+
+                - bash: |
+                    kubectl apply -f secrets.yaml --namespace ${{ parameters.namespace }}
+                  displayName: 'Deploy secrets'
