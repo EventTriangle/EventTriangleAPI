@@ -17,6 +17,10 @@ parameters:
   - name: namespace
     type: string
     default: 'event-triangle'
+    
+  - name: workingDirectory
+    description: 'Working directory for Kubernetes'
+    type: string
 
   - name: dependsOn
     displayName: 'Depends On'
