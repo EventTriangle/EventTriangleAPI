@@ -27,6 +27,18 @@ spec:
                 secretKeyRef:
                   name: connection-creds
                   key: RabbitMqHost
+                  
+            - name: RabbitMqUsername
+              valueFrom:
+                secretKeyRef:
+                  name: connection-creds
+                  key: RabbitMqUsername
+
+            - name: RabbitMqPassword
+              valueFrom:
+                secretKeyRef:
+                  name: connection-creds
+                  key: RabbitMqPassword
 
             - name: DatabaseConnectionString
               valueFrom:
