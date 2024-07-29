@@ -33,3 +33,22 @@ stages:
       clientId: $(library-client-id)
       clientSecret: $(library-client-secret)
       tenantId: $(library-tenant-id)
+      
+  - template: templates/terraform-apply-stages.yml
+    parameters:
+      stageName: ${{ variables.applyStageName }}
+      VmImage: ubuntu-latest
+      terraformVersion: latest
+      workingDirectory: $(System.DefaultWorkingDirectory)/terraform
+      storageAccount: $(library-storage-account)
+      storageContainer: $(library-storage-container)
+      stateFile: $(library-state-file)
+      sasToken: $(library-sas-token)
+      prefix: $(library-prefix)
+      subscriptionId: $(library-subscription-id)
+      clientId: $(library-client-id)
+      clientSecret: $(library-client-secret)
+      tenantId: $(library-tenant-id)
+      environment: 'aks'
+      dependsOn: [ '${{ variables.planStageName }}' ]
+      condition: ${{ variables.planStageName }}

@@ -87,7 +87,7 @@ stages:
                 -backend-config="container_name=$TF_STATE_BLOB_CONTAINER_NAME" \
                 -backend-config="key=$TF_STATE_BLOB_FILE" \
                 -backend-config="sas_token=$TF_STATE_BLOB_SAS_TOKEN"
-            displayName: Terraform Init
+            displayName: 'Terraform Init'
             workingDirectory: ${{ parameters.workingDirectory }}
             env:
               TF_STATE_BLOB_ACCOUNT_NAME: ${{ parameters.storageAccount }}
