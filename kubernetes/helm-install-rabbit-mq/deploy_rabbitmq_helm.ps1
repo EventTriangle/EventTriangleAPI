@@ -6,7 +6,8 @@ helm repo update
 
 helm install event-rabbitmq bitnami/rabbitmq `
   --namespace event-triangle `
-  --values rabbitmq-values.yaml `
+  --set auth.username=guest `
+  --set auth.password=guest `
   --set service.type=LoadBalancer
 
 helm upgrade event-rabbitmq bitnami/rabbitmq `

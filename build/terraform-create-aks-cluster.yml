@@ -35,7 +35,7 @@ stages:
       clientId: $(library-client-id)
       clientSecret: $(library-client-secret)
       tenantId: $(library-tenant-id)
-      
+
   - template: templates/terraform-apply-stages.yml
     parameters:
       stageName: ${{ variables.applyStageName }}
@@ -53,7 +53,7 @@ stages:
       environment: 'aks'
       dependsOn: [ '${{ variables.planStageName }}' ]
       condition: ${{ variables.planStageName }}
-      
+
   - template: templates/azure-k8s-configure-stages.yml
     parameters:
       vmImage: ubuntu-latest
@@ -65,3 +65,5 @@ stages:
       namespace: 'event-triangle'
       dependsOn: [ '${{ variables.applyStageName }}' ]
       condition: ${{ variables.applyStageName }}
+      transformTargetFiles: |
+        secrets/connection-secrets.yaml

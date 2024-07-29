@@ -21,6 +21,10 @@ parameters:
   - name: workingDirectory
     displayName: 'Working directory for Kubernetes'
     type: string
+    
+  - name: transformTargetFiles
+    displayName: 'Target files for token replacement'
+    type: string
 
   - name: dependsOn
     displayName: 'Depends On'
@@ -47,7 +51,7 @@ stages:
               steps:
                 - checkout: self
                   fetchDepth: 0
-                  
+
                 - task: Kubernetes@1
                   displayName: 'Kubernetes Login'
                   inputs:
@@ -60,10 +64,8 @@ stages:
                 - task: replacetokens@5
                   displayName: 'Replace tokens in secrets'
                   inputs:
-                    rootDirectory: '${{ parameters.workingDirectory }}'
-                    targetFiles: |
-                      secrets/connection-secrets.yaml
-                      secrets/rabbit-mq-secrets.yaml
+                    rootDirectory: ${{ parameters.workingDirectory }}
+                    targetFiles: ${{ parameters.transformTargetFiles }}
                     tokenPattern: 'doublebraces'
                     writeBOM: false
 
@@ -71,8 +73,19 @@ stages:
                     kubectl apply -f ./namespace
                   workingDirectory: '${{ parameters.workingDirectory }}'
                   displayName: 'Create namespace'
-                
+
                 - bash: |
                     kubectl apply -f ./secrets --namespace ${{ parameters.namespace }}
                   workingDirectory: '${{ parameters.workingDirectory }}'
                   displayName: 'Deploy secrets'
+
+                - bash: |
+                    helm repo add bitnami https://charts.bitnami.com/bitnami
+                    helm repo update
+                    helm install event-rabbitmq bitnami/rabbitmq \
+                      --namespace {{ parameters.namespace }} \
+                      --set auth.username=$(library-rabbitmq-user) \
+                      --set auth.password=$(library-rabbitmq-password) \
+                      --set service.type=LoadBalancer
+                  workingDirectory: '${{ parameters.workingDirectory }}'
+                  displayName: 'Helm install RabbitMQ'
