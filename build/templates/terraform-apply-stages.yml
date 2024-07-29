@@ -114,7 +114,7 @@ stages:
                   displayName: 'Terraform Apply'
                   workingDirectory: ${{ parameters.workingDirectory }}
                   env:
-                    TF_STATE_BLOB_ACCOUNT_NAME: ${{ parameters.storageAccount }}
-                    TF_STATE_BLOB_CONTAINER_NAME: ${{ parameters.storageContainer }}
-                    TF_STATE_BLOB_FILE: ${{ parameters.stateFile }}
-                    TF_STATE_BLOB_SAS_TOKEN: ${{ parameters.sasToken }}
+                    ARM_SUBSCRIPTION_ID: ${{ parameters.subscriptionId }}
+                    ARM_CLIENT_ID: ${{ parameters.clientId }}
+                    ARM_CLIENT_SECRET: ${{ parameters.clientSecret }}
+                    ARM_TENANT_ID: ${{ parameters.tenantId }}
