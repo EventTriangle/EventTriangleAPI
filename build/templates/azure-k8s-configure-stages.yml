@@ -17,7 +17,7 @@ parameters:
   - name: namespace
     type: string
     default: 'event-triangle'
-    
+
   - name: workingDirectory
     displayName: 'Working directory for Kubernetes'
     type: string
@@ -45,6 +45,9 @@ stages:
           runOnce:
             deploy:
               steps:
+                - checkout: self
+                  fetchDepth: 0
+                  
                 - task: Kubernetes@1
                   displayName: 'Kubernetes Login'
                   inputs:
