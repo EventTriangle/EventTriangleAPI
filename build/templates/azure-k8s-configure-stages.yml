@@ -95,7 +95,7 @@ stages:
                 - bash: |
                     helm repo add bitnami https://charts.bitnami.com/bitnami
                     helm repo update
-                    helm install event-rabbitmq bitnami/rabbitmq \
+                    helm upgrade --install event-rabbitmq bitnami/rabbitmq \
                       --namespace ${{ parameters.namespace }} \
                       --set auth.username=${{ parameters.rabbitMqUser }} \
                       --set auth.password=${{ parameters.rabbitMqPassword }} \
