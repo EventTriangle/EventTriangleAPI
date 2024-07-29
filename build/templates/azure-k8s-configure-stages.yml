@@ -67,6 +67,11 @@ stages:
                     writeBOM: false
 
                 - bash: |
+                    kubectl apply -f ./namespace
+                  workingDirectory: '${{ parameters.workingDirectory }}'
+                  displayName: 'Create namespace'
+                
+                - bash: |
                     kubectl apply -f ./secrets --namespace ${{ parameters.namespace }}
                   workingDirectory: '${{ parameters.workingDirectory }}'
                   displayName: 'Deploy secrets'
