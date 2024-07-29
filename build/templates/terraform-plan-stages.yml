@@ -69,7 +69,7 @@ stages:
           - checkout: self
             fetchDepth: 0
 
-          - task: TerraformInstaller@0
+          - task: TerraformInstaller@1
             displayName: 'Install Terraform ${{ parameters.terraformVersion }}'
             inputs:
               terraformVersion: '${{ parameters.terraformVersion }}'
