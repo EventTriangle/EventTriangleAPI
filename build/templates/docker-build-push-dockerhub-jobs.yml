@@ -1,37 +1,68 @@
 parameters:
+  - name: JobName
+    displayName: 'Job Name'
+    type: string
+
+  - name: workingDirectoryForDocker
+    displayName: 'Working directory for Docker Build'
+    default: '$(System.DefaultWorkingDirectory)/src'
+    type: string
+
   - name: solution
+    displayName: 'Solution file path'
     type: string
 
   - name: buildConfiguration
+    displayName: 'Build Configuration'
+    default: 'Release'
     type: string
 
   - name: backendProjectPath
+    displayName: 'Backend project path'
     type: string
 
   - name: unitTestsProjectPath
+    displayName: 'Unit tests project path'
     type: string
 
   - name: shouldRunIntegrationTests
+    displayName: 'Flag should run integration tests'
     type: boolean
-    
+
   - name: integrationTestsProjectPath
+    displayName: 'Integration tests project path'
     type: string
 
-  - name: dockerUsername
+  - name: gitVersionVersion
+    displayName: 'GitVersion version'
+    default: '5.x'
     type: string
+
+  - name: dockerRegistryUrl
+    type: string
+    displayName: 'Docker Registry URL. For Docker Hub it is: docker.io/kaminome.
+                  For ACR it is FQDN URL of container registry: myaksacr01aks01.azurecr.io'
 
   - name: imageRepository
+    displayName: 'Image Repository name'
     type: string
 
   - name: dockerfilePath
+    displayName: 'Dockerfile path'
     type: string
 
-  - name: dockerfileServiceConnection
+  - name: dockerServiceConnection
+    displayName: 'Docker container registry service connection in Azure DevOps.'
+    type: string
+    
+  - name: dockerBuildParameterUrl
+    displayName: 'Build parameter for Docker: Base URL'
+    default: 'https://eventtriangleauth.devtest.team/'
     type: string
 
 jobs:
-  - job: 'Build_And_Test_Pack'
-    displayName: 'Build & Drop Artifact'
+  - job: ${{ parameters.JobName }}
+    displayName: ${{ parameters.JobName }}
     steps:
       - checkout: self
         fetchDepth: 0
@@ -39,7 +70,7 @@ jobs:
       - task: gitversion/setup@0
         displayName: 'GitVersion Setup'
         inputs:
-          versionSpec: '5.9.x'
+          versionSpec: ${{ parameters.gitVersionVersion }}
 
       - task: gitversion/execute@0
         displayName: 'GitVersion Execute'
@@ -65,7 +96,7 @@ jobs:
           command: 'build'
           projects: '${{ parameters.solution }}'
           arguments: '-c ${{ parameters.buildConfiguration }} -p:Version=$(GitVersion.SemVer) --no-restore'
-          
+
       - task: DotnetCoreCLI@2
         displayName: 'Run unit tests'
         inputs:
@@ -112,30 +143,29 @@ jobs:
           publishLocation: 'Container'
 
       - task: Docker@2
-        displayName: Login to Docker Hub
+        displayName: 'Login to Docker Registry'
         inputs:
           command: login
-          containerRegistry: '${{ parameters.dockerfileServiceConnection }}'
+          containerRegistry: ${{ parameters.dockerServiceConnection }}
 
       - bash: |
-          IMAGE_FULL_NAME="$DOCKERUSERNAME/$REPOSITORY:$VERSION"
-          echo "Image full name: $IMAGE_FULL_NAME"
-          docker build --build-arg FRONT_API_URL="https://eventtriangleauth.devtest.team/" --build-arg VERSION=$VERSION -t "$IMAGE_FULL_NAME" -f "$DOCKERFILEPATH" .
-          docker build --build-arg FRONT_API_URL="https://eventtriangleauth.devtest.team/" --build-arg VERSION=$VERSION -t "$DOCKERUSERNAME/$REPOSITORY:latest" -f "$DOCKERFILEPATH" .
-        env:
-          REPOSITORY: ${{ parameters.imageRepository }}
-          DOCKERFILEPATH: ${{ parameters.dockerfilePath }}
-          VERSION: $(GitVersion.SemVer)
-          DOCKERUSERNAME: ${{ parameters.dockerUsername }}
-        workingDirectory: '$(Build.SourcesDirectory)/src'
+          GIT_VERSION_IMAGE="${{ parameters.dockerRegistryUrl }}/${{ parameters.imageRepository }}:$(GitVersion.SemVer)"
+          LATEST_VERSION_IMAGE="${{ parameters.dockerRegistryUrl }}/${{ parameters.imageRepository }}:latest"
+          echo "GIT_VERSION_IMAGE: $GIT_VERSION_IMAGE"
+          echo "LATEST_VERSION_IMAGE: $LATEST_VERSION_IMAGE"
+          docker build --build-arg FRONT_API_URL="${{ parameters.dockerBuildParameterUrl }}" \
+                       --build-arg VERSION=$(GitVersion.SemVer) -t "$GIT_VERSION_IMAGE" \
+                       -f ${{ parameters.dockerfilePath }} .
+          docker tag "$GIT_VERSION_IMAGE" "$LATEST_VERSION_IMAGE"
+        workingDirectory: ${{ parameters.workingDirectoryForDocker }}
         displayName: 'Build Docker Image'
 
       - task: Docker@2
-        displayName: 'Push to DockerHub'
+        displayName: 'Push to Container Registry'
         inputs:
           command: push
-          containerRegistry: '${{ parameters.dockerfileServiceConnection }}'
-          repository: '${{ parameters.dockerUsername }}/${{ parameters.imageRepository }}'
+          containerRegistry: ${{ parameters.dockerServiceConnection }}
+          repository: ${{ parameters.dockerRegistryUrl }}/${{ parameters.imageRepository }}
           tags: |
             $(GitVersion.SemVer)
             latest

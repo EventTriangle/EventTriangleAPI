@@ -12,14 +12,15 @@ metadata:
     nginx.ingress.kubernetes.io/use-regex: 'true'
     kubernetes.io/tls-acme: 'true'
     nginx.ingress.kubernetes.io/ssl-redirect: 'true'
+    cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:
   ingressClassName: nginx
   tls:
     - hosts:
-      - eventtriangleauth.devtest.team
-      secretName: my-tls-secret
+      - auth.eventtriangle.razumovsky.me
+      secretName: razumovsky-me-tls
   rules:
-    - host: eventtriangleauth.devtest.team
+    - host: auth.eventtriangle.razumovsky.me
       http:
         paths:
           - path: /

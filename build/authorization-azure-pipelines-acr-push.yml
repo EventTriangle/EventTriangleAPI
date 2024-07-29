@@ -1,29 +1,31 @@
-trigger:
-  batch: true
-  branches:
-    include:
-      - develop
-      - main
-  paths:
-    include:
-      - build
-      - src/authorization/EventTriangleAPI.Authorization.BusinessLogic
-      - src/authorization/EventTriangleAPI.Authorization.Presentation
-      - src/shared/EventTriangleAPI.Shared.Application
-      - src/shared/EventTriangleAPI.Shared.DTO
+trigger: none
+#trigger:
+#  batch: true
+#  branches:
+#    include:
+#      - develop
+#      - main
+#  paths:
+#    include:
+#      - build
+#      - src/authorization/EventTriangleAPI.Authorization.BusinessLogic
+#      - src/authorization/EventTriangleAPI.Authorization.Presentation
+#      - src/shared/EventTriangleAPI.Shared.Application
+#      - src/shared/EventTriangleAPI.Shared.DTO
 
-pr:
-  branches:
-    include:
-      - develop
-      - main
-  paths:
-    include:
-      - build
-      - src/authorization/EventTriangleAPI.Authorization.BusinessLogic
-      - src/authorization/EventTriangleAPI.Authorization.Presentation
-      - src/shared/EventTriangleAPI.Shared.Application
-      - src/shared/EventTriangleAPI.Shared.DTO
+pr: none
+#pr:
+#  branches:
+#    include:
+#      - develop
+#      - main
+#  paths:
+#    include:
+#      - build
+#      - src/authorization/EventTriangleAPI.Authorization.BusinessLogic
+#      - src/authorization/EventTriangleAPI.Authorization.Presentation
+#      - src/shared/EventTriangleAPI.Shared.Application
+#      - src/shared/EventTriangleAPI.Shared.DTO
 
 variables:
   - name: appName
@@ -37,7 +39,7 @@ stages:
   - stage: 'Build_${{ variables.appName }}'
     displayName: 'Build_${{ variables.appName }}'
     jobs:
-      - template: templates/docker-build-push-dockerhub-jobs.yml
+      - template: templates/docker-build-push-acr-jobs.yml
         parameters:
           JobName: 'Build_${{ variables.appName }}'
           solution: '$(System.DefaultWorkingDirectory)/EventTriangleAPI.sln'
@@ -46,11 +48,11 @@ stages:
           unitTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/authorization/EventTriangleAPI.Authorization.UnitTests/EventTriangleAPI.Authorization.UnitTests.csproj'
           shouldRunIntegrationTests: 'false'
           integrationTestsProjectPath: ''
-          dockerRegistryUrl: 'docker.io/kaminome'
+          dockerRegistryUrl: 'myaksacr01aks01.azurecr.io'
           dockerBuildParameterUrl: 'https://auth.eventtriangle.razumovsky.me/'
           imageRepository: 'auth-service'
           dockerfilePath: '$(System.DefaultWorkingDirectory)/src/authorization/Dockerfile'
-          dockerServiceConnection: 'Docker_Hub_Connection'
+          dockerServiceConnection: 'Azure_ACR_Connection'
 
   - stage: 'AKS_Deploy_${{ variables.appName }}'
     displayName: 'AKS_Deploy_${{ variables.appName }}'
