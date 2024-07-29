@@ -12,6 +12,8 @@ pr: none
 
 variables:
   - group: terraform_storage_configuration
+  - group: AKS_Settings
+  - group: Connection_Settings
   - name: planStageName
     value: "Terraform_Plan_AKS_Cluster"
   - name: applyStageName
@@ -51,3 +53,14 @@ stages:
       environment: 'aks'
       dependsOn: [ '${{ variables.planStageName }}' ]
       condition: ${{ variables.planStageName }}
+      
+  - template: templates/azure-k8s-configure.yml
+    parameters:
+      vmImage: ubuntu-latest
+      environment: aks
+      serviceConnection: Azure_Connection
+      azureResourceGroup: $(library-aks-resource-group)
+      kubernetesCluster: $(library-aks-cluster-name)
+      namespace: 'event-triangle'
+      dependsOn: [ '${{ variables.applyStageName }}' ]
+      condition: ${{ variables.applyStageName }}
