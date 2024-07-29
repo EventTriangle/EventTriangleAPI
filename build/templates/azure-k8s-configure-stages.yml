@@ -55,10 +55,11 @@ stages:
                   inputs:
                     rootDirectory: '${{ parameters.workingDirectory }}'
                     targetFiles: |
-                      secrets.yaml
+                      secrets/secrets.yaml
                     tokenPattern: 'doublebraces'
                     writeBOM: false
 
                 - bash: |
-                    kubectl apply -f secrets.yaml --namespace ${{ parameters.namespace }}
+                    kubectl apply -f ./secrets --namespace ${{ parameters.namespace }}
+                  workingDirectory: '${{ parameters.workingDirectory }}'
                   displayName: 'Deploy secrets'

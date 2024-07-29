@@ -58,6 +58,7 @@ stages:
     parameters:
       vmImage: ubuntu-latest
       environment: aks
+      workingDirectory: $(System.DefaultWorkingDirectory)/kubernetes
       serviceConnection: Azure_Connection
       azureResourceGroup: $(library-aks-resource-group)
       kubernetesCluster: $(library-aks-cluster-name)
