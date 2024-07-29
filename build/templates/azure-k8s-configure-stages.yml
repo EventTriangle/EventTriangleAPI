@@ -86,6 +86,11 @@ stages:
                     kubectl apply -f ./secrets --namespace ${{ parameters.namespace }}
                   workingDirectory: '${{ parameters.workingDirectory }}'
                   displayName: 'Deploy secrets'
+                  
+                - bash: |
+                    kubectl apply -f ./pgsql-deployment-load-balancer --namespace ${{ parameters.namespace }}
+                  workingDirectory: '${{ parameters.workingDirectory }}'
+                  displayName: 'Deploy Postgres'
 
                 - bash: |
                     helm repo add bitnami https://charts.bitnami.com/bitnami
