@@ -19,7 +19,7 @@ parameters:
     default: 'event-triangle'
     
   - name: workingDirectory
-    description: 'Working directory for Kubernetes'
+    displayName: 'Working directory for Kubernetes'
     type: string
 
   - name: dependsOn
