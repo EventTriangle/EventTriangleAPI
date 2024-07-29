@@ -54,7 +54,7 @@ stages:
       dependsOn: [ '${{ variables.planStageName }}' ]
       condition: ${{ variables.planStageName }}
       
-  - template: templates/azure-k8s-configure.yml
+  - template: templates/azure-k8s-configure-stages.yml
     parameters:
       vmImage: ubuntu-latest
       environment: aks
