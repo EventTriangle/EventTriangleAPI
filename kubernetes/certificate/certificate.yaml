@@ -8,7 +8,5 @@ spec:
   issuerRef:
     name: letsencrypt-prod
     kind: ClusterIssuer
-  commonName: razumovsky.me
   dnsNames:
-    - razumovsky.me
     - auth.eventtriangle.razumovsky.me
