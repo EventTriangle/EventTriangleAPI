@@ -1,7 +1,7 @@
 ﻿apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: razumovsky-me
+  name: razumovsky-me-tls
   namespace: event-triangle
 spec:
   secretName: razumovsky-me-tls
