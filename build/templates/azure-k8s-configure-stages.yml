@@ -93,6 +93,7 @@ stages:
                   displayName: 'Deploy Postgres'
                   
                 - task: PowerShell@2
+                  displayName: 'Deploy RabbitMQ'
                   inputs:
                     targetType: 'filePath'
                     filePath: ${{ parameters.workingDirectory }}/helm-install-rabbit-mq/deploy-rabbitmq-helm.ps1
