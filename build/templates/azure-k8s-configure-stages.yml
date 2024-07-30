@@ -21,15 +21,15 @@ parameters:
   - name: workingDirectory
     displayName: 'Working directory for Kubernetes'
     type: string
-    
+
   - name: transformTargetFiles
     displayName: 'Target files for token replacement'
     type: string
-    
+
   - name: rabbitMqUser
     displayName: 'RabbitMQ User'
     type: string
-    
+
   - name: rabbitMqPassword
     displayName: 'RabbitMQ Password'
     type: string
@@ -76,7 +76,7 @@ stages:
                     targetFiles: ${{ parameters.transformTargetFiles }}
                     tokenPattern: 'doublebraces'
                     writeBOM: false
-                  
+
                 - task: PowerShell@2
                   displayName: 'Deploy Namespace'
                   inputs:
@@ -84,7 +84,7 @@ stages:
                     script: 'kubectl apply -f ./namespace'
                     pwsh: true
                     workingDirectory: ${{ parameters.workingDirectory }}
-                  
+
                 - task: PowerShell@2
                   displayName: 'Deploy Secrets'
                   inputs:
@@ -92,7 +92,7 @@ stages:
                     script: 'kubectl apply -f ./secrets --namespace ${{ parameters.namespace }}'
                     pwsh: true
                     workingDirectory: ${{ parameters.workingDirectory }}
-                  
+
                 - task: PowerShell@2
                   displayName: 'Deploy Postgres'
                   inputs:
@@ -100,7 +100,7 @@ stages:
                     script: 'kubectl apply -f ./pgsql-deployment-load-balancer --namespace ${{ parameters.namespace }}'
                     pwsh: true
                     workingDirectory: ${{ parameters.workingDirectory }}
-                    
+
                 - task: PowerShell@2
                   displayName: 'Deploy Nginx Ingress'
                   inputs:
@@ -109,7 +109,7 @@ stages:
                     arguments: '-HelmReleaseName "event-ingress" -Namespace ${{ parameters.namespace }}'
                     pwsh: true
                     workingDirectory: ${{ parameters.workingDirectory }}
-                
+
                 - task: PowerShell@2
                   displayName: 'Deploy RabbitMQ'
                   inputs:
@@ -121,3 +121,22 @@ stages:
                                 -RabbitMqPassword ${{ parameters.rabbitMqPassword }}'
                     pwsh: true
                     workingDirectory: ${{ parameters.workingDirectory }}
+
+                - task: PowerShell@2
+                  displayName: 'Wait for deployments'
+                  inputs:
+                    targetType: 'filePath'
+                    filePath: ${{ parameters.workingDirectory }}/scripts/wait-deployments.ps1
+                    arguments: '-Namespace ${{ parameters.namespace }} 
+                                -RabbitRelease event-rabbitmq 
+                                -PostgresDeployment postgresdb'
+                    pwsh: true
+                    workingDirectory: ${{ parameters.workingDirectory }}
+                    
+                - task: PowerShell@2
+                  displayName: 'Print Public IPs'
+                  inputs:
+                    targetType: 'filePath'
+                    filePath: ${{ parameters.workingDirectory }}/scripts/print-ip.ps1
+                    pwsh: true
+                    workingDirectory: ${{ parameters.workingDirectory }}    
