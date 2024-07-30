@@ -32,7 +32,7 @@ pr:
       - src/sender/EventTriangleAPI.Sender.UnitTests
       - src/shared/EventTriangleAPI.Shared.Application
       - src/shared/EventTriangleAPI.Shared.DTO
-        
+
 variables:
   - name: appName
     value: 'SenderAPI'
@@ -44,7 +44,7 @@ pool:
 stages:
   - stage: 'Build_${{ variables.appName }}'
     displayName: 'Build_${{ variables.appName }}'
-    jobs: 
+    jobs:
       - template: templates/docker-build-push-dockerhub-jobs.yml
         parameters:
           JobName: 'Build_${{ variables.appName }}'
@@ -59,7 +59,7 @@ stages:
           imageRepository: 'sender-service'
           dockerfilePath: '$(System.DefaultWorkingDirectory)/src/sender/Dockerfile'
           dockerServiceConnection: 'Docker_Hub_Connection'
-          
+
   - stage: 'AKS_Deploy_${{ variables.appName }}'
     displayName: 'AKS_Deploy_${{ variables.appName }}'
     dependsOn: 'Build_${{ variables.appName }}'
@@ -73,5 +73,5 @@ stages:
           serviceConnection: 'Azure_Connection'
           azureResourceGroup: '$(AKS_RG)'
           kubernetesCluster: '$(AKS_NAME)'
-          namespace: 'default'
+          namespace: 'event-triangle'
           deploymentName: 'event-triangle-sender-deployment'

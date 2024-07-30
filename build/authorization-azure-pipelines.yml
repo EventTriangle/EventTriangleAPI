@@ -65,5 +65,5 @@ stages:
           serviceConnection: 'Azure_Connection'
           azureResourceGroup: '$(AKS_RG)'
           kubernetesCluster: '$(AKS_NAME)'
-          namespace: 'default'
+          namespace: 'event-triangle'
           deploymentName: 'event-triangle-auth-deployment'
