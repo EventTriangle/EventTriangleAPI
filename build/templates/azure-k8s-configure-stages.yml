@@ -100,6 +100,15 @@ stages:
                     script: 'kubectl apply -f ./pgsql-deployment-load-balancer --namespace ${{ parameters.namespace }}'
                     pwsh: true
                     workingDirectory: ${{ parameters.workingDirectory }}
+                    
+                - task: PowerShell@2
+                  displayName: 'Deploy Nginx Ingress'
+                  inputs:
+                    targetType: 'filePath'
+                    filePath: ${{ parameters.workingDirectory }}/helm-install-nginx-ingress/deploy-ingress-helm.ps1
+                    arguments: '-HelmReleaseName "event-ingress" -Namespace ${{ parameters.namespace }}'
+                    pwsh: true
+                    workingDirectory: ${{ parameters.workingDirectory }}
                 
                 - task: PowerShell@2
                   displayName: 'Deploy RabbitMQ'
