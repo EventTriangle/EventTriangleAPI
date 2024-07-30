@@ -76,22 +76,31 @@ stages:
                     targetFiles: ${{ parameters.transformTargetFiles }}
                     tokenPattern: 'doublebraces'
                     writeBOM: false
-
-                - bash: |
-                    kubectl apply -f ./namespace
-                  workingDirectory: '${{ parameters.workingDirectory }}'
-                  displayName: 'Create namespace'
-
-                - bash: |
-                    kubectl apply -f ./secrets --namespace ${{ parameters.namespace }}
-                  workingDirectory: '${{ parameters.workingDirectory }}'
-                  displayName: 'Deploy secrets'
                   
-                - bash: |
-                    kubectl apply -f ./pgsql-deployment-load-balancer --namespace ${{ parameters.namespace }}
-                  workingDirectory: '${{ parameters.workingDirectory }}'
+                - task: PowerShell@2
+                  displayName: 'Deploy Namespace'
+                  inputs:
+                    targetType: 'inline'
+                    script: 'kubectl apply -f ./namespace'
+                    pwsh: true
+                    workingDirectory: ${{ parameters.workingDirectory }}
+                  
+                - task: PowerShell@2
+                  displayName: 'Deploy Secrets'
+                  inputs:
+                    targetType: 'inline'
+                    script: 'kubectl apply -f ./secrets --namespace ${{ parameters.namespace }}'
+                    pwsh: true
+                    workingDirectory: ${{ parameters.workingDirectory }}
+                  
+                - task: PowerShell@2
                   displayName: 'Deploy Postgres'
-                  
+                  inputs:
+                    targetType: 'inline'
+                    script: 'kubectl apply -f ./pgsql-deployment-load-balancer --namespace ${{ parameters.namespace }}'
+                    pwsh: true
+                    workingDirectory: ${{ parameters.workingDirectory }}
+                
                 - task: PowerShell@2
                   displayName: 'Deploy RabbitMQ'
                   inputs:
@@ -103,11 +112,3 @@ stages:
                                 -RabbitMqPassword ${{ parameters.rabbitMqPassword }}'
                     pwsh: true
                     workingDirectory: ${{ parameters.workingDirectory }}
-                  
-                - bash: |
-                    RABBIT_MQ_IP=$(kubectl get service event-rabbitmq -n ${{ parameters.namespace }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-                    echo "RabbitMQ IP: $RABBIT_MQ_IP"
-                    POSTGRES_IP=$(kubectl get service postgres-service -n event-triangle -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-                    echo "Postgres IP: $POSTGRES_IP"
-                  workingDirectory: '${{ parameters.workingDirectory }}'
-                  displayName: 'Update Cloudflare DNS'
