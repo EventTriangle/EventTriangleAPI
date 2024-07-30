@@ -91,17 +91,17 @@ stages:
                     kubectl apply -f ./pgsql-deployment-load-balancer --namespace ${{ parameters.namespace }}
                   workingDirectory: '${{ parameters.workingDirectory }}'
                   displayName: 'Deploy Postgres'
-
-                - bash: |
-                    helm repo add bitnami https://charts.bitnami.com/bitnami
-                    helm repo update
-                    helm upgrade --install event-rabbitmq bitnami/rabbitmq \
-                      --namespace ${{ parameters.namespace }} \
-                      --set auth.username=${{ parameters.rabbitMqUser }} \
-                      --set auth.password=${{ parameters.rabbitMqPassword }} \
-                      --set service.type=LoadBalancer
-                  workingDirectory: '${{ parameters.workingDirectory }}'
-                  displayName: 'Helm install RabbitMQ'
+                  
+                - task: PowerShell@2
+                  inputs:
+                    targetType: 'filePath'
+                    filePath: ${{ parameters.workingDirectory }}/helm-install-rabbit-mq/deploy-rabbitmq-helm.ps1
+                    arguments: '-HelmReleaseName event-rabbitmq 
+                                -Namespace ${{ parameters.namespace }} 
+                                -RabbitMqUsername ${{ parameters.rabbitMqUser }} 
+                                -RabbitMqPassword ${{ parameters.rabbitMqPassword }}'
+                    pwsh: true
+                    workingDirectory: ${{ parameters.workingDirectory }}
                   
                 - bash: |
                     RABBIT_MQ_IP=$(kubectl get service event-rabbitmq -n ${{ parameters.namespace }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
