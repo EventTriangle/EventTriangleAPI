@@ -18,3 +18,4 @@ In addition, terraform pipeline creates and configures AKS cluster
 - Installs Postgres database deployments with LoadBalancer service
 - Installs RabbitMQ HELM release with LoadBalancer service
 - Installs Ingress HELM release
+- Installs CertManager HELM release
