@@ -11,6 +11,8 @@ This implies process like
 - Update infra name prefix in AzureDevOps library
 - Run Terraform create pipeline
 
+## What pipeline does
+
 In addition, terraform pipeline creates and configures AKS cluster
 
 - Creates namespace

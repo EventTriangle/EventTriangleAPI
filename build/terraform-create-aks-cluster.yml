@@ -1,4 +1,4 @@
-#trigger: none
+trigger: none
 #pr:
 #  paths:
 #    include:
@@ -7,11 +7,11 @@
 #    exclude:
 #      - terraform/README.md
 
-trigger:
-  batch: true
-  branches:
-    include:
-      - docs
+#trigger:
+#  batch: true
+#  branches:
+#    include:
+#      - docs
 
 pr: none
 
