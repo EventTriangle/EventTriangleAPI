@@ -1,0 +1,142 @@
+parameters:
+  - name: vmImage
+    type: string
+
+  - name: environment
+    type: string
+
+  - name: serviceConnection
+    type: string
+
+  - name: azureResourceGroup
+    type: string
+
+  - name: kubernetesCluster
+    type: string
+
+  - name: namespace
+    type: string
+    default: 'event-triangle'
+
+  - name: workingDirectory
+    displayName: 'Working directory for Kubernetes'
+    type: string
+
+  - name: transformTargetFiles
+    displayName: 'Target files for token replacement'
+    type: string
+
+  - name: rabbitMqUser
+    displayName: 'RabbitMQ User'
+    type: string
+
+  - name: rabbitMqPassword
+    displayName: 'RabbitMQ Password'
+    type: string
+
+  - name: dependsOn
+    displayName: 'Depends On'
+    type: object
+
+  - name: condition
+    displayName: 'Condition'
+    type: string
+
+stages:
+  - stage: 'Configure_AKS_${{ parameters.environment }}'
+    displayName: 'Configure_AKS_${{ parameters.environment }}'
+    dependsOn: ${{ parameters.dependsOn }}
+    condition: succeeded('${{ parameters.condition }}')
+    jobs:
+      - deployment: 'Configure_AKS_${{ parameters.environment }}'
+        displayName: 'Configure_AKS_${{ parameters.environment }}'
+        pool:
+          vmImage: ${{ parameters.vmImage }}
+        environment: ${{ parameters.environment }}
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: self
+                  fetchDepth: 0
+
+                - task: Kubernetes@1
+                  displayName: 'Kubernetes Login'
+                  inputs:
+                    connectionType: 'Azure Resource Manager'
+                    azureSubscriptionEndpoint: ${{ parameters.serviceConnection }}
+                    azureResourceGroup: ${{ parameters.azureResourceGroup }}
+                    kubernetesCluster: ${{ parameters.kubernetesCluster }}
+                    command: 'login'
+
+                - task: replacetokens@5
+                  displayName: 'Replace tokens in secrets'
+                  inputs:
+                    rootDirectory: ${{ parameters.workingDirectory }}
+                    targetFiles: ${{ parameters.transformTargetFiles }}
+                    tokenPattern: 'doublebraces'
+                    writeBOM: false
+
+                - task: PowerShell@2
+                  displayName: 'Deploy Namespace'
+                  inputs:
+                    targetType: 'inline'
+                    script: 'kubectl apply -f ./namespace'
+                    pwsh: true
+                    workingDirectory: ${{ parameters.workingDirectory }}
+
+                - task: PowerShell@2
+                  displayName: 'Deploy Secrets'
+                  inputs:
+                    targetType: 'inline'
+                    script: 'kubectl apply -f ./secrets --namespace ${{ parameters.namespace }}'
+                    pwsh: true
+                    workingDirectory: ${{ parameters.workingDirectory }}
+
+                - task: PowerShell@2
+                  displayName: 'Deploy Postgres'
+                  inputs:
+                    targetType: 'inline'
+                    script: 'kubectl apply -f ./pgsql-deployment-load-balancer --namespace ${{ parameters.namespace }}'
+                    pwsh: true
+                    workingDirectory: ${{ parameters.workingDirectory }}
+
+                - task: PowerShell@2
+                  displayName: 'Deploy Nginx Ingress'
+                  inputs:
+                    targetType: 'filePath'
+                    filePath: ${{ parameters.workingDirectory }}/helm-install-nginx-ingress/deploy-ingress-helm.ps1
+                    arguments: '-HelmReleaseName "event-ingress" -Namespace ${{ parameters.namespace }}'
+                    pwsh: true
+                    workingDirectory: ${{ parameters.workingDirectory }}
+
+                - task: PowerShell@2
+                  displayName: 'Deploy RabbitMQ'
+                  inputs:
+                    targetType: 'filePath'
+                    filePath: ${{ parameters.workingDirectory }}/helm-install-rabbit-mq/deploy-rabbitmq-helm.ps1
+                    arguments: '-HelmReleaseName event-rabbitmq 
+                                -Namespace ${{ parameters.namespace }} 
+                                -RabbitMqUsername ${{ parameters.rabbitMqUser }} 
+                                -RabbitMqPassword ${{ parameters.rabbitMqPassword }}'
+                    pwsh: true
+                    workingDirectory: ${{ parameters.workingDirectory }}
+
+                - task: PowerShell@2
+                  displayName: 'Wait for deployments'
+                  inputs:
+                    targetType: 'filePath'
+                    filePath: ${{ parameters.workingDirectory }}/scripts/wait-deployments.ps1
+                    arguments: '-Namespace ${{ parameters.namespace }} 
+                                -RabbitRelease event-rabbitmq 
+                                -PostgresDeployment postgresdb'
+                    pwsh: true
+                    workingDirectory: ${{ parameters.workingDirectory }}
+                    
+                - task: PowerShell@2
+                  displayName: 'Print Public IPs'
+                  inputs:
+                    targetType: 'filePath'
+                    filePath: ${{ parameters.workingDirectory }}/scripts/print-ip.ps1
+                    pwsh: true
+                    workingDirectory: ${{ parameters.workingDirectory }}    

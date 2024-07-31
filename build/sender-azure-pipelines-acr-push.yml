@@ -30,7 +30,8 @@ pr: none
 variables:
   - name: appName
     value: 'SenderAPI'
-  - group: 'AKS_Settings'
+  - group: AKS_Settings
+  - group: terraform_storage_configuration
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -59,13 +60,13 @@ stages:
     dependsOn: 'Build_${{ variables.appName }}'
     condition: succeeded('Build_${{ variables.appName }}')
     jobs:
-      - template: templates/azure-k8s-deploy.yml
+      - template: templates/azure-k8s-deploy-jobs.yml
         parameters:
           appName: ${{ variables.appName }}
           vmImage: 'ubuntu-latest'
           environment: 'aks'
           serviceConnection: 'Azure_Connection'
-          azureResourceGroup: '$(AKS_RG)'
-          kubernetesCluster: '$(AKS_NAME)'
+          azureResourceGroup: '$(library-aks-resource-group)'
+          kubernetesCluster: '$(library-aks-cluster-name)'
           namespace: 'default'
           deploymentName: 'event-triangle-sender-deployment'

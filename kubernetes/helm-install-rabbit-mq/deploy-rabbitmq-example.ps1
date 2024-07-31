@@ -19,6 +19,3 @@ helm uninstall event-rabbitmq
 kubectl get endpoints
 
 kubectl describe service "event-rabbitmq"
-
-http://$SERVICE_IP:15672/
-http://20.13.249.2:15672/

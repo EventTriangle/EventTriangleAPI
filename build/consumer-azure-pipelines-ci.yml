@@ -32,11 +32,12 @@ pr:
       - src/consumer/EventTriangleAPI.Consumer.UnitTests
       - src/shared/EventTriangleAPI.Shared.Application
       - src/shared/EventTriangleAPI.Shared.DTO
-        
+
 variables:
   - name: appName
     value: 'ConsumerAPI'
-  - group: 'AKS_Settings'
+  - group: AKS_Settings
+  - group: terraform_storage_configuration
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -44,7 +45,7 @@ pool:
 stages:
   - stage: 'Build_${{ variables.appName }}'
     displayName: 'Build_${{ variables.appName }}'
-    jobs: 
+    jobs:
       - template: templates/docker-build-push-dockerhub-jobs.yml
         parameters:
           JobName: 'Build_${{ variables.appName }}'
@@ -59,19 +60,19 @@ stages:
           imageRepository: 'consumer-service'
           dockerfilePath: '$(System.DefaultWorkingDirectory)/src/consumer/Dockerfile'
           dockerServiceConnection: 'Docker_Hub_Connection'
-          
+
   - stage: 'AKS_Deploy_${{ variables.appName }}'
     displayName: 'AKS_Deploy_${{ variables.appName }}'
     dependsOn: 'Build_${{ variables.appName }}'
     condition: succeeded('Build_${{ variables.appName }}')
     jobs:
-      - template: templates/azure-k8s-deploy.yml
+      - template: templates/azure-k8s-deploy-jobs.yml
         parameters:
           appName: ${{ variables.appName }}
           vmImage: 'ubuntu-latest'
           environment: 'aks'
           serviceConnection: 'Azure_Connection'
-          azureResourceGroup: '$(AKS_RG)'
-          kubernetesCluster: '$(AKS_NAME)'
-          namespace: 'default'
+          azureResourceGroup: '$(library-aks-resource-group)'
+          kubernetesCluster: '$(library-aks-cluster-name)'
+          namespace: 'event-triangle'
           deploymentName: 'event-triangle-consumer-deployment'
