@@ -15,7 +15,7 @@ spec:
         app: event-triangle-consumer-api
     spec:
       containers:
-        - name: event-triangle-auth-api
+        - name: event-triangle-consumer-api
           image: kaminome/consumer-service:latest
           imagePullPolicy: Always
           ports:

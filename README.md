@@ -17,7 +17,7 @@ EventTriangleAPI offers realtime communication using SignalR.
 
 ## Required Software
 
-- **.NET SDK 6.0.202 or later:** https://dotnet.microsoft.com/en-us/download
+- **.NET SDK 8.0.301 or later:** https://dotnet.microsoft.com/en-us/download
 - **NVM for windows:** https://github.com/coreybutler/nvm-windows
 - **Angular CLI:** `15.2.6`
 - **NodeJS:** `18.15.0`
@@ -89,7 +89,7 @@ EventTriangleAPI offers realtime communication using SignalR.
 
 ## Technology stack
 
-- **SDK:** `.NET 6`
+- **SDK:** `.NET 8`
 - **Frameworks:** `ASP .NET Core`, `Angular 15`
 - **Persistence:**
     - Database: `PostgreSQL 15`

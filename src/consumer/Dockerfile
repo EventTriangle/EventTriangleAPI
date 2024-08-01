@@ -1,8 +1,8 @@
-FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 EXPOSE 80
 
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS publish
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS publish
 WORKDIR /src
 COPY ["consumer/EventTriangleAPI.Consumer.Application/EventTriangleAPI.Consumer.Application.csproj", "consumer/EventTriangleAPI.Consumer.Application/"]
 COPY ["consumer/EventTriangleAPI.Consumer.BusinessLogic/EventTriangleAPI.Consumer.BusinessLogic.csproj", "consumer/EventTriangleAPI.Consumer.BusinessLogic/"]

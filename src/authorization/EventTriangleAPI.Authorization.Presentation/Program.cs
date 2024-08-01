@@ -53,10 +53,7 @@ builder.Services.AddHttpClient();
 builder.Services.AddTicketStore();
 builder.Services.AddHostedServices();
 
-builder.WebHost.ConfigureLogging(logging =>
-{
-    logging.AddFilter("Grpc", LogLevel.Debug);
-});
+builder.Logging.AddFilter("Grpc", LogLevel.Debug);
 
 var app = builder.Build();
 
@@ -81,11 +78,8 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 
-app.UseEndpoints(options =>
-{
-    options.MapReverseProxy();
-    options.MapControllers();
-});
+app.MapReverseProxy();
+app.MapControllers();
 
 app.MigrateDatabase();
 

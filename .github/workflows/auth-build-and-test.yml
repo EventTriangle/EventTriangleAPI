@@ -28,13 +28,13 @@ jobs:
   build-and-test-dotnet:
     name: Auth Build
     runs-on: ubuntu-latest
-    
+
     env:
       NUGET_PACKAGES: ${{ github.workspace }}/.github/nuget-packages
-    
+
     steps:
       - name: Fetch Sources
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 

@@ -4,8 +4,10 @@ namespace EventTriangleAPI.Consumer.BusinessLogic.Hubs;
 
 public class NotificationHub : Hub<INotificationHub>
 {
-    public async Task Join()
+    public Task Join()
     {
         Console.WriteLine("Hello");
+
+        return Task.CompletedTask;
     }
 }

@@ -65,7 +65,7 @@ public class TicketStore : ITicketStore
         var context = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
 
         var sub = ticket.Principal.Claims.First(x => x.Type == ClaimsConstants.Sub).Value;
-        var role = ticket.Principal.Claims.FirstOrDefault(x => x.Type == ClaimsConstants.Roles).Value;
+        var role = ticket.Principal.Claims.FirstOrDefault(x => x.Type == ClaimsConstants.Roles)?.Value;
 
         var idToken = ticket.Properties.GetTokenValue(TokenTypes.IdentityToken);
         var accessToken = ticket.Properties.GetTokenValue(TokenTypes.AccessToken);

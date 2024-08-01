@@ -1,21 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
+        <LangVersion>12</LangVersion>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-      <DocumentationFile>bin\Debug\net6.0\EventTriangleAPI.Consumer.Presentation.xml</DocumentationFile>
+      <DocumentationFile>bin\Debug\net8.0\EventTriangleAPI.Consumer.Presentation.xml</DocumentationFile>
     </PropertyGroup>
-
-    <ItemGroup>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.8">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
-    </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\EventTriangleAPI.Consumer.BusinessLogic\EventTriangleAPI.Consumer.BusinessLogic.csproj" />
@@ -27,5 +20,4 @@
         <HintPath>..\..\..\..\..\.nuget\packages\swashbuckle.aspnetcore.annotations\6.5.0\lib\net6.0\Swashbuckle.AspNetCore.Annotations.dll</HintPath>
       </Reference>
     </ItemGroup>
-
 </Project>

@@ -1,32 +1,32 @@
 name: Docker compose build
 
-on: 
+on:
   push:
     branches:
       - main
       - develop
-  pull_request: 
+  pull_request:
     branches: [ develop ]
   workflow_dispatch:
-  
+
 jobs:
   angular-build:
     name: Docker compose build
     runs-on: ${{ matrix.environment }}
-    strategy: 
+    strategy:
       matrix:
         environment:
           - ubuntu-latest
     steps:
       - name: 'Checkout'
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          
+
       - name: Docker compose build
         run: |
           docker compose build
-          
+
       - name: Docker compose up
         run: |
           docker compose up -d
