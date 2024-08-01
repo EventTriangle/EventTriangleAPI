@@ -121,6 +121,15 @@ stages:
                                 -RabbitMqPassword ${{ parameters.rabbitMqPassword }}'
                     pwsh: true
                     workingDirectory: ${{ parameters.workingDirectory }}
+                    
+                - task: PowerShell@2
+                  displayName: 'Deploy CertManager'
+                  inputs:
+                    targetType: 'filePath'
+                    filePath: ${{ parameters.workingDirectory }}/helm-install-cert-manager/deploy-cert-manager-helm.ps1
+                    arguments: '-HelmReleaseName cert-manager -Namespace ${{ parameters.namespace }}'
+                    pwsh: true
+                    workingDirectory: ${{ parameters.workingDirectory }}
 
                 - task: PowerShell@2
                   displayName: 'Wait for deployments'
