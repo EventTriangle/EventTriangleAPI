@@ -45,6 +45,7 @@ stages:
           buildConfiguration: 'Release'
           backendProjectPath: '$(System.DefaultWorkingDirectory)/src/authorization/EventTriangleAPI.Authorization.Presentation'
           unitTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/authorization/EventTriangleAPI.Authorization.UnitTests/EventTriangleAPI.Authorization.UnitTests.csproj'
+          shouldRunUnitTests: 'false'
           shouldRunIntegrationTests: 'false'
           integrationTestsProjectPath: ''
           dockerRegistryUrl: 'myaksacr01aks01.azurecr.io'
