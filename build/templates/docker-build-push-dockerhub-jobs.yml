@@ -25,6 +25,11 @@ parameters:
     displayName: 'Unit tests project path'
     type: string
 
+  - name: shouldRunUnitTests
+    displayName: 'Flag should run unit tests'
+    default: 'true'
+    type: boolean
+
   - name: shouldRunIntegrationTests
     displayName: 'Flag should run integration tests'
     type: boolean
@@ -54,7 +59,7 @@ parameters:
   - name: dockerServiceConnection
     displayName: 'Docker container registry service connection in Azure DevOps.'
     type: string
-    
+
   - name: dockerBuildParameterUrl
     displayName: 'Build parameter for Docker: Base URL'
     default: 'https://eventtriangleauth.devtest.team/'
@@ -97,12 +102,13 @@ jobs:
           projects: '${{ parameters.solution }}'
           arguments: '-c ${{ parameters.buildConfiguration }} -p:Version=$(GitVersion.SemVer) --no-restore'
 
-      - task: DotnetCoreCLI@2
-        displayName: 'Run unit tests'
-        inputs:
-          command: 'test'
-          projects: '${{ parameters.unitTestsProjectPath }}'
-          arguments: '--no-build --configuration ${{ parameters.buildConfiguration }} --collect "Code Coverage"'
+      - ${{ if eq(parameters.shouldRunIntegrationTests, 'true') }}:
+          - task: DotnetCoreCLI@2
+            displayName: 'Run unit tests'
+            inputs:
+              command: 'test'
+              projects: '${{ parameters.unitTestsProjectPath }}'
+              arguments: '--no-build --configuration ${{ parameters.buildConfiguration }} --collect "Code Coverage"'
 
       - ${{ if eq(parameters.shouldRunIntegrationTests, 'true') }}:
           - task: PowerShell@2
