@@ -10,7 +10,7 @@ namespace EventTriangleAPI.Consumer.IntegrationTests.CommandHandlerTests.UpdateU
 public class UpdateUserRoleTestThrowEntityNotFound : IntegrationTestBase
 {
     [Fact]
-    public async void TestRequesterNotFound()
+    public async Task TestRequesterNotFound()
     {
         var alice = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserAliceCommand());
 
@@ -21,7 +21,7 @@ public class UpdateUserRoleTestThrowEntityNotFound : IntegrationTestBase
     }
     
     [Fact]
-    public async void TestUserNotFound()
+    public async Task TestUserNotFound()
     {
         var dima = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
 

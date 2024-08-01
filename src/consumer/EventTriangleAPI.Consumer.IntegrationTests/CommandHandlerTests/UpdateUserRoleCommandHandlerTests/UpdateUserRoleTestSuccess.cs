@@ -10,7 +10,7 @@ namespace EventTriangleAPI.Consumer.IntegrationTests.CommandHandlerTests.UpdateU
 public class UpdateUserRoleTestSuccess : IntegrationTestBase
 {
     [Fact]
-    public async void TestSuccess()
+    public async Task TestSuccess()
     {
         var dima = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
         var alice = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserAliceCommand());

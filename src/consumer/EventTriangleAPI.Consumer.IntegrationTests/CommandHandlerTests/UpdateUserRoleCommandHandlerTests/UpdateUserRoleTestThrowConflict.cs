@@ -10,7 +10,7 @@ namespace EventTriangleAPI.Consumer.IntegrationTests.CommandHandlerTests.UpdateU
 public class UpdateUserRoleTestThrowConflict : IntegrationTestBase
 {
     [Fact]
-    public async void TestConflict()
+    public async Task TestConflict()
     {
         var bob = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserBobCommand());
         var alice = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserAliceCommand());
