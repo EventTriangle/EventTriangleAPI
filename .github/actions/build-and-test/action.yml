@@ -4,25 +4,25 @@ inputs:
   backendCsprojPath:
     description: '<API-name>.Presentation.csproj path'
     required: true
-  
+
   integrationTestsProjectPath:
     description: 'Integration tests project path'
     required: false
     default: ''
-  
+
   unitTestsProjectPath:
     description: 'Unit tests project path'
     required: false
     default: ''
-  
+
   buildConfiguration:
     description: 'Build configuration (Release or Debug)'
     required: true
-  
+
   serviceName:
     description: 'Service name'
     required: true
-    
+
   creatingDatabase:
     description: 'Creating database in docker container'
     required: false
@@ -33,20 +33,20 @@ runs:
 
   steps:
     - name: Install GitVersion
-      uses: gittools/actions/gitversion/setup@v0.10.2
+      uses: gittools/actions/gitversion/setup@v1.1.1
       with:
         versionSpec: '5.x'
 
     - name: Determine Version
-      uses: gittools/actions/gitversion/execute@v0.10.2
+      uses: gittools/actions/gitversion/execute@v1.1.1
 
     - name: Setup .NET 6.0 SDK
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 6.0.x
 
     - name: NuGet Cache
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ${{ env.NUGET_PACKAGES }}
         key: ${{ runner.os }}.nuget.${{ hashFiles('**/*.csproj') }}

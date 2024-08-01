@@ -62,10 +62,7 @@ builder.Services.AddMassTransit(config =>
     });
 });
 
-builder.WebHost.ConfigureLogging(logging =>
-{
-    logging.AddFilter("Grpc", LogLevel.Debug);
-});
+builder.Logging.AddFilter("Grpc", LogLevel.Debug);
 
 var app = builder.Build();
 
