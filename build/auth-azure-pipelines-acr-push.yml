@@ -1,31 +1,29 @@
-trigger: none
-#trigger:
-#  batch: true
-#  branches:
-#    include:
-#      - develop
-#      - main
-#  paths:
-#    include:
-#      - build
-#      - src/authorization/EventTriangleAPI.Authorization.BusinessLogic
-#      - src/authorization/EventTriangleAPI.Authorization.Presentation
-#      - src/shared/EventTriangleAPI.Shared.Application
-#      - src/shared/EventTriangleAPI.Shared.DTO
+trigger:
+  batch: true
+  branches:
+    include:
+      - develop
+      - main
+  paths:
+    include:
+      - build
+      - src/authorization/EventTriangleAPI.Authorization.BusinessLogic
+      - src/authorization/EventTriangleAPI.Authorization.Presentation
+      - src/shared/EventTriangleAPI.Shared.Application
+      - src/shared/EventTriangleAPI.Shared.DTO
 
-pr: none
-#pr:
-#  branches:
-#    include:
-#      - develop
-#      - main
-#  paths:
-#    include:
-#      - build
-#      - src/authorization/EventTriangleAPI.Authorization.BusinessLogic
-#      - src/authorization/EventTriangleAPI.Authorization.Presentation
-#      - src/shared/EventTriangleAPI.Shared.Application
-#      - src/shared/EventTriangleAPI.Shared.DTO
+pr:
+  branches:
+    include:
+      - develop
+      - main
+  paths:
+    include:
+      - build
+      - src/authorization/EventTriangleAPI.Authorization.BusinessLogic
+      - src/authorization/EventTriangleAPI.Authorization.Presentation
+      - src/shared/EventTriangleAPI.Shared.Application
+      - src/shared/EventTriangleAPI.Shared.DTO
 
 variables:
   - name: appName

@@ -102,7 +102,7 @@ jobs:
           projects: '${{ parameters.solution }}'
           arguments: '-c ${{ parameters.buildConfiguration }} -p:Version=$(GitVersion.SemVer) --no-restore'
 
-      - ${{ if eq(parameters.shouldRunIntegrationTests, 'true') }}:
+      - ${{ if eq(parameters.shouldRunUnitTests, 'true') }}:
           - task: DotnetCoreCLI@2
             displayName: 'Run unit tests'
             inputs:
