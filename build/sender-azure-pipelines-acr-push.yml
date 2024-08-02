@@ -29,6 +29,7 @@ variables:
   - name: appName
     value: 'SenderAPI'
   - group: AKS_Settings
+  - group: terraform_storage_configuration
 
 pool:
   vmImage: 'ubuntu-latest'

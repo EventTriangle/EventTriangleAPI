@@ -29,6 +29,7 @@ variables:
   - name: appName
     value: 'AuthorizationAPI'
   - group: AKS_Settings
+  - group: terraform_storage_configuration
 
 pool:
   vmImage: 'ubuntu-latest'
