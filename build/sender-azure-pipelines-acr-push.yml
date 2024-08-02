@@ -1,32 +1,30 @@
-trigger: none
-#trigger:
-#  batch: true
-#  branches:
-#    include:
-#      - develop
-#      - main
-#  paths:
-#    include:
-#      - build
-#      - src/authorization/EventTriangleAPI.Authorization.BusinessLogic
-#      - src/authorization/EventTriangleAPI.Authorization.Presentation
-#      - src/shared/EventTriangleAPI.Shared.Application
-#      - src/shared/EventTriangleAPI.Shared.DTO
+trigger:
+  batch: true
+  branches:
+    include:
+      - develop
+      - main
+  paths:
+    include:
+      - build
+      - src/authorization/EventTriangleAPI.Authorization.BusinessLogic
+      - src/authorization/EventTriangleAPI.Authorization.Presentation
+      - src/shared/EventTriangleAPI.Shared.Application
+      - src/shared/EventTriangleAPI.Shared.DTO
 
-pr: none
-#pr:
-#  branches:
-#    include:
-#      - develop
-#      - main
-#  paths:
-#    include:
-#      - build
-#      - src/authorization/EventTriangleAPI.Authorization.BusinessLogic
-#      - src/authorization/EventTriangleAPI.Authorization.Presentation
-#      - src/shared/EventTriangleAPI.Shared.Application
-#      - src/shared/EventTriangleAPI.Shared.DTO
-        
+pr:
+  branches:
+    include:
+      - develop
+      - main
+  paths:
+    include:
+      - build
+      - src/authorization/EventTriangleAPI.Authorization.BusinessLogic
+      - src/authorization/EventTriangleAPI.Authorization.Presentation
+      - src/shared/EventTriangleAPI.Shared.Application
+      - src/shared/EventTriangleAPI.Shared.DTO
+
 variables:
   - name: appName
     value: 'SenderAPI'
@@ -39,7 +37,7 @@ pool:
 stages:
   - stage: 'Build_${{ variables.appName }}'
     displayName: 'Build_${{ variables.appName }}'
-    jobs: 
+    jobs:
       - template: templates/docker-build-push-acr-jobs.yml
         parameters:
           JobName: 'Build_${{ variables.appName }}'
@@ -49,12 +47,12 @@ stages:
           unitTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/sender/EventTriangleAPI.Sender.UnitTests/EventTriangleAPI.Sender.UnitTests.csproj'
           shouldRunIntegrationTests: 'true'
           integrationTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/sender/EventTriangleAPI.Sender.IntegrationTests/EventTriangleAPI.Sender.IntegrationTests.csproj'
-          dockerRegistryUrl: 'myaksacr01aks01.azurecr.io'
+          dockerRegistryUrl: 'myaksacrd03.azurecr.io'
           dockerBuildParameterUrl: 'https://auth.eventtriangle.razumovsky.me/'
           imageRepository: 'sender-service'
           dockerfilePath: '$(System.DefaultWorkingDirectory)/src/sender/Dockerfile'
           dockerServiceConnection: 'Azure_ACR_Connection'
-          
+
   - stage: 'AKS_Deploy_${{ variables.appName }}'
     displayName: 'AKS_Deploy_${{ variables.appName }}'
     dependsOn: 'Build_${{ variables.appName }}'

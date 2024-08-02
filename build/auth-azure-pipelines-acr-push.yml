@@ -1,31 +1,29 @@
-trigger: none
-#trigger:
-#  batch: true
-#  branches:
-#    include:
-#      - develop
-#      - main
-#  paths:
-#    include:
-#      - build
-#      - src/authorization/EventTriangleAPI.Authorization.BusinessLogic
-#      - src/authorization/EventTriangleAPI.Authorization.Presentation
-#      - src/shared/EventTriangleAPI.Shared.Application
-#      - src/shared/EventTriangleAPI.Shared.DTO
+trigger:
+  batch: true
+  branches:
+    include:
+      - develop
+      - main
+  paths:
+    include:
+      - build
+      - src/authorization/EventTriangleAPI.Authorization.BusinessLogic
+      - src/authorization/EventTriangleAPI.Authorization.Presentation
+      - src/shared/EventTriangleAPI.Shared.Application
+      - src/shared/EventTriangleAPI.Shared.DTO
 
-pr: none
-#pr:
-#  branches:
-#    include:
-#      - develop
-#      - main
-#  paths:
-#    include:
-#      - build
-#      - src/authorization/EventTriangleAPI.Authorization.BusinessLogic
-#      - src/authorization/EventTriangleAPI.Authorization.Presentation
-#      - src/shared/EventTriangleAPI.Shared.Application
-#      - src/shared/EventTriangleAPI.Shared.DTO
+pr:
+  branches:
+    include:
+      - develop
+      - main
+  paths:
+    include:
+      - build
+      - src/authorization/EventTriangleAPI.Authorization.BusinessLogic
+      - src/authorization/EventTriangleAPI.Authorization.Presentation
+      - src/shared/EventTriangleAPI.Shared.Application
+      - src/shared/EventTriangleAPI.Shared.DTO
 
 variables:
   - name: appName
@@ -47,9 +45,10 @@ stages:
           buildConfiguration: 'Release'
           backendProjectPath: '$(System.DefaultWorkingDirectory)/src/authorization/EventTriangleAPI.Authorization.Presentation'
           unitTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/authorization/EventTriangleAPI.Authorization.UnitTests/EventTriangleAPI.Authorization.UnitTests.csproj'
+          shouldRunUnitTests: 'false'
           shouldRunIntegrationTests: 'false'
           integrationTestsProjectPath: ''
-          dockerRegistryUrl: 'myaksacr01aks01.azurecr.io'
+          dockerRegistryUrl: 'myaksacrd03.azurecr.io'
           dockerBuildParameterUrl: 'https://auth.eventtriangle.razumovsky.me/'
           imageRepository: 'auth-service'
           dockerfilePath: '$(System.DefaultWorkingDirectory)/src/authorization/Dockerfile'

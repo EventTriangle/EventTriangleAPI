@@ -7,8 +7,12 @@ trigger:
   paths:
     include:
       - build
-      - src/authorization/EventTriangleAPI.Authorization.BusinessLogic
-      - src/authorization/EventTriangleAPI.Authorization.Presentation
+      - src/sender/EventTriangleAPI.Sender.Application
+      - src/sender/EventTriangleAPI.Sender.BusinessLogic
+      - src/sender/EventTriangleAPI.Sender.Domain
+      - src/sender/EventTriangleAPI.Sender.Presentation
+      - src/sender/EventTriangleAPI.Sender.IntegrationTests
+      - src/sender/EventTriangleAPI.Sender.UnitTests
       - src/shared/EventTriangleAPI.Shared.Application
       - src/shared/EventTriangleAPI.Shared.DTO
 
@@ -20,14 +24,18 @@ pr:
   paths:
     include:
       - build
-      - src/authorization/EventTriangleAPI.Authorization.BusinessLogic
-      - src/authorization/EventTriangleAPI.Authorization.Presentation
+      - src/sender/EventTriangleAPI.Sender.Application
+      - src/sender/EventTriangleAPI.Sender.BusinessLogic
+      - src/sender/EventTriangleAPI.Sender.Domain
+      - src/sender/EventTriangleAPI.Sender.Presentation
+      - src/sender/EventTriangleAPI.Sender.IntegrationTests
+      - src/sender/EventTriangleAPI.Sender.UnitTests
       - src/shared/EventTriangleAPI.Shared.Application
       - src/shared/EventTriangleAPI.Shared.DTO
 
 variables:
   - name: appName
-    value: 'AuthorizationAPI'
+    value: 'SenderAPI'
   - group: AKS_Settings
   - group: terraform_storage_configuration
 
@@ -43,14 +51,14 @@ stages:
           JobName: 'Build_${{ variables.appName }}'
           solution: '$(System.DefaultWorkingDirectory)/EventTriangleAPI.sln'
           buildConfiguration: 'Release'
-          backendProjectPath: '$(System.DefaultWorkingDirectory)/src/authorization/EventTriangleAPI.Authorization.Presentation'
-          unitTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/authorization/EventTriangleAPI.Authorization.UnitTests/EventTriangleAPI.Authorization.UnitTests.csproj'
-          shouldRunIntegrationTests: 'false'
-          integrationTestsProjectPath: ''
+          backendProjectPath: '$(System.DefaultWorkingDirectory)/src/sender/EventTriangleAPI.Sender.Presentation'
+          unitTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/sender/EventTriangleAPI.Sender.UnitTests/EventTriangleAPI.Sender.UnitTests.csproj'
+          shouldRunIntegrationTests: 'true'
+          integrationTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/sender/EventTriangleAPI.Sender.IntegrationTests/EventTriangleAPI.Sender.IntegrationTests.csproj'
           dockerRegistryUrl: 'docker.io/kaminome'
           dockerBuildParameterUrl: 'https://auth.eventtriangle.razumovsky.me/'
-          imageRepository: 'auth-service'
-          dockerfilePath: '$(System.DefaultWorkingDirectory)/src/authorization/Dockerfile'
+          imageRepository: 'sender-service'
+          dockerfilePath: '$(System.DefaultWorkingDirectory)/src/sender/Dockerfile'
           dockerServiceConnection: 'Docker_Hub_Connection'
 
   - stage: 'AKS_Deploy_${{ variables.appName }}'
@@ -67,4 +75,4 @@ stages:
           azureResourceGroup: '$(library-aks-resource-group)'
           kubernetesCluster: '$(library-aks-cluster-name)'
           namespace: 'event-triangle'
-          deploymentName: 'event-triangle-auth-deployment'
+          deploymentName: 'event-triangle-sender-deployment'
