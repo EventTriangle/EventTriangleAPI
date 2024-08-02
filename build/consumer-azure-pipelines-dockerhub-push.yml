@@ -37,7 +37,6 @@ variables:
   - name: appName
     value: 'ConsumerAPI'
   - group: AKS_Settings
-  - group: terraform_storage_configuration
 
 pool:
   vmImage: 'ubuntu-latest'
