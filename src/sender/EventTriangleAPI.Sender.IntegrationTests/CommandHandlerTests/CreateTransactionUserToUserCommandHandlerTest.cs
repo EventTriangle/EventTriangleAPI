@@ -5,7 +5,7 @@ using Xunit;
 
 namespace EventTriangleAPI.Sender.IntegrationTests.CommandHandlerTests;
 
-public class CreateTransactionUserToUserCommandHandlerTest : IntegrationTestBase, IIntegrationTest
+public class CreateTransactionUserToUserCommandHandlerTest(TestFixture fixture) : TestBase(fixture)
 {
     [Fact]
     public async Task Test()
@@ -14,11 +14,11 @@ public class CreateTransactionUserToUserCommandHandlerTest : IntegrationTestBase
             Guid.NewGuid().ToString(),
             Guid.NewGuid().ToString(),
             Amount: 300);
-        
-        var result = await CreateTransactionUserToUserCommandHandler.HandleAsync(command);
 
-        var transactionCreatedEvent = 
-            await DatabaseContextFixture.TransactionUserToUserCreatedEvents.FirstOrDefaultAsync(x => x.Id == result.Response.Id);
+        var result = await Fixture.CreateTransactionUserToUserCommandHandler.HandleAsync(command);
+
+        var transactionCreatedEvent =
+            await Fixture.DatabaseContextFixture.TransactionUserToUserCreatedEvents.FirstOrDefaultAsync(x => x.Id == result.Response.Id);
 
         transactionCreatedEvent.Should().NotBeNull();
     }

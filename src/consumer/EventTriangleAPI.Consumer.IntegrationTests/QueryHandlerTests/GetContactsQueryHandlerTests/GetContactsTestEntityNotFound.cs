@@ -5,13 +5,13 @@ using Xunit;
 
 namespace EventTriangleAPI.Consumer.IntegrationTests.QueryHandlerTests.GetContactsQueryHandlerTests;
 
-public class GetContactsTestEntityNotFound : IntegrationTestBase
+public class GetContactsTestEntityNotFound(TestFixture fixture) : TestBase(fixture)
 {
     [Fact]
     public async Task TestRequesterNotFound()
     {
         var getContactsQuery = new GetContactsQuery(Guid.NewGuid().ToString());
-        var getContactsResult = await GetContactsQueryHandler.HandleAsync(getContactsQuery);
+        var getContactsResult = await Fixture.GetContactsQueryHandler.HandleAsync(getContactsQuery);
 
         getContactsResult.Error.Should().BeOfType<DbEntityNotFoundError>();
     }

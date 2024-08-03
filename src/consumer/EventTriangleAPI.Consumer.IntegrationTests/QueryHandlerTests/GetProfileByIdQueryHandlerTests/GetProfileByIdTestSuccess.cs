@@ -5,15 +5,15 @@ using Xunit;
 
 namespace EventTriangleAPI.Consumer.IntegrationTests.QueryHandlerTests.GetProfileByIdQueryHandlerTests;
 
-public class GetProfileByIdTestSuccess : IntegrationTestBase
+public class GetProfileByIdTestSuccess(TestFixture fixture) : TestBase(fixture)
 {
     [Fact]
     public async Task TestSuccess()
     {
-        var alice = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserAliceCommand());
+        var alice = await Fixture.CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserAliceCommand());
 
         var getProfileByIdQuery = new GetProfileByIdQuery(alice.Response.Id);
-        var getProfileByIdResult = await GetProfileByIdQueryHandler.HandleAsync(getProfileByIdQuery);
+        var getProfileByIdResult = await Fixture.GetProfileByIdQueryHandler.HandleAsync(getProfileByIdQuery);
 
         getProfileByIdResult.Response.Id.Should().Be(alice.Response.Id);
         getProfileByIdResult.Response.Email.Should().Be(alice.Response.Email);

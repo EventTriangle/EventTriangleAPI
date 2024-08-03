@@ -6,35 +6,35 @@ using Xunit;
 
 namespace EventTriangleAPI.Consumer.IntegrationTests.QueryHandlerTests.GetSupportTicketsQueryHandlerTests;
 
-public class GetSupportTicketsTestSuccess : IntegrationTestBase
+public class GetSupportTicketsTestSuccess(TestFixture fixture) : TestBase(fixture)
 {
     [Fact]
     public async Task TestSuccess()
     {
-        var alice = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserAliceCommand());
-        var bob = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserBobCommand());
+        var alice = await Fixture.CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserAliceCommand());
+        var bob = await Fixture.CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserBobCommand());
         var addCreditCardForAliceCommand = AddCreditCardCommandHelper.CreateCreditCardCommand(alice.Response.Id);
-        var addCreditCardForAliceResult = await AddCreditCardCommandHandler.HandleAsync(addCreditCardForAliceCommand);
+        var addCreditCardForAliceResult = await Fixture.AddCreditCardCommandHandler.HandleAsync(addCreditCardForAliceCommand);
         var createTransactionCardToUserForDimaCommand = new CreateTransactionCardToUserCommand(
             addCreditCardForAliceResult.Response.Id,
             alice.Response.Id,
             600,
             DateTime.UtcNow);
-        await CreateTransactionCardToUserCommandHandler.HandleAsync(createTransactionCardToUserForDimaCommand);
+        await Fixture.CreateTransactionCardToUserCommandHandler.HandleAsync(createTransactionCardToUserForDimaCommand);
         var firstCreateTransactionUserToUserCommand = new CreateTransactionUserToUserCommand(
             alice.Response.Id,
             bob.Response.Id,
-            300, 
+            300,
             DateTime.UtcNow);
         var secondCreateTransactionUserToUserCommand = new CreateTransactionUserToUserCommand(
             alice.Response.Id,
             bob.Response.Id,
-            300, 
+            300,
             DateTime.UtcNow);
-        var firstCreateTransactionUserToUserResult = 
-            await CreateTransactionUserToUserCommandHandler.HandleAsync(firstCreateTransactionUserToUserCommand);
-        var secondCreateTransactionUserToUserResult = 
-            await CreateTransactionUserToUserCommandHandler.HandleAsync(secondCreateTransactionUserToUserCommand);
+        var firstCreateTransactionUserToUserResult =
+            await Fixture.CreateTransactionUserToUserCommandHandler.HandleAsync(firstCreateTransactionUserToUserCommand);
+        var secondCreateTransactionUserToUserResult =
+            await Fixture.CreateTransactionUserToUserCommandHandler.HandleAsync(secondCreateTransactionUserToUserCommand);
         var firstOpenSupportTicketForFirstTransactionCommand = new OpenSupportTicketCommand(
             alice.Response.Id,
             alice.Response.WalletId,
@@ -47,16 +47,16 @@ public class GetSupportTicketsTestSuccess : IntegrationTestBase
             secondCreateTransactionUserToUserResult.Response.Id,
             "Please, can you rollback my transaction?",
             DateTime.UtcNow);
-        var firstOpenSupportTicketForFirstTransactionResult = 
-            await OpenSupportTicketCommandHandler.HandleAsync(firstOpenSupportTicketForFirstTransactionCommand);
-        var secondOpenSupportTicketForFirstTransactionResult = 
-            await OpenSupportTicketCommandHandler.HandleAsync(secondOpenSupportTicketForFirstTransactionCommand);
+        var firstOpenSupportTicketForFirstTransactionResult =
+            await Fixture.OpenSupportTicketCommandHandler.HandleAsync(firstOpenSupportTicketForFirstTransactionCommand);
+        var secondOpenSupportTicketForFirstTransactionResult =
+            await Fixture.OpenSupportTicketCommandHandler.HandleAsync(secondOpenSupportTicketForFirstTransactionCommand);
 
         var getSupportTicketsForAliceQuery = new GetSupportsTicketsQuery(alice.Response.Id, 10, DateTime.UtcNow);
         var getSupportTicketsForBobQuery = new GetSupportsTicketsQuery(bob.Response.Id, 10, DateTime.UtcNow);
-        var getSupportTicketsForAliceResult = await GetSupportTicketsQueryHandler.HandleAsync(getSupportTicketsForAliceQuery);
-        var getSupportTicketsForBobResult = await GetSupportTicketsQueryHandler.HandleAsync(getSupportTicketsForBobQuery);
-        
+        var getSupportTicketsForAliceResult = await Fixture.GetSupportTicketsQueryHandler.HandleAsync(getSupportTicketsForAliceQuery);
+        var getSupportTicketsForBobResult = await Fixture.GetSupportTicketsQueryHandler.HandleAsync(getSupportTicketsForBobQuery);
+
         getSupportTicketsForAliceResult.Response.Count.Should().Be(2);
         getSupportTicketsForAliceResult.Response
             .FirstOrDefault(x => x.Id == firstOpenSupportTicketForFirstTransactionResult.Response.Id)

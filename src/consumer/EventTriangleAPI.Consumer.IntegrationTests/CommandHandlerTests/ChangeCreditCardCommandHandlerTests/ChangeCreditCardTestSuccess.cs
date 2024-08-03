@@ -7,15 +7,15 @@ using Xunit;
 
 namespace EventTriangleAPI.Consumer.IntegrationTests.CommandHandlerTests.ChangeCreditCardCommandHandlerTests;
 
-public class ChangeCreditCardTestSuccess : IntegrationTestBase
+public class ChangeCreditCardTestSuccess(TestFixture fixture) : TestBase(fixture)
 {
     [Fact]
     public async Task TestSuccess()
     {
-        var dima = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
+        var dima = await Fixture.CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
         var addCreditCardCommand = AddCreditCardCommandHelper.CreateCreditCardCommand(dima.Response.Id);
-        var addCreditCardResult = await AddCreditCardCommandHandler.HandleAsync(addCreditCardCommand);
-        
+        var addCreditCardResult = await Fixture.AddCreditCardCommandHandler.HandleAsync(addCreditCardCommand);
+
         var changeCreditCardCommand = new ChangeCreditCardCommand(
             addCreditCardResult.Response.Id,
             dima.Response.Id,
@@ -24,9 +24,9 @@ public class ChangeCreditCardTestSuccess : IntegrationTestBase
             "321",
             "12/06",
             PaymentNetwork.Visa);
-        await ChangeCreditCardCommandHandler.HandleAsync(changeCreditCardCommand);
+        await Fixture.ChangeCreditCardCommandHandler.HandleAsync(changeCreditCardCommand);
 
-        var creditCard = await DatabaseContextFixture.CreditCardEntities
+        var creditCard = await Fixture.DatabaseContextFixture.CreditCardEntities
             .FirstOrDefaultAsync(x => x.Id == addCreditCardResult.Response.Id);
         creditCard.UserId.Should().Be(dima.Response.Id);
         creditCard.HolderName.Should().Be(changeCreditCardCommand.HolderName);

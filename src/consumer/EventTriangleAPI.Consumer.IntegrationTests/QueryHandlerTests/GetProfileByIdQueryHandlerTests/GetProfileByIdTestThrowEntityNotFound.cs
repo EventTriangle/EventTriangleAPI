@@ -5,13 +5,13 @@ using Xunit;
 
 namespace EventTriangleAPI.Consumer.IntegrationTests.QueryHandlerTests.GetProfileByIdQueryHandlerTests;
 
-public class GetProfileByIdTestThrowEntityNotFound : IntegrationTestBase
+public class GetProfileByIdTestThrowEntityNotFound(TestFixture fixture) : TestBase(fixture)
 {
     [Fact]
     public async Task TestUserNotFound()
     {
         var getProfileByIdQuery = new GetProfileByIdQuery(Guid.NewGuid().ToString());
-        var getProfileByIdResult = await GetProfileByIdQueryHandler.HandleAsync(getProfileByIdQuery);
+        var getProfileByIdResult = await Fixture.GetProfileByIdQueryHandler.HandleAsync(getProfileByIdQuery);
 
         getProfileByIdResult.Error.Should().BeOfType<DbEntityNotFoundError>();
     }

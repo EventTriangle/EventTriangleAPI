@@ -7,16 +7,16 @@ using Xunit;
 
 namespace EventTriangleAPI.Consumer.IntegrationTests.CommandHandlerTests.UpdateUserRoleCommandHandlerTests;
 
-public class UpdateUserRoleTestThrowConflict : IntegrationTestBase
+public class UpdateUserRoleTestThrowConflict(TestFixture fixture) : TestBase(fixture)
 {
     [Fact]
     public async Task TestConflict()
     {
-        var bob = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserBobCommand());
-        var alice = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserAliceCommand());
+        var bob = await Fixture.CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserBobCommand());
+        var alice = await Fixture.CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserAliceCommand());
 
         var updateUserRoleCommand = new UpdateUserRoleCommand(bob.Response.Id, alice.Response.Id, UserRole.Admin);
-        var updateUserRoleResult =  await UpdateUserRoleCommandHandler.HandleAsync(updateUserRoleCommand);
+        var updateUserRoleResult =  await Fixture.UpdateUserRoleCommandHandler.HandleAsync(updateUserRoleCommand);
 
         updateUserRoleResult.Error.Should().BeOfType<ConflictError>();
     }

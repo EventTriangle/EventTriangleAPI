@@ -7,12 +7,12 @@ using Xunit;
 
 namespace EventTriangleAPI.Consumer.IntegrationTests.CommandHandlerTests.ChangeCreditCardCommandHandlerTests;
 
-public class ChangeCreditCardTestThrowEntityNotFound : IntegrationTestBase
+public class ChangeCreditCardTestThrowEntityNotFound(TestFixture fixture) : TestBase(fixture)
 {
     [Fact]
     public async Task TestCreditCardNotFound()
     {
-        var dima = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
+        var dima = await Fixture.CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
 
         var changeCreditCardCommand = new ChangeCreditCardCommand(
             Guid.NewGuid(),
@@ -22,7 +22,7 @@ public class ChangeCreditCardTestThrowEntityNotFound : IntegrationTestBase
             "321",
             "12/06",
             PaymentNetwork.Visa);
-        var changeCreditCardResult = await ChangeCreditCardCommandHandler.HandleAsync(changeCreditCardCommand);
+        var changeCreditCardResult = await Fixture.ChangeCreditCardCommandHandler.HandleAsync(changeCreditCardCommand);
 
         changeCreditCardResult.Error.Should().BeOfType<DbEntityNotFoundError>();
     }

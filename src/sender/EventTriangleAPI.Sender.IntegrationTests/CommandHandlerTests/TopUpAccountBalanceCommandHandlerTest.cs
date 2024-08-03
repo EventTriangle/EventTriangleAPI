@@ -5,7 +5,7 @@ using Xunit;
 
 namespace EventTriangleAPI.Sender.IntegrationTests.CommandHandlerTests;
 
-public class TopUpAccountBalanceCommandHandlerTest : IntegrationTestBase, IIntegrationTest
+public class TopUpAccountBalanceCommandHandlerTest(TestFixture fixture) : TestBase(fixture)
 {
     [Fact]
     public async Task Test()
@@ -15,10 +15,10 @@ public class TopUpAccountBalanceCommandHandlerTest : IntegrationTestBase, IInteg
             Guid.NewGuid(),
             Amount: 300);
 
-        var result = await TopUpAccountBalanceCommandHandler.HandleAsync(command);
+        var result = await Fixture.TopUpAccountBalanceCommandHandler.HandleAsync(command);
 
         var transactionCreatedEvent =
-            await DatabaseContextFixture.TransactionCardToUserCreatedEvents.FirstOrDefaultAsync(x =>
+            await Fixture.DatabaseContextFixture.TransactionCardToUserCreatedEvents.FirstOrDefaultAsync(x =>
                 x.Id == result.Response.Id);
 
         transactionCreatedEvent.Should().NotBeNull();

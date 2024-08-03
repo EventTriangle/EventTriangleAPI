@@ -7,35 +7,35 @@ using Xunit;
 
 namespace EventTriangleAPI.Consumer.IntegrationTests.CommandHandlerTests.RollBackTransactionCommandHandlerTests;
 
-public class RollBackTransactionTestSuccess : IntegrationTestBase
+public class RollBackTransactionTestSuccess(TestFixture fixture) : TestBase(fixture)
 {
     [Fact]
     public async Task TestSuccess()
     {
-        var dima = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
-        var alice = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserAliceCommand());
-        var bob = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserBobCommand());
+        var dima = await Fixture.CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
+        var alice = await Fixture.CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserAliceCommand());
+        var bob = await Fixture.CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserBobCommand());
         var addCreditCardCommand = AddCreditCardCommandHelper.CreateCreditCardCommand(dima.Response.Id);
-        var addCreditCardResult = await AddCreditCardCommandHandler.HandleAsync(addCreditCardCommand);
+        var addCreditCardResult = await Fixture.AddCreditCardCommandHandler.HandleAsync(addCreditCardCommand);
         var createTransactionCardToUserCommand = new CreateTransactionCardToUserCommand(
             addCreditCardResult.Response.Id,
             bob.Response.Id,
             Amount: 300,
             DateTime.UtcNow);
-        await CreateTransactionCardToUserCommandHandler.HandleAsync(createTransactionCardToUserCommand);
+        await Fixture.CreateTransactionCardToUserCommandHandler.HandleAsync(createTransactionCardToUserCommand);
         var createTransactionUserToUserCommand = new CreateTransactionUserToUserCommand(
             bob.Response.Id,
             alice.Response.Id,
             Amount: 300,
             DateTime.UtcNow);
-        var  createTransactionUserToUserResult = await CreateTransactionUserToUserCommandHandler.HandleAsync(createTransactionUserToUserCommand);
+        var  createTransactionUserToUserResult = await Fixture.CreateTransactionUserToUserCommandHandler.HandleAsync(createTransactionUserToUserCommand);
 
         var rollbackTransactionCommand = new RollBackTransactionCommand(
-            dima.Response.Id, 
+            dima.Response.Id,
             createTransactionUserToUserResult.Response.Id);
-        await RollBackTransactionCommandHandler.HandleAsync(rollbackTransactionCommand);
+        await Fixture.RollBackTransactionCommandHandler.HandleAsync(rollbackTransactionCommand);
 
-        var transaction = await DatabaseContextFixture.TransactionEntities
+        var transaction = await Fixture.DatabaseContextFixture.TransactionEntities
             .FirstAsync(x => x.Id == createTransactionUserToUserResult.Response.Id);
         transaction.TransactionState.Should().Be(TransactionState.RolledBack);
     }

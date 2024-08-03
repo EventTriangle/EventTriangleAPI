@@ -6,29 +6,29 @@ using Xunit;
 
 namespace EventTriangleAPI.Consumer.IntegrationTests.CommandHandlerTests.CreateTransactionUserToUserCommandHandlerTests;
 
-public class CreateTransactionUserToUserTestThrowConflict : IntegrationTestBase
+public class CreateTransactionUserToUserTestThrowConflict(TestFixture fixture) : TestBase(fixture)
 {
     [Fact]
     public async Task TestTransactionAmountGreaterThanBalance()
     {
-        var dima = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
-        var alice = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserAliceCommand());
+        var dima = await Fixture.CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
+        var alice = await Fixture.CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserAliceCommand());
         var addCreditCardForDimaCommand = AddCreditCardCommandHelper.CreateCreditCardCommand(dima.Response.Id);
-        var addCreditCardForDimaResult = await AddCreditCardCommandHandler.HandleAsync(addCreditCardForDimaCommand);
+        var addCreditCardForDimaResult = await Fixture.AddCreditCardCommandHandler.HandleAsync(addCreditCardForDimaCommand);
         var createTransactionCardToUserForDimaCommand = new CreateTransactionCardToUserCommand(
             addCreditCardForDimaResult.Response.Id,
             dima.Response.Id,
             Amount: 300,
             DateTime.UtcNow);
-        await CreateTransactionCardToUserCommandHandler.HandleAsync(createTransactionCardToUserForDimaCommand);
-        
+        await Fixture.CreateTransactionCardToUserCommandHandler.HandleAsync(createTransactionCardToUserForDimaCommand);
+
         var createTransactionUserToUserCommand = new CreateTransactionUserToUserCommand(
             dima.Response.Id,
             alice.Response.Id,
             Amount: 1000,
             DateTime.UtcNow);
-        var createTransactionUserToUserResult = 
-            await CreateTransactionUserToUserCommandHandler.HandleAsync(createTransactionUserToUserCommand);
+        var createTransactionUserToUserResult =
+            await Fixture.CreateTransactionUserToUserCommandHandler.HandleAsync(createTransactionUserToUserCommand);
 
         createTransactionUserToUserResult.Error.Should().BeOfType<ConflictError>();
     }
@@ -36,19 +36,19 @@ public class CreateTransactionUserToUserTestThrowConflict : IntegrationTestBase
     [Fact]
     public async Task RequesterSuspended()
     {
-        var dima = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
-        var alice = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserAliceCommand());
-        var bob = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserAliceCommand());
+        var dima = await Fixture.CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
+        var alice = await Fixture.CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserAliceCommand());
+        var bob = await Fixture.CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserAliceCommand());
         var addCreditCardCommand = AddCreditCardCommandHelper.CreateCreditCardCommand(alice.Response.Id);
-        var addCreditCardResult = await AddCreditCardCommandHandler.HandleAsync(addCreditCardCommand);
+        var addCreditCardResult = await Fixture.AddCreditCardCommandHandler.HandleAsync(addCreditCardCommand);
         var createTransactionCardToUserCommand = new CreateTransactionCardToUserCommand(
             addCreditCardResult.Response.Id,
             alice.Response.Id,
             Amount: 300,
             DateTime.UtcNow);
-        await CreateTransactionCardToUserCommandHandler.HandleAsync(createTransactionCardToUserCommand);
+        await Fixture.CreateTransactionCardToUserCommandHandler.HandleAsync(createTransactionCardToUserCommand);
         var suspendUserCommand = new SuspendUserCommand(dima.Response.Id, alice.Response.Id);
-        await SuspendUserCommandHandler.HandleAsync(suspendUserCommand);
+        await Fixture.SuspendUserCommandHandler.HandleAsync(suspendUserCommand);
 
         var createTransactionUserToUserCommand = new CreateTransactionUserToUserCommand(
             alice.Response.Id,
@@ -56,8 +56,8 @@ public class CreateTransactionUserToUserTestThrowConflict : IntegrationTestBase
             Amount: 300,
             DateTime.Now);
         var createTransactionUserToUserResult =
-            await CreateTransactionUserToUserCommandHandler.HandleAsync(createTransactionUserToUserCommand);
-        
+            await Fixture.CreateTransactionUserToUserCommandHandler.HandleAsync(createTransactionUserToUserCommand);
+
         createTransactionUserToUserResult.Error.Should().BeOfType<ConflictError>();
     }
 }

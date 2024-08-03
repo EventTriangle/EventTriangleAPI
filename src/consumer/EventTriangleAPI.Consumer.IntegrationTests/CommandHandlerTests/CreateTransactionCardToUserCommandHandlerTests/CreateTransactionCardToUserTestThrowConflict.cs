@@ -6,25 +6,25 @@ using Xunit;
 
 namespace EventTriangleAPI.Consumer.IntegrationTests.CommandHandlerTests.CreateTransactionCardToUserCommandHandlerTests;
 
-public class CreateTransactionCardToUserTestThrowConflict : IntegrationTestBase
+public class CreateTransactionCardToUserTestThrowConflict(TestFixture fixture) : TestBase(fixture)
 {
     [Fact]
     public async Task RequesterIsSuspended()
     {
-        var dima = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
-        var alice = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserAliceCommand());
+        var dima = await Fixture.CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
+        var alice = await Fixture.CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserAliceCommand());
         var addCreditCardCommand = AddCreditCardCommandHelper.CreateCreditCardCommand(alice.Response.Id);
-        var addCreditCardResult = await AddCreditCardCommandHandler.HandleAsync(addCreditCardCommand);
+        var addCreditCardResult = await Fixture.AddCreditCardCommandHandler.HandleAsync(addCreditCardCommand);
         var suspendUserCommand = new SuspendUserCommand(dima.Response.Id, alice.Response.Id);
-        await SuspendUserCommandHandler.HandleAsync(suspendUserCommand);
-        
+        await Fixture.SuspendUserCommandHandler.HandleAsync(suspendUserCommand);
+
         var createTransactionCardToUserCommand = new CreateTransactionCardToUserCommand(
             addCreditCardResult.Response.Id,
             alice.Response.Id,
             Amount: 300,
             DateTime.UtcNow);
-        var createTransactionCardToUserResult = 
-            await CreateTransactionCardToUserCommandHandler.HandleAsync(createTransactionCardToUserCommand);
+        var createTransactionCardToUserResult =
+            await Fixture.CreateTransactionCardToUserCommandHandler.HandleAsync(createTransactionCardToUserCommand);
 
         createTransactionCardToUserResult.Error.Should().BeOfType<ConflictError>();
     }

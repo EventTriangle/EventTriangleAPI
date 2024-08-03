@@ -5,15 +5,15 @@ using Xunit;
 
 namespace EventTriangleAPI.Consumer.IntegrationTests.QueryHandlerTests.GetProfileQueryHandlerTests;
 
-public class GetProfileTestSuccess : IntegrationTestBase
+public class GetProfileTestSuccess(TestFixture fixture) : TestBase(fixture)
 {
     [Fact]
     public async Task TestSuccess()
     {
-        var dima = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
+        var dima = await Fixture.CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
 
         var getProfileQuery = new GetProfileQuery(dima.Response.Id);
-        var getProfileResult = await GetProfileQueryHandler.HandleAsync(getProfileQuery);
+        var getProfileResult = await Fixture.GetProfileQueryHandler.HandleAsync(getProfileQuery);
 
         getProfileResult.Response.Id.Should().Be(dima.Response.Id);
         getProfileResult.Response.Email.Should().Be(dima.Response.Email);

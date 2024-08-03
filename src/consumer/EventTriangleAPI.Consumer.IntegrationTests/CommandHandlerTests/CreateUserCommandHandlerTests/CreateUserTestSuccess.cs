@@ -5,15 +5,15 @@ using Xunit;
 
 namespace EventTriangleAPI.Consumer.IntegrationTests.CommandHandlerTests.CreateUserCommandHandlerTests;
 
-public class CreateUserTestSuccess : IntegrationTestBase
+public class CreateUserTestSuccess(TestFixture fixture) : TestBase(fixture)
 {
     [Fact]
     public async Task TestSuccess()
     {
         var createUserCommand = CreateUserCommandHelper.CreateUserDimaCommand();
-        await CreateUserCommandHandler.HandleAsync(createUserCommand);
+        await Fixture.CreateUserCommandHandler.HandleAsync(createUserCommand);
 
-        var user = await DatabaseContextFixture.UserEntities.FirstOrDefaultAsync(x => x.Id == createUserCommand.UserId);
+        var user = await Fixture.DatabaseContextFixture.UserEntities.FirstOrDefaultAsync(x => x.Id == createUserCommand.UserId);
         user.Id.Should().Be(createUserCommand.UserId);
         user.Email.Should().Be(createUserCommand.Email);
         user.UserRole.Should().Be(createUserCommand.UserRole);

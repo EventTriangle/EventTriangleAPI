@@ -6,15 +6,15 @@ using Xunit;
 
 namespace EventTriangleAPI.Consumer.IntegrationTests.QueryHandlerTests.GetTransactionsByUserIdQueryHandlerTests;
 
-public class GetTransactionsByUserIdTestThrowEntityNotFound : IntegrationTestBase
+public class GetTransactionsByUserIdTestThrowEntityNotFound(TestFixture fixture) : TestBase(fixture)
 {
     [Fact]
     public async Task TestUserNotFound()
     {
-        var dima = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
-        
+        var dima = await Fixture.CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
+
         var getTransactionsQuery = new GetTransactionsByUserIdQuery(dima.Response.Id, Guid.NewGuid().ToString(), 10, DateTime.UtcNow);
-        var getTransactionsResult = await GetTransactionsByUserIdQueryHandler.HandleAsync(getTransactionsQuery);
+        var getTransactionsResult = await Fixture.GetTransactionsByUserIdQueryHandler.HandleAsync(getTransactionsQuery);
 
         getTransactionsResult.Error.Should().BeOfType<DbEntityNotFoundError>();
     }
