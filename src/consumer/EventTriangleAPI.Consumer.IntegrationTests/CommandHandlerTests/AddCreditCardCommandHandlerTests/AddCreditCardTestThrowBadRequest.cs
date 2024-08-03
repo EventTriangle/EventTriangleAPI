@@ -5,16 +5,16 @@ using Xunit;
 
 namespace EventTriangleAPI.Consumer.IntegrationTests.CommandHandlerTests.AddCreditCardCommandHandlerTests;
 
-public class AddCreditCardTestThrowBadRequest : IntegrationTestBase
+public class AddCreditCardTestThrowBadRequest(TestFixture fixture) : TestBase(fixture)
 {
     [Fact]
     public async Task TestAddingTheSameCreditCardAgain()
     {
-        var dima = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
+        var dima = await Fixture.CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
 
         var addCreditCardCommand = AddCreditCardCommandHelper.CreateCreditCardCommand(dima.Response.Id);
-        await AddCreditCardCommandHandler.HandleAsync(addCreditCardCommand);
-        var secondAddCreditCardResult = await AddCreditCardCommandHandler.HandleAsync(addCreditCardCommand);
+        await Fixture.AddCreditCardCommandHandler.HandleAsync(addCreditCardCommand);
+        var secondAddCreditCardResult = await Fixture.AddCreditCardCommandHandler.HandleAsync(addCreditCardCommand);
 
          secondAddCreditCardResult.Error.Should().BeOfType<BadRequestError>();
     }

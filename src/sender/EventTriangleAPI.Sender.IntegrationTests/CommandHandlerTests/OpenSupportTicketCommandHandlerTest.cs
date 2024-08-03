@@ -5,7 +5,7 @@ using Xunit;
 
 namespace EventTriangleAPI.Sender.IntegrationTests.CommandHandlerTests;
 
-public class OpenSupportTicketCommandHandlerTest : IntegrationTestBase, IIntegrationTest
+public class OpenSupportTicketCommandHandlerTest(TestFixture fixture) : TestBase(fixture)
 {
     [Fact]
     public async Task Test()
@@ -15,11 +15,11 @@ public class OpenSupportTicketCommandHandlerTest : IntegrationTestBase, IIntegra
             Guid.NewGuid(),
             Guid.NewGuid(),
             Guid.NewGuid().ToString());
-        
-        var result = await OpenSupportTicketCommandHandler.HandleAsync(command);
 
-        var supportTicketOpenedEvent = 
-            await DatabaseContextFixture.SupportTicketOpenedEvents.FirstOrDefaultAsync(x => x.Id == result.Response.Id);
+        var result = await Fixture.OpenSupportTicketCommandHandler.HandleAsync(command);
+
+        var supportTicketOpenedEvent =
+            await Fixture.DatabaseContextFixture.SupportTicketOpenedEvents.FirstOrDefaultAsync(x => x.Id == result.Response.Id);
 
         supportTicketOpenedEvent.Should().NotBeNull();
     }

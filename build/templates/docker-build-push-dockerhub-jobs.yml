@@ -111,21 +111,6 @@ jobs:
               arguments: '--no-build --configuration ${{ parameters.buildConfiguration }} --collect "Code Coverage"'
 
       - ${{ if eq(parameters.shouldRunIntegrationTests, 'true') }}:
-          - task: PowerShell@2
-            displayName: 'Start PgSQL container'
-            inputs:
-              targetType: 'inline'
-              script: 'docker run --name pgsql-db -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres:latest'
-
-      - ${{ if eq(parameters.shouldRunIntegrationTests, 'true') }}:
-          - task: PowerShell@2
-            displayName: 'Wait database'
-            timeoutInMinutes: 5
-            inputs:
-              targetType: 'inline'
-              script: .\scripts\wait_postgres_database.ps1
-
-      - ${{ if eq(parameters.shouldRunIntegrationTests, 'true') }}:
           - task: DotNetCoreCLI@2
             displayName: 'Run integration tests'
             inputs:

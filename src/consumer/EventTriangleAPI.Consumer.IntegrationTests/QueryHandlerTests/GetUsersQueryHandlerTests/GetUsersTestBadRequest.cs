@@ -6,15 +6,15 @@ using Xunit;
 
 namespace EventTriangleAPI.Consumer.IntegrationTests.QueryHandlerTests.GetUsersQueryHandlerTests;
 
-public class GetUsersTestBadRequest: IntegrationTestBase
+public class GetUsersTestBadRequest(TestFixture fixture) : TestBase(fixture)
 {
     [Fact]
     public async Task TestPageLessThanOne()
     {
-        var dima = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
-        
+        var dima = await Fixture.CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
+
         var getUsersQuery = new GetUsersQuery(dima.Response.Id, 10, -10);
-        var getUsersResult = await GetUsersQueryHandler.HandleAsync(getUsersQuery);
+        var getUsersResult = await Fixture.GetUsersQueryHandler.HandleAsync(getUsersQuery);
 
         getUsersResult.Error.Should().BeOfType<BadRequestError>();
     }

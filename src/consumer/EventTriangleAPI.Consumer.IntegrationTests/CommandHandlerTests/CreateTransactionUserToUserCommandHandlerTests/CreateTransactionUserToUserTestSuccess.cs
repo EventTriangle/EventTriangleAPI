@@ -7,34 +7,34 @@ using Xunit;
 
 namespace EventTriangleAPI.Consumer.IntegrationTests.CommandHandlerTests.CreateTransactionUserToUserCommandHandlerTests;
 
-public class CreateTransactionUserToUserTestSuccess : IntegrationTestBase
+public class CreateTransactionUserToUserTestSuccess(TestFixture fixture) : TestBase(fixture)
 {
     [Fact]
     public async Task TestSuccess()
     {
-        var dima = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
-        var alice = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserAliceCommand());
+        var dima = await Fixture.CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
+        var alice = await Fixture.CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserAliceCommand());
         var addCreditCardForDimaCommand = AddCreditCardCommandHelper.CreateCreditCardCommand(dima.Response.Id);
-        var addCreditCardForDimaResult = await AddCreditCardCommandHandler.HandleAsync(addCreditCardForDimaCommand);
+        var addCreditCardForDimaResult = await Fixture.AddCreditCardCommandHandler.HandleAsync(addCreditCardForDimaCommand);
         var createTransactionCardToUserForDimaCommand = new CreateTransactionCardToUserCommand(
             addCreditCardForDimaResult.Response.Id,
             dima.Response.Id,
             Amount: 300,
             DateTime.UtcNow);
-        await CreateTransactionCardToUserCommandHandler.HandleAsync(createTransactionCardToUserForDimaCommand);
-        
+        await Fixture.CreateTransactionCardToUserCommandHandler.HandleAsync(createTransactionCardToUserForDimaCommand);
+
         var createTransactionUserToUserCommand = new CreateTransactionUserToUserCommand(
             dima.Response.Id,
             alice.Response.Id,
             Amount: 300,
             DateTime.UtcNow);
-        var createTransactionUserToUserResult = 
-            await CreateTransactionUserToUserCommandHandler.HandleAsync(createTransactionUserToUserCommand);
+        var createTransactionUserToUserResult =
+            await Fixture.CreateTransactionUserToUserCommandHandler.HandleAsync(createTransactionUserToUserCommand);
 
-        var transaction = await DatabaseContextFixture.TransactionEntities
+        var transaction = await Fixture.DatabaseContextFixture.TransactionEntities
             .FirstOrDefaultAsync(x => x.Id == createTransactionUserToUserResult.Response.Id);
-        var dimaWallet = await DatabaseContextFixture.WalletEntities.FirstOrDefaultAsync(x => x.Id == dima.Response.WalletId);
-        var aliceWallet = await DatabaseContextFixture.WalletEntities.FirstOrDefaultAsync(x => x.Id == alice.Response.WalletId);
+        var dimaWallet = await Fixture.DatabaseContextFixture.WalletEntities.FirstOrDefaultAsync(x => x.Id == dima.Response.WalletId);
+        var aliceWallet = await Fixture.DatabaseContextFixture.WalletEntities.FirstOrDefaultAsync(x => x.Id == alice.Response.WalletId);
         transaction.FromUserId.Should().Be(createTransactionUserToUserCommand.RequesterId);
         transaction.ToUserId.Should().Be(createTransactionUserToUserCommand.ToUserId);
         transaction.Amount.Should().Be(createTransactionUserToUserCommand.Amount);

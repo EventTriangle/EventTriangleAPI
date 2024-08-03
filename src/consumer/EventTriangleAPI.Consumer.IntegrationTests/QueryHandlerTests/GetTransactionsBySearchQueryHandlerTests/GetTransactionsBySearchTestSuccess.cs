@@ -6,34 +6,34 @@ using Xunit;
 
 namespace EventTriangleAPI.Consumer.IntegrationTests.QueryHandlerTests.GetTransactionsBySearchQueryHandlerTests;
 
-public class GetTransactionsBySearchTestSuccess : IntegrationTestBase
+public class GetTransactionsBySearchTestSuccess(TestFixture fixture) : TestBase(fixture)
 {
     [Fact]
     public async Task TestSuccess()
     {
-        var dima = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
-        var alice = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserAliceCommand());
+        var dima = await Fixture.CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
+        var alice = await Fixture.CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserAliceCommand());
         var addCreditCardForDimaCommand = AddCreditCardCommandHelper.CreateCreditCardCommand(dima.Response.Id);
-        var addCreditCardForDimaResult = await AddCreditCardCommandHandler.HandleAsync(addCreditCardForDimaCommand);
+        var addCreditCardForDimaResult = await Fixture.AddCreditCardCommandHandler.HandleAsync(addCreditCardForDimaCommand);
         var createTransactionCardToUserForDimaCommand = new CreateTransactionCardToUserCommand(
             addCreditCardForDimaResult.Response.Id,
             dima.Response.Id,
             300,
             DateTime.UtcNow);
-        await CreateTransactionCardToUserCommandHandler.HandleAsync(createTransactionCardToUserForDimaCommand);
+        await Fixture.CreateTransactionCardToUserCommandHandler.HandleAsync(createTransactionCardToUserForDimaCommand);
         var createTransactionUserToUserCommand = new CreateTransactionUserToUserCommand(
             dima.Response.Id,
             alice.Response.Id,
-            300, 
+            300,
             DateTime.UtcNow);
-        var createTransactionUserToUserResult = 
-            await CreateTransactionUserToUserCommandHandler.HandleAsync(createTransactionUserToUserCommand);
+        var createTransactionUserToUserResult =
+            await Fixture.CreateTransactionUserToUserCommandHandler.HandleAsync(createTransactionUserToUserCommand);
         var searchText = createTransactionUserToUserResult.Response.Id.ToString()[..6];
-        
+
         var getTransactionsForDimaQuery = new GetTransactionsBySearchQuery(dima.Response.Id, searchText, 10, DateTime.UtcNow);
         var getTransactionsForAliceQuery = new GetTransactionsBySearchQuery(alice.Response.Id, searchText, 10, DateTime.UtcNow);
-        var getTransactionsForDimaResult = await GetTransactionsBySearchQueryHandler.HandleAsync(getTransactionsForDimaQuery);
-        var getTransactionsForAliceResult = await GetTransactionsBySearchQueryHandler.HandleAsync(getTransactionsForAliceQuery);
+        var getTransactionsForDimaResult = await Fixture.GetTransactionsBySearchQueryHandler.HandleAsync(getTransactionsForDimaQuery);
+        var getTransactionsForAliceResult = await Fixture.GetTransactionsBySearchQueryHandler.HandleAsync(getTransactionsForAliceQuery);
 
         getTransactionsForDimaResult.Response.Count.Should().Be(1);
         getTransactionsForDimaResult.Response

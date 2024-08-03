@@ -6,17 +6,17 @@ using Xunit;
 
 namespace EventTriangleAPI.Sender.IntegrationTests.CommandHandlerTests;
 
-public class CreateUserCommandHandlerTest : IntegrationTestBase, IIntegrationTest
+public class CreateUserCommandHandlerTest(TestFixture fixture) : TestBase(fixture)
 {
     [Fact]
     public async Task Test()
     {
         var command = new CreateUserCommand(Guid.NewGuid().ToString(), "user@gmail.com", UserRole.User, UserStatus.Active);
-        
-        var result = await CreateUserCommandHandler.HandleAsync(command);
 
-        var userCreatedEvent = 
-            await DatabaseContextFixture.UserCreatedEvents.FirstOrDefaultAsync(x => x.Id == result.Response.Id);
+        var result = await Fixture.CreateUserCommandHandler.HandleAsync(command);
+
+        var userCreatedEvent =
+            await Fixture.DatabaseContextFixture.UserCreatedEvents.FirstOrDefaultAsync(x => x.Id == result.Response.Id);
 
         userCreatedEvent.Should().NotBeNull();
     }

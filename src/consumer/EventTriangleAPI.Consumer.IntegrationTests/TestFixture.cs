@@ -3,60 +3,64 @@ using EventTriangleAPI.Consumer.BusinessLogic.QueryHandlers;
 using EventTriangleAPI.Consumer.Domain.Constants;
 using EventTriangleAPI.Consumer.IntegrationTests.Configuration;
 using EventTriangleAPI.Consumer.Persistence;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
-using Xunit;
+using Testcontainers.PostgreSql;
 
 namespace EventTriangleAPI.Consumer.IntegrationTests;
 
-[Collection("Sequential")]
-public class IntegrationTestBase : IAsyncLifetime
+public class TestFixture
 {
     private readonly ConsumerStartup _consumerStartup = new();
-    protected readonly DatabaseContext DatabaseContextFixture;
-    protected readonly AddCreditCardCommandHandler AddCreditCardCommandHandler;
-    protected readonly ChangeCreditCardCommandHandler ChangeCreditCardCommandHandler;
-    protected readonly CreateContactCommandHandler CreateContactCommandHandler;
-    protected readonly CreateTransactionCardToUserCommandHandler CreateTransactionCardToUserCommandHandler;
-    protected readonly CreateTransactionUserToUserCommandHandler CreateTransactionUserToUserCommandHandler;
-    protected readonly CreateUserCommandHandler CreateUserCommandHandler;
-    protected readonly DeleteContactCommandHandler DeleteContactCommandHandler;
-    protected readonly DeleteCreditCardCommandHandler DeleteCreditCardCommandHandler;
-    protected readonly NotSuspendUserCommandHandler NotSuspendUserCommandHandler;
-    protected readonly OpenSupportTicketCommandHandler OpenSupportTicketCommandHandler;
-    protected readonly ResolveSupportTicketCommandHandler ResolveSupportTicketCommandHandler;
-    protected readonly RollBackTransactionCommandHandler RollBackTransactionCommandHandler;
-    protected readonly SuspendUserCommandHandler SuspendUserCommandHandler;
-    protected readonly UpdateUserRoleCommandHandler UpdateUserRoleCommandHandler;
+    internal readonly DatabaseContext DatabaseContextFixture;
+    internal readonly AddCreditCardCommandHandler AddCreditCardCommandHandler;
+    internal readonly ChangeCreditCardCommandHandler ChangeCreditCardCommandHandler;
+    internal readonly CreateContactCommandHandler CreateContactCommandHandler;
+    internal readonly CreateTransactionCardToUserCommandHandler CreateTransactionCardToUserCommandHandler;
+    internal readonly CreateTransactionUserToUserCommandHandler CreateTransactionUserToUserCommandHandler;
+    internal readonly CreateUserCommandHandler CreateUserCommandHandler;
+    internal readonly DeleteContactCommandHandler DeleteContactCommandHandler;
+    internal readonly DeleteCreditCardCommandHandler DeleteCreditCardCommandHandler;
+    internal readonly NotSuspendUserCommandHandler NotSuspendUserCommandHandler;
+    internal readonly OpenSupportTicketCommandHandler OpenSupportTicketCommandHandler;
+    internal readonly ResolveSupportTicketCommandHandler ResolveSupportTicketCommandHandler;
+    internal readonly RollBackTransactionCommandHandler RollBackTransactionCommandHandler;
+    internal readonly SuspendUserCommandHandler SuspendUserCommandHandler;
+    internal readonly UpdateUserRoleCommandHandler UpdateUserRoleCommandHandler;
 
-    protected readonly GetContactsBySearchQueryHandler GetContactsBySearchQueryHandler;
-    protected readonly GetContactsQueryHandler GetContactsQueryHandler;
-    protected readonly GetCreditCardsQueryHandler GetCreditCardsQueryHandler;
-    protected readonly GetProfileByIdQueryHandler GetProfileByIdQueryHandler;
-    protected readonly GetProfileQueryHandler GetProfileQueryHandler;
-    protected readonly GetSupportTicketsQueryHandler GetSupportTicketsQueryHandler;
-    protected readonly GetTicketsQueryHandler GetTicketsQueryHandler;
-    protected readonly GetTransactionsQueryHandler GetTransactionsQueryHandler;
-    protected readonly GetTransactionsBySearchQueryHandler GetTransactionsBySearchQueryHandler;
-    protected readonly GetTransactionsByUserIdQueryHandler GetTransactionsByUserIdQueryHandler;
-    protected readonly GetUsersBySearchQueryHandler GetUsersBySearchQueryHandler;
-    protected readonly GetUsersQueryHandler GetUsersQueryHandler;
-    
-    public IntegrationTestBase()
+    internal readonly GetContactsBySearchQueryHandler GetContactsBySearchQueryHandler;
+    internal readonly GetContactsQueryHandler GetContactsQueryHandler;
+    internal readonly GetCreditCardsQueryHandler GetCreditCardsQueryHandler;
+    internal readonly GetProfileByIdQueryHandler GetProfileByIdQueryHandler;
+    internal readonly GetProfileQueryHandler GetProfileQueryHandler;
+    internal readonly GetSupportTicketsQueryHandler GetSupportTicketsQueryHandler;
+    internal readonly GetTicketsQueryHandler GetTicketsQueryHandler;
+    internal readonly GetTransactionsQueryHandler GetTransactionsQueryHandler;
+    internal readonly GetTransactionsBySearchQueryHandler GetTransactionsBySearchQueryHandler;
+    internal readonly GetTransactionsByUserIdQueryHandler GetTransactionsByUserIdQueryHandler;
+    internal readonly GetUsersBySearchQueryHandler GetUsersBySearchQueryHandler;
+    internal readonly GetUsersQueryHandler GetUsersQueryHandler;
+
+    private readonly PostgreSqlContainer _postgres = new PostgreSqlBuilder()
+        .WithImage("postgres:latest")
+        .Build();
+
+    public TestFixture()
     {
+        _postgres.StartAsync().Wait();
+
         var configuration = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonFile("appsettings.json")
             .Build();
 
-        var databaseConnectionString = configuration[AppSettingsConstants.DatabaseConnectionStringIntegrationTests];
+        var databaseConnectionString = _postgres.GetConnectionString();
 
         var jsonConfigProvider = configuration.Providers.First(x => x.GetType() == typeof(JsonConfigurationProvider));
         jsonConfigProvider.Set(AppSettingsConstants.ShouldCreateSeeds, "false");
         jsonConfigProvider.Set(AppSettingsConstants.ShouldCreateSeedsForAdmin, "false");
-        
+
         var serviceProvider = _consumerStartup.Initialize(databaseConnectionString, configuration);
 
         DatabaseContextFixture = serviceProvider.GetRequiredService<DatabaseContext>();
@@ -88,24 +92,5 @@ public class IntegrationTestBase : IAsyncLifetime
         GetTransactionsBySearchQueryHandler = serviceProvider.GetRequiredService<GetTransactionsBySearchQueryHandler>();
         GetUsersBySearchQueryHandler = serviceProvider.GetRequiredService<GetUsersBySearchQueryHandler>();
         GetUsersQueryHandler = serviceProvider.GetRequiredService<GetUsersQueryHandler>();
-    }
-
-    public async Task InitializeAsync()
-    {
-        await DatabaseContextFixture.Database.MigrateAsync();
-                
-        const string sql = "TRUNCATE TABLE \"ContactEntities\" CASCADE;" +
-                           "TRUNCATE TABLE \"CreditCardEntities\" CASCADE;" +
-                           "TRUNCATE TABLE \"SupportTicketEntities\" CASCADE;" +
-                           "TRUNCATE TABLE \"TransactionEntities\" CASCADE;" +
-                           "TRUNCATE TABLE \"UserEntities\" CASCADE;" +
-                           "TRUNCATE TABLE \"WalletEntities\" CASCADE;";
-        
-        await DatabaseContextFixture.Database.ExecuteSqlRawAsync(sql);
-    }
-
-    public Task DisposeAsync()
-    {
-        return Task.CompletedTask;
     }
 }

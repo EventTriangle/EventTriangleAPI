@@ -5,17 +5,20 @@ using Xunit;
 
 namespace EventTriangleAPI.Consumer.IntegrationTests.CommandHandlerTests.AddCreditCardCommandHandlerTests;
 
-public class AddCreditCardTestSuccess : IntegrationTestBase
+public class AddCreditCardTestSuccess(TestFixture fixture) : TestBase(fixture)
 {
     [Fact]
     public async Task TestSuccess()
     {
-        var dima = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
-
+        // Arrange
+        var dima = await Fixture.CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
         var addCreditCardCommand = AddCreditCardCommandHelper.CreateCreditCardCommand(dima.Response.Id);
-        var addCreditCardResult = await AddCreditCardCommandHandler.HandleAsync(addCreditCardCommand);
 
-        var creditCard = await DatabaseContextFixture.CreditCardEntities
+        // Act
+        var addCreditCardResult = await Fixture.AddCreditCardCommandHandler.HandleAsync(addCreditCardCommand);
+
+        // Assert
+        var creditCard = await Fixture.DatabaseContextFixture.CreditCardEntities
             .FirstOrDefaultAsync(x => x.Id == addCreditCardResult.Response.Id);
         creditCard.UserId.Should().Be(dima.Response.Id);
         creditCard.HolderName.Should().Be(addCreditCardCommand.HolderName);

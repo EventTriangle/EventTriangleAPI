@@ -6,7 +6,7 @@ using Xunit;
 
 namespace EventTriangleAPI.Sender.IntegrationTests.CommandHandlerTests;
 
-public class AttachCreditCardToAccountCommandHandlerTest : IntegrationTestBase, IIntegrationTest
+public class AttachCreditCardToAccountCommandHandlerTest(TestFixture fixture) : TestBase(fixture)
 {
     [Fact]
     public async Task Test()
@@ -18,11 +18,11 @@ public class AttachCreditCardToAccountCommandHandlerTest : IntegrationTestBase, 
             "12/12",
             "123",
             PaymentNetwork.MasterCard);
-        
-        var result = await AttachCreditCardToAccountCommandHandler.HandleAsync(command);
 
-        var creditCardAttachedEvent = 
-            await DatabaseContextFixture.CreditCardAddedEvents.FirstOrDefaultAsync(x => x.Id == result.Response.Id);
+        var result = await Fixture.AttachCreditCardToAccountCommandHandler.HandleAsync(command);
+
+        var creditCardAttachedEvent =
+            await Fixture.DatabaseContextFixture.CreditCardAddedEvents.FirstOrDefaultAsync(x => x.Id == result.Response.Id);
 
         creditCardAttachedEvent.Should().NotBeNull();
     }

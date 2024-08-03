@@ -5,13 +5,13 @@ using Xunit;
 
 namespace EventTriangleAPI.Consumer.IntegrationTests.CommandHandlerTests.AddCreditCardCommandHandlerTests;
 
-public class AddCreditCardTestThrowEntityNotFound : IntegrationTestBase
+public class AddCreditCardTestThrowEntityNotFound(TestFixture fixture) : TestBase(fixture)
 {
     [Fact]
     public async Task TestRequesterNotFound()
     {
         var addCreditCardCommand = AddCreditCardCommandHelper.CreateCreditCardCommand(Guid.NewGuid().ToString());
-        var addCreditCardResult = await AddCreditCardCommandHandler.HandleAsync(addCreditCardCommand);
+        var addCreditCardResult = await Fixture.AddCreditCardCommandHandler.HandleAsync(addCreditCardCommand);
 
         addCreditCardResult.Error.Should().BeOfType<DbEntityNotFoundError>();
     }

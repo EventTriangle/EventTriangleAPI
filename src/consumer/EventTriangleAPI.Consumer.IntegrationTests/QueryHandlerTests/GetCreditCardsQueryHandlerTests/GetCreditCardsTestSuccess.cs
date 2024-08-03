@@ -5,21 +5,21 @@ using Xunit;
 
 namespace EventTriangleAPI.Consumer.IntegrationTests.QueryHandlerTests.GetCreditCardsQueryHandlerTests;
 
-public class GetCreditCardsTestSuccess : IntegrationTestBase
+public class GetCreditCardsTestSuccess(TestFixture fixture) : TestBase(fixture)
 {
     [Fact]
     public async Task TestSuccess()
     {
-        var dima = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
+        var dima = await Fixture.CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
         var firstAddCreditCardCommand = AddCreditCardCommandHelper.CreateCreditCardCommand(dima.Response.Id);
         var secondAddCreditCardCommand = AddCreditCardCommandHelper.CreateCreditCardCommand(dima.Response.Id);
         var thirdAddCreditCardCommand = AddCreditCardCommandHelper.CreateCreditCardCommand(dima.Response.Id);
-        var firstAddCreditCardResult = await AddCreditCardCommandHandler.HandleAsync(firstAddCreditCardCommand);
-        var secondAddCreditCardResult = await AddCreditCardCommandHandler.HandleAsync(secondAddCreditCardCommand);
-        var thirdAddCreditCardResult = await AddCreditCardCommandHandler.HandleAsync(thirdAddCreditCardCommand);
+        var firstAddCreditCardResult = await Fixture.AddCreditCardCommandHandler.HandleAsync(firstAddCreditCardCommand);
+        var secondAddCreditCardResult = await Fixture.AddCreditCardCommandHandler.HandleAsync(secondAddCreditCardCommand);
+        var thirdAddCreditCardResult = await Fixture.AddCreditCardCommandHandler.HandleAsync(thirdAddCreditCardCommand);
 
         var getCreditCardsQuery = new GetCreditCardsQuery(dima.Response.Id);
-        var getCreditCardsResult = await GetCreditCardsQueryHandler.HandleAsync(getCreditCardsQuery);
+        var getCreditCardsResult = await Fixture.GetCreditCardsQueryHandler.HandleAsync(getCreditCardsQuery);
 
         var firstCard = getCreditCardsResult.Response.FirstOrDefault(x => x.Id == firstAddCreditCardResult.Response.Id);
         var secondCard = getCreditCardsResult.Response.FirstOrDefault(x => x.Id == secondAddCreditCardResult.Response.Id);

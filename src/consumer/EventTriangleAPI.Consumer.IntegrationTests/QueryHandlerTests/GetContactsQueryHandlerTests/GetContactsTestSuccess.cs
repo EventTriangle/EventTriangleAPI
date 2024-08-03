@@ -6,27 +6,27 @@ using Xunit;
 
 namespace EventTriangleAPI.Consumer.IntegrationTests.QueryHandlerTests.GetContactsQueryHandlerTests;
 
-public class GetContactsTestSuccess : IntegrationTestBase
+public class GetContactsTestSuccess(TestFixture fixture) : TestBase(fixture)
 {
     [Fact]
     public async Task TestSuccess()
     {
-        var dima = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
-        var alice = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserAliceCommand());
-        var bob = await CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserBobCommand());
+        var dima = await Fixture.CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
+        var alice = await Fixture.CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserAliceCommand());
+        var bob = await Fixture.CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserBobCommand());
         var createContactForDimaWithAliceCommand = new CreateContactCommand(dima.Response.Id, alice.Response.Id);
         var createContactForDimaWithBobCommand = new CreateContactCommand(dima.Response.Id, bob.Response.Id);
         var createContactForAliceWithDimaCommand = new CreateContactCommand(alice.Response.Id, dima.Response.Id);
-        await CreateContactCommandHandler.HandleAsync(createContactForDimaWithAliceCommand);
-        await CreateContactCommandHandler.HandleAsync(createContactForDimaWithBobCommand);
-        await CreateContactCommandHandler.HandleAsync(createContactForAliceWithDimaCommand);
+        await Fixture.CreateContactCommandHandler.HandleAsync(createContactForDimaWithAliceCommand);
+        await Fixture.CreateContactCommandHandler.HandleAsync(createContactForDimaWithBobCommand);
+        await Fixture.CreateContactCommandHandler.HandleAsync(createContactForAliceWithDimaCommand);
 
         var getContactsForDimaQuery = new GetContactsQuery(dima.Response.Id);
         var getContactsForAliceQuery = new GetContactsQuery(alice.Response.Id);
         var getContactsForBobQuery = new GetContactsQuery(bob.Response.Id);
-        var getContactsForDimaResult = await GetContactsQueryHandler.HandleAsync(getContactsForDimaQuery);
-        var getContactsForAliceResult = await GetContactsQueryHandler.HandleAsync(getContactsForAliceQuery);
-        var getContactsForBobResult = await GetContactsQueryHandler.HandleAsync(getContactsForBobQuery);
+        var getContactsForDimaResult = await Fixture.GetContactsQueryHandler.HandleAsync(getContactsForDimaQuery);
+        var getContactsForAliceResult = await Fixture.GetContactsQueryHandler.HandleAsync(getContactsForAliceQuery);
+        var getContactsForBobResult = await Fixture.GetContactsQueryHandler.HandleAsync(getContactsForBobQuery);
 
         getContactsForDimaResult.Response.Count.Should().Be(2);
         getContactsForDimaResult.Response.ForEach(x => x.UserId.Should().Be(dima.Response.Id));
