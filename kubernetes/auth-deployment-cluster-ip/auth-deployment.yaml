@@ -33,9 +33,6 @@ spec:
                 secretKeyRef:
                   name: connection-creds
                   key: AuthDatabaseConnectionString
-                  
+
             - name: ASPNETCORE_ENVIRONMENT
-              valueFrom:
-                configMapKeyRef:
-                  name: event-triangle-auth-configmap
-                  key: ASPNETCORE_ENVIRONMENT
+              value: "Docker"

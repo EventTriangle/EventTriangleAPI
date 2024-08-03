@@ -26,13 +26,13 @@ spec:
                 secretKeyRef:
                   name: connection-creds
                   key: RabbitMqHost
-                  
+
             - name: RabbitMqUsername
               valueFrom:
                 secretKeyRef:
                   name: connection-creds
                   key: RabbitMqUsername
-                  
+
             - name: RabbitMqPassword
               valueFrom:
                 secretKeyRef:
@@ -44,9 +44,6 @@ spec:
                 secretKeyRef:
                   name: connection-creds
                   key: ConsumerDatabaseConnectionString
-                  
+
             - name: ASPNETCORE_ENVIRONMENT
-              valueFrom:
-                configMapKeyRef:
-                  name: event-triangle-consumer-configmap
-                  key: ASPNETCORE_ENVIRONMENT
+              value: "Docker"
