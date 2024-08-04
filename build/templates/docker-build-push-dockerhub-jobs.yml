@@ -145,3 +145,8 @@ jobs:
           tags: |
             $(GitVersion.SemVer)
             latest
+
+      - task: PublishBuildArtifacts@1
+        inputs:
+          pathToPublish: '$(System.DefaultWorkingDirectory)/kubernetes'
+          artifactName: k8s-manifests

@@ -13,5 +13,8 @@ end_of_line = lf
 [*.yml]
 indent_size = 2
 
+[*.yaml]
+indent_size = 2
+
 [*.{cs,vb}]
 dotnet_diagnostic.CS1591.severity = none
