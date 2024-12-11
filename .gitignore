@@ -11,13 +11,14 @@
 *.sln.docstates
 
 # terraform
-*.lock.hcl
+#*.lock.hcl
 *.tfplan
 *.tfstate
 /terraform/.terraform
 *.backup
 *.lock.info
 *.conf
+*.txt
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
