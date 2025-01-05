@@ -1,15 +1,16 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "auth-service-chart.fullname" . }}
-  labels:
-    {{- include "auth-service-chart.labels" . | nindent 4 }}
+  name: {{ .Release.Name }}-service
+  namespace: {{ .Values.namespace }}
 spec:
-  type: {{ .Values.service.type }}
-  ports:
-    - port: {{ .Values.service.port }}
-      targetPort: http
-      protocol: TCP
-      name: http
   selector:
-    {{- include "auth-service-chart.selectorLabels" . | nindent 4 }}
+    app: {{ .Release.Name }}
+  ports:
+  {{- range .Values.service.ports }}
+    - name: {{ .name }}
+      protocol: {{ .protocol }}
+      port: {{ .port }}
+      targetPort: {{ .targetPort }}
+  {{- end }}
+  type: {{ .Values.service.type }}

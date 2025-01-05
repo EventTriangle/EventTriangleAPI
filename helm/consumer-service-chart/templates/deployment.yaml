@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-deployment
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Release.Name }}
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.ports.containerPort }}
+          env:
+            - name: RabbitMqHost
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.env.RabbitMqHost.secretName }}
+                  key: {{ .Values.env.RabbitMqHost.key }}
+            - name: RabbitMqUsername
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.env.RabbitMqUsername.secretName }}
+                  key: {{ .Values.env.RabbitMqUsername.key }}
+            - name: RabbitMqPassword
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.env.RabbitMqPassword.secretName }}
+                  key: {{ .Values.env.RabbitMqPassword.key }}
+            - name: DatabaseConnectionString
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.env.DatabaseConnectionString.secretName }}
+                  key: {{ .Values.env.DatabaseConnectionString.key }}
+            - name: ASPNETCORE_ENVIRONMENT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.env.ASPNETCORE_ENVIRONMENT.configMapName }}
+                  key: {{ .Values.env.ASPNETCORE_ENVIRONMENT.key }}
