@@ -2,40 +2,40 @@ namespace: event-triangle
 replicaCount: 1
 
 image:
-    repository: kaminome/auth-service
-    tag: latest
-    pullPolicy: Always
+  repository: kaminome/auth-service
+  tag: latest
+  pullPolicy: Always
 
 ports:
-    - containerPort: 80
-    - containerPort: 81
+  - containerPort: 80
+  - containerPort: 81
 
 env:
-    - name: EVENT_TRIANGLE_AD_CLIENT_SECRET
-      type: secretKeyRef
-      refName: connection-creds
-      key: EVENT_TRIANGLE_AD_CLIENT_SECRET
-    - name: DatabaseConnectionString
-      type: secretKeyRef
-      refName: connection-creds
-      key: AuthDatabaseConnectionString
-    - name: ASPNETCORE_ENVIRONMENT
-      type: configMapKeyRef
-      refName: event-triangle-auth-configmap
-      key: ASPNETCORE_ENVIRONMENT
+  - name: EVENT_TRIANGLE_AD_CLIENT_SECRET
+    type: secretKeyRef
+    refName: connection-creds
+    key: EVENT_TRIANGLE_AD_CLIENT_SECRET
+  - name: DatabaseConnectionString
+    type: secretKeyRef
+    refName: connection-creds
+    key: AuthDatabaseConnectionString
+  - name: ASPNETCORE_ENVIRONMENT
+    type: configMapKeyRef
+    refName: event-triangle-auth-configmap
+    key: ASPNETCORE_ENVIRONMENT
 
 service:
-    type: ClusterIP
-    ports:
-        - name: http
-          protocol: TCP
-          port: 80
-          targetPort: 8080
-        - name: grpc
-          protocol: TCP
-          port: 81
-          targetPort: 81
+  type: ClusterIP
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 8080
+    - name: grpc
+      protocol: TCP
+      port: 81
+      targetPort: 81
 
 configmap:
-    data:
-        ASPNETCORE_ENVIRONMENT: "Docker"
+  data:
+    ASPNETCORE_ENVIRONMENT: "Docker"

@@ -12,6 +12,8 @@ pr: none
 
 variables:
   - group: terraform_storage_configuration
+  - group: AKS_Settings
+  - group: Connection_Settings
   - name: planStageName
     value: "Terraform_Plan_Destroy_AKS_Cluster"
   - name: applyStageName
@@ -33,7 +35,7 @@ stages:
       clientId: $(library-client-id)
       clientSecret: $(library-client-secret)
       tenantId: $(library-tenant-id)
-      
+
   - template: templates/terraform-apply-stages.yml
     parameters:
       stageName: ${{ variables.applyStageName }}
