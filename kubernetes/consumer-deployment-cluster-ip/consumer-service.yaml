@@ -2,7 +2,7 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: consumer-service
+  name: event-triangle-consumer-service
   namespace: event-triangle
 spec:
   selector:

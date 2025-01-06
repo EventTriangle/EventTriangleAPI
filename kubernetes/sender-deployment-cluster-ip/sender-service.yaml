@@ -2,7 +2,7 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: sender-service
+  name: event-triangle-sender-service
   namespace: event-triangle
 spec:
   selector:
