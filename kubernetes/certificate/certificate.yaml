@@ -9,4 +9,4 @@ spec:
     name: letsencrypt-prod
     kind: ClusterIssuer
   dnsNames:
-    - auth.eventtriangle.razumovsky.me
+    - auth-eventtriangle.razumovsky.me
