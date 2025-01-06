@@ -23,3 +23,9 @@
 - helm install event-triangle-auth .\auth-service-chart\ --values .\auth-service-chart\values.yaml
 - helm install event-triangle-consumer .\consumer-service-chart\ --values .\consumer-service-chart\values.yaml
 - helm install event-triangle-sender .\sender-service-chart\ --values .\sender-service-chart\values.yaml
+
+## HELM Upgrade
+
+- helm upgrade event-triangle-auth .\auth-service-chart\ --values .\auth-service-chart\values.yaml
+- helm upgrade event-triangle-consumer .\consumer-service-chart\ --values .\consumer-service-chart\values.yaml
+- helm upgrade event-triangle-sender .\sender-service-chart\ --values .\sender-service-chart\values.yaml
