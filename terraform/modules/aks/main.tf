@@ -6,10 +6,10 @@ resource "azurerm_kubernetes_cluster" "aks" {
   dns_prefix          = var.aks_name
 
   default_node_pool {
-    name                = "systempool"
-    node_count          = var.system_node_count
-    vm_size             = var.default_node_pool_vm_size
-    type                = var.default_node_pool_type
+    name                        = "systempool"
+    node_count                  = var.system_node_count
+    vm_size                     = var.default_node_pool_vm_size
+    type                        = var.default_node_pool_type
     temporary_name_for_rotation = "rotationpool"
   }
 
