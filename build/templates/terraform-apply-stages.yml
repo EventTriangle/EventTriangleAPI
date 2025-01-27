@@ -44,7 +44,7 @@ parameters:
   - name: condition
     displayName: 'Condition'
     type: string
-    
+
   - name: subscriptionId
     displayName: 'Azure Subscription Id'
     type: string
@@ -89,6 +89,13 @@ stages:
                   displayName: 'Install Terraform ${{ parameters.terraformVersion }}'
                   inputs:
                     terraformVersion: '${{ parameters.terraformVersion }}'
+
+                - script: |
+                    echo "Logging in to Azure..."
+                    az login --service-principal -u ${{ parameters.clientId }} -p ${{ parameters.clientSecret }} --tenant ${{ parameters.tenantId }}
+                    echo "Run an Azure CLI command to verify"
+                    az aks list --output table
+                  displayName: 'Azure CLI Login and List AKS Clusters'
 
                 - bash: |
                     terraform init \
