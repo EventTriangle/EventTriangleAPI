@@ -58,7 +58,6 @@ stages:
           shouldRunBuild: 'false'
           integrationTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/consumer/EventTriangleAPI.Consumer.IntegrationTests/EventTriangleAPI.Consumer.IntegrationTests.csproj'
           dockerRegistryUrl: 'docker.io/kaminome'
-          dockerBuildParameterUrl: 'https://auth.eventtriangle.razumovsky.me/'
           imageRepository: 'consumer-service'
           dockerfilePath: '$(System.DefaultWorkingDirectory)/src/consumer/Dockerfile'
           dockerServiceConnection: 'Docker_Hub_Connection'
