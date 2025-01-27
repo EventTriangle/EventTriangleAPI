@@ -31,8 +31,8 @@
     default: '$(Pipeline.Workspace)/helm'
 
 jobs:
-  - deployment: 'Deploy_Helm_Chart_${{ parameters.appName }}'
-    displayName: 'Deploy Helm Chart ${{ parameters.appName }}'
+  - deployment: 'Deploy_Helm_Chart_${{ chartName }}'
+    displayName: 'Deploy Helm Chart ${{ chartName }}'
     pool:
       vmImage: ${{ parameters.vmImage }}
     environment: ${{ parameters.environment }}
