@@ -147,6 +147,13 @@ jobs:
             latest
 
       - task: PublishBuildArtifacts@1
+        displayName: 'Publish Helm Charts'
+        inputs:
+          PathtoPublish: '$(System.DefaultWorkingDirectory)/helm'
+          ArtifactName: 'helm'
+          publishLocation: 'Container'
+
+      - task: PublishBuildArtifacts@1
         inputs:
           pathToPublish: '$(System.DefaultWorkingDirectory)/kubernetes'
           artifactName: k8s-manifests
