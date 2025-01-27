@@ -7,9 +7,9 @@
     type: string
     default: 'ubuntu-latest'
 
-#  - name: environment
-#    type: string
-#    default: 'Development'
+  - name: environment
+    type: string
+    default: 'aks'
 
   - name: serviceConnection
     type: string
@@ -17,23 +17,23 @@
 
   - name: azureResourceGroup
     type: string
-    default: 'my-resource-group'
+    default: 'rg-aks-terraform-d01'
 
   - name: kubernetesCluster
     type: string
-    default: 'my-aks-cluster'
+    default: 'my-aks-cluster-d01'
 
   - name: namespace
     type: string
-    default: 'default'
+    default: 'event-triangle'
 
   - name: helmChartPath
     type: string
     default: './helm'
 
 jobs:
-  - deployment: 'Deploy_To_AKS_${{ parameters.appName }}'
-    displayName: 'Deploy To AKS - ${{ parameters.appName }}'
+  - deployment: 'Deploy_Helm_Chart_${{ parameters.appName }}'
+    displayName: 'Deploy Helm Chart ${{ parameters.appName }}'
     pool:
       vmImage: ${{ parameters.vmImage }}
     environment: ${{ parameters.environment }}
