@@ -42,7 +42,7 @@ jobs:
         deploy:
           steps:
             - download: current
-              artifact: drop
+              artifact: helm
 
             - task: Kubernetes@1
               displayName: 'Kubernetes Login'
