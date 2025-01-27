@@ -18,6 +18,7 @@ pr: none
 variables:
   - group: Azure_Terraform_Integration
   - group: Postgres_Rabbit_Connection_Credentials
+  - group: Terraform_Auto_Tfvars_Json_Transform
   - group: AKS_Settings
   - name: planStageName
     value: "Terraform_Plan_AKS_Cluster"
