@@ -146,6 +146,13 @@ jobs:
             $(GitVersion.SemVer)
             latest
 
+      - script: |
+          touch $(System.DefaultWorkingDirectory)/helm/version.txt
+          echo "Version txt has been created"
+          echo $(GitVersion.SemVer) >> $(System.DefaultWorkingDirectory)/helm/version.txt
+          echo "Version file has been updated with: $(GitVersion.SemVer)"
+        displayName: "Update version file"
+
       - task: PublishBuildArtifacts@1
         displayName: 'Publish Helm Charts'
         inputs:
