@@ -84,4 +84,3 @@ stages:
           azureResourceGroup: '$(library-aks-resource-group)'
           kubernetesCluster: '$(library-aks-cluster-name)'
           namespace: 'event-triangle'
-          deploymentName: 'event-triangle-auth-deployment'
