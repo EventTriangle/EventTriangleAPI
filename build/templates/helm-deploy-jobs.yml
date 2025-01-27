@@ -62,9 +62,15 @@ jobs:
                 helmVersion: 'latest'
 
             - script: |
-                echo "Deploying Helm chart..."
                 version=$(cat ${{ parameters.helmChartsFolder }}/version.txt)
                 echo "Version: $version"
+
+                if [[ -z "$MY_VAR" ]]; then
+                  echo "Version is empty, setting up to latest"
+                  MY_VAR="latest"
+                fi
+
+                echo "Deploying Helm chart..."
                 helm upgrade --install ${{ parameters.chartName }} ${{ parameters.helmChartsFolder }}/${{ parameters.chartName }} \
                   --values ${{ parameters.helmChartsFolder }}/${{ parameters.chartName }}/values.yaml \
                   --set image.tag="$version" \
