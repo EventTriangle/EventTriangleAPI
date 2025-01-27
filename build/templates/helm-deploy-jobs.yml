@@ -66,5 +66,5 @@ jobs:
                 helm upgrade --install ${{ parameters.chartName }} ${{ parameters.helmChartsFolder }}/${{ parameters.chartName }} \
                   --namespace ${{ parameters.namespace }} \
                   --set image.tag=$(GitVersion.SemVer) \
-                  -f ${{ parameters.helmChartsFolder }}/${{ parameters.chartName }}/values.yml
+                  -f ${{ parameters.helmChartsFolder }}/${{ parameters.chartName }}/values.yaml
               displayName: 'Deploy Helm Chart ${{ parameters.chartName }}'
