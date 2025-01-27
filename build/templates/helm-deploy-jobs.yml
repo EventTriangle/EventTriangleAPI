@@ -65,9 +65,9 @@ jobs:
                 version=$(cat ${{ parameters.helmChartsFolder }}/version.txt)
                 echo "Version: $version"
 
-                if [[ -z "$MY_VAR" ]]; then
+                if [[ -z "$version" ]]; then
                   echo "Version is empty, setting up to latest"
-                  MY_VAR="latest"
+                  version="latest"
                 fi
 
                 echo "Deploying Helm chart..."
