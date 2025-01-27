@@ -16,9 +16,9 @@ trigger: none
 pr: none
 
 variables:
-  - group: terraform_storage_configuration
+  - group: Azure_Terraform_Integration
+  - group: Postgres_Rabbit_Connection_Credentials
   - group: AKS_Settings
-  - group: Connection_Settings
   - name: planStageName
     value: "Terraform_Plan_AKS_Cluster"
   - name: applyStageName
