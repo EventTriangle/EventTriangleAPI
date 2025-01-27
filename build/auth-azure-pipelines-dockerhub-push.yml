@@ -49,6 +49,7 @@ stages:
           unitTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/authorization/EventTriangleAPI.Authorization.UnitTests/EventTriangleAPI.Authorization.UnitTests.csproj'
           shouldRunUnitTests: 'false'
           shouldRunIntegrationTests: 'false'
+          shouldRunBuild: 'false'
           integrationTestsProjectPath: ''
           dockerRegistryUrl: 'docker.io/kaminome'
           dockerBuildParameterUrl: 'https://auth-eventtriangle.razumovsky.me/'
