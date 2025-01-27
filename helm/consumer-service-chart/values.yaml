@@ -15,17 +15,21 @@ env:
   RabbitMqHost:
     secretName: connection-creds
     key: RabbitMqHost
+
   RabbitMqUsername:
     secretName: connection-creds
     key: RabbitMqUsername
+
   RabbitMqPassword:
     secretName: connection-creds
     key: RabbitMqPassword
+
   DatabaseConnectionString:
     secretName: connection-creds
     key: ConsumerDatabaseConnectionString
+
   ASPNETCORE_ENVIRONMENT:
-    configMapName: {{ .Release.Name }}-configmap
+    configMapName: consumer-service-chart-configmap
     key: ASPNETCORE_ENVIRONMENT
 
 configMap:

@@ -15,13 +15,15 @@ env:
     type: secretKeyRef
     refName: connection-creds
     key: EVENT_TRIANGLE_AD_CLIENT_SECRET
+
   - name: DatabaseConnectionString
     type: secretKeyRef
     refName: connection-creds
     key: AuthDatabaseConnectionString
+
   - name: ASPNETCORE_ENVIRONMENT
     type: configMapKeyRef
-    refName: {{ .Release.Name }}-configmap
+    refName: auth-service-chart-configmap
     key: ASPNETCORE_ENVIRONMENT
 
 service:

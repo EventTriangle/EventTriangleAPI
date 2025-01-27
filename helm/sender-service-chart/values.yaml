@@ -15,27 +15,31 @@ service:
       targetPort: 81
   type: ClusterIP
 
-config:
-  environment: Docker
-
 env:
   - name: RabbitMqHost
     type: secretKeyRef
     refName: connection-creds
     key: RabbitMqHost
+
   - name: RabbitMqUsername
     type: secretKeyRef
     refName: connection-creds
     key: RabbitMqUsername
+
   - name: RabbitMqPassword
     type: secretKeyRef
     refName: connection-creds
     key: RabbitMqPassword
+
   - name: DatabaseConnectionString
     type: secretKeyRef
     refName: connection-creds
     key: SenderDatabaseConnectionString
+
   - name: ASPNETCORE_ENVIRONMENT
     type: configMapKeyRef
-    refName: event-triangle-sender-configmap
+    refName: sender-service-chart-configmap
     key: ASPNETCORE_ENVIRONMENT
+
+configMap:
+  ASPNETCORE_ENVIRONMENT: Docker
