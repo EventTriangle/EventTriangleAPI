@@ -11,9 +11,10 @@ trigger: none
 pr: none
 
 variables:
-  - group: terraform_storage_configuration
+  - group: Azure_Terraform_Integration
+  - group: Postgres_Rabbit_Connection_Credentials
+  - group: Terraform_Auto_Tfvars_Json_Transform
   - group: AKS_Settings
-  - group: Connection_Settings
   - name: planStageName
     value: "Terraform_Plan_Destroy_AKS_Cluster"
   - name: applyStageName
