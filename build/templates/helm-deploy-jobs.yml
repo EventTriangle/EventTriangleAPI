@@ -1,7 +1,6 @@
 ﻿parameters:
-  - name: appName
+  - name: chartName
     type: string
-    default: 'my-app'
 
   - name: vmImage
     type: string
@@ -27,9 +26,9 @@
     type: string
     default: 'event-triangle'
 
-  - name: helmChartPath
+  - name: helmChartsFolder
     type: string
-    default: './helm'
+    default: '$(Pipeline.Workspace)/helm'
 
 jobs:
   - deployment: 'Deploy_Helm_Chart_${{ parameters.appName }}'
@@ -61,8 +60,8 @@ jobs:
 
             - script: |
                 echo "Deploying Helm chart..."
-                helm upgrade --install ${{ parameters.appName }} ${{ parameters.helmChartPath }}/${{ parameters.appName }} \
+                helm upgrade --install ${{ parameters.chartName }} ${{ parameters.helmChartsFolder }}/${{ parameters.chartName }} \
                   --namespace ${{ parameters.namespace }} \
                   --set image.tag=$(GitVersion.SemVer) \
-                  -f ${{ parameters.helmChartPath }}/${{ parameters.appName }}/values.yml
-              displayName: 'Deploy Helm Chart ${{ parameters.appName }}'
+                  -f ${{ parameters.helmChartsFolder }}/${{ parameters.chartName }}/values.yml
+              displayName: 'Deploy Helm Chart ${{ parameters.chartName }}'

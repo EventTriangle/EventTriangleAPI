@@ -79,7 +79,7 @@ stages:
     jobs:
       - template: templates/helm-deploy-jobs.yml
         parameters:
-          appName: ${{ variables.appName }}
+          chartName: 'auth-service-chart'
           vmImage: 'ubuntu-latest'
           environment: 'aks'
           serviceConnection: 'Azure_Connection'
