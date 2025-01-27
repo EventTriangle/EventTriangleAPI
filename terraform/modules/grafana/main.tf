@@ -24,6 +24,13 @@ resource "azurerm_role_assignment" "role_grafana_admin" {
   principal_id         = var.grafana_admin_object_id
 }
 
+# My user account role assignment
+resource "azurerm_role_assignment" "petro_grafana_admin" {
+  scope                = azurerm_dashboard_grafana.grafana.id
+  role_definition_name = "Grafana Admin"
+  principal_id         = "89ab0b10-1214-4c8f-878c-18c3544bb547"
+}
+
 resource "azurerm_role_assignment" "role_monitoring_data_reader" {
   scope                = var.prometheus_id
   role_definition_name = "Monitoring Data Reader"
