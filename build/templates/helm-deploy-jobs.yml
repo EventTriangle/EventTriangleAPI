@@ -63,7 +63,7 @@ jobs:
 
             - script: |
                 echo "Deploying Helm chart..."
-                $version=$(cat ${{ parameters.helmChartsFolder }}/version.txt)
+                version=$(cat ${{ parameters.helmChartsFolder }}/version.txt)
                 echo "Version: $version"
                 helm upgrade --install ${{ parameters.chartName }} ${{ parameters.helmChartsFolder }}/${{ parameters.chartName }} \
                   --values ${{ parameters.helmChartsFolder }}/${{ parameters.chartName }}/values.yaml \
