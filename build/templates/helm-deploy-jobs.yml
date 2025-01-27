@@ -64,7 +64,7 @@ jobs:
             - script: |
                 echo "Deploying Helm chart..."
                 helm upgrade --install ${{ parameters.chartName }} ${{ parameters.helmChartsFolder }}/${{ parameters.chartName }} \
-                  --namespace ${{ parameters.namespace }} \
-                  --set image.tag=$(GitVersion.SemVer) \
-                  -f ${{ parameters.helmChartsFolder }}/${{ parameters.chartName }}/values.yaml
+                  --values ${{ parameters.helmChartsFolder }}/${{ parameters.chartName }}/values.yaml \
+                  --set image.tag="$(GitVersion.SemVer)" \
+                  --namespace "${{ parameters.namespace }}"
               displayName: 'Deploy Helm Chart ${{ parameters.chartName }}'
