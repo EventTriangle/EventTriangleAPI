@@ -30,9 +30,12 @@
     type: string
     default: '$(Pipeline.Workspace)/helm'
 
+  - name: stageDisplayName
+    type: string
+
 jobs:
-  - deployment: 'Deploy_Helm_Chart_${{ parameters.chartName }}'
-    displayName: 'Deploy Helm Chart ${{ parameters.chartName }}'
+  - deployment: '${{ parameters.stageDisplayName }}'
+    displayName: '${{ parameters.stageDisplayName }}'
     pool:
       vmImage: ${{ parameters.vmImage }}
     environment: ${{ parameters.environment }}
