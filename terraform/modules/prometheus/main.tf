@@ -6,18 +6,17 @@ resource "azapi_resource" "prometheus" {
 }
 
 resource "null_resource" "enable_azure_monitor_metrics" {
-  provisioner "local-exec" {
-    interpreter = ["PowerShell", "-Command"]
-    command     = <<-EOT
-
-      az aks update --enable-azure-monitor-metrics `
-                    -g ${var.aks_resource_group} `
-                    -n ${var.aks_name} `
+    provisioner "local-exec" {
+        interpreter = ["bash", "-c"]
+        command     = <<-EOT
+      az aks update --enable-azure-monitor-metrics \
+                    -g ${var.aks_resource_group} \
+                    -n ${var.aks_name} \
                     --azure-monitor-workspace-resource-id ${azapi_resource.prometheus.id}
     EOT
-  }
+    }
 
-  depends_on = [
-    azapi_resource.prometheus
-  ]
+    depends_on = [
+        azapi_resource.prometheus
+    ]
 }
