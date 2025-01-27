@@ -21,7 +21,7 @@ env:
     key: AuthDatabaseConnectionString
   - name: ASPNETCORE_ENVIRONMENT
     type: configMapKeyRef
-    refName: event-triangle-auth-configmap
+    refName: {{ .Release.Name }}-configmap
     key: ASPNETCORE_ENVIRONMENT
 
 service:
