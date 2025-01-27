@@ -25,6 +25,11 @@ parameters:
     displayName: 'Unit tests project path'
     type: string
 
+  - name: shouldRunBuild
+    displayName: 'Flag should run build'
+    default: 'true'
+    type: boolean
+
   - name: shouldRunUnitTests
     displayName: 'Flag should run unit tests'
     default: 'true'
@@ -62,7 +67,7 @@ parameters:
 
   - name: dockerBuildParameterUrl
     displayName: 'Build parameter for Docker: Base URL'
-    default: 'https://eventtriangleauth.devtest.team/'
+    default: 'https://auth.eventtriangle.razumovsky.me/'
     type: string
 
 jobs:
@@ -88,19 +93,21 @@ jobs:
           Action: '##vso[build.updatebuildnumber]'
           BuildVersion: $(GitVersion.SemVer)
 
-      - task: DotNetCoreCLI@2
-        displayName: 'Dotnet restore'
-        inputs:
-          command: 'restore'
-          projects: '${{ parameters.solution }}'
-          arguments: '--verbosity minimal'
+      - ${{ if eq(parameters.shouldRunBuild, 'true') }}:
+        - task: DotNetCoreCLI@2
+          displayName: 'Dotnet restore'
+          inputs:
+            command: 'restore'
+            projects: '${{ parameters.solution }}'
+            arguments: '--verbosity minimal'
 
-      - task: DotNetCoreCLI@2
-        displayName: 'Build solution'
-        inputs:
-          command: 'build'
-          projects: '${{ parameters.solution }}'
-          arguments: '-c ${{ parameters.buildConfiguration }} -p:Version=$(GitVersion.SemVer) --no-restore'
+      - ${{ if eq(parameters.shouldRunBuild, 'true') }}:
+        - task: DotNetCoreCLI@2
+          displayName: 'Build solution'
+          inputs:
+            command: 'build'
+            projects: '${{ parameters.solution }}'
+            arguments: '-c ${{ parameters.buildConfiguration }} -p:Version=$(GitVersion.SemVer) --no-restore'
 
       - ${{ if eq(parameters.shouldRunUnitTests, 'true') }}:
           - task: DotnetCoreCLI@2

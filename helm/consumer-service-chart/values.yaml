@@ -1,13 +1,16 @@
 namespace: event-triangle
 replicaCount: 1
+
 image:
   repository: kaminome/consumer-service
   tag: latest
   pullPolicy: Always
+
 ports:
   containerPort: 80
   servicePort: 80
   targetPort: 8080
+
 env:
   RabbitMqHost:
     secretName: connection-creds
@@ -22,7 +25,8 @@ env:
     secretName: connection-creds
     key: ConsumerDatabaseConnectionString
   ASPNETCORE_ENVIRONMENT:
-    configMapName: event-triangle-consumer-configmap
+    configMapName: {{ .Release.Name }}-configmap
     key: ASPNETCORE_ENVIRONMENT
+
 configMap:
-    ASPNETCORE_ENVIRONMENT: Docker
+  ASPNETCORE_ENVIRONMENT: Docker
