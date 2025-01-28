@@ -30,8 +30,6 @@ $body = @{
     type = "A"
 } | ConvertTo-Json -Depth 4
 
-$body
-
 # Perform the API request
 $response = curl $url `
     -X PATCH `
