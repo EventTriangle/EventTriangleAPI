@@ -8,5 +8,5 @@
 
 # Get Zone Id
 
-# Get DNS records in format List < @{ recordId, recordName } >
+# Get DNS records in format HashMap < @{ recordName, id } >
 
