@@ -31,7 +31,7 @@ variables:
   - name: System.Debug
     value: 'false'
   - group: AKS_Settings
-  - group: terraform_storage_configuration
+  - group: Prefix_Library
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -50,7 +50,7 @@ stages:
           shouldRunUnitTests: 'false'
           shouldRunIntegrationTests: 'false'
           integrationTestsProjectPath: ''
-          dockerRegistryUrl: 'myaksacrd03.azurecr.io'
+          dockerRegistryUrl: 'myaksacr$(library-prefix).azurecr.io'
           dockerBuildParameterUrl: 'https://auth-eventtriangle.razumovsky.me/'
           imageRepository: 'auth-service'
           dockerfilePath: '$(System.DefaultWorkingDirectory)/src/authorization/Dockerfile'

@@ -31,7 +31,7 @@ variables:
   - name: System.Debug
     value: 'false'
   - group: AKS_Settings
-  - group: terraform_storage_configuration
+  - group: Prefix_Library
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -49,7 +49,7 @@ stages:
           unitTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/consumer/EventTriangleAPI.Consumer.UnitTests/EventTriangleAPI.Consumer.UnitTests.csproj'
           shouldRunIntegrationTests: 'true'
           integrationTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/consumer/EventTriangleAPI.Consumer.IntegrationTests/EventTriangleAPI.Consumer.IntegrationTests.csproj'
-          dockerRegistryUrl: 'myaksacrd03.azurecr.io'
+          dockerRegistryUrl: 'myaksacr$(library-prefix).azurecr.io'
           imageRepository: 'consumer-service'
           dockerfilePath: '$(System.DefaultWorkingDirectory)/src/consumer/Dockerfile'
           dockerServiceConnection: 'Azure_ACR_Connection'

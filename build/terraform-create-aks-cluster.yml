@@ -20,6 +20,7 @@ variables:
   - group: Postgres_Rabbit_Connection_Credentials
   - group: Terraform_Auto_Tfvars_Json_Transform
   - group: AKS_Settings
+  - group: Prefix_Library
   - name: System.Debug
     value: 'false'
   - name: planStageName
