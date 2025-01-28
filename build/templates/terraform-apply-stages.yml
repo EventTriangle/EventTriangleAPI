@@ -5,7 +5,7 @@ parameters:
 
   - name: vmImage
     displayName: 'Vm Image'
-    default: 'ubuntu-latest'
+    default: 'windows-latest'
     type: string
 
   - name: terraformVersion
@@ -97,11 +97,11 @@ stages:
                     az aks list --output table
                   displayName: 'Azure CLI Login and List AKS Clusters'
 
-                - bash: |
-                    terraform init \
-                      -backend-config="storage_account_name=$TF_STATE_BLOB_ACCOUNT_NAME" \
-                      -backend-config="container_name=$TF_STATE_BLOB_CONTAINER_NAME" \
-                      -backend-config="key=$TF_STATE_BLOB_FILE" \
+                - script: |
+                    terraform init `
+                      -backend-config="storage_account_name=$TF_STATE_BLOB_ACCOUNT_NAME" `
+                      -backend-config="container_name=$TF_STATE_BLOB_CONTAINER_NAME" `
+                      -backend-config="key=$TF_STATE_BLOB_FILE" `
                       -backend-config="sas_token=$TF_STATE_BLOB_SAS_TOKEN"
                   displayName: 'Terraform Init'
                   workingDirectory: ${{ parameters.workingDirectory }}
@@ -111,12 +111,12 @@ stages:
                     TF_STATE_BLOB_FILE: ${{ parameters.stateFile }}
                     TF_STATE_BLOB_SAS_TOKEN: ${{ parameters.sasToken }}
 
-                - bash: |
+                - script: |
                     cp $(Agent.BuildDirectory)/drop/main.tfplan main.tfplan
                   displayName: 'Copy Plan'
                   workingDirectory: ${{ parameters.workingDirectory }}
 
-                - bash: |
+                - script: |
                     terraform apply -auto-approve main.tfplan
                   displayName: 'Terraform Apply'
                   workingDirectory: ${{ parameters.workingDirectory }}
