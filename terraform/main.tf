@@ -34,10 +34,9 @@ module "aks" {
 module "acr" {
   count                     = var.should_deploy_acr ? 1 : 0
   source                    = "./modules/acr"
-  acr_name                  = local.acr_name
+  acr_name                  = var.acr_name
   aks_identity_principal_id = module.aks.principal_id
-  resource_group_location   = azurerm_resource_group.public.location
-  resource_group_name       = azurerm_resource_group.public.name
+  resource_group_name       = "rg-azure-devops-acr-d01"
 
   depends_on = [
     module.aks
