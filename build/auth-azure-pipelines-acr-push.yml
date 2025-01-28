@@ -50,7 +50,7 @@ stages:
           shouldRunUnitTests: 'false'
           shouldRunIntegrationTests: 'false'
           integrationTestsProjectPath: ''
-          dockerRegistryUrl: 'myaksacr$(library-prefix).azurecr.io'
+          dockerRegistryUrl: 'azuredevopsacrd01.azurecr.io'
           dockerBuildParameterUrl: 'https://auth-eventtriangle.razumovsky.me/'
           imageRepository: 'auth-service'
           dockerfilePath: '$(System.DefaultWorkingDirectory)/src/authorization/Dockerfile'

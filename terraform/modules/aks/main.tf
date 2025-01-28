@@ -11,6 +11,12 @@ resource "azurerm_kubernetes_cluster" "aks" {
     vm_size                     = var.default_node_pool_vm_size
     type                        = var.default_node_pool_type
     temporary_name_for_rotation = "rotationpool"
+
+    upgrade_settings {
+      drain_timeout_in_minutes      = 0
+      max_surge                     = "10%"
+      node_soak_duration_in_minutes = 0
+    }
   }
 
   identity {

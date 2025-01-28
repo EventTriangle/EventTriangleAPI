@@ -49,7 +49,7 @@ stages:
           unitTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/sender/EventTriangleAPI.Sender.UnitTests/EventTriangleAPI.Sender.UnitTests.csproj'
           shouldRunIntegrationTests: 'true'
           integrationTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/sender/EventTriangleAPI.Sender.IntegrationTests/EventTriangleAPI.Sender.IntegrationTests.csproj'
-          dockerRegistryUrl: 'myaksacr$(library-prefix).azurecr.io'
+          dockerRegistryUrl: 'azuredevopsacrd01.azurecr.io'
           imageRepository: 'sender-service'
           dockerfilePath: '$(System.DefaultWorkingDirectory)/src/sender/Dockerfile'
           dockerServiceConnection: 'Azure_ACR_Connection'
