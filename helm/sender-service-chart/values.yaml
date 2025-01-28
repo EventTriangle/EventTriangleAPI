@@ -1,0 +1,45 @@
+replicaCount: 1
+namespace: event-triangle
+image:
+  repository: kaminome/sender-service
+  tag: latest
+  pullPolicy: Always
+
+service:
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+    - name: grpc
+      port: 81
+      targetPort: 81
+  type: ClusterIP
+
+env:
+  - name: RabbitMqHost
+    type: secretKeyRef
+    refName: connection-creds
+    key: RabbitMqHost
+
+  - name: RabbitMqUsername
+    type: secretKeyRef
+    refName: connection-creds
+    key: RabbitMqUsername
+
+  - name: RabbitMqPassword
+    type: secretKeyRef
+    refName: connection-creds
+    key: RabbitMqPassword
+
+  - name: DatabaseConnectionString
+    type: secretKeyRef
+    refName: connection-creds
+    key: SenderDatabaseConnectionString
+
+  - name: ASPNETCORE_ENVIRONMENT
+    type: configMapKeyRef
+    refName: sender-service-chart-configmap
+    key: ASPNETCORE_ENVIRONMENT
+
+configMap:
+  ASPNETCORE_ENVIRONMENT: Docker

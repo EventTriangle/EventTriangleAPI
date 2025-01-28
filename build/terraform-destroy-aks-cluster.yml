@@ -11,7 +11,12 @@ trigger: none
 pr: none
 
 variables:
-  - group: terraform_storage_configuration
+  - group: Azure_Terraform_Integration
+  - group: Postgres_Rabbit_Connection_Credentials
+  - group: Terraform_Auto_Tfvars_Json_Transform
+  - group: AKS_Settings
+  - name: System.Debug
+    value: 'false'
   - name: planStageName
     value: "Terraform_Plan_Destroy_AKS_Cluster"
   - name: applyStageName
@@ -21,7 +26,7 @@ stages:
   - template: templates/terraform-plan-destroy-stages.yml
     parameters:
       stageName: ${{ variables.planStageName }}
-      VmImage: ubuntu-latest
+      VmImage: windows-latest
       terraformVersion: latest
       workingDirectory: $(System.DefaultWorkingDirectory)/terraform
       storageAccount: $(library-storage-account)
@@ -33,11 +38,11 @@ stages:
       clientId: $(library-client-id)
       clientSecret: $(library-client-secret)
       tenantId: $(library-tenant-id)
-      
+
   - template: templates/terraform-apply-stages.yml
     parameters:
       stageName: ${{ variables.applyStageName }}
-      VmImage: ubuntu-latest
+      VmImage: windows-latest
       terraformVersion: latest
       workingDirectory: $(System.DefaultWorkingDirectory)/terraform
       storageAccount: $(library-storage-account)

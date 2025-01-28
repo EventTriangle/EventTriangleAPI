@@ -28,6 +28,8 @@ pr:
 variables:
   - name: appName
     value: 'SenderAPI'
+  - name: System.Debug
+    value: 'false'
   - group: AKS_Settings
   - group: terraform_storage_configuration
 
@@ -48,23 +50,22 @@ stages:
           shouldRunIntegrationTests: 'true'
           integrationTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/sender/EventTriangleAPI.Sender.IntegrationTests/EventTriangleAPI.Sender.IntegrationTests.csproj'
           dockerRegistryUrl: 'myaksacrd03.azurecr.io'
-          dockerBuildParameterUrl: 'https://auth.eventtriangle.razumovsky.me/'
           imageRepository: 'sender-service'
           dockerfilePath: '$(System.DefaultWorkingDirectory)/src/sender/Dockerfile'
           dockerServiceConnection: 'Azure_ACR_Connection'
 
-#  - stage: 'AKS_Deploy_${{ variables.appName }}'
-#    displayName: 'AKS_Deploy_${{ variables.appName }}'
-#    dependsOn: 'Build_${{ variables.appName }}'
-#    condition: succeeded('Build_${{ variables.appName }}')
-#    jobs:
-#      - template: templates/azure-k8s-deploy-jobs.yml
-#        parameters:
-#          appName: ${{ variables.appName }}
-#          vmImage: 'ubuntu-latest'
-#          environment: 'aks'
-#          serviceConnection: 'Azure_Connection'
-#          azureResourceGroup: '$(library-aks-resource-group)'
-#          kubernetesCluster: '$(library-aks-cluster-name)'
-#          namespace: 'default'
-#          deploymentName: 'event-triangle-sender-deployment'
+  - stage: 'AKS_Rollout_Deploy_${{ variables.appName }}'
+    displayName: 'AKS_Rollout_Deploy_${{ variables.appName }}'
+    dependsOn: 'Build_${{ variables.appName }}'
+    condition: succeeded('Build_${{ variables.appName }}')
+    jobs:
+      - template: templates/azure-k8s-deploy-jobs.yml
+        parameters:
+          appName: ${{ variables.appName }}
+          vmImage: 'ubuntu-latest'
+          environment: 'aks'
+          serviceConnection: 'Azure_Connection'
+          azureResourceGroup: '$(library-aks-resource-group)'
+          kubernetesCluster: '$(library-aks-cluster-name)'
+          namespace: 'event-triangle'
+          deploymentName: 'event-triangle-sender-deployment'

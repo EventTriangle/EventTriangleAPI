@@ -1,0 +1,78 @@
+﻿parameters:
+  - name: chartName
+    type: string
+
+  - name: vmImage
+    type: string
+    default: 'ubuntu-latest'
+
+  - name: environment
+    type: string
+    default: 'aks'
+
+  - name: serviceConnection
+    type: string
+    default: 'AzureServiceConnection'
+
+  - name: azureResourceGroup
+    type: string
+    default: 'rg-aks-terraform-d01'
+
+  - name: kubernetesCluster
+    type: string
+    default: 'my-aks-cluster-d01'
+
+  - name: namespace
+    type: string
+    default: 'event-triangle'
+
+  - name: helmChartsFolder
+    type: string
+    default: '$(Pipeline.Workspace)/helm'
+
+  - name: stageDisplayName
+    type: string
+
+jobs:
+  - deployment: '${{ parameters.stageDisplayName }}'
+    displayName: '${{ parameters.stageDisplayName }}'
+    pool:
+      vmImage: ${{ parameters.vmImage }}
+    environment: ${{ parameters.environment }}
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - download: current
+              artifact: helm
+
+            - task: Kubernetes@1
+              displayName: 'Kubernetes Login'
+              inputs:
+                connectionType: 'Azure Resource Manager'
+                azureSubscriptionEndpoint: ${{ parameters.serviceConnection }}
+                azureResourceGroup: ${{ parameters.azureResourceGroup }}
+                kubernetesCluster: ${{ parameters.kubernetesCluster }}
+                namespace: ${{ parameters.namespace }}
+                command: 'login'
+
+            - task: HelmInstaller@1
+              displayName: 'Install Helm'
+              inputs:
+                helmVersion: 'latest'
+
+            - script: |
+                version=$(cat ${{ parameters.helmChartsFolder }}/version.txt)
+                echo "Version: $version"
+
+                if [[ -z "$version" ]]; then
+                  echo "Version is empty, setting up to latest"
+                  version="latest"
+                fi
+
+                echo "Deploying Helm chart..."
+                helm upgrade --install ${{ parameters.chartName }} ${{ parameters.helmChartsFolder }}/${{ parameters.chartName }} \
+                  --values ${{ parameters.helmChartsFolder }}/${{ parameters.chartName }}/values.yaml \
+                  --set image.tag="$version" \
+                  --namespace "${{ parameters.namespace }}"
+              displayName: 'Deploy Helm Chart ${{ parameters.chartName }}'

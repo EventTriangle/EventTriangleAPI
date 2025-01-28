@@ -28,6 +28,8 @@ pr:
 variables:
   - name: appName
     value: 'AuthorizationAPI'
+  - name: System.Debug
+    value: 'false'
   - group: AKS_Settings
   - group: terraform_storage_configuration
 
@@ -47,25 +49,42 @@ stages:
           unitTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/authorization/EventTriangleAPI.Authorization.UnitTests/EventTriangleAPI.Authorization.UnitTests.csproj'
           shouldRunUnitTests: 'false'
           shouldRunIntegrationTests: 'false'
+          shouldRunBuild: 'false'
           integrationTestsProjectPath: ''
           dockerRegistryUrl: 'docker.io/kaminome'
-          dockerBuildParameterUrl: 'https://auth.eventtriangle.razumovsky.me/'
+          dockerBuildParameterUrl: 'https://auth-eventtriangle.razumovsky.me/'
           imageRepository: 'auth-service'
           dockerfilePath: '$(System.DefaultWorkingDirectory)/src/authorization/Dockerfile'
           dockerServiceConnection: 'Docker_Hub_Connection'
 
-#  - stage: 'AKS_Deploy_${{ variables.appName }}'
-#    displayName: 'AKS_Deploy_${{ variables.appName }}'
-#    dependsOn: 'Build_${{ variables.appName }}'
-#    condition: succeeded('Build_${{ variables.appName }}')
-#    jobs:
-#      - template: templates/azure-k8s-deploy-jobs.yml
-#        parameters:
-#          appName: ${{ variables.appName }}
-#          vmImage: 'ubuntu-latest'
-#          environment: 'aks'
-#          serviceConnection: 'Azure_Connection'
-#          azureResourceGroup: '$(library-aks-resource-group)'
-#          kubernetesCluster: '$(library-aks-cluster-name)'
-#          namespace: 'event-triangle'
-#          deploymentName: 'event-triangle-auth-deployment'
+  - stage: 'AKS_Rollout_Deploy_${{ variables.appName }}'
+    displayName: 'AKS_Rollout_Deploy_${{ variables.appName }}'
+    dependsOn: 'Build_${{ variables.appName }}'
+    condition: succeeded('Build_${{ variables.appName }}')
+    jobs:
+      - template: templates/azure-k8s-deploy-jobs.yml
+        parameters:
+          appName: ${{ variables.appName }}
+          vmImage: 'ubuntu-latest'
+          environment: 'aks'
+          serviceConnection: 'Azure_Connection'
+          azureResourceGroup: '$(library-aks-resource-group)'
+          kubernetesCluster: '$(library-aks-cluster-name)'
+          namespace: 'event-triangle'
+          deploymentName: 'event-triangle-auth-deployment'
+
+  - stage: 'AKS_Helm_Deploy_${{ variables.appName }}'
+    displayName: 'AKS_Helm_Deploy_${{ variables.appName }}'
+    dependsOn: 'Build_${{ variables.appName }}'
+    condition: succeeded('Build_${{ variables.appName }}')
+    jobs:
+      - template: templates/helm-deploy-jobs.yml
+        parameters:
+          chartName: 'auth-service-chart'
+          stageDisplayName: 'AKS_Helm_Deploy_${{ variables.appName }}'
+          vmImage: 'ubuntu-latest'
+          environment: 'aks'
+          serviceConnection: 'Azure_Connection'
+          azureResourceGroup: '$(library-aks-resource-group)'
+          kubernetesCluster: '$(library-aks-cluster-name)'
+          namespace: 'event-triangle'

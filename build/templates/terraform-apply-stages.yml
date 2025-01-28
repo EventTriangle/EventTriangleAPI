@@ -5,7 +5,7 @@ parameters:
 
   - name: vmImage
     displayName: 'Vm Image'
-    default: 'ubuntu-latest'
+    default: 'windows-latest'
     type: string
 
   - name: terraformVersion
@@ -44,7 +44,7 @@ parameters:
   - name: condition
     displayName: 'Condition'
     type: string
-    
+
   - name: subscriptionId
     displayName: 'Azure Subscription Id'
     type: string
@@ -90,12 +90,19 @@ stages:
                   inputs:
                     terraformVersion: '${{ parameters.terraformVersion }}'
 
-                - bash: |
-                    terraform init \
-                      -backend-config="storage_account_name=$TF_STATE_BLOB_ACCOUNT_NAME" \
-                      -backend-config="container_name=$TF_STATE_BLOB_CONTAINER_NAME" \
-                      -backend-config="key=$TF_STATE_BLOB_FILE" \
-                      -backend-config="sas_token=$TF_STATE_BLOB_SAS_TOKEN"
+                - powershell: |
+                    echo "Logging in to Azure..."
+                    az login --service-principal -u ${{ parameters.clientId }} -p ${{ parameters.clientSecret }} --tenant ${{ parameters.tenantId }}
+                    echo "Run an Azure CLI command to verify"
+                    az aks list --output table
+                  displayName: 'Azure CLI Login and List AKS Clusters'
+
+                - powershell: |
+                    terraform init `
+                      -backend-config="storage_account_name=$env:TF_STATE_BLOB_ACCOUNT_NAME" `
+                      -backend-config="container_name=$env:TF_STATE_BLOB_CONTAINER_NAME" `
+                      -backend-config="key=$env:TF_STATE_BLOB_FILE" `
+                      -backend-config="sas_token=$env:TF_STATE_BLOB_SAS_TOKEN"
                   displayName: 'Terraform Init'
                   workingDirectory: ${{ parameters.workingDirectory }}
                   env:
@@ -104,12 +111,12 @@ stages:
                     TF_STATE_BLOB_FILE: ${{ parameters.stateFile }}
                     TF_STATE_BLOB_SAS_TOKEN: ${{ parameters.sasToken }}
 
-                - bash: |
+                - powershell: |
                     cp $(Agent.BuildDirectory)/drop/main.tfplan main.tfplan
                   displayName: 'Copy Plan'
                   workingDirectory: ${{ parameters.workingDirectory }}
 
-                - bash: |
+                - powershell: |
                     terraform apply -auto-approve main.tfplan
                   displayName: 'Terraform Apply'
                   workingDirectory: ${{ parameters.workingDirectory }}
