@@ -1,0 +1,22 @@
+<a routerLink="/transactions" class="logo">
+  <svg-icon src="../../../assets/svg/logo.svg" class="logoSvg" />
+  <p class="logoName">Event Triangle</p>
+</a>
+<div class="search">
+  <p-autoComplete class="searchInput" placeholder="Search" [(ngModel)]="selectedItem"
+                  [suggestions]="suggestions" (completeMethod)="search($event)" (onSelect)="onSelectAutocompletedItemHandler($event)"></p-autoComplete>
+  <svg-icon src="../../../assets/svg/search.svg" class="searchSvg" />
+</div>
+<div class="profile">
+  <ng-container *ngIf="user$ | async as user">
+    <div class="fullName">
+      <span *ngIf="user; else userIsNull">{{_textService.pullUsernameFromMail(user.email)}}</span>
+      <ng-template #userIsNull>
+        <p-skeleton styleClass="skeletonDefault" />
+      </ng-template>
+    </div>
+  </ng-container>
+  <div class="avatar">
+
+  </div>
+</div>

@@ -1,0 +1,17 @@
+<div class="depositInfo">
+  <div class="depositInfoContainer">
+    <span class="titleSpan">
+      <p class="title">Deposit</p>
+      <svg-icon src="../../../assets/svg/money.svg" class="titleMoneySvg" />
+    </span>
+    <p class="overview">An overview of deposit</p>
+    <div class="depositForm" [@depositFormAnimation]="">
+      <p-dropdown styleClass="depositInput" [options]="creditCardIdArray" [(ngModel)]="creditCardId" placeholder="Credit Card Id" [editable]="true" />
+      <input type="text" class="depositInput" [(ngModel)]="amount" placeholder="Amount" mask="0000000000000"/>
+      <button class="depositOkButton" (click)="onClickTopUpAccountBalanceHandler()">
+        Ok
+      </button>
+    </div>
+  </div>
+</div>
+<div class="emptyBlock"></div>

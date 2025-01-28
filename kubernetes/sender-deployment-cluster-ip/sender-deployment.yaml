@@ -1,0 +1,50 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: event-triangle-sender-deployment
+  namespace: event-triangle
+spec:
+  selector:
+    matchLabels:
+      app: event-triangle-sender-api
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: event-triangle-sender-api
+    spec:
+      containers:
+        - name: event-triangle-sender-api
+          image: kaminome/sender-service:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+            - containerPort: 81
+          env:
+            - name: RabbitMqHost
+              valueFrom:
+                secretKeyRef:
+                  name: connection-creds
+                  key: RabbitMqHost
+
+            - name: RabbitMqUsername
+              valueFrom:
+                secretKeyRef:
+                  name: connection-creds
+                  key: RabbitMqUsername
+
+            - name: RabbitMqPassword
+              valueFrom:
+                secretKeyRef:
+                  name: connection-creds
+                  key: RabbitMqPassword
+
+            - name: DatabaseConnectionString
+              valueFrom:
+                secretKeyRef:
+                  name: connection-creds
+                  key: SenderDatabaseConnectionString
+
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Docker"

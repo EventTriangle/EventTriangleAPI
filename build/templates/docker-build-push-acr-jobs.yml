@@ -1,0 +1,152 @@
+parameters:
+  - name: JobName
+    displayName: 'Job Name'
+    type: string
+
+  - name: workingDirectoryForDocker
+    displayName: 'Working directory for Docker Build'
+    default: '$(System.DefaultWorkingDirectory)/src'
+    type: string
+
+  - name: solution
+    displayName: 'Solution file path'
+    type: string
+
+  - name: buildConfiguration
+    displayName: 'Build Configuration'
+    default: 'Release'
+    type: string
+
+  - name: backendProjectPath
+    displayName: 'Backend project path'
+    type: string
+
+  - name: unitTestsProjectPath
+    displayName: 'Unit tests project path'
+    type: string
+
+  - name: shouldRunUnitTests
+    displayName: 'Flag should run unit tests'
+    default: 'true'
+    type: boolean
+
+  - name: shouldRunIntegrationTests
+    displayName: 'Flag should run integration tests'
+    type: boolean
+
+  - name: integrationTestsProjectPath
+    displayName: 'Integration tests project path'
+    type: string
+
+  - name: gitVersionVersion
+    displayName: 'GitVersion version'
+    default: '5.x'
+    type: string
+
+  - name: dockerRegistryUrl
+    type: string
+    displayName: 'Docker Registry URL. For Docker Hub it is: docker.io/kaminome.
+                  For ACR it is FQDN URL of container registry: myaksacr01aks01.azurecr.io'
+
+  - name: imageRepository
+    displayName: 'Image Repository name'
+    type: string
+
+  - name: dockerfilePath
+    displayName: 'Dockerfile path'
+    type: string
+
+  - name: dockerServiceConnection
+    displayName: 'Docker container registry service connection in Azure DevOps.'
+    type: string
+
+  - name: dockerBuildParameterUrl
+    displayName: 'Build parameter for Docker: Base URL'
+    default: 'https://eventtriangleauth.devtest.team/'
+    type: string
+
+jobs:
+  - job: ${{ parameters.JobName }}
+    displayName: ${{ parameters.JobName }}
+    steps:
+      - checkout: self
+        fetchDepth: 0
+
+      - task: gitversion/setup@0
+        displayName: 'GitVersion Setup'
+        inputs:
+          versionSpec: ${{ parameters.gitVersionVersion }}
+
+      - task: gitversion/execute@0
+        displayName: 'GitVersion Execute'
+        inputs:
+          updateAssemblyInfo: true
+
+      - bash: echo $Action$BuildVersion
+        displayName: 'Set Build Version'
+        env:
+          Action: '##vso[build.updatebuildnumber]'
+          BuildVersion: $(GitVersion.SemVer)
+
+      - task: DotNetCoreCLI@2
+        displayName: 'Dotnet restore'
+        inputs:
+          command: 'restore'
+          projects: '${{ parameters.solution }}'
+          arguments: '--verbosity minimal'
+
+      - task: DotNetCoreCLI@2
+        displayName: 'Build solution'
+        inputs:
+          command: 'build'
+          projects: '${{ parameters.solution }}'
+          arguments: '-c ${{ parameters.buildConfiguration }} -p:Version=$(GitVersion.SemVer) --no-restore'
+
+      - ${{ if eq(parameters.shouldRunUnitTests, 'true') }}:
+          - task: DotnetCoreCLI@2
+            displayName: 'Run unit tests'
+            inputs:
+              command: 'test'
+              projects: '${{ parameters.unitTestsProjectPath }}'
+              arguments: '--no-build --configuration ${{ parameters.buildConfiguration }} --collect "Code Coverage"'
+
+      - ${{ if eq(parameters.shouldRunIntegrationTests, 'true') }}:
+          - task: DotNetCoreCLI@2
+            displayName: 'Run integration tests'
+            inputs:
+              command: 'test'
+              projects: '${{ parameters.integrationTestsProjectPath }}'
+              arguments: '--no-build --configuration ${{ parameters.buildConfiguration }} --collect "Code Coverage"'
+
+      - task: Docker@2
+        displayName: 'Login to Docker Registry'
+        inputs:
+          command: login
+          containerRegistry: ${{ parameters.dockerServiceConnection }}
+
+      - bash: |
+          GIT_VERSION_IMAGE="${{ parameters.dockerRegistryUrl }}/${{ parameters.imageRepository }}:$(GitVersion.SemVer)"
+          LATEST_VERSION_IMAGE="${{ parameters.dockerRegistryUrl }}/${{ parameters.imageRepository }}:latest"
+          echo "GIT_VERSION_IMAGE: $GIT_VERSION_IMAGE"
+          echo "LATEST_VERSION_IMAGE: $LATEST_VERSION_IMAGE"
+          docker build --build-arg FRONT_API_URL="${{ parameters.dockerBuildParameterUrl }}" \
+                       --build-arg VERSION=$(GitVersion.SemVer) -t "$GIT_VERSION_IMAGE" \
+                       -f ${{ parameters.dockerfilePath }} .
+          docker tag "$GIT_VERSION_IMAGE" "$LATEST_VERSION_IMAGE"
+        workingDirectory: ${{ parameters.workingDirectoryForDocker }}
+        displayName: 'Build Docker Image'
+
+      - task: Docker@2
+        displayName: 'Push to Container Registry'
+        inputs:
+          command: push
+          containerRegistry: ${{ parameters.dockerServiceConnection }}
+          repository: ${{ parameters.imageRepository }}
+          tags: |
+            $(GitVersion.SemVer)
+            latest
+
+      - task: PublishBuildArtifacts@1
+        inputs:
+          pathToPublish: '$(System.DefaultWorkingDirectory)/kubernetes'
+          artifactName: k8s-manifests

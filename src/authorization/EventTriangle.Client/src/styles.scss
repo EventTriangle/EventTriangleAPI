@@ -1,0 +1,125 @@
+//primeng
+@import "primeng/resources/themes/lara-light-blue/theme.css";
+@import "primeng/resources/primeng.css";
+
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+
+* {
+	font-family: 'Arial', sans-serif;
+	box-sizing: border-box; 
+}
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+	font-family: 'Inter', sans-serif;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+
+body {
+  font-family: 'Inter', sans-serif;
+}
+
+.App {
+  width: 100vw;
+  height: 100vh;
+}
+
+//skeletons
+.skeletonDefault {
+  width: 140px !important;
+  height: 20px !important;
+  border-radius: 500px;
+}
+
+.skeletonTransactionItem {
+  width: 100% !important;
+  height: 55px !important;
+  border-radius: 10px !important;
+  margin-bottom: 12px;
+}
+
+.skeletonCardItem {
+  width: 290px !important;
+  height: 183px !important;
+  border-radius: 10px !important;
+}
+
+.skeletonContactItem {
+  width: 100% !important;
+  height: 60px !important;
+  margin-bottom: 10px !important;
+  border-radius: 10px !important;
+  padding: 13px !important;
+}
+
+.skeletonSupportTicketItem {
+  width: 100% !important;
+  height: 80px !important;
+  border-radius: 10px !important;
+  padding: 27px !important;
+  margin-bottom: 10px !important;
+}
+
+.skeletonTicketItem {
+  width: 100% !important;
+  height: 80px !important;
+  border-radius: 10px !important;
+  padding: 27px !important;
+  margin-bottom: 10px !important;
+}
+
+.skeletonUserItem {
+  width: 100% !important;
+  height: 60px !important;
+  border-radius: 10px !important;
+  padding: 27px !important;
+  margin-bottom: 10px !important;
+}
+
+.skeletonNavLink {
+  width: 90% !important;
+  height: 50px !important;
+  margin: 0 auto 25px;
+  border-radius: 5px !important;
+}

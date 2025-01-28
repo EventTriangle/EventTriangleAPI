@@ -1,9 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
+        <LangVersion>12</LangVersion>
     </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\EventTriangleAPI.Sender.Application\EventTriangleAPI.Sender.Application.csproj" />
+      <ProjectReference Include="..\EventTriangleAPI.Sender.Persistence\EventTriangleAPI.Sender.Persistence.csproj" />
+    </ItemGroup>
 
 </Project>

@@ -1,0 +1,76 @@
+trigger: none
+#pr:
+#  paths:
+#    include:
+#      - terraform
+#      - build/terraform-plan-apply.yml
+#    exclude:
+#      - terraform/README.md
+
+#trigger:
+#  batch: true
+#  branches:
+#    include:
+#      - docs
+
+pr: none
+
+variables:
+  - group: terraform_storage_configuration
+  - group: AKS_Settings
+  - group: Connection_Settings
+  - name: planStageName
+    value: "Terraform_Plan_AKS_Cluster"
+  - name: applyStageName
+    value: "Terraform_Apply_AKS_Cluster"
+
+stages:
+  - template: templates/terraform-plan-stages.yml
+    parameters:
+      stageName: ${{ variables.planStageName }}
+      VmImage: ubuntu-latest
+      terraformVersion: latest
+      workingDirectory: $(System.DefaultWorkingDirectory)/terraform
+      storageAccount: $(library-storage-account)
+      storageContainer: $(library-storage-container)
+      stateFile: $(library-state-file)
+      sasToken: $(library-sas-token)
+      prefix: $(library-prefix)
+      subscriptionId: $(library-subscription-id)
+      clientId: $(library-client-id)
+      clientSecret: $(library-client-secret)
+      tenantId: $(library-tenant-id)
+
+  - template: templates/terraform-apply-stages.yml
+    parameters:
+      stageName: ${{ variables.applyStageName }}
+      VmImage: ubuntu-latest
+      terraformVersion: latest
+      workingDirectory: $(System.DefaultWorkingDirectory)/terraform
+      storageAccount: $(library-storage-account)
+      storageContainer: $(library-storage-container)
+      stateFile: $(library-state-file)
+      sasToken: $(library-sas-token)
+      subscriptionId: $(library-subscription-id)
+      clientId: $(library-client-id)
+      clientSecret: $(library-client-secret)
+      tenantId: $(library-tenant-id)
+      environment: 'aks'
+      dependsOn: [ '${{ variables.planStageName }}' ]
+      condition: ${{ variables.planStageName }}
+
+  - template: templates/azure-k8s-configure-stages.yml
+    parameters:
+      vmImage: ubuntu-latest
+      environment: aks
+      workingDirectory: $(System.DefaultWorkingDirectory)/kubernetes
+      serviceConnection: Azure_Connection
+      azureResourceGroup: $(library-aks-resource-group)
+      kubernetesCluster: $(library-aks-cluster-name)
+      namespace: 'event-triangle'
+      rabbitMqUser: $(library-rabbitmq-user)
+      rabbitMqPassword: $(library-rabbitmq-password)
+      dependsOn: [ '${{ variables.applyStageName }}' ]
+      condition: ${{ variables.applyStageName }}
+      transformTargetFiles: |
+        secrets/connection-secrets.yaml

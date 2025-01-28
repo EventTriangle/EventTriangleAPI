@@ -1,0 +1,49 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: event-triangle-consumer-deployment
+  namespace: event-triangle
+spec:
+  selector:
+    matchLabels:
+      app: event-triangle-consumer-api
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: event-triangle-consumer-api
+    spec:
+      containers:
+        - name: event-triangle-consumer-api
+          image: kaminome/consumer-service:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          env:
+            - name: RabbitMqHost
+              valueFrom:
+                secretKeyRef:
+                  name: connection-creds
+                  key: RabbitMqHost
+
+            - name: RabbitMqUsername
+              valueFrom:
+                secretKeyRef:
+                  name: connection-creds
+                  key: RabbitMqUsername
+
+            - name: RabbitMqPassword
+              valueFrom:
+                secretKeyRef:
+                  name: connection-creds
+                  key: RabbitMqPassword
+
+            - name: DatabaseConnectionString
+              valueFrom:
+                secretKeyRef:
+                  name: connection-creds
+                  key: ConsumerDatabaseConnectionString
+
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Docker"

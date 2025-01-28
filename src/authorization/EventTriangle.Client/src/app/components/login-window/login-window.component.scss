@@ -1,0 +1,187 @@
+@import "../../app.component.scss";
+
+.loginBackground {
+  display: flex;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 3;
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
+}
+
+.loginWindow {
+  width: 600px;
+  height: 750px;
+  position: relative;
+  margin: auto;
+  background-color: white;
+  border-radius: 20px;
+  box-shadow: -50px -50px $purple;
+  text-align: center;
+  font-size: 50px;
+
+  .logoSvg {
+    display: flex;
+    width: 180px;
+    height: 180px;
+    margin: 40px auto 0;
+    stroke: $purple;
+    fill: white;
+  }
+
+  .welcomeString {
+    margin-top: 20px;
+    font-size: 75px;
+    text-align: center;
+  }
+
+  .eventTriangleString {
+    margin-top: 20px;
+    font-size: 45px;
+  }
+
+  .eventTriangleSpan {
+    color: $purple;
+  }
+
+  .advantages {
+    display: inline-block;
+    font-size: 22px;
+    text-align: left;
+    margin: 40px auto 0;
+
+    p {
+      margin-top: 15px;
+      margin-left: 10px;
+    }
+
+    .advantagesItem {
+      display: flex;
+    }
+
+    .telegramSvg {
+      margin-top: 12px;
+      display: flex;
+      width: 25px;
+      height: 25px;
+    }
+
+    .shieldSvg {
+      margin-top: 12px;
+      display: flex;
+      width: 25px;
+      height: 25px;
+    }
+
+    .assistantSvg {
+      margin-top: 15px;
+      display: flex;
+      width: 25px;
+      height: 25px;
+    }
+  }
+
+  .signInButton {
+    display: inline-block;
+    width: 250px;
+    height: 50px;
+    font-size: 22px;
+    border: none;
+    border-radius: 7px;
+    cursor: pointer;
+    background-color: #8A21DCFF;
+    color: white;
+    margin: 50px auto 0;
+
+    &:hover {
+      transition: .2s;
+      background-color: $purple-hover-button;
+    }
+  }
+}
+
+@media screen and (max-width: 1880px) {
+  .loginWindow {
+    width: 500px;
+    height: 630px;
+    border-radius: 15px;
+
+    .logoSvg {
+      width: 140px;
+      height: 140px;
+    }
+
+    .welcomeString {
+      margin-top: 0px;
+      font-size: 50px;
+    }
+
+    .advantages {
+      margin: 25px auto 0;
+    }
+
+    .signInButton {
+      width: 230px;
+      height: 45px;
+      font-size: 20px;
+      margin: 40px auto 0;
+    }
+  }
+}
+
+@media screen and (max-width: 1670px) {
+  .loginWindow {
+    width: 350px;
+    height: 450px;
+    border-radius: 10px;
+
+    .logoSvg {
+      width: 100px;
+      height: 100px;
+      margin: 20px auto 0;
+    }
+
+    .welcomeString {
+      font-size: 35px;
+    }
+
+    .eventTriangleString {
+      margin-top: 10px;
+      font-size: 30px;
+    }
+
+    .eventTriangleSpan {
+    }
+
+    .advantages {
+      p {
+        font-size: 14px;
+        margin-top: 13px;
+      }
+
+      .telegramSvg {
+        width: 17px;
+        height: 17px;
+      }
+
+      .shieldSvg {
+        width: 17px;
+        height: 17px;
+      }
+
+      .assistantSvg {
+        width: 17px;
+        height: 17px;
+      }
+    }
+
+    .signInButton {
+      width: 200px;
+      height: 35px;
+      font-size: 14px;
+      margin: 25px auto 0;
+    }
+  }
+}

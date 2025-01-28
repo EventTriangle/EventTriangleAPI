@@ -1,0 +1,31 @@
+syntax = "proto3";
+option csharp_namespace = "EventTriangleAPI.Shared.Application.Proto";
+package User;
+
+import "google/protobuf/timestamp.proto";
+
+service User {
+  rpc CreateUser (CreateUserRequest) returns (CreateUserReply);
+}
+
+message CreateUserRequest {
+  string userId = 1;
+  string email = 2;
+  GrpcUserRole userRole = 3;
+  GrpcUserStatus userStatus = 4;
+  google.protobuf.Timestamp createdAt = 5;
+}
+
+message CreateUserReply {
+  bool isSuccess = 1;
+}
+
+enum GrpcUserRole {
+  GRPC_USER_ROLE_USER = 0;
+  GRPC_USER_ROLE_ADMIN = 1;
+}
+
+enum GrpcUserStatus {
+  GRPC_USER_STATUS_ACTIVE = 0;
+  GRPC_USER_STATUS_SUSPENDED = 1;
+}

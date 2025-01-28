@@ -1,0 +1,6 @@
+@import "../../app.component.scss";
+
+:host {
+  grid-area: main;
+  background-color: $grey;
+}

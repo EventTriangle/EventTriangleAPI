@@ -1,0 +1,19 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: event-triangle-auth-service
+  namespace: event-triangle
+spec:
+  selector:
+    app: event-triangle-auth-api
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 8080 # ASP NET CORE 8 default port
+    - name: grpc
+      protocol: TCP
+      port: 81
+      targetPort: 81
+  type: ClusterIP

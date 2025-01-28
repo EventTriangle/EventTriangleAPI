@@ -1,0 +1,14 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: consumer-service
+  namespace: event-triangle
+spec:
+  selector:
+    app: event-triangle-consumer-api
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080 # ASP NET CORE 8 default port
+  type: ClusterIP

@@ -1,0 +1,56 @@
+name: Build And Test Consumer API
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+    paths:
+      - src/consumer/EventTriangleAPI.Consumer.Application/**
+      - src/consumer/EventTriangleAPI.Consumer.BusinessLogic/**
+      - src/consumer/EventTriangleAPI.Consumer.Domain/**
+      - src/consumer/EventTriangleAPI.Consumer.IntegrationTests/**
+      - src/consumer/EventTriangleAPI.Consumer.Presentation/**
+      - src/consumer/EventTriangleAPI.Consumer.UnitTests/**
+      - .github/**
+
+  pull_request:
+    branches:
+      - develop
+      - main
+    paths:
+      - src/consumer/EventTriangleAPI.Consumer.Application/**
+      - src/consumer/EventTriangleAPI.Consumer.BusinessLogic/**
+      - src/consumer/EventTriangleAPI.Consumer.Domain/**
+      - src/consumer/EventTriangleAPI.Consumer.IntegrationTests/**
+      - src/consumer/EventTriangleAPI.Consumer.Presentation/**
+      - src/consumer/EventTriangleAPI.Consumer.UnitTests/**
+      - src/shared/EventTriangleAPI.Shared.DTO/**
+      - src/shared/EventTriangleAPI.Shared.Application/**
+      - .github/**
+
+  workflow_dispatch:
+
+jobs:
+  build-and-test-dotnet:
+    name: Consumer Build
+    runs-on: ubuntu-latest
+
+    env:
+      NUGET_PACKAGES: ${{ github.workspace }}/.github/nuget-packages
+
+    steps:
+      - name: Fetch Sources
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Consumer Build
+        uses: ./.github/actions/build-and-test
+        with:
+          backendCsprojPath: "src/consumer/EventTriangleAPI.Consumer.Presentation/EventTriangleAPI.Consumer.Presentation.csproj"
+          unitTestsProjectPath: "src/consumer/EventTriangleAPI.Consumer.UnitTests"
+          integrationTestsProjectPath: "src/consumer/EventTriangleAPI.Consumer.IntegrationTests"
+          buildConfiguration: "Release"
+          serviceName: "consumer-api"
+          creatingDatabase: "true"

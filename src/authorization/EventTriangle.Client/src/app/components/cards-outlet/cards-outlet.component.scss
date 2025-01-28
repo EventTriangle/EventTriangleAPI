@@ -1,0 +1,309 @@
+@import "../../app.component.scss";
+
+:host {
+  display: grid;
+  grid-template-areas:
+  "maininfo rightbar";
+  grid-template-columns: auto 446px;
+  width: 100%;
+  height: 100%;
+}
+
+.cardsInfo {
+  width: 100%;
+  height: 100%;
+  grid-area: maininfo;
+}
+
+.cardsInfoContainer {
+  margin-top: 54px;
+  margin-left: 48px;
+  margin-right: 48px;
+}
+
+.titleSpan {
+  display: flex;
+}
+
+.title {
+  font-weight: 700;
+  font-size: 40px;
+  margin-bottom: 12px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.titleCardSvg {
+  width: 35px;
+  height: 35px;
+  margin-top: 3px;
+  margin-left: 10px;
+
+  path {
+    fill: black;
+}
+}
+
+.overview {
+  color: $grey-p;
+  font-weight: 700;
+  font-size: 16px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  margin-bottom: 30px;
+}
+
+.cardList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 290px);
+  width: 100%;
+  column-gap: 20px;
+  row-gap: 20px;
+}
+
+.cardItem {
+  position: relative;
+  width: 290px;
+  height: 183px;
+  background: linear-gradient(to bottom right, #6102a4, #9e6fc2);
+  border-radius: 10px;
+  color: white;
+  font-weight: 700;
+
+  .cardItemTitle {
+    position: absolute;
+    font-size: 20px;
+    top: 22px;
+    left: 22px;
+  }
+
+  .cardItemNumbers {
+    position: absolute;
+    font-size: 24px;
+    top: 70px;
+    left: 25px;
+  }
+
+  .cardItemExpiryDate {
+    position: absolute;
+    font-size: 16px;
+    top: 147px;
+    right: 22px;
+  }
+
+  .cardItemFullName {
+    max-width: 90px;
+    position: absolute;
+    font-size: 16px;
+    top: 147px;
+    left: 22px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+}
+
+.addNewCard {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  grid-area: rightbar;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.addNewCardContainer {
+  margin: 67px auto 0;
+  width: 90%;
+}
+
+.addNewCardTitle {
+  width: 100%;
+  font-weight: 700;
+  font-size: 30px;
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+.addNewCardInput {
+  width: 100%;
+  height: 60px;
+  outline: none;
+  margin-bottom: 32px;
+  font-weight: 700;
+  font-size: 20px;
+  border: none;
+  background-color: $grey-2;
+  text-indent: 32px;
+  border-radius: 10px;
+
+  &::placeholder {
+    color: $light-grey-p;
+  }
+}
+
+.addNewCardOkButton {
+  width: 100%;
+  height: 60px;
+  border: none;
+  border-radius: 10px;
+  background-color: $purple;
+  font-weight: 700;
+  font-size: 22px;
+  color: white;
+  cursor: pointer;
+  transition: .1s;
+
+  &:hover {
+    background-color: $purple-hover-button;
+  }
+}
+
+@media screen and (max-width: 1880px) {
+  :host {
+    grid-template-columns: auto 380px;
+  }
+
+  .cardsInfoContainer {
+    margin-top: 30px;
+  }
+
+  .title {
+    font-size: 35px;
+  }
+
+  .titleCardSvg {
+    width: 27px;
+    height: 27px;
+  }
+
+  .cardList {
+    grid-template-columns: repeat(auto-fill, 230px);
+    column-gap: 10px;
+    row-gap: 10px;
+  }
+
+  .cardItem {
+    width: 230px;
+    height: 130px;
+    border-radius: 8px;
+
+    .cardItemTitle {
+      font-size: 16px;
+      top: 15px;
+      left: 15px;
+    }
+
+    .cardItemNumbers {
+      font-size: 18px;
+      top: 50px;
+      left: 25px;
+    }
+
+    .cardItemExpiryDate {
+      font-size: 12px;
+      top: 100px;
+    }
+
+    .cardItemFullName {
+      font-size: 12px;
+      top: 100px;
+    }
+  }
+
+  .addNewCard {
+    width: 100%;
+    height: 100%;
+
+    .addNewCardContainer {
+      width: 90%;
+    }
+
+    .addNewCardTitle {
+      width: 100%;
+      font-weight: 700;
+      font-size: 25px;
+      margin-bottom: 25px;
+    }
+
+    input, select {
+      width: 100%;
+      height: 50px;
+      margin-bottom: 20px;
+      font-weight: 700;
+      font-size: 20px;
+    }
+
+    .addNewCardOkButton {
+      height: 50px;
+      font-weight: 700;
+      font-size: 18px;
+    }
+  }
+
+  ::ng-deep {
+    .skeletonCardItem {
+      width: 230px !important;
+      height: 130px !important;
+      border-radius: 8px !important;
+    }
+  }
+}
+
+@media screen and (max-width: 1670px) {
+  :host {
+    grid-template-columns: auto 300px;
+  }
+
+  .title {
+    font-size: 26px;
+    margin-bottom: 8px;
+  }
+
+  .titleCardSvg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .overview {
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+
+  .addNewCard {
+    width: 100%;
+    height: 100%;
+
+    .addNewCardContainer {
+      width: 90%;
+    }
+
+    .addNewCardTitle {
+      width: 100%;
+      font-weight: 700;
+      font-size: 18px;
+      margin-bottom: 25px;
+    }
+
+    input, select {
+      width: 100%;
+      height: 45px;
+      margin-bottom: 10px;
+      font-size: 17px;
+      border-radius: 8px;
+    }
+
+    .addNewCardOkButton {
+      height: 40px;
+      font-size: 16px;
+      border-radius: 8px;
+    }
+  }
+}

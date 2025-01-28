@@ -1,0 +1,136 @@
+<div class="transactionsInfo">
+  <div class="transactionsInfoContainer">
+    <span class="titleSpan">
+      <p class="title">Transactions</p>
+      <svg-icon src="../../../assets/svg/transaction.svg" class="titleTransactionSvg" />
+    </span>
+    <p class="overview">An overview of wallet, user information and transactions</p>
+    <div class="walletAndUserInfoContainer">
+      <div class="wallet">
+        <p class="walletTitle">Wallet Balance</p>
+        <p class="walletBalance">
+          <ng-container *ngIf="user$ | async as user else userIsNull">
+            €{{user.wallet.balance}}
+          </ng-container>
+          <ng-template #userIsNull>
+            <p-skeleton styleClass="skeletonDefault" />
+          </ng-template>
+        </p>
+        <div class="logo">
+          <svg-icon src="../../../assets/svg/logo.svg" class="logoSvg" />
+          <p class="logoTitle">Event Triangle</p>
+        </div>
+      </div>
+      <div class="userInfo">
+        <div class="userInfoAvatar"></div>
+        <div class="userInfoData">
+          <p class="userInfoFullName">
+            <ng-container *ngIf="user$ | async as user else userIsNull">
+              {{_textService.pullUsernameFromMail(user.email)}}
+            </ng-container>
+            <ng-template #userIsNull>
+              <p-skeleton styleClass="skeletonDefault" />
+            </ng-template>
+          </p>
+          <span>
+            <ng-container *ngIf="user$ | async as user; else userIsNull">
+              <p class="userInfoId" appCopyText="{{user.id}}" pTooltip="{{user.id}}">ID: {{user.id}}</p>
+            </ng-container>
+            <ng-template #userIsNull>
+              <p-skeleton styleClass="skeletonDefault" />
+            </ng-template>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="searchTransactions">
+      <input type="text" class="searchTransactionsInput"
+             [ngModel]="searchText$ | async" (ngModelChange)="searchText$.next($event)"
+             placeholder="Search Transactions" />
+      <svg-icon src="../../../assets/svg/search.svg" class="searchSvg" />
+    </div>
+    <ng-container *ngIf="{
+      transactions: (transactions$ | async) || [],
+      searchTransactions: (searchedTransactions$ | async) || [],
+      searchText: (searchText$ | async) || ''
+    } as data">
+      <div class="transactionList" [@transactionsAnimation]=""
+           *ngIf="data.transactions.length > 0 && data.searchText.length === 0 && _transactionsStateService.wasRequested; else searchTransactionTemplate"
+           (scroll)="onScrollTransactionsHandler($event)">
+        <div *ngFor="let transaction of data.transactions; trackBy: identifyTransactionDto"
+             class="transactionItem {{getTransactionColorClassName(transaction)}}">
+          <svg-icon src="../../../assets/svg/transaction.svg" appCopyText="{{transaction.id}}" pTooltip="{{transaction.id}}" class="transactionSvg" />
+          <div class="transactionItemInfo">
+            <p class="transactionItemFrom" appCopyText="{{transaction.fromUserId}}" pTooltip="{{transaction.fromUserId}}">
+              From: {{transaction.fromUserId}}
+            </p>
+            <p class="transactionItemTo" appCopyText="{{transaction.toUserId}}" pTooltip="{{transaction.toUserId}}">
+              To: {{transaction.toUserId}}
+            </p>
+            <p class="transactionItemAmount">
+              Amount: €{{transaction.amount}}
+            </p>
+            <p class="transactionItemDate">
+              {{_dateService.getTimeAndDate(transaction.createdAt)}}
+            </p>
+          </div>
+        </div>
+        <div class="transactionListLoaderBackground" [@transactionListLoaderAnimation]="" *ngIf="transactionListLoader">
+          <span class="transactionListLoader"></span>
+        </div>
+      </div>
+      <ng-template #searchTransactionTemplate>
+        <div class="transactionList" [@transactionsAnimation]="" (scroll)="onScrollSearchTransactionsHandler($event)"
+             *ngIf="data.searchTransactions.length > 0 && data.searchText.length > 0">
+          <div *ngFor="let transaction of data.searchTransactions; trackBy: identifyTransactionDto"
+               class="transactionItem {{getTransactionColorClassName(transaction)}}">
+            <svg-icon src="../../../assets/svg/transaction.svg" class="transactionSvg" />
+            <div class="transactionItemInfo">
+              <p class="transactionItemFrom">
+                From: {{transaction.fromUserId}}
+              </p>
+              <p class="transactionItemTo">
+                To: {{transaction.toUserId}}
+              </p>
+              <p class="transactionItemAmount">
+                Amount: €{{transaction.amount}}
+              </p>
+              <p class="transactionItemDate">
+                {{_dateService.getTimeAndDate(transaction.createdAt)}}
+              </p>
+            </div>
+          </div>
+          <div class="transactionListLoaderBackground" [@transactionListLoaderAnimation]="" *ngIf="transactionListLoader">
+            <span class="transactionListLoader"></span>
+          </div>
+        </div>
+      </ng-template>
+      <div class="emptyTransactionList" *ngIf="data.transactions.length === 0 && data.searchTransactions.length === 0 && _transactionsStateService.wasRequested">
+        <p>No transactions yet</p>
+      </div>
+    </ng-container>
+    <div class="transactionList" *ngIf="!_transactionsStateService.wasRequested">
+      <p-skeleton styleClass="skeletonTransactionItem" />
+      <p-skeleton styleClass="skeletonTransactionItem" />
+      <p-skeleton styleClass="skeletonTransactionItem" />
+      <p-skeleton styleClass="skeletonTransactionItem" />
+      <p-skeleton styleClass="skeletonTransactionItem" />
+    </div>
+  </div>
+</div>
+<div class="createNewTransaction">
+  <div class="createNewTransactionContainer">
+    <div [@rightBarAnimation]="">
+      <p class="createNewTransactionTitle">
+        Create New Transaction
+      </p>
+      <p-dropdown styleClass="createNewTransactionToInput" [options]="contacts" [(ngModel)]="toUserId" (onChange)="onChangeDropDownHandler($event)"
+                  placeholder="To: Receiver" [editable]="true" />
+      <input type="text" class="createNewTransactionAmountInput" (keydown.enter)="$event.preventDefault()" mask="0000000000000"
+             placeholder="Amount: €0" [(ngModel)]="amount" (keyup.enter)="sendMoneyToUser()"/>
+      <button class="createNewTransactionOkButton" (click)="sendMoneyToUser()">
+        Ok
+      </button>
+    </div>
+  </div>
+</div>

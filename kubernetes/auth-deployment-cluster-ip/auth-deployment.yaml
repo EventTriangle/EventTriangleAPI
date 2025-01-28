@@ -1,0 +1,38 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: event-triangle-auth-deployment
+  namespace: event-triangle
+spec:
+  selector:
+    matchLabels:
+      app: event-triangle-auth-api
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: event-triangle-auth-api
+    spec:
+      containers:
+        - name: event-triangle-auth-api
+          image: kaminome/auth-service:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+            - containerPort: 81
+          env:
+            - name: EVENT_TRIANGLE_AD_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: connection-creds
+                  key: EVENT_TRIANGLE_AD_CLIENT_SECRET
+
+            - name: DatabaseConnectionString
+              valueFrom:
+                secretKeyRef:
+                  name: connection-creds
+                  key: AuthDatabaseConnectionString
+
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Docker"

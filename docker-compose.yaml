@@ -1,0 +1,69 @@
+version: '3.9'
+
+services:
+  auth-service:
+    build:
+      context: src
+      args:
+        VERSION: '1.0.0.0'
+        FRONT_API_URL: 'http://localhost:7000/'
+      dockerfile: authorization/Dockerfile
+    ports:
+      - "7000:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Docker
+      - EVENT_TRIANGLE_AD_CLIENT_SECRET=${EVENT_TRIANGLE_AD_CLIENT_SECRET}
+    depends_on:
+      - db
+
+  consumer-service:
+    build:
+      context: src
+      args:
+        VERSION: '1.0.0.0'
+      dockerfile: consumer/Dockerfile
+    ports:
+      - "7001:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Docker
+    depends_on:
+      - db
+      - rabbit
+
+  sender-service:
+    build:
+      context: src
+      args:
+        VERSION: '1.0.0.0'
+      dockerfile: sender/Dockerfile
+    ports:
+      - "7002:80"
+      - "7005:81"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Docker
+    depends_on:
+      - db
+      - rabbit
+  
+  db:
+    image: postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    container_name: pgsql-db
+  
+  rabbit:
+    image: rabbitmq:3-management
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    ports:
+      - "15672:15672"
+
+volumes:
+  pgdata:
