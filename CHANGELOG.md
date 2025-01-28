@@ -16,3 +16,4 @@ and this project adheres to [Semantic Versioning v2.0.0](https://semver.org/spec
 - HELM deployment pipelines
 - Terraform infrastructure provision azure pipelines
 - Cloudflare DNS automation using PowerShell
+- Move ACR to separate resource group
