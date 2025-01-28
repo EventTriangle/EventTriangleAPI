@@ -20,7 +20,7 @@ $dnsRecords = @{}
 # Loop through the result and populate the hashtable
 $json.result | ForEach-Object {
     # Use the DNS record id as the key and the name as the value
-    $dnsRecords[$_.id] = $_.name
+    $dnsRecords[$_.name] = $_.id
 }
 
 # Return the hashtable
