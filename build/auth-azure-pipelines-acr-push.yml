@@ -28,6 +28,8 @@ pr:
 variables:
   - name: appName
     value: 'AuthorizationAPI'
+  - name: System.Debug
+    value: 'false'
   - group: AKS_Settings
   - group: terraform_storage_configuration
 

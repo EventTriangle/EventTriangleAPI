@@ -15,6 +15,8 @@ variables:
   - group: Postgres_Rabbit_Connection_Credentials
   - group: Terraform_Auto_Tfvars_Json_Transform
   - group: AKS_Settings
+  - name: System.Debug
+    value: 'false'
   - name: planStageName
     value: "Terraform_Plan_Destroy_AKS_Cluster"
   - name: applyStageName
