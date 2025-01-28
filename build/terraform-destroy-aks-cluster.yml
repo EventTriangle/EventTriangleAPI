@@ -14,6 +14,7 @@ variables:
   - group: Azure_Terraform_Integration
   - group: Postgres_Rabbit_Connection_Credentials
   - group: Terraform_Auto_Tfvars_Json_Transform
+  - group: Prefix_Library
   - group: AKS_Settings
   - name: System.Debug
     value: 'false'
