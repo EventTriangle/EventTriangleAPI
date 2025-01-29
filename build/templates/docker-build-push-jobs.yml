@@ -125,25 +125,40 @@ jobs:
               projects: '${{ parameters.integrationTestsProjectPath }}'
               arguments: '--no-build --configuration ${{ parameters.buildConfiguration }} --collect "Code Coverage"'
 
-      - bash: |
-          GIT_VERSION_IMAGE="${{ parameters.dockerRegistryUrl }}/${{ parameters.imageRepository }}:$(GitVersion.SemVer)"
-          LATEST_VERSION_IMAGE="${{ parameters.dockerRegistryUrl }}/${{ parameters.imageRepository }}:latest"
-          echo "GIT_VERSION_IMAGE: $GIT_VERSION_IMAGE"
-          echo "LATEST_VERSION_IMAGE: $LATEST_VERSION_IMAGE"
+#      - bash: |
+#          GIT_VERSION_IMAGE="${{ parameters.dockerRegistryUrl }}/${{ parameters.imageRepository }}:$(GitVersion.SemVer)"
+#          LATEST_VERSION_IMAGE="${{ parameters.dockerRegistryUrl }}/${{ parameters.imageRepository }}:latest"
+#          echo "GIT_VERSION_IMAGE: $GIT_VERSION_IMAGE"
+#          echo "LATEST_VERSION_IMAGE: $LATEST_VERSION_IMAGE"
+#
+#          ACR_GIT_VERSION_IMAGE="${{ parameters.acrRegistryUrl }}/${{ parameters.imageRepository }}:$(GitVersion.SemVer)"
+#          ACR_LATEST_VERSION_IMAGE="${{ parameters.acrRegistryUrl }}/${{ parameters.imageRepository }}:latest"
+#          echo "ACR_GIT_VERSION_IMAGE: $ACR_GIT_VERSION_IMAGE"
+#          echo "ACR_LATEST_VERSION_IMAGE: $ACR_LATEST_VERSION_IMAGE"
+#
+#          docker build --build-arg FRONT_API_URL="${{ parameters.dockerBuildParameterUrl }}" \
+#                       --build-arg VERSION=$(GitVersion.SemVer) -t "$GIT_VERSION_IMAGE" \
+#                       -f ${{ parameters.dockerfilePath }} .
+#          docker tag "$GIT_VERSION_IMAGE" "$LATEST_VERSION_IMAGE"
+#          docker tag "$GIT_VERSION_IMAGE" "$ACR_LATEST_VERSION_IMAGE"
+#          docker tag "$GIT_VERSION_IMAGE" "$ACR_GIT_VERSION_IMAGE"
+#        workingDirectory: ${{ parameters.workingDirectoryForDocker }}
+#        displayName: 'Build Docker Image'
 
-          ACR_GIT_VERSION_IMAGE="${{ parameters.acrRegistryUrl }}/${{ parameters.imageRepository }}:$(GitVersion.SemVer)"
-          ACR_LATEST_VERSION_IMAGE="${{ parameters.acrRegistryUrl }}/${{ parameters.imageRepository }}:latest"
-          echo "ACR_GIT_VERSION_IMAGE: $ACR_GIT_VERSION_IMAGE"
-          echo "ACR_LATEST_VERSION_IMAGE: $ACR_LATEST_VERSION_IMAGE"
-
-          docker build --build-arg FRONT_API_URL="${{ parameters.dockerBuildParameterUrl }}" \
-                       --build-arg VERSION=$(GitVersion.SemVer) -t "$GIT_VERSION_IMAGE" \
-                       -f ${{ parameters.dockerfilePath }} .
-          docker tag "$GIT_VERSION_IMAGE" "$LATEST_VERSION_IMAGE"
-          docker tag "$GIT_VERSION_IMAGE" "$ACR_LATEST_VERSION_IMAGE"
-          docker tag "$GIT_VERSION_IMAGE" "$ACR_GIT_VERSION_IMAGE"
-        workingDirectory: ${{ parameters.workingDirectoryForDocker }}
+      - task: PowerShell@2
         displayName: 'Build Docker Image'
+        inputs:
+          targetType: 'filePath'
+          filePath: '$(System.DefaultWorkingDirectory)/scripts/Build-Docker.ps1'
+          arguments: "-DockerRegistryUrl ${{ parameters.dockerRegistryUrl }}
+                      -ImageRepository ${{ parameters.imageRepository }}
+                      -AcrRegistryUrl ${{ parameters.acrRegistryUrl }}
+                      -DockerBuildParameterUrl ${{ parameters.dockerBuildParameterUrl }}
+                      -DockerfilePath ${{ parameters.dockerfilePath }}
+                      -GitVersion $(GitVersion.SemVer)
+                      -WorkingDirectory ${{ parameters.workingDirectoryForDocker }}"
+          errorActionPreference: 'stop'
+          pwsh: true
 
       - task: Docker@2
         displayName: 'Push to DockerHub'
