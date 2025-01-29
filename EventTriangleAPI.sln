@@ -82,19 +82,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "items", "items", "{41B7EF6D
 		docker-compose.yaml = docker-compose.yaml
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{29CCAA4D-33CB-406F-BB10-9BD1641BBEF0}"
-	ProjectSection(SolutionItems) = preProject
-		build\authorization-azure-pipelines.yml = build\authorization-azure-pipelines.yml
-		build\consumer-azure-pipelines-ci.yml = build\consumer-azure-pipelines-ci.yml
-		build\sender-azure-pipelines-ci.yml = build\sender-azure-pipelines-ci.yml
-		build\angular-build-azure-pipelines-ci.yml = build\angular-build-azure-pipelines-ci.yml
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "templates", "templates", "{6DB9FB17-BC40-4F7A-9425-65E9EF7C0303}"
-	ProjectSection(SolutionItems) = preProject
-		build\templates\dotnet-build-and-test-job-template.yml = build\templates\dotnet-build-and-test-job-template.yml
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventTriangleAPI.Authorization.Persistence", "src\authorization\EventTriangleAPI.Authorization.Persistence\EventTriangleAPI.Authorization.Persistence.csproj", "{3A1E7606-C1A4-4AB9-B102-2938403F2B68}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventTriangleAPI.Authorization.Domain", "src\authorization\EventTriangleAPI.Authorization.Domain\EventTriangleAPI.Authorization.Domain.csproj", "{045CAF02-F951-4FCF-9D5F-62A6121628CB}"
@@ -104,6 +91,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventTriangleAPI.Sender.Persistence", "src\sender\EventTriangleAPI.Sender.Persistence\EventTriangleAPI.Sender.Persistence.csproj", "{BE66A8AC-5DAC-4225-B81A-095A4EA95158}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventTriangleAPI.Consumer.Persistence", "src\consumer\EventTriangleAPI.Consumer.Persistence\EventTriangleAPI.Consumer.Persistence.csproj", "{AC3AA5A4-B6DE-48FB-A7E2-55145AEC8785}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventTriangleAPI.Authorization.IntegrationTests", "src\authorization\EventTriangleAPI.Authorization.IntegrationTests\EventTriangleAPI.Authorization.IntegrationTests.csproj", "{94B63DD5-1852-4F35-A762-3C421B560EBF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -137,12 +126,12 @@ Global
 		{0B52F7D3-364C-4052-B104-48D83CA4DE3F} = {27588941-03BB-44BE-A36E-46D701BCDA6B}
 		{2B2FBD65-5A00-4F92-8131-6EDF4697955C} = {27588941-03BB-44BE-A36E-46D701BCDA6B}
 		{A659D97B-8FB1-40F8-A9FD-EB461CA889CA} = {0B52F7D3-364C-4052-B104-48D83CA4DE3F}
-		{6DB9FB17-BC40-4F7A-9425-65E9EF7C0303} = {29CCAA4D-33CB-406F-BB10-9BD1641BBEF0}
 		{3A1E7606-C1A4-4AB9-B102-2938403F2B68} = {31A58EF0-F272-4824-86FE-19473671C529}
 		{045CAF02-F951-4FCF-9D5F-62A6121628CB} = {31A58EF0-F272-4824-86FE-19473671C529}
 		{8E82DD46-9A8A-4617-8172-92B42FFB3B95} = {31A58EF0-F272-4824-86FE-19473671C529}
 		{BE66A8AC-5DAC-4225-B81A-095A4EA95158} = {00E00698-E256-44CB-A3B9-585C99CA5244}
 		{AC3AA5A4-B6DE-48FB-A7E2-55145AEC8785} = {317E2931-3CB0-4893-9D5F-DD41A959CBEF}
+		{94B63DD5-1852-4F35-A762-3C421B560EBF} = {31A58EF0-F272-4824-86FE-19473671C529}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{79E9143C-B2A4-48A9-AE74-07E15B7247FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -229,5 +218,9 @@ Global
 		{AC3AA5A4-B6DE-48FB-A7E2-55145AEC8785}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AC3AA5A4-B6DE-48FB-A7E2-55145AEC8785}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AC3AA5A4-B6DE-48FB-A7E2-55145AEC8785}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94B63DD5-1852-4F35-A762-3C421B560EBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94B63DD5-1852-4F35-A762-3C421B560EBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94B63DD5-1852-4F35-A762-3C421B560EBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94B63DD5-1852-4F35-A762-3C421B560EBF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
