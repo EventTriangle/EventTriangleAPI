@@ -48,6 +48,11 @@ parameters:
     displayName: 'Docker Registry URL. For Docker Hub it is: docker.io/kaminome.
                   For ACR it is FQDN URL of container registry: myaksacr01aks01.azurecr.io'
 
+  - name: acrRegistryUrl
+    type: string
+    displayName: 'Docker Registry URL. For Docker Hub it is: docker.io/kaminome.
+                  For ACR it is FQDN URL of container registry: myaksacr01aks01.azurecr.io'
+
   - name: imageRepository
     displayName: 'Image Repository name'
     type: string
@@ -58,6 +63,10 @@ parameters:
 
   - name: dockerServiceConnection
     displayName: 'Docker container registry service connection in Azure DevOps.'
+    type: string
+
+  - name: acrServiceConnection
+    displayName: 'Azure container registry service connection in Azure DevOps.'
     type: string
 
   - name: dockerBuildParameterUrl
@@ -129,10 +138,18 @@ jobs:
           LATEST_VERSION_IMAGE="${{ parameters.dockerRegistryUrl }}/${{ parameters.imageRepository }}:latest"
           echo "GIT_VERSION_IMAGE: $GIT_VERSION_IMAGE"
           echo "LATEST_VERSION_IMAGE: $LATEST_VERSION_IMAGE"
+
+          ACR_GIT_VERSION_IMAGE="${{ parameters.acrRegistryUrl }}/${{ parameters.imageRepository }}:$(GitVersion.SemVer)"
+          ACR_LATEST_VERSION_IMAGE="${{ parameters.acrRegistryUrl }}/${{ parameters.imageRepository }}:latest"
+          echo "ACR_GIT_VERSION_IMAGE: $ACR_GIT_VERSION_IMAGE"
+          echo "ACR_LATEST_VERSION_IMAGE: $ACR_LATEST_VERSION_IMAGE"
+
           docker build --build-arg FRONT_API_URL="${{ parameters.dockerBuildParameterUrl }}" \
                        --build-arg VERSION=$(GitVersion.SemVer) -t "$GIT_VERSION_IMAGE" \
                        -f ${{ parameters.dockerfilePath }} .
           docker tag "$GIT_VERSION_IMAGE" "$LATEST_VERSION_IMAGE"
+          docker tag "$GIT_VERSION_IMAGE" "$ACR_LATEST_VERSION_IMAGE"
+          docker tag "$GIT_VERSION_IMAGE" "$ACR_GIT_VERSION_IMAGE"
         workingDirectory: ${{ parameters.workingDirectoryForDocker }}
         displayName: 'Build Docker Image'
 
@@ -142,6 +159,16 @@ jobs:
           command: push
           containerRegistry: ${{ parameters.dockerServiceConnection }}
           repository: ${{ parameters.dockerRegistryUrl }}/${{ parameters.imageRepository }}
+          tags: |
+            $(GitVersion.SemVer)
+            latest
+
+      - task: Docker@2
+        displayName: 'Push to ACR'
+        inputs:
+          command: push
+          containerRegistry: ${{ parameters.acrServiceConnection }}
+          repository: ${{ parameters.imageRepository }}
           tags: |
             $(GitVersion.SemVer)
             latest

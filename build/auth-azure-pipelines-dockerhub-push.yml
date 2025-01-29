@@ -40,7 +40,7 @@ stages:
   - stage: 'Build_${{ variables.appName }}'
     displayName: 'Build_${{ variables.appName }}'
     jobs:
-      - template: templates/docker-build-push-dockerhub-jobs.yml
+      - template: templates/docker-build-push-jobs.yml
         parameters:
           JobName: 'Build_${{ variables.appName }}'
           solution: '$(System.DefaultWorkingDirectory)/EventTriangleAPI.sln'
@@ -55,6 +55,8 @@ stages:
           imageRepository: 'auth-service'
           dockerfilePath: '$(System.DefaultWorkingDirectory)/src/authorization/Dockerfile'
           dockerServiceConnection: 'Docker_Hub_Connection'
+          acrRegistryUrl: 'azuredevopsacrd01.azurecr.io'
+          acrServiceConnection: 'Azure_ACR_Connection'
 
 #  - stage: 'AKS_Helm_Deploy_${{ variables.appName }}'
 #    displayName: 'AKS_Helm_Deploy_${{ variables.appName }}'
