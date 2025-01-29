@@ -57,6 +57,7 @@ stages:
           dockerServiceConnection: 'Docker_Hub_Connection'
           acrRegistryUrl: 'azuredevopsacrd01.azurecr.io'
           acrServiceConnection: 'Azure_ACR_Connection'
+          workingDirectoryForDocker: '$(System.DefaultWorkingDirectory)/src'
 
 #  - stage: 'AKS_Helm_Deploy_${{ variables.appName }}'
 #    displayName: 'AKS_Helm_Deploy_${{ variables.appName }}'
