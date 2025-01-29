@@ -48,6 +48,7 @@ stages:
           backendProjectPath: '$(System.DefaultWorkingDirectory)/src/consumer/EventTriangleAPI.Consumer.Presentation'
           unitTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/consumer/EventTriangleAPI.Consumer.UnitTests/EventTriangleAPI.Consumer.UnitTests.csproj'
           shouldRunIntegrationTests: 'true'
+          shouldRunUnitTests: 'true'
           integrationTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/consumer/EventTriangleAPI.Consumer.IntegrationTests/EventTriangleAPI.Consumer.IntegrationTests.csproj'
           dockerRegistryUrl: 'azuredevopsacrd01.azurecr.io'
           imageRepository: 'consumer-service'

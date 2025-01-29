@@ -25,11 +25,6 @@ parameters:
     displayName: 'Unit tests project path'
     type: string
 
-  - name: shouldRunBuild
-    displayName: 'Flag should run build'
-    default: 'true'
-    type: boolean
-
   - name: shouldRunUnitTests
     displayName: 'Flag should run unit tests'
     default: 'true'
@@ -93,21 +88,19 @@ jobs:
           Action: '##vso[build.updatebuildnumber]'
           BuildVersion: $(GitVersion.SemVer)
 
-      - ${{ if eq(parameters.shouldRunBuild, 'true') }}:
-        - task: DotNetCoreCLI@2
-          displayName: 'Dotnet restore'
-          inputs:
-            command: 'restore'
-            projects: '${{ parameters.solution }}'
-            arguments: '--verbosity minimal'
+      - task: DotNetCoreCLI@2
+        displayName: 'Dotnet restore'
+        inputs:
+          command: 'restore'
+          projects: '${{ parameters.solution }}'
+          arguments: '--verbosity minimal'
 
-      - ${{ if eq(parameters.shouldRunBuild, 'true') }}:
-        - task: DotNetCoreCLI@2
-          displayName: 'Build solution'
-          inputs:
-            command: 'build'
-            projects: '${{ parameters.solution }}'
-            arguments: '-c ${{ parameters.buildConfiguration }} -p:Version=$(GitVersion.SemVer) --no-restore'
+      - task: DotNetCoreCLI@2
+        displayName: 'Build solution'
+        inputs:
+          command: 'build'
+          projects: '${{ parameters.solution }}'
+          arguments: '-c ${{ parameters.buildConfiguration }} -p:Version=$(GitVersion.SemVer) --no-restore'
 
       - ${{ if eq(parameters.shouldRunUnitTests, 'true') }}:
           - task: DotnetCoreCLI@2
