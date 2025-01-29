@@ -1,6 +1,5 @@
-trigger: none
-
-pr:
+trigger:
+  batch: true
   branches:
     include:
       - develop
@@ -16,6 +15,8 @@ pr:
       - src/sender/EventTriangleAPI.Sender.UnitTests
       - src/shared/EventTriangleAPI.Shared.Application
       - src/shared/EventTriangleAPI.Shared.DTO
+
+pr: none
 
 variables:
   - name: appName
