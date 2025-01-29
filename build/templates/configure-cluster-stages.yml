@@ -145,7 +145,6 @@ stages:
                   displayName: 'Configure Cloudflare DNS'
                   inputs:
                     targetType: 'filePath'
-                    filePath: ${{ parameters.workingDirectory }}/cloudflare/Main.ps1
+                    filePath: $(System.DefaultWorkingDirectory)/cloudflare/Main.ps1
                     arguments: '-ApiToken ${{ parameters.cloudflareApiKey }} -ZoneName ${{ parameters.cloudflareZone }}'
                     pwsh: true
-                    workingDirectory: ${{ parameters.workingDirectory }}
