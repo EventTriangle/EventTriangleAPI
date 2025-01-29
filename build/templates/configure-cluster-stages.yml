@@ -1,5 +1,6 @@
 parameters:
   - name: vmImage
+    default: 'windows-latest'
     type: string
 
   - name: environment
@@ -32,6 +33,14 @@ parameters:
 
   - name: rabbitMqPassword
     displayName: 'RabbitMQ Password'
+    type: string
+
+  - name: cloudflareApiKey
+    displayName: 'Cloudflare API Token'
+    type: string
+
+  - name: cloudflareZone
+    displayName: 'Zone name of DNS in cloudflare (e.g razumovsky.me)'
     type: string
 
 stages:
@@ -133,9 +142,10 @@ stages:
                     workingDirectory: ${{ parameters.workingDirectory }}
 
                 - task: PowerShell@2
-                  displayName: 'Print Public IPs'
+                  displayName: 'Configure Cloudflare DNS'
                   inputs:
                     targetType: 'filePath'
-                    filePath: ${{ parameters.workingDirectory }}/scripts/print-ip.ps1
+                    filePath: $(System.DefaultWorkingDirectory)/cloudflare/Main.ps1
+                    arguments: '-ApiToken ${{ parameters.cloudflareApiKey }} -ZoneName ${{ parameters.cloudflareZone }}'
                     pwsh: true
-                    workingDirectory: ${{ parameters.workingDirectory }}
+                    workingDirectory: '$(System.DefaultWorkingDirectory)/cloudflare'
