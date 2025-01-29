@@ -21,3 +21,4 @@ and this project adheres to [Semantic Versioning v2.0.0](https://semver.org/spec
 - Merge two docker builds templates for docker build and push
 - Add integration tests project to auth service
 - Create a separate powershell script for build and tag docker images
+- Move configure AKS cluster to separate pipeline

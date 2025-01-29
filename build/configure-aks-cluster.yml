@@ -1,0 +1,40 @@
+#pr:
+#  paths:
+#    include:
+#      - terraform
+#      - build/terraform-plan-apply.yml
+#    exclude:
+#      - terraform/README.md
+
+#trigger:
+#  batch: true
+#  branches:
+#    include:
+#      - docs
+
+trigger: none
+pr: none
+
+variables:
+  - group: Azure_Terraform_Integration
+  - group: Postgres_Rabbit_Connection_Credentials
+  - group: Terraform_Auto_Tfvars_Json_Transform
+  - group: AKS_Settings
+  - group: Prefix_Library
+  - name: System.Debug
+    value: 'false'
+
+stages:
+  - template: templates/configure-cluster-stages.yml
+    parameters:
+      vmImage: ubuntu-latest
+      environment: aks
+      workingDirectory: $(System.DefaultWorkingDirectory)/kubernetes
+      serviceConnection: Azure_Connection
+      azureResourceGroup: $(library-aks-resource-group)
+      kubernetesCluster: $(library-aks-cluster-name)
+      namespace: 'event-triangle'
+      rabbitMqUser: $(library-rabbitmq-user)
+      rabbitMqPassword: $(library-rabbitmq-password)
+      transformTargetFiles: |
+        secrets/connection-secrets.yaml
