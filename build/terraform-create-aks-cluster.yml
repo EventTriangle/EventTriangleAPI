@@ -62,19 +62,3 @@ stages:
       environment: 'aks'
       dependsOn: [ '${{ variables.planStageName }}' ]
       condition: ${{ variables.planStageName }}
-
-  - template: templates/azure-k8s-configure-stages.yml
-    parameters:
-      vmImage: ubuntu-latest
-      environment: aks
-      workingDirectory: $(System.DefaultWorkingDirectory)/kubernetes
-      serviceConnection: Azure_Connection
-      azureResourceGroup: $(library-aks-resource-group)
-      kubernetesCluster: $(library-aks-cluster-name)
-      namespace: 'event-triangle'
-      rabbitMqUser: $(library-rabbitmq-user)
-      rabbitMqPassword: $(library-rabbitmq-password)
-      dependsOn: [ '${{ variables.applyStageName }}' ]
-      condition: ${{ variables.applyStageName }}
-      transformTargetFiles: |
-        secrets/connection-secrets.yaml
