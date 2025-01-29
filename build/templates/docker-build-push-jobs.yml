@@ -45,13 +45,11 @@ parameters:
 
   - name: dockerRegistryUrl
     type: string
-    displayName: 'Docker Registry URL. For Docker Hub it is: docker.io/kaminome.
-                  For ACR it is FQDN URL of container registry: myaksacr01aks01.azurecr.io'
+    displayName: 'DockerHub Registry URL. For Docker Hub it is: docker.io/kaminome.'
 
   - name: acrRegistryUrl
     type: string
-    displayName: 'Docker Registry URL. For Docker Hub it is: docker.io/kaminome.
-                  For ACR it is FQDN URL of container registry: myaksacr01aks01.azurecr.io'
+    displayName: 'ACR Registry URL. For ACR it is FQDN URL of container registry: azuredevopsacrd01.azurecr.io'
 
   - name: imageRepository
     displayName: 'Image Repository name'
@@ -127,11 +125,11 @@ jobs:
               projects: '${{ parameters.integrationTestsProjectPath }}'
               arguments: '--no-build --configuration ${{ parameters.buildConfiguration }} --collect "Code Coverage"'
 
-      - task: Docker@2
-        displayName: 'Login to DockerHub'
-        inputs:
-          command: login
-          containerRegistry: ${{ parameters.dockerServiceConnection }}
+#      - task: Docker@2
+#        displayName: 'Login to DockerHub'
+#        inputs:
+#          command: login
+#          containerRegistry: ${{ parameters.dockerServiceConnection }}
 
       - bash: |
           GIT_VERSION_IMAGE="${{ parameters.dockerRegistryUrl }}/${{ parameters.imageRepository }}:$(GitVersion.SemVer)"
