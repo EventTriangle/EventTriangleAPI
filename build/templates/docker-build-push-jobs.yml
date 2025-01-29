@@ -175,6 +175,8 @@ jobs:
           publishLocation: 'Container'
 
       - task: PublishBuildArtifacts@1
+        displayName: 'Publish Manifests'
         inputs:
           pathToPublish: '$(System.DefaultWorkingDirectory)/kubernetes'
-          artifactName: k8s-manifests
+          artifactName: 'k8s-manifests'
+          publishLocation: 'Container'
