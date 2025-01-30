@@ -58,7 +58,7 @@ stages:
     jobs:
       - template: templates/helm-deploy-jobs.yml
         parameters:
-          chartName: 'consumer-service-chart'
+          chartName: 'sender-service-chart'
           stageDisplayName: 'AKS_Helm_Deploy_${{ variables.appName }}'
           vmImage: 'ubuntu-latest'
           environment: 'aks'
