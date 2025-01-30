@@ -22,9 +22,9 @@
 
 ## HELM Install
 
-- helm install event-triangle-auth .\auth-service-chart\ --values .\auth-service-chart\values.yaml
-- helm install event-triangle-consumer .\consumer-service-chart\ --values .\consumer-service-chart\values.yaml
-- helm install event-triangle-sender .\sender-service-chart\ --values .\sender-service-chart\values.yaml
+- helm install auth-service-chart .\auth-service-chart\ --values .\auth-service-chart\values.yaml --namespace "event-triangle"
+- helm install consumer-service-chart .\consumer-service-chart\ --values .\consumer-service-chart\values.yaml --namespace "event-triangle"
+- helm install sender-service-chart .\sender-service-chart\ --values .\sender-service-chart\values.yaml --namespace "event-triangle"
 - helm upgrade --install event-triangle-auth .\helm\auth-service-chart --values .\helm\auth-service-chart\values.yaml --set image.tag="0.1.3-helm.527" --namespace "event-triangle"
 
 ## HELM Upgrade

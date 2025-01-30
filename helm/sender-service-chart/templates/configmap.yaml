@@ -6,4 +6,4 @@ metadata:
   labels:
     app: {{ .Release.Name }}
 data:
-  ASPNETCORE_ENVIRONMENT: {{ .Values.config.environment | quote }}
+  ASPNETCORE_ENVIRONMENT: {{ .Values.configMap.ASPNETCORE_ENVIRONMENT | quote }}
