@@ -1,42 +1,40 @@
 ﻿param (
-    [string]$helmChartsFolder = "E:\RiderProjects\02_DOTNET_PROJECTS\EventTriangleAPI\helm",
-    [string]$chartName = "auth-service-chart",
-    [string]$version,
-    [string]$namespace = "event-triangle",
-    [bool]$useAcr = $true,
-    [string]$acrRegistryUrl = "azuredevopsacrd01.azurecr.io"
+    [string]$HelmChartsFolder = "E:\RiderProjects\02_DOTNET_PROJECTS\EventTriangleAPI\helm",
+    [string]$ChartName = "auth-service-chart",
+    [string]$Version,
+    [string]$Namespace = "event-triangle",
+    [bool]$UseAcr = $true,
+    [string]$AcrRegistryUrl = "azuredevopsacrd01.azurecr.io"
 )
 
 # Check if version is empty
-if ( [string]::IsNullOrEmpty($version))
-{
+if ([string]::IsNullOrEmpty($Version)) {
     Write-Output "Version is empty, setting up to latest"
-    $version = "latest"
+    $Version = "latest"
 }
 
-$chartMap = @{ }
-$chartMap["auth-service-chart"] = "auth-service"
-$chartMap["consumer-service-chart"] = "consumer-service"
-$chartMap["sender-service-chart"] = "sender-service"
+$ChartMap = @{ }
+$ChartMap["auth-service-chart"] = "auth-service"
+$ChartMap["consumer-service-chart"] = "consumer-service"
+$ChartMap["sender-service-chart"] = "sender-service"
 
-$image = $chartMap[$chartName]
+$Image = $ChartMap[$ChartName]
 
-Write-Output "Version: $version"
+Write-Output "Version: $Version"
 Write-Output "Deploying Helm chart..."
 
 # Determine image repository
-if ($useAcr)
-{
-    $imageRepository = "$acrRegistryUrl/$image"
-}
-else
-{
-    $imageRepository = "kaminome/$image"
+if ($UseAcr) {
+    $ImageRepository = "$AcrRegistryUrl/$Image"
+} else {
+    $ImageRepository = "kaminome/$Image"
 }
 
+Write-Output "Image repository: $ImageRepository"
+
 # Execute Helm upgrade/install command
-helm upgrade --install $chartName "$helmChartsFolder/$chartName" `
-    --values "$helmChartsFolder/$chartName/values.yaml" `
-    --set image.tag="$version" `
-    --set image.repository="$imageRepository" `
-    --namespace "$namespace"
+helm upgrade --install $ChartName "$HelmChartsFolder/$ChartName" `
+    --values "$HelmChartsFolder/$ChartName/values.yaml" `
+    --set image.tag="$Version" `
+    --set image.repository="$ImageRepository" `
+    --namespace "$Namespace"
