@@ -67,7 +67,7 @@ jobs:
                 filePath: ${{ parameters.helmChartsFolder }}/Deploy-Helm-Chart.ps1
                 pwsh: true
                 arguments: '-ChartName ${{ parameters.chartName }}
-                            -Version $(Build.BuildId)
+                            -Version $(Build.BuildNumber)
                             -HelmChartsFolder ${{ parameters.helmChartsFolder }}'
 
 #            - script: |
