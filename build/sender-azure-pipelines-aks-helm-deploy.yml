@@ -51,18 +51,18 @@ stages:
           acrServiceConnection: 'Azure_ACR_Connection'
           workingDirectoryForDocker: '$(System.DefaultWorkingDirectory)/src'
 
-      - stage: 'AKS_Helm_Deploy_${{ variables.appName }}'
-        displayName: 'AKS_Helm_Deploy_${{ variables.appName }}'
-        dependsOn: 'Build_${{ variables.appName }}'
-        condition: succeeded('Build_${{ variables.appName }}')
-        jobs:
-          - template: templates/helm-deploy-jobs.yml
-            parameters:
-              chartName: 'sender-service-chart'
-              stageDisplayName: 'AKS_Helm_Deploy_${{ variables.appName }}'
-              vmImage: 'ubuntu-latest'
-              environment: 'aks'
-              serviceConnection: 'Azure_Connection'
-              azureResourceGroup: '$(library-aks-resource-group)'
-              kubernetesCluster: '$(library-aks-cluster-name)'
-              namespace: 'event-triangle'
+  - stage: 'AKS_Helm_Deploy_${{ variables.appName }}'
+    displayName: 'AKS_Helm_Deploy_${{ variables.appName }}'
+    dependsOn: 'Build_${{ variables.appName }}'
+    condition: succeeded('Build_${{ variables.appName }}')
+    jobs:
+      - template: templates/helm-deploy-jobs.yml
+        parameters:
+          chartName: 'consumer-service-chart'
+          stageDisplayName: 'AKS_Helm_Deploy_${{ variables.appName }}'
+          vmImage: 'ubuntu-latest'
+          environment: 'aks'
+          serviceConnection: 'Azure_Connection'
+          azureResourceGroup: '$(library-aks-resource-group)'
+          kubernetesCluster: '$(library-aks-cluster-name)'
+          namespace: 'event-triangle'
