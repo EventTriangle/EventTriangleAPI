@@ -167,6 +167,15 @@ jobs:
           echo "Version file has been updated with: $(GitVersion.SemVer)"
         displayName: "Update version file"
 
+      - task: CopyFiles@2
+        displayName: 'Copy Deploy-Helm-Chart.ps1'
+        inputs:
+          SourceFolder: '$(System.DefaultWorkingDirectory)/scripts'
+          Contents: 'Deploy-Helm-Chart.ps1'
+          TargetFolder: '$(System.DefaultWorkingDirectory)/helm'
+          CleanTargetFolder: false
+          OverWrite: true
+
       - task: PublishBuildArtifacts@1
         displayName: 'Publish Helm Charts'
         inputs:

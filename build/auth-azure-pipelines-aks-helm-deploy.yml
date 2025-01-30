@@ -62,3 +62,4 @@ stages:
           azureResourceGroup: '$(library-aks-resource-group)'
           kubernetesCluster: '$(library-aks-cluster-name)'
           namespace: 'event-triangle'
+          helmChartsFolder: '$(Pipeline.Workspace)/helm'
