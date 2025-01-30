@@ -24,3 +24,4 @@ and this project adheres to [Semantic Versioning v2.0.0](https://semver.org/spec
 - Move configure AKS cluster to separate pipeline
 - Cloudflare DNS automation using PowerShell in Azure pipelines
 - Configure CD with AKS and HELM
+- Helm deploy powershell script
