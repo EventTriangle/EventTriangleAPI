@@ -21,7 +21,7 @@ variables:
   - name: appName
     value: 'ConsumerAPI'
   - name: System.Debug
-    value: 'true'
+    value: 'false'
   - group: AKS_Settings
   - group: Prefix_Library
 
