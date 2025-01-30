@@ -17,3 +17,12 @@ variable "aks_identity_principal_id" {
   type        = string
   description = "The principal id of the AKS identity"
 }
+
+variable "aks_name" {
+  type        = string
+  description = "AKS name"
+}
+variable "aks_resource_group" {
+  type        = string
+  description = "AKS resource group"
+}

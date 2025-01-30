@@ -36,7 +36,9 @@ module "acr" {
   source                    = "./modules/acr"
   acr_name                  = var.acr_name
   aks_identity_principal_id = module.aks.principal_id
-  resource_group_name       = "rg-azure-devops-acr-d01"
+  resource_group_name       = "rg-azure-devops-acr-d01" # ACR is deployed outside AKS resource group
+  aks_name                  = module.aks.name
+  aks_resource_group        = module.aks.resource_group_name
 
   depends_on = [
     module.aks

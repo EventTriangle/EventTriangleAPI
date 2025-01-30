@@ -28,7 +28,6 @@
 
   - name: helmChartsFolder
     type: string
-    default: '$(Pipeline.Workspace)/helm'
 
   - name: stageDisplayName
     type: string
@@ -61,18 +60,28 @@ jobs:
               inputs:
                 helmVersion: 'latest'
 
-            - script: |
-                version=$(cat ${{ parameters.helmChartsFolder }}/version.txt)
-                echo "Version: $version"
-
-                if [[ -z "$version" ]]; then
-                  echo "Version is empty, setting up to latest"
-                  version="latest"
-                fi
-
-                echo "Deploying Helm chart..."
-                helm upgrade --install ${{ parameters.chartName }} ${{ parameters.helmChartsFolder }}/${{ parameters.chartName }} \
-                  --values ${{ parameters.helmChartsFolder }}/${{ parameters.chartName }}/values.yaml \
-                  --set image.tag="$version" \
-                  --namespace "${{ parameters.namespace }}"
+            - task: PowerShell@2
               displayName: 'Deploy Helm Chart ${{ parameters.chartName }}'
+              inputs:
+                targetType: 'filePath'
+                filePath: ${{ parameters.helmChartsFolder }}/Deploy-Helm-Chart.ps1
+                pwsh: true
+                arguments: '-ChartName ${{ parameters.chartName }}
+                            -Version $(Build.BuildNumber)
+                            -HelmChartsFolder ${{ parameters.helmChartsFolder }}'
+
+#            - script: |
+#                version=$(cat ${{ parameters.helmChartsFolder }}/version.txt)
+#                echo "Version: $version"
+#
+#                if [[ -z "$version" ]]; then
+#                  echo "Version is empty, setting up to latest"
+#                  version="latest"
+#                fi
+#
+#                echo "Deploying Helm chart..."
+#                helm upgrade --install ${{ parameters.chartName }} ${{ parameters.helmChartsFolder }}/${{ parameters.chartName }} \
+#                  --values ${{ parameters.helmChartsFolder }}/${{ parameters.chartName }}/values.yaml \
+#                  --set image.tag="$version" \
+#                  --namespace "${{ parameters.namespace }}"
+#              displayName: 'Deploy Helm Chart ${{ parameters.chartName }}'
