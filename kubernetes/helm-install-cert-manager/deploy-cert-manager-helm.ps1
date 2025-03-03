@@ -1,4 +1,4 @@
-﻿param(
+param(
     [Parameter(Position = 0, Mandatory = $true)]
     [string] $HelmReleaseName,
     [Parameter(Position = 1, Mandatory = $true)]

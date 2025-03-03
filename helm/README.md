@@ -1,4 +1,4 @@
-﻿# Commands
+# Commands
 
 ## HELM Create
 

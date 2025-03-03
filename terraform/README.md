@@ -1,4 +1,4 @@
-﻿# Commands
+# Commands
 
 ## Connect to AKS
 

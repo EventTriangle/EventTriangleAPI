@@ -1,4 +1,4 @@
-﻿# Setup ACR to push images from Pipelines
+# Setup ACR to push images from Pipelines
 
 - Enable admin for ACR in Azure Portal
 - Update Service connection with admin username and password

@@ -1,4 +1,4 @@
-﻿GIT_VERSION_IMAGE="${{ parameters.dockerRegistryUrl }}/${{ parameters.imageRepository }}:$(GitVersion.SemVer)"
+GIT_VERSION_IMAGE="${{ parameters.dockerRegistryUrl }}/${{ parameters.imageRepository }}:$(GitVersion.SemVer)"
 LATEST_VERSION_IMAGE="${{ parameters.dockerRegistryUrl }}/${{ parameters.imageRepository }}:latest"
 echo "GIT_VERSION_IMAGE: $GIT_VERSION_IMAGE"
 echo "LATEST_VERSION_IMAGE: $LATEST_VERSION_IMAGE"
