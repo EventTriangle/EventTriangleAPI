@@ -6,8 +6,7 @@ kubectl get svc -n monitoring
 kubectl --namespace monitoring get secret prometheus-grafana -o jsonpath="{.data.admin-password}" | ForEach-Object { [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($_)) }
 
 # Port mapping for grafana
-$POD_NAME = kubectl --namespace monitoring get pod -l "app.kubernetes.io/name=grafana,app.kubernetes.io/instance=prometheus" -o name
-kubectl --namespace monitoring port-forward $POD_NAME 3000
+kubectl --namespace monitoring port-forward svc/prometheus-grafana 3000:80
 
 # Port mapping for prometheus master
 kubectl --namespace monitoring port-forward svc/prometheus-kube-prometheus-prometheus 9090:9090
