@@ -24,8 +24,8 @@ resource "azurerm_kubernetes_cluster" "aks" {
   }
 
   network_profile {
-    load_balancer_sku = "standard"
-    network_plugin    = "kubenet" # CNI
+    network_plugin = "azure"
+    network_policy = "azure"
   }
 
   dynamic "oms_agent" {

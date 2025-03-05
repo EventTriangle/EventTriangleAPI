@@ -26,3 +26,7 @@ and this project adheres to [Semantic Versioning v2.0.0](https://semver.org/spec
 - Configure CD with AKS and HELM
 - Helm deploy powershell script
 - Move ingress and certificates to HELM chart
+- Install Prometheus Grafana Alert manager using HELM
+- Configure ingress for Prometheus Grafana Alert manager
+- Fix encoding
+- Merge plan and plan-destroy terraform pipelines

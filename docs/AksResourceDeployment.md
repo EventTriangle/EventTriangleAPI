@@ -1,4 +1,4 @@
-﻿# K8s Deployment notes
+# K8s Deployment notes
 
 ## Deployment order
 

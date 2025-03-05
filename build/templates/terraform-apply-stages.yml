@@ -102,7 +102,7 @@ stages:
                       -backend-config="storage_account_name=$env:TF_STATE_BLOB_ACCOUNT_NAME" `
                       -backend-config="container_name=$env:TF_STATE_BLOB_CONTAINER_NAME" `
                       -backend-config="key=$env:TF_STATE_BLOB_FILE" `
-                      -backend-config="sas_token=$env:TF_STATE_BLOB_SAS_TOKEN"
+                      -backend-config="sas_token=$env:TF_STATE_BLOB_SAS_TOKEN" -reconfigure -upgrade
                   displayName: 'Terraform Init'
                   workingDirectory: ${{ parameters.workingDirectory }}
                   env:

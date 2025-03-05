@@ -1,4 +1,4 @@
-﻿param (
+param (
     [string]$HelmChartsFolder = "E:\RiderProjects\02_DOTNET_PROJECTS\EventTriangleAPI\helm",
     [string]$ChartName = "auth-service-chart",
     [string]$Version,

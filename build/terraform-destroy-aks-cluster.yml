@@ -24,7 +24,7 @@ variables:
     value: "Terraform_Apply_Destroy_AKS_Cluster"
 
 stages:
-  - template: templates/terraform-plan-destroy-stages.yml
+  - template: templates/terraform-plan-stages.yml
     parameters:
       stageName: ${{ variables.planStageName }}
       VmImage: windows-latest
@@ -39,6 +39,7 @@ stages:
       clientId: $(library-client-id)
       clientSecret: $(library-client-secret)
       tenantId: $(library-tenant-id)
+      destroy: true
 
   - template: templates/terraform-apply-stages.yml
     parameters:
