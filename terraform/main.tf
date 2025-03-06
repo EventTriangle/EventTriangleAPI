@@ -31,12 +31,11 @@ module "aks" {
   ]
 }
 
-module "acr" {
-  count                     = var.should_deploy_acr ? 1 : 0
-  source                    = "./modules/acr"
+module "configure_acr_access" {
+  source                    = "./modules/acr-access"
   acr_name                  = var.acr_name
   aks_identity_principal_id = module.aks.principal_id
-  resource_group_name       = "rg-azure-devops-acr-d01" # ACR is deployed outside AKS resource group
+  resource_group_name       = "rg-azure-devops-acr-d01"
   aks_name                  = module.aks.name
   aks_resource_group        = module.aks.resource_group_name
 

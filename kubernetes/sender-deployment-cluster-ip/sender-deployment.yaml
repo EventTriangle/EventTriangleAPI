@@ -8,7 +8,12 @@ spec:
   selector:
     matchLabels:
       app: event-triangle-sender-api
-  replicas: 1
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1  # Create at most 1 extra pod during update
+      maxUnavailable: 1  # At most 1 pod can be unavailable
   template:
     metadata:
       labels:
@@ -18,6 +23,13 @@ spec:
         - name: event-triangle-sender-api
           image: kaminome/sender-service:latest
           imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
           ports:
             - containerPort: 80
             - containerPort: 81

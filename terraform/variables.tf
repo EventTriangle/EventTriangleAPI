@@ -48,11 +48,6 @@ variable "kubernetes_version" {
   description = "Kubernetes version"
 }
 
-variable "should_deploy_acr" {
-  type        = bool
-  description = "Should deploy ACR"
-}
-
 variable "should_deploy_log_analytics" {
   type        = bool
   description = "Should deploy log analytics"
