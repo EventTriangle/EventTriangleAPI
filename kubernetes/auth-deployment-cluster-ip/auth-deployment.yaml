@@ -18,6 +18,13 @@ spec:
         - name: event-triangle-auth-api
           image: kaminome/auth-service:latest
           imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
           ports:
             - containerPort: 80
             - containerPort: 81
