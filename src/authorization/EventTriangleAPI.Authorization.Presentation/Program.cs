@@ -3,8 +3,10 @@ using EventTriangleAPI.Authorization.Domain.Constants;
 using EventTriangleAPI.Authorization.Persistence;
 using EventTriangleAPI.Authorization.Presentation.DependencyInjection;
 using EventTriangleAPI.Shared.DTO.Models;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,6 +56,15 @@ builder.Services.AddTicketStore();
 builder.Services.AddHostedServices();
 
 builder.Logging.AddFilter("Grpc", LogLevel.Debug);
+
+// redis configs start
+
+var redis = ConnectionMultiplexer.Connect("event-redis-master.event-triangle.svc.cluster.local");
+
+builder.Services.AddDataProtection()
+    .PersistKeysToStackExchangeRedis(redis, "DataProtection-Keys");
+
+// redis configs end
 
 var app = builder.Build();
 
