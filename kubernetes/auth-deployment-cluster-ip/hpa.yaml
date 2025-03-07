@@ -1,4 +1,4 @@
-﻿apiVersion: autoscaling/v2
+apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: event-triangle-auth-hpa
