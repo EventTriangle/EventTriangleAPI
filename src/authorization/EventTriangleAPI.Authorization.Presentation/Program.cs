@@ -59,11 +59,19 @@ builder.Logging.AddFilter("Grpc", LogLevel.Debug);
 
 // redis configs start
 
-var redisUrl = builder.Configuration[AppSettingsConstants.RedisUrl] ??
-               throw new ArgumentException("Null or empty redis URL.");
+var redisUrl = builder.Configuration[AppSettingsConstants.RedisUrl];
 
-var redisPassword = builder.Configuration[AppSettingsConstants.RedisPassword] ??
-                    throw new ArgumentException("Null or empty redis Password.");
+if (string.IsNullOrEmpty(redisUrl))
+{
+    throw new ArgumentNullException(nameof(redisUrl));
+}
+
+var redisPassword = builder.Configuration[AppSettingsConstants.RedisPassword];
+
+if (string.IsNullOrEmpty(redisPassword))
+{
+    throw new ArgumentNullException(nameof(redisPassword));
+}
 
 var redis = ConnectionMultiplexer.Connect(new ConfigurationOptions
 {
