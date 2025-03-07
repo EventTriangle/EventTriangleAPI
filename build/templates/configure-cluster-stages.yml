@@ -139,6 +139,8 @@ stages:
                   inputs:
                     targetType: 'inline'
                     script: |
+                      helm repo add bitnami https://charts.bitnami.com/bitnami
+                      helm repo update
                       helm upgrade --install event-redis bitnami/redis `
                           --namespace ${{ parameters.namespace }} `
                           --set auth.enabled=true `

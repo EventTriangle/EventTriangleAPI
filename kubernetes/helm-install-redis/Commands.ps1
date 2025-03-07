@@ -1,4 +1,7 @@
-﻿# Simple install command
+﻿helm repo add bitnami https://charts.bitnami.com/bitnami
+helm repo update
+
+# Simple install command
 helm upgrade --install event-redis bitnami/redis --namespace event-triangle
 
 # Set password as a parameter
