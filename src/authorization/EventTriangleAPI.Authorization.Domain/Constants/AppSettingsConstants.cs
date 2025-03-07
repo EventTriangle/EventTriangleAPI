@@ -7,7 +7,7 @@ public static class AppSettingsConstants
     public const string AzureAdSelection = "AzureAd";
 
     public const string ReverseProxySelection = "ReverseProxy";
-    
+
     public const string AdSecretKey = "EVENT_TRIANGLE_AD_CLIENT_SECRET";
 
     public const string DevFrontendUrl = "DevFrontendUrl";
@@ -15,4 +15,8 @@ public static class AppSettingsConstants
     public const string AllowedOrigins = "AllowedOrigins";
 
     public const string GrpcChannelAddresses = "GrpcChannelAddresses";
+
+    public const string RedisUrl = "RedisUrl";
+
+    public const string RedisPassword = "RedisPassword";
 }

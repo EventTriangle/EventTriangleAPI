@@ -10,10 +10,7 @@ trim_trailing_whitespace = true
 insert_final_newline = true
 end_of_line = lf
 
-[*.yml]
-indent_size = 2
-
-[*.yaml]
+[*.{yml,yaml,json,tf,md}]
 indent_size = 2
 
 [*.{cs,vb}]
