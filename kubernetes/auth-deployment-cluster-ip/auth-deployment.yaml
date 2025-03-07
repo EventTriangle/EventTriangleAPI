@@ -46,5 +46,17 @@ spec:
                   name: connection-creds
                   key: AuthDatabaseConnectionString
 
+            - name: RedisUrl
+              valueFrom:
+                secretKeyRef:
+                  name: connection-creds
+                  key: RedisUrl
+
+            - name: RedisPassword
+              valueFrom:
+                secretKeyRef:
+                  name: connection-creds
+                  key: RedisPassword
+
             - name: ASPNETCORE_ENVIRONMENT
               value: "Docker"
