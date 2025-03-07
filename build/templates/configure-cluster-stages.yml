@@ -43,6 +43,10 @@ parameters:
     displayName: 'Zone name of DNS in cloudflare (e.g razumovsky.me)'
     type: string
 
+  - name: redisPassword
+    displayName: 'Password for Redis HELM release.'
+    type: string
+
 stages:
   - stage: 'Configure_AKS_${{ parameters.environment }}'
     displayName: 'Configure_AKS_${{ parameters.environment }}'
@@ -125,6 +129,18 @@ stages:
                   displayName: 'Deploy CertManager'
                   inputs:
                     targetType: 'filePath'
+                    script: |
+                      helm upgrade --install event-redis bitnami/redis `
+                          --namespace ${{ parameters.namespace }} `
+                          --set auth.enabled=true `
+                          --set auth.password="${{ parameters.redisPassword }}"
+                    pwsh: true
+                    workingDirectory: ${{ parameters.workingDirectory }}
+
+                - task: PowerShell@2
+                  displayName: 'Deploy CertManager'
+                  inputs:
+                    targetType: 'inline'
                     filePath: ${{ parameters.workingDirectory }}/helm-install-cert-manager/deploy-cert-manager-helm.ps1
                     arguments: '-HelmReleaseName cert-manager -Namespace ${{ parameters.namespace }}'
                     pwsh: true

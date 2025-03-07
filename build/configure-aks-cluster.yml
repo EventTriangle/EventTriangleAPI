@@ -39,5 +39,6 @@ stages:
       rabbitMqPassword: $(library-rabbitmq-password)
       cloudflareApiKey: $(cloudflare-api-key)
       cloudflareZone: $(cloudflare-zone-name)
+      redisPassword: $(library-redis-password)
       transformTargetFiles: |
         secrets/connection-secrets.yaml
