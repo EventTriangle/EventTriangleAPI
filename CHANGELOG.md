@@ -31,3 +31,4 @@ and this project adheres to [Semantic Versioning v2.0.0](https://semver.org/spec
 - Fix encoding
 - Merge plan and plan-destroy terraform pipelines
 - Configure HPA for services
+- Fix the error Unable to unprotect the message.State.
