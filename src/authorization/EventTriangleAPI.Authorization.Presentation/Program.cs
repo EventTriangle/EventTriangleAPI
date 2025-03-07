@@ -59,7 +59,12 @@ builder.Logging.AddFilter("Grpc", LogLevel.Debug);
 
 // redis configs start
 
-var redis = ConnectionMultiplexer.Connect("event-redis-master.event-triangle.svc.cluster.local");
+var redis = ConnectionMultiplexer.Connect(new ConfigurationOptions
+{
+    EndPoints = { "event-redis-master.event-triangle.svc.cluster.local" },
+    Password = "eo4s1cVbVK",
+    AbortOnConnectFail = false
+});
 
 builder.Services.AddDataProtection()
     .PersistKeysToStackExchangeRedis(redis, "DataProtection-Keys");
