@@ -1,0 +1,18 @@
+﻿apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: auth-service
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/EventTriangle/EventTriangleAPI.git
+    targetRevision: AZ400-336
+    path: kubernetes/auth-deployment-cluster-ip
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: event-triangle
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
