@@ -1,11 +1,14 @@
-﻿## Install ArgoCD CLI (Windows)
+﻿## ArgoCD project
+
+- https://github.com/argoproj/argo-cd
+
+## Install ArgoCD CLI (Windows)
 
 - choco install argocd-cli -y
 - argocd version
 
-## Install ArgoCD to the Cluster
+## Install and configure ArgoCD
 
-- https://github.com/argoproj/argo-cd
 - kubectl create namespace argocd
 - kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/v2.14.7/manifests/install.yaml
 - kubectl patch svc argocd-server -n argocd --type merge --patch '{"spec": {"type": "LoadBalancer"}}'
