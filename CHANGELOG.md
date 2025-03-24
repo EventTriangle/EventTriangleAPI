@@ -34,3 +34,4 @@ and this project adheres to [Semantic Versioning v2.0.0](https://semver.org/spec
 - Fix the error Unable to unprotect the message.State.
 - ArgoCD initial config
 - ArgoCD application manifest
+- Add nuget.config
