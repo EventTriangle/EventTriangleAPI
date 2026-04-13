@@ -33,12 +33,12 @@ runs:
 
   steps:
     - name: Install GitVersion
-      uses: gittools/actions/gitversion/setup@v1.1.1
+      uses: gittools/actions/gitversion/setup@v4.5.0
       with:
         versionSpec: '5.x'
 
     - name: Determine Version
-      uses: gittools/actions/gitversion/execute@v1.1.1
+      uses: gittools/actions/gitversion/execute@v4.5.0
 
     - name: Setup .NET 8.0 SDK
       uses: actions/setup-dotnet@v5
