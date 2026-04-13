@@ -40,7 +40,7 @@ parameters:
 
   - name: gitVersionVersion
     displayName: 'GitVersion version'
-    default: '5.x'
+    default: '6.x'
     type: string
 
   - name: dockerRegistryUrl
