@@ -117,7 +117,7 @@ jobs:
             SonarCloud: SonarCloud_Service_Connection
             organization: event-triangle
             scannerMode: dotnet
-            projectKey: event-triangle_eventtriangleapi
+            projectKey: event-triangle-api
             projectName: eventtriangleapi
             extraProperties: |
               sonar.cs.vstest.reportsPaths=$(Agent.TempDirectory)/**/*.trx
