@@ -35,8 +35,8 @@ stages:
           buildConfiguration: 'Release'
           backendProjectPath: '$(System.DefaultWorkingDirectory)/src/authorization/EventTriangleAPI.Authorization.Presentation'
           unitTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/authorization/EventTriangleAPI.Authorization.UnitTests/EventTriangleAPI.Authorization.UnitTests.csproj'
-          shouldRunUnitTests: 'true'
-          shouldRunIntegrationTests: 'true'
+          shouldRunUnitTests: true
+          shouldRunIntegrationTests: true
           integrationTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/authorization/EventTriangleAPI.Authorization.IntegrationTests/EventTriangleAPI.Authorization.IntegrationTests.csproj'
           dockerRegistryUrl: 'docker.io/kaminome'
           dockerBuildParameterUrl: 'https://auth-eventtriangle.razumovsky.me/'
@@ -45,7 +45,7 @@ stages:
           dockerServiceConnection: 'Docker_Hub_Connection'
           acrRegistryUrl: 'acrsharedd01.azurecr.io'
           acrServiceConnection: 'Azure_ACR_Connection'
-          sonarCloudEnabled: 'true'
+          sonarCloudEnabled: true
           workingDirectoryForDocker: '$(System.DefaultWorkingDirectory)/src'
 
 #  - stage: 'AKS_Helm_Deploy_${{ variables.appName }}'

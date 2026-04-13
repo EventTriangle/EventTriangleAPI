@@ -39,8 +39,8 @@ stages:
           buildConfiguration: 'Release'
           backendProjectPath: '$(System.DefaultWorkingDirectory)/src/sender/EventTriangleAPI.Sender.Presentation'
           unitTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/sender/EventTriangleAPI.Sender.UnitTests/EventTriangleAPI.Sender.UnitTests.csproj'
-          shouldRunIntegrationTests: 'true'
-          shouldRunUnitTests: 'true'
+          shouldRunIntegrationTests: true
+          shouldRunUnitTests: true
           integrationTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/sender/EventTriangleAPI.Sender.IntegrationTests/EventTriangleAPI.Sender.IntegrationTests.csproj'
           dockerRegistryUrl: 'docker.io/kaminome'
           imageRepository: 'sender-service'
@@ -48,5 +48,5 @@ stages:
           dockerServiceConnection: 'Docker_Hub_Connection'
           acrRegistryUrl: 'acrsharedd01.azurecr.io'
           acrServiceConnection: 'Azure_ACR_Connection'
-          sonarCloudEnabled: 'true'
+          sonarCloudEnabled: true
           workingDirectoryForDocker: '$(System.DefaultWorkingDirectory)/src'

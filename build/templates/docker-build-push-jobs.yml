@@ -36,7 +36,7 @@ parameters:
 
   - name: integrationTestsProjectPath
     displayName: 'Integration tests project path'
-    type: boolean
+    type: string
 
   - name: gitVersionVersion
     displayName: 'GitVersion version'
