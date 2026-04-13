@@ -85,9 +85,8 @@ jobs:
           versionSpec: ${{ parameters.gitVersionVersion }}
 
       - task: gitversion-execute@4.5.0
-        displayName: 'GitVersion Execute'
-        inputs:
-          updateAssemblyInfo: true
+        name: version_step # step id used as a reference for output values
+        displayName: Determine Version
 
       - bash: echo $Action$BuildVersion
         displayName: 'Set Build Version'
