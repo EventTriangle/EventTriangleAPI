@@ -48,7 +48,7 @@ stages:
           dockerServiceConnection: 'Docker_Hub_Connection'
           acrRegistryUrl: 'acrsharedd01.azurecr.io'
           acrServiceConnection: 'Azure_ACR_Connection'
-          sonarCloudEnabled: true
+          sonarCloudEnabled: 'true'
           workingDirectoryForDocker: '$(System.DefaultWorkingDirectory)/src'
 
 #  - stage: 'AKS_Helm_Deploy_${{ variables.appName }}'
