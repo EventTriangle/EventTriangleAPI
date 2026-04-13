@@ -35,3 +35,6 @@ and this project adheres to [Semantic Versioning v2.0.0](https://semver.org/spec
 - ArgoCD initial config
 - ArgoCD application manifest
 - Add nuget.config
+- Delete ArgoCD configs
+- Add Renovate dashboard link to README
+- Update GitVersion tasks in Azure DevOps

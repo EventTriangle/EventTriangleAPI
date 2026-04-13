@@ -79,12 +79,12 @@ jobs:
       - checkout: self
         fetchDepth: 0
 
-      - task: gitversion/setup@3
+      - task: gitversion-setup@4.5.0
         displayName: 'GitVersion Setup'
         inputs:
           versionSpec: ${{ parameters.gitVersionVersion }}
 
-      - task: gitversion/execute@3
+      - task: gitversion-execute@4.5.0
         displayName: 'GitVersion Execute'
         inputs:
           updateAssemblyInfo: true
@@ -93,7 +93,7 @@ jobs:
         displayName: 'Set Build Version'
         env:
           Action: '##vso[build.updatebuildnumber]'
-          BuildVersion: $(GitVersion.SemVer)
+          BuildVersion: $(version_step.semVer)
 
       - task: DotNetCoreCLI@2
         displayName: 'Dotnet restore'
@@ -108,7 +108,7 @@ jobs:
         inputs:
           command: 'build'
           projects: '${{ parameters.solution }}'
-          arguments: '-c ${{ parameters.buildConfiguration }} -p:Version=$(GitVersion.SemVer) --no-restore'
+          arguments: '-c ${{ parameters.buildConfiguration }} -p:Version=$(version_step.semVer) --no-restore'
 
       - ${{ if eq(parameters.shouldRunUnitTests, 'true') }}:
           - task: DotnetCoreCLI@2
@@ -136,7 +136,7 @@ jobs:
                       -AcrRegistryUrl ${{ parameters.acrRegistryUrl }}
                       -DockerBuildParameterUrl ${{ parameters.dockerBuildParameterUrl }}
                       -DockerfilePath ${{ parameters.dockerfilePath }}
-                      -GitVersion $(GitVersion.SemVer)
+                      -GitVersion $(version_step.semVer)
                       -WorkingDirectory ${{ parameters.workingDirectoryForDocker }}"
           errorActionPreference: 'stop'
           pwsh: true
@@ -148,7 +148,7 @@ jobs:
           containerRegistry: ${{ parameters.dockerServiceConnection }}
           repository: ${{ parameters.dockerRegistryUrl }}/${{ parameters.imageRepository }}
           tags: |
-            $(GitVersion.SemVer)
+            $(version_step.semVer)
             latest
 
       - task: Docker@2
@@ -158,14 +158,14 @@ jobs:
           containerRegistry: ${{ parameters.acrServiceConnection }}
           repository: ${{ parameters.imageRepository }}
           tags: |
-            $(GitVersion.SemVer)
+            $(version_step.semVer)
             latest
 
       - script: |
           touch $(System.DefaultWorkingDirectory)/helm/version.txt
           echo "Version txt has been created"
-          echo $(GitVersion.SemVer) >> $(System.DefaultWorkingDirectory)/helm/version.txt
-          echo "Version file has been updated with: $(GitVersion.SemVer)"
+          echo $(version_step.semVer) >> $(System.DefaultWorkingDirectory)/helm/version.txt
+          echo "Version file has been updated with: $(version_step.semVer)"
         displayName: "Update version file"
 
       - task: CopyFiles@2
