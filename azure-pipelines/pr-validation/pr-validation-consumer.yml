@@ -30,11 +30,11 @@ pool:
 
 stages:
   - stage: 'PR_Validation_${{ variables.appName }}'
-    displayName: 'Build_${{ variables.appName }}'
+    displayName: 'PR_Validation_${{ variables.appName }}'
     jobs:
       - template: ../templates/docker-build-push-jobs.yml
         parameters:
-          JobName: 'Build_${{ variables.appName }}'
+          JobName: 'PR_Validation_${{ variables.appName }}'
           solution: '$(System.DefaultWorkingDirectory)/EventTriangleAPI.sln'
           buildConfiguration: 'Release'
           backendProjectPath: '$(System.DefaultWorkingDirectory)/src/consumer/EventTriangleAPI.Consumer.Presentation'
