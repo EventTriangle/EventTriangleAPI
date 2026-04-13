@@ -135,6 +135,11 @@ jobs:
         - task: SonarCloudAnalyze@4
           inputs: {}
 
+      - ${{ if eq(parameters.sonarCloudEnabled, true) }}:
+        - task: SonarCloudPublish@4
+          inputs:
+            pollingTimeoutSec: "300"
+
       - ${{ if eq(parameters.shouldRunUnitTests, true) }}:
           - task: DotnetCoreCLI@2
             displayName: 'Run unit tests'
@@ -186,8 +191,3 @@ jobs:
             tags: |
               $(version_step.semVer)
               latest
-
-      - ${{ if eq(parameters.sonarCloudEnabled, true) }}:
-        - task: SonarCloudPublish@4
-          inputs:
-            pollingTimeoutSec: "300"
