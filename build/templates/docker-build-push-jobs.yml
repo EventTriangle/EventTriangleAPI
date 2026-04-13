@@ -47,6 +47,10 @@ parameters:
     type: string
     displayName: 'DockerHub Registry URL. For Docker Hub it is: docker.io/kaminome.'
 
+  - name: shouldPushToAcr
+    type: boolean
+    default: false
+
   - name: acrRegistryUrl
     type: string
     displayName: 'ACR Registry URL. For ACR it is FQDN URL of container registry: azuredevopsacrd01.azurecr.io'
@@ -177,15 +181,16 @@ jobs:
             $(version_step.semVer)
             latest
 
-      - task: Docker@2
-        displayName: 'Push to ACR'
-        inputs:
-          command: push
-          containerRegistry: ${{ parameters.acrServiceConnection }}
-          repository: ${{ parameters.imageRepository }}
-          tags: |
-            $(version_step.semVer)
-            latest
+      - ${{ if eq(parameters.shouldPushToAcr, true) }}:
+        - task: Docker@2
+          displayName: 'Push to ACR'
+          inputs:
+            command: push
+            containerRegistry: ${{ parameters.acrServiceConnection }}
+            repository: ${{ parameters.imageRepository }}
+            tags: |
+              $(version_step.semVer)
+              latest
 
       - script: |
           touch $(System.DefaultWorkingDirectory)/helm/version.txt

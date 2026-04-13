@@ -46,6 +46,7 @@ stages:
           imageRepository: 'consumer-service'
           dockerfilePath: '$(System.DefaultWorkingDirectory)/src/consumer/Dockerfile'
           dockerServiceConnection: 'Docker_Hub_Connection'
+          shouldPushToAcr: true
           acrRegistryUrl: 'acrsharedd01.azurecr.io'
           acrServiceConnection: 'Azure_ACR_Connection'
           sonarCloudEnabled: false
