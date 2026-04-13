@@ -46,6 +46,6 @@ stages:
           imageRepository: 'sender-service'
           dockerfilePath: '$(System.DefaultWorkingDirectory)/src/sender/Dockerfile'
           dockerServiceConnection: 'Docker_Hub_Connection'
-          acrRegistryUrl: 'azuredevopsacrd01.azurecr.io'
+          acrRegistryUrl: 'acrsharedd01.azurecr.io'
           acrServiceConnection: 'Azure_ACR_Connection'
           workingDirectoryForDocker: '$(System.DefaultWorkingDirectory)/src'
