@@ -33,17 +33,17 @@ runs:
 
   steps:
     - name: Install GitVersion
-      uses: gittools/actions/gitversion/setup@v1.1.1
+      uses: gittools/actions/gitversion/setup@v4.5.0
       with:
-        versionSpec: '5.x'
+        versionSpec: '6.x'
 
     - name: Determine Version
-      uses: gittools/actions/gitversion/execute@v1.1.1
+      uses: gittools/actions/gitversion/execute@v4.5.0
 
-    - name: Setup .NET 8.0 SDK
+    - name: Setup .NET 8.x SDK
       uses: actions/setup-dotnet@v5
       with:
-        dotnet-version: 8.0.x
+        dotnet-version: 8.x
 
     - name: NuGet Cache
       uses: actions/cache@v5
