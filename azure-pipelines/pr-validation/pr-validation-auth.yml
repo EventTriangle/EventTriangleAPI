@@ -20,14 +20,12 @@ variables:
     value: 'AuthorizationAPI'
   - name: System.Debug
     value: 'false'
-  - group: AKS_Settings
-  - group: Prefix_Library
 
 pool:
   vmImage: 'ubuntu-latest'
 
 stages:
-  - stage: 'Build_${{ variables.appName }}'
+  - stage: 'PR_Validation_${{ variables.appName }}'
     displayName: 'Build_${{ variables.appName }}'
     jobs:
       - template: ../templates/docker-build-push-jobs.yml
