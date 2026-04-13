@@ -1,4 +1,3 @@
-#trigger: none
 #pr:
 #  paths:
 #    include:
@@ -7,21 +6,26 @@
 #    exclude:
 #      - terraform/README.md
 
+#trigger:
+#  batch: true
+#  branches:
+#    include:
+#      - docs
+
 trigger: none
 pr: none
 
 variables:
   - group: Azure_Terraform_Integration
-  - group: Postgres_Rabbit_Connection_Credentials
   - group: Terraform_Auto_Tfvars_Json_Transform
-  - group: Prefix_Library
   - group: AKS_Settings
+  - group: Prefix_Library
   - name: System.Debug
     value: 'false'
   - name: planStageName
-    value: "Terraform_Plan_Destroy_AKS_Cluster"
+    value: "Terraform_Plan_AKS_Cluster"
   - name: applyStageName
-    value: "Terraform_Apply_Destroy_AKS_Cluster"
+    value: "Terraform_Apply_AKS_Cluster"
 
 stages:
   - template: templates/terraform-plan-stages.yml
@@ -39,7 +43,7 @@ stages:
       clientId: $(library-client-id)
       clientSecret: $(library-client-secret)
       tenantId: $(library-tenant-id)
-      destroy: true
+      destroy: false
 
   - template: templates/terraform-apply-stages.yml
     parameters:

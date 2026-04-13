@@ -27,7 +27,7 @@ parameters:
 
   - name: shouldRunUnitTests
     displayName: 'Flag should run unit tests'
-    default: 'true'
+    default: true
     type: boolean
 
   - name: shouldRunIntegrationTests
@@ -40,12 +40,16 @@ parameters:
 
   - name: gitVersionVersion
     displayName: 'GitVersion version'
-    default: '5.x'
+    default: '6.x'
     type: string
 
   - name: dockerRegistryUrl
     type: string
     displayName: 'DockerHub Registry URL. For Docker Hub it is: docker.io/kaminome.'
+
+  - name: shouldPushToAcr
+    type: boolean
+    default: false
 
   - name: acrRegistryUrl
     type: string
@@ -72,6 +76,11 @@ parameters:
     default: 'https://auth.eventtriangle.razumovsky.me/'
     type: string
 
+  - name: sonarCloudEnabled
+    displayName: 'Is SonarCloud scan enabled'
+    default: false
+    type: boolean
+
 jobs:
   - job: ${{ parameters.JobName }}
     displayName: ${{ parameters.JobName }}
@@ -79,21 +88,20 @@ jobs:
       - checkout: self
         fetchDepth: 0
 
-      - task: gitversion/setup@3
+      - task: gitversion-setup@4.5.0
         displayName: 'GitVersion Setup'
         inputs:
           versionSpec: ${{ parameters.gitVersionVersion }}
 
-      - task: gitversion/execute@3
-        displayName: 'GitVersion Execute'
-        inputs:
-          updateAssemblyInfo: true
+      - task: gitversion-execute@4.5.0
+        name: version_step # step id used as a reference for output values
+        displayName: Determine Version
 
       - bash: echo $Action$BuildVersion
         displayName: 'Set Build Version'
         env:
           Action: '##vso[build.updatebuildnumber]'
-          BuildVersion: $(GitVersion.SemVer)
+          BuildVersion: $(version_step.semVer)
 
       - task: DotNetCoreCLI@2
         displayName: 'Dotnet restore'
@@ -103,14 +111,36 @@ jobs:
           arguments: '--verbosity minimal'
           nugetConfigPath: 'nuget.config'
 
+      - ${{ if eq(parameters.sonarCloudEnabled, true) }}:
+        - task: SonarCloudPrepare@4
+          inputs:
+            SonarCloud: SonarCloud_Service_Connection
+            organization: event-triangle
+            scannerMode: dotnet
+            projectKey: event-triangle-api
+            projectName: eventtriangleapi
+            extraProperties: |
+              sonar.cs.vstest.reportsPaths=$(Agent.TempDirectory)/**/*.trx
+              sonar.cs.opencover.reportsPaths=$(Agent.TempDirectory)/**/*opencover.xml
+              sonar.exclusions=**/Properties/**, **/bin/**, **/obj/**, **/Migrations/**
+
       - task: DotNetCoreCLI@2
         displayName: 'Build solution'
         inputs:
           command: 'build'
           projects: '${{ parameters.solution }}'
-          arguments: '-c ${{ parameters.buildConfiguration }} -p:Version=$(GitVersion.SemVer) --no-restore'
+          arguments: '-c ${{ parameters.buildConfiguration }} -p:Version=$(version_step.semVer) --no-restore'
 
-      - ${{ if eq(parameters.shouldRunUnitTests, 'true') }}:
+      - ${{ if eq(parameters.sonarCloudEnabled, true) }}:
+        - task: SonarCloudAnalyze@4
+          inputs: {}
+
+      - ${{ if eq(parameters.sonarCloudEnabled, true) }}:
+        - task: SonarCloudPublish@4
+          inputs:
+            pollingTimeoutSec: "300"
+
+      - ${{ if eq(parameters.shouldRunUnitTests, true) }}:
           - task: DotnetCoreCLI@2
             displayName: 'Run unit tests'
             inputs:
@@ -118,7 +148,7 @@ jobs:
               projects: '${{ parameters.unitTestsProjectPath }}'
               arguments: '--no-build --configuration ${{ parameters.buildConfiguration }} --collect "Code Coverage"'
 
-      - ${{ if eq(parameters.shouldRunIntegrationTests, 'true') }}:
+      - ${{ if eq(parameters.shouldRunIntegrationTests, true) }}:
           - task: DotNetCoreCLI@2
             displayName: 'Run integration tests'
             inputs:
@@ -136,7 +166,7 @@ jobs:
                       -AcrRegistryUrl ${{ parameters.acrRegistryUrl }}
                       -DockerBuildParameterUrl ${{ parameters.dockerBuildParameterUrl }}
                       -DockerfilePath ${{ parameters.dockerfilePath }}
-                      -GitVersion $(GitVersion.SemVer)
+                      -GitVersion $(version_step.semVer)
                       -WorkingDirectory ${{ parameters.workingDirectoryForDocker }}"
           errorActionPreference: 'stop'
           pwsh: true
@@ -148,45 +178,16 @@ jobs:
           containerRegistry: ${{ parameters.dockerServiceConnection }}
           repository: ${{ parameters.dockerRegistryUrl }}/${{ parameters.imageRepository }}
           tags: |
-            $(GitVersion.SemVer)
+            $(version_step.semVer)
             latest
 
-      - task: Docker@2
-        displayName: 'Push to ACR'
-        inputs:
-          command: push
-          containerRegistry: ${{ parameters.acrServiceConnection }}
-          repository: ${{ parameters.imageRepository }}
-          tags: |
-            $(GitVersion.SemVer)
-            latest
-
-      - script: |
-          touch $(System.DefaultWorkingDirectory)/helm/version.txt
-          echo "Version txt has been created"
-          echo $(GitVersion.SemVer) >> $(System.DefaultWorkingDirectory)/helm/version.txt
-          echo "Version file has been updated with: $(GitVersion.SemVer)"
-        displayName: "Update version file"
-
-      - task: CopyFiles@2
-        displayName: 'Copy Deploy-Helm-Chart.ps1'
-        inputs:
-          SourceFolder: '$(System.DefaultWorkingDirectory)/scripts'
-          Contents: 'Deploy-Helm-Chart.ps1'
-          TargetFolder: '$(System.DefaultWorkingDirectory)/helm'
-          CleanTargetFolder: false
-          OverWrite: true
-
-      - task: PublishBuildArtifacts@1
-        displayName: 'Publish Helm Charts'
-        inputs:
-          PathtoPublish: '$(System.DefaultWorkingDirectory)/helm'
-          ArtifactName: 'helm'
-          publishLocation: 'Container'
-
-      - task: PublishBuildArtifacts@1
-        displayName: 'Publish Manifests'
-        inputs:
-          pathToPublish: '$(System.DefaultWorkingDirectory)/kubernetes'
-          artifactName: 'k8s-manifests'
-          publishLocation: 'Container'
+      - ${{ if eq(parameters.shouldPushToAcr, true) }}:
+        - task: Docker@2
+          displayName: 'Push to ACR'
+          inputs:
+            command: push
+            containerRegistry: ${{ parameters.acrServiceConnection }}
+            repository: ${{ parameters.imageRepository }}
+            tags: |
+              $(version_step.semVer)
+              latest

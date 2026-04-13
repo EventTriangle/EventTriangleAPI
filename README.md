@@ -109,8 +109,10 @@ EventTriangleAPI offers realtime communication using SignalR.
 
 ## Useful links
 
-- Docker images: https://hub.docker.com/u/kaminome
-- Azure DevOps project: https://dev.azure.com/EventTriangle/EventTriangleAPI
+- Docker: https://hub.docker.com/u/kaminome
+- Azure DevOps: https://dev.azure.com/EventTriangle/EventTriangleAPI
+- Renovate: https://developer.mend.io/github/EventTriangle/EventTriangleAPI
+- SonarCloud: https://sonarcloud.io/organizations/event-triangle/projects
 
 ## How to run Docker compose
 
