@@ -7,7 +7,7 @@ resource "azurerm_dashboard_grafana" "grafana" {
   public_network_access_enabled     = true
   sku                               = "Standard"
   zone_redundancy_enabled           = true
-  grafana_major_version             = 10
+  grafana_major_version             = 11
 
   azure_monitor_workspace_integrations {
     resource_id = var.prometheus_id
