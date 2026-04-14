@@ -30,7 +30,7 @@ stages:
     parameters:
       vmImage: windows-latest
       environment: aks
-      workingDirectory: $(System.DefaultWorkingDirectory)/kubernetes
+      workingDirectory: $(System.DefaultWorkingDirectory)/platform
       serviceConnection: Azure_Connection
       azureResourceGroup: $(library-aks-resource-group)
       kubernetesCluster: $(library-aks-cluster-name)
