@@ -125,6 +125,12 @@ stages:
                 #     pwsh: true
                 #     workingDirectory: ${{ parameters.workingDirectory }}
 
+                - pwsh: |
+                    kubectl apply -f "https://github.com/rabbitmq/cluster-operator/releases/latest/download/cluster-operator.yml"
+                    Start-Sleep 60
+                    kubectl apply -f ./helm-install-rabbitmq/rabbit.yaml
+                  displayName: 'Install Rabbit MQ'
+
                 - task: PowerShell@2
                   displayName: 'Deploy CertManager'
                   inputs:
