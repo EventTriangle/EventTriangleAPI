@@ -7,7 +7,10 @@ pr:
       - main
   paths:
     include:
-      - build
+      - azure-pipelines
+      - platform
+      - helm
+      - cloudflare
       - src/authorization/EventTriangleAPI.Authorization.BusinessLogic
       - src/authorization/EventTriangleAPI.Authorization.Presentation
       - src/shared/EventTriangleAPI.Shared.Application
