@@ -158,3 +158,12 @@ stages:
                                 -PostgresDeployment postgresdb'
                     pwsh: true
                     workingDirectory: ${{ parameters.workingDirectory }}
+
+                - task: PowerShell@2
+                  displayName: 'Configure Cloudflare DNS'
+                  inputs:
+                    targetType: 'filePath'
+                    filePath: $(System.DefaultWorkingDirectory)/cloudflare/Main.ps1
+                    arguments: '-ApiToken ${{ parameters.cloudflareApiKey }} -ZoneName ${{ parameters.cloudflareZone }}'
+                    pwsh: true
+                    workingDirectory: '$(System.DefaultWorkingDirectory)/cloudflare'
