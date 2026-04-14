@@ -12,8 +12,6 @@ pr:
       - src/authorization/EventTriangleAPI.Authorization.Presentation
       - src/shared/EventTriangleAPI.Shared.Application
       - src/shared/EventTriangleAPI.Shared.DTO
-    exclude:
-      - '**/*.md'
 
 variables:
   - name: appName

@@ -16,8 +16,6 @@ pr:
       - src/sender/EventTriangleAPI.Sender.UnitTests
       - src/shared/EventTriangleAPI.Shared.Application
       - src/shared/EventTriangleAPI.Shared.DTO
-    exclude:
-      - '**/*.md'
 
 variables:
   - name: appName
