@@ -18,28 +18,20 @@ service:
 env:
   - name: RabbitMqHost
     type: secretKeyRef
-    refName: connection-creds
-    key: RabbitMqHost
+    refName: event-rabbitmq-default-user
+    key: host
 
   - name: RabbitMqUsername
     type: secretKeyRef
-    refName: connection-creds
-    key: RabbitMqUsername
+    refName: event-rabbitmq-default-user
+    key: username
 
   - name: RabbitMqPassword
     type: secretKeyRef
-    refName: connection-creds
-    key: RabbitMqPassword
+    refName: event-rabbitmq-default-user
+    key: password
 
   - name: DatabaseConnectionString
     type: secretKeyRef
     refName: connection-creds
     key: SenderDatabaseConnectionString
-
-  - name: ASPNETCORE_ENVIRONMENT
-    type: configMapKeyRef
-    refName: sender-service-chart-configmap
-    key: ASPNETCORE_ENVIRONMENT
-
-configMap:
-  ASPNETCORE_ENVIRONMENT: Docker

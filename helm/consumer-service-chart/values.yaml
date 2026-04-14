@@ -13,16 +13,16 @@ ports:
 
 env:
   RabbitMqHost:
-    secretName: connection-creds
-    key: RabbitMqHost
+    secretName: event-rabbitmq-default-user
+    key: host
 
   RabbitMqUsername:
-    secretName: connection-creds
-    key: RabbitMqUsername
+    secretName: event-rabbitmq-default-user
+    key: username
 
   RabbitMqPassword:
-    secretName: connection-creds
-    key: RabbitMqPassword
+    secretName: event-rabbitmq-default-user
+    key: password
 
   DatabaseConnectionString:
     secretName: connection-creds

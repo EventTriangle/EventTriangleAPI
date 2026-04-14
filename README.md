@@ -57,36 +57,6 @@ EventTriangleAPI offers realtime communication using SignalR.
 
 ![./img/infrastructure_diagram.png](./img/infrastructure_diagram.png)
 
-## Screenshots
-
-### Transactions
-
-![./img/transactions.png](./img/transactions.png)
-
-### Credit Cards
-
-![./img/cards.png](./img/cards.png)
-
-### Deposit
-
-![./img/deposit.png](./img/deposit.png)
-
-### Contacts
-
-![./img/contacts.png](./img/contacts.png)
-
-### Support
-
-![./img/support.png](./img/support.png)
-
-### Tickets
-
-![./img/tickets.png](./img/tickets.png)
-
-### Users
-
-![./img/users.png](./img/users.png)
-
 ## Technology stack
 
 - **SDK:** `.NET 8`
@@ -139,3 +109,33 @@ From `src` folder run:
 - `docker build --build-arg FRONT_API_URL="http://localhost:7000/" -t eventtriangle/auth:1.0 -f ./authorization/Dockerfile .`
 - `docker build -t eventtriangle/consumer:1.0 -f ./consumer/Dockerfile . `
 - `docker build -t eventtriangle/sender:1.0 -f ./sender/Dockerfile .`
+
+## Screenshots
+
+### Transactions
+
+![./img/transactions.png](./img/transactions.png)
+
+### Credit Cards
+
+![./img/cards.png](./img/cards.png)
+
+### Deposit
+
+![./img/deposit.png](./img/deposit.png)
+
+### Contacts
+
+![./img/contacts.png](./img/contacts.png)
+
+### Support
+
+![./img/support.png](./img/support.png)
+
+### Tickets
+
+![./img/tickets.png](./img/tickets.png)
+
+### Users
+
+![./img/users.png](./img/users.png)

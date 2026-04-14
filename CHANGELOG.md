@@ -41,3 +41,6 @@ and this project adheres to [Semantic Versioning v2.0.0](https://semver.org/spec
 - Add SonarCloud scan to Azure DevOps PR validation
 - Add separate build pipelines in Azure DevOps
 - Split pipelines by folders: pr validation, build, infrastructure
+- Update Cloudflare step: add only DNS record for ingress
+- Add deployed project URLs to README
+- Platform: Change PostgeSQL to be cluster IP
