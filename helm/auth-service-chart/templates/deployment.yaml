@@ -22,6 +22,8 @@ spec:
             - containerPort: {{ .containerPort }}
           {{- end }}
           env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Docker"
           {{- range .Values.env }}
             - name: {{ .name }}
               valueFrom:

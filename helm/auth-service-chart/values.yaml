@@ -21,10 +21,15 @@ env:
     refName: connection-creds
     key: AuthDatabaseConnectionString
 
-  - name: ASPNETCORE_ENVIRONMENT
-    type: configMapKeyRef
-    refName: auth-service-chart-configmap
-    key: ASPNETCORE_ENVIRONMENT
+  - name: RedisPassword
+    type: secretKeyRef
+    refName: connection-creds
+    key: RedisPassword
+
+  - name: RedisUrl
+    type: secretKeyRef
+    refName: connection-creds
+    key: RedisUrl
 
 service:
   type: ClusterIP

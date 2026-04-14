@@ -109,6 +109,12 @@ EventTriangleAPI offers realtime communication using SignalR.
 
 ## Useful links
 
+### Deployments
+
+- https://auth-eventtriangle.razumovsky.me/app/transactions
+
+### Management
+
 - Docker: https://hub.docker.com/u/kaminome
 - Azure DevOps: https://dev.azure.com/EventTriangle/EventTriangleAPI
 - Renovate: https://developer.mend.io/github/EventTriangle/EventTriangleAPI
