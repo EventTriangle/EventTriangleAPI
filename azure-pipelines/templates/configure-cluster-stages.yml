@@ -100,7 +100,7 @@ stages:
                   displayName: 'Deploy Postgres'
                   inputs:
                     targetType: 'inline'
-                    script: 'kubectl apply -f ./pgsql-deployment-load-balancer --namespace ${{ parameters.namespace }}'
+                    script: 'kubectl apply -f ./pgsql-deployment --namespace ${{ parameters.namespace }}'
                     pwsh: true
                     workingDirectory: ${{ parameters.workingDirectory }}
 
@@ -113,20 +113,9 @@ stages:
                     pwsh: true
                     workingDirectory: ${{ parameters.workingDirectory }}
 
-                # - task: PowerShell@2
-                #   displayName: 'Deploy RabbitMQ'
-                #   inputs:
-                #     targetType: 'filePath'
-                #     filePath: ${{ parameters.workingDirectory }}/helm-install-rabbit-mq/deploy-rabbitmq-helm.ps1
-                #     arguments: '-HelmReleaseName event-rabbitmq
-                #                 -Namespace ${{ parameters.namespace }}
-                #                 -RabbitMqUsername ${{ parameters.rabbitMqUser }}
-                #                 -RabbitMqPassword ${{ parameters.rabbitMqPassword }}'
-                #     pwsh: true
-                #     workingDirectory: ${{ parameters.workingDirectory }}
-
                 - pwsh: |
                     kubectl apply -f "https://github.com/rabbitmq/cluster-operator/releases/latest/download/cluster-operator.yml"
+                    Write-Host "Waiting 60 sec for Operator to provision..."
                     Start-Sleep 60
                     kubectl apply -f ./helm-install-rabbit-mq/rabbit.yaml
                   workingDirectory: ${{ parameters.workingDirectory }}
@@ -174,3 +163,10 @@ stages:
                     arguments: '-ApiToken ${{ parameters.cloudflareApiKey }} -ZoneName ${{ parameters.cloudflareZone }}'
                     pwsh: true
                     workingDirectory: '$(System.DefaultWorkingDirectory)/cloudflare'
+
+                - pwsh: |
+                    helm upgrade --install auth-app .\auth-service-chart\ --values .\auth-service-chart\values.yaml --namespace "event-triangle"
+                    helm upgrade --install consumer-app .\consumer-service-chart\ --values .\consumer-service-chart\values.yaml --namespace "event-triangle"
+                    helm upgrade --install sender-app .\sender-service-chart\ --values .\sender-service-chart\values.yaml --namespace "event-triangle"
+                  workingDirectory: $(System.DefaultWorkingDirectory)\helm
+                  displayName: Deploy Web Apps
