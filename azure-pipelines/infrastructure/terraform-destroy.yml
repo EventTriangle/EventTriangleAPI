@@ -40,7 +40,7 @@ stages:
       tenantId: $(library-tenant-id)
       destroy: true
 
-  - template: templates/terraform-apply-stages.yml
+  - template: ../templates/terraform-apply-stages.yml
     parameters:
       stageName: ${{ variables.applyStageName }}
       VmImage: windows-latest
