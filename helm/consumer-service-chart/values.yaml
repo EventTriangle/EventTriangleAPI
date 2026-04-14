@@ -27,10 +27,3 @@ env:
   DatabaseConnectionString:
     secretName: connection-creds
     key: ConsumerDatabaseConnectionString
-
-  ASPNETCORE_ENVIRONMENT:
-    configMapName: consumer-service-chart-configmap
-    key: ASPNETCORE_ENVIRONMENT
-
-configMap:
-  ASPNETCORE_ENVIRONMENT: Docker

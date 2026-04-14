@@ -113,17 +113,17 @@ stages:
                     pwsh: true
                     workingDirectory: ${{ parameters.workingDirectory }}
 
-                - task: PowerShell@2
-                  displayName: 'Deploy RabbitMQ'
-                  inputs:
-                    targetType: 'filePath'
-                    filePath: ${{ parameters.workingDirectory }}/helm-install-rabbit-mq/deploy-rabbitmq-helm.ps1
-                    arguments: '-HelmReleaseName event-rabbitmq
-                                -Namespace ${{ parameters.namespace }}
-                                -RabbitMqUsername ${{ parameters.rabbitMqUser }}
-                                -RabbitMqPassword ${{ parameters.rabbitMqPassword }}'
-                    pwsh: true
-                    workingDirectory: ${{ parameters.workingDirectory }}
+                # - task: PowerShell@2
+                #   displayName: 'Deploy RabbitMQ'
+                #   inputs:
+                #     targetType: 'filePath'
+                #     filePath: ${{ parameters.workingDirectory }}/helm-install-rabbit-mq/deploy-rabbitmq-helm.ps1
+                #     arguments: '-HelmReleaseName event-rabbitmq
+                #                 -Namespace ${{ parameters.namespace }}
+                #                 -RabbitMqUsername ${{ parameters.rabbitMqUser }}
+                #                 -RabbitMqPassword ${{ parameters.rabbitMqPassword }}'
+                #     pwsh: true
+                #     workingDirectory: ${{ parameters.workingDirectory }}
 
                 - task: PowerShell@2
                   displayName: 'Deploy CertManager'

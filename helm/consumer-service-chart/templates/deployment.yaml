@@ -20,6 +20,8 @@ spec:
           ports:
             - containerPort: {{ .Values.ports.containerPort }}
           env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Docker"
             - name: RabbitMqHost
               valueFrom:
                 secretKeyRef:
@@ -40,8 +42,3 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.env.DatabaseConnectionString.secretName }}
                   key: {{ .Values.env.DatabaseConnectionString.key }}
-            - name: ASPNETCORE_ENVIRONMENT
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ .Values.env.ASPNETCORE_ENVIRONMENT.configMapName }}
-                  key: {{ .Values.env.ASPNETCORE_ENVIRONMENT.key }}
