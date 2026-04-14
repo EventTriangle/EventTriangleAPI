@@ -26,7 +26,7 @@ variables:
     value: 'false'
 
 stages:
-  - template: templates/configure-cluster-stages.yml
+  - template: ../templates/configure-cluster-stages.yml
     parameters:
       vmImage: windows-latest
       environment: aks

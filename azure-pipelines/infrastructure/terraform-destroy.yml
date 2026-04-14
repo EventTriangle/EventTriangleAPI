@@ -23,7 +23,7 @@ variables:
     value: "Terraform_Apply_Destroy_AKS_Cluster"
 
 stages:
-  - template: templates/terraform-plan-stages.yml
+  - template: ../templates/terraform-plan-stages.yml
     parameters:
       stageName: ${{ variables.planStageName }}
       VmImage: windows-latest
