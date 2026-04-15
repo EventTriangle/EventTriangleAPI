@@ -13,7 +13,12 @@ public class UserEntityValidator : AbstractValidator<UserEntity>
     
     private bool ValidateEmail(string email)
     {
-        if (email == null) return false;
+        if (email == null)
+        {
+            return false;
+        }
+
+        Console.WriteLine($"UserEntityValidator -> ValidateEmail -> Received: {email}.");
 
         return Regex.IsMatch(email, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
     }

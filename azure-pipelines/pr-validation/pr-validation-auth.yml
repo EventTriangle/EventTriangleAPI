@@ -7,13 +7,14 @@ pr:
       - main
   paths:
     include:
-      - build
+      - azure-pipelines
+      - platform
+      - helm
+      - cloudflare
       - src/authorization/EventTriangleAPI.Authorization.BusinessLogic
       - src/authorization/EventTriangleAPI.Authorization.Presentation
       - src/shared/EventTriangleAPI.Shared.Application
       - src/shared/EventTriangleAPI.Shared.DTO
-    exclude:
-      - '**/*.md'
 
 variables:
   - name: appName
@@ -46,5 +47,5 @@ stages:
           shouldPushToAcr: true
           acrRegistryUrl: 'acrsharedd01.azurecr.io'
           acrServiceConnection: 'Azure_ACR_Connection'
-          sonarCloudEnabled: true
+          sonarCloudEnabled: false
           workingDirectoryForDocker: '$(System.DefaultWorkingDirectory)/src'

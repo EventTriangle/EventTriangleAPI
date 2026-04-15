@@ -26,11 +26,11 @@ variables:
     value: 'false'
 
 stages:
-  - template: templates/configure-cluster-stages.yml
+  - template: ../templates/configure-cluster-stages.yml
     parameters:
       vmImage: windows-latest
       environment: aks
-      workingDirectory: $(System.DefaultWorkingDirectory)/kubernetes
+      workingDirectory: $(System.DefaultWorkingDirectory)/platform
       serviceConnection: Azure_Connection
       azureResourceGroup: $(library-aks-resource-group)
       kubernetesCluster: $(library-aks-cluster-name)

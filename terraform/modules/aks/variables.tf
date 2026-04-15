@@ -42,3 +42,7 @@ variable "log_analytics_workspace_id" {
   type        = string
   description = "The ID of the Log Analytics workspace to use for the AKS cluster"
 }
+
+variable "aks_node_resource_group_name" {
+  type = string
+}

@@ -57,6 +57,60 @@ EventTriangleAPI offers realtime communication using SignalR.
 
 ![./img/infrastructure_diagram.png](./img/infrastructure_diagram.png)
 
+## Technology stack
+
+- **SDK:** `.NET 8`
+- **Frameworks:** `ASP .NET Core`, `Angular 15`
+- **Persistence:**
+    - Database: `PostgreSQL 15`
+    - ORM: `Entity Framework Core`
+- **Authorization:** `Azure AD`
+- **Presentation:**
+    - API Documentation: `OpenAPI (Swagger)`
+    - Realtime Communication: `SignalR`
+    - Frontend Development: `Angular 15`
+    - Microservices communication: `RabbitMQ`, `GRPC`
+- **Unit and Integration Testing:** `XUnit`, `FluentAssertions`
+- **Containerization:** `Docker`, `k8s`
+- **Continuous Integration:** `Azure Pipelines`, `GitHub Actions`
+- **Continuous Deployment:** `Azure Pipelines`, `GitHub Actions`, `Azure DevOps`, `Azure K8s Service`
+- **Programming languages:** `C#`, `SQL`, `TypeScript`
+- **Tools & IDE:** `Visual Studio`, `Rider`, `VS Code`, `WebStorm`, `SMSS`, `Postman`
+
+## Useful links
+
+### Deployments
+
+- https://auth-eventtriangle.razumovsky.me/app/transactions
+- https://auth-eventtriangle.razumovsky.me/swagger/index.html
+
+### Management
+
+- Docker: https://hub.docker.com/u/kaminome
+- Azure DevOps: https://dev.azure.com/EventTriangle/EventTriangleAPI
+- Renovate: https://developer.mend.io/github/EventTriangle/EventTriangleAPI
+- SonarCloud: https://sonarcloud.io/organizations/event-triangle/projects
+
+## How to run Docker compose
+
+### Windows
+
+- `setx EVENT_TRIANGLE_AD_CLIENT_SECRET <YOUR_AD_SECRET>`
+- `docker-compose up`
+
+### Linux
+
+- `export EVENT_TRIANGLE_AD_CLIENT_SECRET=<YOUR_AD_SECRET>`
+- `docker compose up`
+
+## How to build docker images
+
+From `src` folder run:
+
+- `docker build --build-arg FRONT_API_URL="http://localhost:7000/" -t eventtriangle/auth:1.0 -f ./authorization/Dockerfile .`
+- `docker build -t eventtriangle/consumer:1.0 -f ./consumer/Dockerfile . `
+- `docker build -t eventtriangle/sender:1.0 -f ./sender/Dockerfile .`
+
 ## Screenshots
 
 ### Transactions
@@ -86,50 +140,3 @@ EventTriangleAPI offers realtime communication using SignalR.
 ### Users
 
 ![./img/users.png](./img/users.png)
-
-## Technology stack
-
-- **SDK:** `.NET 8`
-- **Frameworks:** `ASP .NET Core`, `Angular 15`
-- **Persistence:**
-    - Database: `PostgreSQL 15`
-    - ORM: `Entity Framework Core`
-- **Authorization:** `Azure AD`
-- **Presentation:**
-    - API Documentation: `OpenAPI (Swagger)`
-    - Realtime Communication: `SignalR`
-    - Frontend Development: `Angular 15`
-    - Microservices communication: `RabbitMQ`, `GRPC`
-- **Unit and Integration Testing:** `XUnit`, `FluentAssertions`
-- **Containerization:** `Docker`, `k8s`
-- **Continuous Integration:** `Azure Pipelines`, `GitHub Actions`
-- **Continuous Deployment:** `Azure Pipelines`, `GitHub Actions`, `Azure DevOps`, `Azure K8s Service`
-- **Programming languages:** `C#`, `SQL`, `TypeScript`
-- **Tools & IDE:** `Visual Studio`, `Rider`, `VS Code`, `WebStorm`, `SMSS`, `Postman`
-
-## Useful links
-
-- Docker: https://hub.docker.com/u/kaminome
-- Azure DevOps: https://dev.azure.com/EventTriangle/EventTriangleAPI
-- Renovate: https://developer.mend.io/github/EventTriangle/EventTriangleAPI
-- SonarCloud: https://sonarcloud.io/organizations/event-triangle/projects
-
-## How to run Docker compose
-
-### Windows
-
-- `setx EVENT_TRIANGLE_AD_CLIENT_SECRET <YOUR_AD_SECRET>`
-- `docker-compose up`
-
-### Linux
-
-- `export EVENT_TRIANGLE_AD_CLIENT_SECRET=<YOUR_AD_SECRET>`
-- `docker compose up`
-
-## How to build docker images
-
-From `src` folder run:
-
-- `docker build --build-arg FRONT_API_URL="http://localhost:7000/" -t eventtriangle/auth:1.0 -f ./authorization/Dockerfile .`
-- `docker build -t eventtriangle/consumer:1.0 -f ./consumer/Dockerfile . `
-- `docker build -t eventtriangle/sender:1.0 -f ./sender/Dockerfile .`

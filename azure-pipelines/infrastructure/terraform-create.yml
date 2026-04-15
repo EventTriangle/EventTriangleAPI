@@ -23,12 +23,12 @@ variables:
   - name: System.Debug
     value: 'false'
   - name: planStageName
-    value: "Terraform_Plan_AKS_Cluster"
+    value: "Terraform_Plan"
   - name: applyStageName
-    value: "Terraform_Apply_AKS_Cluster"
+    value: "Terraform_Apply"
 
 stages:
-  - template: templates/terraform-plan-stages.yml
+  - template: ../templates/terraform-plan-stages.yml
     parameters:
       stageName: ${{ variables.planStageName }}
       VmImage: windows-latest
@@ -45,7 +45,7 @@ stages:
       tenantId: $(library-tenant-id)
       destroy: false
 
-  - template: templates/terraform-apply-stages.yml
+  - template: ../templates/terraform-apply-stages.yml
     parameters:
       stageName: ${{ variables.applyStageName }}
       VmImage: windows-latest

@@ -72,9 +72,6 @@ stages:
         pool:
           vmImage: ${{ parameters.VmImage }}
         environment: ${{ parameters.environment }}
-        variables:
-          - name: 'TF_LOG'
-            value: 'INFO'
         strategy:
           runOnce:
             deploy:
