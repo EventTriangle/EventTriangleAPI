@@ -96,37 +96,37 @@ stages:
                   displayName: 'Deploy Nginx Ingress'
                   inputs:
                     targetType: 'filePath'
-                    filePath: ./Install-Nginx-Ingress.ps1
+                    filePath: ${{ parameters.workingDirectory }}/nginx-ingress/Install-Nginx-Ingress.ps1
                     arguments: '-HelmReleaseName "nginx-ingress-dev" -Namespace "ing-dev"'
                     pwsh: true
-                    workingDirectory: ${{ parameters.workingDirectory }}/nginx-ingress
+                    workingDirectory: ${{ parameters.workingDirectory }}
 
                 - task: PowerShell@2
                   displayName: 'Install RabbitMq'
                   inputs:
                     targetType: 'filePath'
-                    filePath: ./Install-RabbitMq.ps1
+                    filePath: ${{ parameters.workingDirectory }}/rabbitmq/Install-RabbitMq.ps1
                     arguments: '-RabbitMqNamespace "rabbitmq-dev" -RabbitMqClusterName "rabbitmq-cluster"'
                     pwsh: true
-                    workingDirectory: ${{ parameters.workingDirectory }}/rabbitmq
+                    workingDirectory: ${{ parameters.workingDirectory }}
 
                 - task: PowerShell@2
                   displayName: 'Deploy CertManager'
                   inputs:
                     targetType: 'filePath'
-                    filePath: ./Install-Cert-Manager.ps1
+                    filePath: ${{ parameters.workingDirectory }}/cert-manager/Install-Cert-Manager.ps1
                     arguments: '-HelmReleaseName "cert-manager" -Namespace "cert-manager-dev"'
                     pwsh: true
-                    workingDirectory: ${{ parameters.workingDirectory }}/cert-manager
+                    workingDirectory: ${{ parameters.workingDirectory }}
 
                 - task: PowerShell@2
                   displayName: 'Deploy Redis'
                   inputs:
                     targetType: 'filePath'
-                    filePath: ./Install-Redis.ps1
+                    filePath: ${{ parameters.workingDirectory }}/redis/Install-Redis.ps1
                     arguments: '-Namespace "redis-dev" -HelmRelease "redis-server-dev" -Password "${{ parameters.redisPassword }}"'
                     pwsh: true
-                    workingDirectory: ${{ parameters.workingDirectory }}/redis
+                    workingDirectory: ${{ parameters.workingDirectory }}
 
                 # - task: PowerShell@2
                 #   displayName: 'Wait for deployments'
