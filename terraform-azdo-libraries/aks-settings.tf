@@ -11,7 +11,7 @@ resource "azuredevops_variable_group" "aks_settings" {
 
   variable {
     name  = "library-aks-resource-group"
-    value = "rg-aks-terraform-$(library-prefix)"
+    value = "rg-aks-$(library-prefix)"
   }
 
   variable {
