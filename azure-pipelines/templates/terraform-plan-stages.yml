@@ -66,9 +66,6 @@ stages:
         displayName: ${{ parameters.stageName }}
         pool:
           vmImage: ${{ parameters.VmImage }}
-        variables:
-          - name: 'TF_LOG'
-            value: 'INFO'
         steps:
           - checkout: self
             fetchDepth: 0

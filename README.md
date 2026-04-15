@@ -82,6 +82,7 @@ EventTriangleAPI offers realtime communication using SignalR.
 ### Deployments
 
 - https://auth-eventtriangle.razumovsky.me/app/transactions
+- https://auth-eventtriangle.razumovsky.me/swagger/index.html
 
 ### Management
 
