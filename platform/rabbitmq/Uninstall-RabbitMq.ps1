@@ -53,6 +53,20 @@ kubectl delete -f "https://github.com/rabbitmq/cluster-operator/releases/latest/
 # ----------------------------------------------------
 Write-Host "Final namespace cleanup..."
 
-kubectl delete namespace $RabbitMqNamespace --grace-period=0 --force
+do {
+
+    kubectl delete namespace $RabbitMqNamespace --grace-period=0 --force
+
+    Start-Sleep 5;
+
+    $namespaces = kubectl get namespace
+
+    $exists = $namespace -match $RabbitMqNamespace
+
+    Write-Host "Namespace $RabbitMqNamespace exists: $exists"
+
+} while ($exists)
 
 Write-Host "Cleanup completed."
+
+# .\rabbitmq\Uninstall-RabbitMq.ps1 -RabbitMqNamespace "rabbitmq-dev" -RabbitMqClusterName "rabbitmq-cluster"
