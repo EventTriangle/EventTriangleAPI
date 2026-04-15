@@ -16,12 +16,11 @@ trigger: none
 pr: none
 
 variables:
-  - group: Azure_Terraform_Integration
-  - group: Postgres_Rabbit_Connection_Credentials
-  - group: Terraform_Auto_Tfvars_Json_Transform
+  - group: Terraform_Azure_Credentials
+  - group: Cloudflare_API_Key
+  - group: Postgres_Settings
+  - group: Redis_Credentials
   - group: AKS_Settings
-  - group: Cloudflare_configuration
-  - group: Prefix_Library
   - name: System.Debug
     value: 'false'
 
@@ -34,11 +33,7 @@ stages:
       serviceConnection: Azure_Connection
       azureResourceGroup: $(library-aks-resource-group)
       kubernetesCluster: $(library-aks-cluster-name)
-      namespace: 'event-triangle'
-      rabbitMqUser: $(library-rabbitmq-user)
-      rabbitMqPassword: $(library-rabbitmq-password)
+      namespace: $(library-aks-namespace)
       cloudflareApiKey: $(cloudflare-api-key)
       cloudflareZone: $(cloudflare-zone-name)
       redisPassword: $(library-redis-password)
-      transformTargetFiles: |
-        secrets/connection-secrets.yaml

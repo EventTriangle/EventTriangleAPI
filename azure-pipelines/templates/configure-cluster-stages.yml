@@ -17,22 +17,9 @@ parameters:
 
   - name: namespace
     type: string
-    default: 'event-triangle-dev'
 
   - name: workingDirectory
-    displayName: 'Working directory for Kubernetes'
-    type: string
-
-  - name: transformTargetFiles
-    displayName: 'Target files for token replacement'
-    type: string
-
-  - name: rabbitMqUser
-    displayName: 'RabbitMQ User'
-    type: string
-
-  - name: rabbitMqPassword
-    displayName: 'RabbitMQ Password'
+    displayName: 'Working directory for Platform'
     type: string
 
   - name: cloudflareApiKey
@@ -72,13 +59,13 @@ stages:
                     kubernetesCluster: ${{ parameters.kubernetesCluster }}
                     command: 'login'
 
-                - task: replacetokens@5
-                  displayName: 'Replace tokens in secrets'
-                  inputs:
-                    rootDirectory: ${{ parameters.workingDirectory }}
-                    targetFiles: ${{ parameters.transformTargetFiles }}
-                    tokenPattern: 'doublebraces'
-                    writeBOM: false
+                # - task: replacetokens@5
+                #   displayName: 'Replace tokens in secrets'
+                #   inputs:
+                #     rootDirectory: ${{ parameters.workingDirectory }}
+                #     targetFiles: ${{ parameters.transformTargetFiles }}
+                #     tokenPattern: 'doublebraces'
+                #     writeBOM: false
 
                 - task: PowerShell@2
                   displayName: 'Deploy Namespace'
@@ -88,69 +75,69 @@ stages:
                     pwsh: true
                     workingDirectory: ${{ parameters.workingDirectory }}
 
-                - task: PowerShell@2
-                  displayName: 'Deploy Secrets'
-                  inputs:
-                    targetType: 'inline'
-                    script: 'kubectl apply -f ./secrets --namespace ${{ parameters.namespace }}'
-                    pwsh: true
-                    workingDirectory: ${{ parameters.workingDirectory }}
+                # - task: PowerShell@2
+                #   displayName: 'Deploy Secrets'
+                #   inputs:
+                #     targetType: 'inline'
+                #     script: 'kubectl apply -f ./secrets --namespace ${{ parameters.namespace }}'
+                #     pwsh: true
+                #     workingDirectory: ${{ parameters.workingDirectory }}
 
                 - task: PowerShell@2
                   displayName: 'Deploy Postgres'
                   inputs:
                     targetType: 'inline'
                     script: |
-                      kubectl create namespace pgsql-dev --dry-run=client -o yaml | kubectl apply -f -
-                      kubectl apply -f ./pgsql-deployment --namespace pgsql-dev
+                      helm upgrade --install pgsql-dev .\pgsql-helm\ --values .\pgsql-helm\values.yaml --namespace pgsql-dev --create-namespace
                     pwsh: true
-                    workingDirectory: ${{ parameters.workingDirectory }}
+                    workingDirectory: ${{ parameters.workingDirectory }}\postgres
 
                 - task: PowerShell@2
                   displayName: 'Deploy Nginx Ingress'
                   inputs:
                     targetType: 'filePath'
-                    filePath: ${{ parameters.workingDirectory }}/helm-install-nginx-ingress/deploy-ingress-helm.ps1
-                    arguments: '-HelmReleaseName "event-ingress" -Namespace ${{ parameters.namespace }}'
+                    filePath: ./Install-Nginx-Ingress.ps1
+                    arguments: '-HelmReleaseName "nginx-ingress-dev" -Namespace "ing-dev"'
                     pwsh: true
-                    workingDirectory: ${{ parameters.workingDirectory }}
+                    workingDirectory: ${{ parameters.workingDirectory }}/nginx-ingress
 
                 - task: PowerShell@2
                   displayName: 'Install RabbitMq'
                   inputs:
                     targetType: 'filePath'
-                    filePath: ${{ parameters.workingDirectory }}/rabbitmq/Install-RabbitMq.ps1
+                    filePath: ./Install-RabbitMq.ps1
                     arguments: '-RabbitMqNamespace "rabbitmq-dev" -RabbitMqClusterName "rabbitmq-cluster"'
                     pwsh: true
-                    workingDirectory: ${{ parameters.workingDirectory }}
+                    workingDirectory: ${{ parameters.workingDirectory }}/rabbitmq
 
                 - task: PowerShell@2
                   displayName: 'Deploy CertManager'
                   inputs:
                     targetType: 'filePath'
-                    filePath: ${{ parameters.workingDirectory }}/cert-manager/Install-Cert-Manager.ps1
-                    arguments: '-HelmReleaseName cert-manager -Namespace ${{ parameters.namespace }}'
+                    filePath: ./Install-Cert-Manager.ps1
+                    arguments: '-HelmReleaseName "cert-manager" -Namespace "cert-manager-dev"'
                     pwsh: true
-                    workingDirectory: ${{ parameters.workingDirectory }}
+                    workingDirectory: ${{ parameters.workingDirectory }}/cert-manager
 
                 - task: PowerShell@2
                   displayName: 'Deploy Redis'
                   inputs:
-                    targetType: 'inline'
-                    filePath: 
-                    pwsh: true
-                    workingDirectory: ${{ parameters.workingDirectory }}
-
-                - task: PowerShell@2
-                  displayName: 'Wait for deployments'
-                  inputs:
                     targetType: 'filePath'
-                    filePath: ${{ parameters.workingDirectory }}/scripts/wait-deployments.ps1
-                    arguments: '-Namespace ${{ parameters.namespace }}
-                                -RabbitRelease event-rabbitmq
-                                -PostgresDeployment postgresdb'
+                    filePath: ./Install-Redis.ps1
+                    arguments: '-Namespace "redis-dev" -HelmRelease "redis-server-dev" -Password "${{ parameters.redisPassword }}"'
                     pwsh: true
-                    workingDirectory: ${{ parameters.workingDirectory }}
+                    workingDirectory: ${{ parameters.workingDirectory }}/redis
+
+                # - task: PowerShell@2
+                #   displayName: 'Wait for deployments'
+                #   inputs:
+                #     targetType: 'filePath'
+                #     filePath: ${{ parameters.workingDirectory }}/scripts/wait-deployments.ps1
+                #     arguments: '-Namespace ${{ parameters.namespace }}
+                #                 -RabbitRelease event-rabbitmq
+                #                 -PostgresDeployment postgresdb'
+                #     pwsh: true
+                #     workingDirectory: ${{ parameters.workingDirectory }}
 
                 - task: PowerShell@2
                   displayName: 'Configure Cloudflare DNS'
@@ -161,9 +148,9 @@ stages:
                     pwsh: true
                     workingDirectory: '$(System.DefaultWorkingDirectory)/cloudflare'
 
-                - pwsh: |
-                    helm upgrade --install auth-app .\auth-service-chart\ --values .\auth-service-chart\values.yaml --namespace "event-triangle"
-                    helm upgrade --install consumer-app .\consumer-service-chart\ --values .\consumer-service-chart\values.yaml --namespace "event-triangle"
-                    helm upgrade --install sender-app .\sender-service-chart\ --values .\sender-service-chart\values.yaml --namespace "event-triangle"
-                  workingDirectory: $(System.DefaultWorkingDirectory)\helm
-                  displayName: Deploy Web Apps
+                # - pwsh: |
+                #     helm upgrade --install auth-app .\auth-service-chart\ --values .\auth-service-chart\values.yaml --namespace "event-triangle"
+                #     helm upgrade --install consumer-app .\consumer-service-chart\ --values .\consumer-service-chart\values.yaml --namespace "event-triangle"
+                #     helm upgrade --install sender-app .\sender-service-chart\ --values .\sender-service-chart\values.yaml --namespace "event-triangle"
+                #   workingDirectory: $(System.DefaultWorkingDirectory)\helm
+                #   displayName: Deploy Web Apps
