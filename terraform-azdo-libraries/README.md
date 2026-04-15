@@ -1,3 +1,4 @@
+- Get project ID from: https://dev.azure.com/EventTriangle/_apis/projects?api-version=5.0-preview.3
 - Generate Azure DevOps PAT with FULL permissions
 - Copy AZDO PAT to azdo-pat-token.txt
 - Fill the JSON default values terraform.auto.tfvars.json:
