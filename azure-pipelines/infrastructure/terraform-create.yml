@@ -17,6 +17,7 @@ pr: none
 
 variables:
   - group: Terraform_Azure_Credentials
+  - group: Terraform_Backend_StateFile_Settings
   - group: Terraform_Auto_Tfvars_Json_Transform
   - group: AKS_Settings
   - group: Prefix_Library
