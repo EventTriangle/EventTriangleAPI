@@ -4,6 +4,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
   location            = var.resource_group_location
   resource_group_name = var.resource_group_name
   dns_prefix          = var.aks_name
+  node_resource_group = var.aks_node_resource_group_name
 
   default_node_pool {
     name                        = "systempool"
