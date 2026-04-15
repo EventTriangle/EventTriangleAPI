@@ -1,21 +1,20 @@
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: postgresdb
-  namespace: event-triangle
+  name: {{ .Release.Name }}-deployment
+  namespace: {{ .Values.namespace }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: postgresdb
+      app: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: postgresdb
+        app: {{ .Release.Name }}
     spec:
       containers:
-        - name: postgresdb
+        - name: {{ .Release.Name }}
           image: postgres:latest
           ports:
             - containerPort: 5432
@@ -23,17 +22,17 @@ spec:
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
-                  name: connection-creds
+                  name: {{ .Release.Name }}-secrets
                   key: POSTGRES_USER
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: connection-creds
+                  name: {{ .Release.Name }}-secrets
                   key: POSTGRES_PASSWORD
             - name: POSTGRES_DB
               valueFrom:
                 secretKeyRef:
-                  name: connection-creds
+                  name: {{ .Release.Name }}-secrets
                   key: POSTGRES_DB
           volumeMounts:
             - mountPath: /var/lib/postgres/data
@@ -41,4 +40,4 @@ spec:
       volumes:
         - name: db-data
           persistentVolumeClaim:
-            claimName: db-persistent-volume-claim
+            claimName: {{ .Release.Name }}-pvc

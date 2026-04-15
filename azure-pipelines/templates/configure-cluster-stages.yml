@@ -17,7 +17,7 @@ parameters:
 
   - name: namespace
     type: string
-    default: 'event-triangle'
+    default: 'event-triangle-dev'
 
   - name: workingDirectory
     displayName: 'Working directory for Kubernetes'
@@ -84,7 +84,7 @@ stages:
                   displayName: 'Deploy Namespace'
                   inputs:
                     targetType: 'inline'
-                    script: 'kubectl apply -f ./namespace'
+                    script: 'kubectl create namespace ${{ parameters.namespace }} --dry-run=client -o yaml | kubectl apply -f -'
                     pwsh: true
                     workingDirectory: ${{ parameters.workingDirectory }}
 
@@ -100,7 +100,9 @@ stages:
                   displayName: 'Deploy Postgres'
                   inputs:
                     targetType: 'inline'
-                    script: 'kubectl apply -f ./pgsql-deployment --namespace ${{ parameters.namespace }}'
+                    script: |
+                      kubectl create namespace pgsql-dev --dry-run=client -o yaml | kubectl apply -f -
+                      kubectl apply -f ./pgsql-deployment --namespace pgsql-dev
                     pwsh: true
                     workingDirectory: ${{ parameters.workingDirectory }}
 
@@ -113,19 +115,20 @@ stages:
                     pwsh: true
                     workingDirectory: ${{ parameters.workingDirectory }}
 
-                - pwsh: |
-                    kubectl apply -f "https://github.com/rabbitmq/cluster-operator/releases/latest/download/cluster-operator.yml"
-                    Write-Host "Waiting 60 sec for Operator to provision..."
-                    Start-Sleep 60
-                    kubectl apply -f ./helm-install-rabbit-mq/rabbit.yaml
-                  workingDirectory: ${{ parameters.workingDirectory }}
-                  displayName: 'Install Rabbit MQ'
+                - task: PowerShell@2
+                  displayName: 'Install RabbitMq'
+                  inputs:
+                    targetType: 'filePath'
+                    filePath: ${{ parameters.workingDirectory }}/rabbitmq/Install-RabbitMq.ps1
+                    arguments: '-RabbitMqNamespace "rabbitmq-dev" -RabbitMqClusterName "rabbitmq-cluster"'
+                    pwsh: true
+                    workingDirectory: ${{ parameters.workingDirectory }}
 
                 - task: PowerShell@2
                   displayName: 'Deploy CertManager'
                   inputs:
                     targetType: 'filePath'
-                    filePath: ${{ parameters.workingDirectory }}/helm-install-cert-manager/deploy-cert-manager-helm.ps1
+                    filePath: ${{ parameters.workingDirectory }}/cert-manager/Install-Cert-Manager.ps1
                     arguments: '-HelmReleaseName cert-manager -Namespace ${{ parameters.namespace }}'
                     pwsh: true
                     workingDirectory: ${{ parameters.workingDirectory }}
@@ -134,13 +137,7 @@ stages:
                   displayName: 'Deploy Redis'
                   inputs:
                     targetType: 'inline'
-                    script: |
-                      helm repo add bitnami https://charts.bitnami.com/bitnami
-                      helm repo update
-                      helm upgrade --install event-redis bitnami/redis `
-                          --namespace ${{ parameters.namespace }} `
-                          --set auth.enabled=true `
-                          --set auth.password="${{ parameters.redisPassword }}"
+                    filePath: 
                     pwsh: true
                     workingDirectory: ${{ parameters.workingDirectory }}
 

@@ -1,9 +1,8 @@
----
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: db-persistent-volume-claim
-  namespace: event-triangle
+  name: {{ .Release.Name }}-pvc
+  namespace: {{ .Values.namespace }}
 spec:
   storageClassName: manual
   accessModes:

@@ -1,0 +1,5 @@
+namespace: pgsql-dev
+
+username: postgres
+
+password: qwerty12345

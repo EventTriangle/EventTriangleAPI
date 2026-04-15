@@ -42,7 +42,3 @@ service:
       protocol: TCP
       port: 81
       targetPort: 81
-
-configmap:
-  data:
-    ASPNETCORE_ENVIRONMENT: "Docker"

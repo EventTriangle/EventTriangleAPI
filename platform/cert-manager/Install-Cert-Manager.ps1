@@ -21,10 +21,10 @@ helm repo add jetstack https://charts.jetstack.io
 helm repo update
 
 Write-Output "Applying cert-manager custom resource definitions (CRDs) ..."
-kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v1.12.0/cert-manager.crds.yaml
+kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/latest/download/cert-manager.crds.yaml
 
 Write-Output "Installing cert-manager helm chart ..."
-helm install $HelmReleaseName jetstack/cert-manager --namespace $Namespace
+helm upgrade --install $HelmReleaseName jetstack/cert-manager --namespace $Namespace --create-namespace
 
 # example call: 
-# .\deploy-cert-manager-helm.ps1 -HelmReleaseName "cert-manager" -Namespace "event-triangle"
+# .\cert-manager\Install-Cert-Manager.ps1 -HelmReleaseName "cert-manager" -Namespace "cert-manager-dev"
