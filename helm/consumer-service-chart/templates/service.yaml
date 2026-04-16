@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: event-triangle-consumer-service
+  name: {{ .Values.namespace }}-service
   namespace: {{ .Values.namespace }}
 spec:
   selector:

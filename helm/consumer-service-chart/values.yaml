@@ -1,4 +1,4 @@
-namespace: event-triangle
+namespace: event-triangle-dev
 replicaCount: 1
 
 image:
@@ -6,24 +6,16 @@ image:
   tag: latest
   pullPolicy: Always
 
+rabbit_mq_host: "rabbitmq-cluster.rabbitmq-dev.svc"
+rabbitmq_username: "rabbitmq-user"
+rabbitmq_password: "myPa55w0rd"
+
+
+postgres_host: "pgsql-dev-service.pgsql-dev.svc"
+postgres_user: "postgres"
+postgres_password: "s8SefXkZZlqd"
+
 ports:
   containerPort: 80
   servicePort: 80
   targetPort: 8080
-
-env:
-  RabbitMqHost:
-    secretName: event-rabbitmq-default-user
-    key: host
-
-  RabbitMqUsername:
-    secretName: event-rabbitmq-default-user
-    key: username
-
-  RabbitMqPassword:
-    secretName: event-rabbitmq-default-user
-    key: password
-
-  DatabaseConnectionString:
-    secretName: connection-creds
-    key: ConsumerDatabaseConnectionString

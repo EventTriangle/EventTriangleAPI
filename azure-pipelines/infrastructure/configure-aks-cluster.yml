@@ -30,7 +30,7 @@ stages:
   - template: ../templates/configure-cluster-stages.yml
     parameters:
       vmImage: windows-latest
-      environment: aks
+      environment: dev
       workingDirectory: $(System.DefaultWorkingDirectory)/platform
       serviceConnection: Azure_Connection
       azureResourceGroup: $(library-aks-resource-group)

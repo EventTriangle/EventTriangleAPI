@@ -1,3 +1,4 @@
+- Export libraries API call: `curl -u :{PAT} "https://dev.azure.com/{organization}/{project}/_apis/distributedtask/variablegroups?api-version=7.0"`
 - Get project ID from: https://dev.azure.com/EventTriangle/_apis/projects?api-version=5.0-preview.3
 - Generate Azure DevOps PAT with FULL permissions
 - Copy AZDO PAT to azdo-pat-token.txt

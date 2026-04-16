@@ -1,6 +1,6 @@
 apiVersion: v2
-name: event-triangle-consumer
-description: A Helm chart for event-triangle-consumer
+name: consumer-app
+description: A Helm chart for consumer-app
 type: application
 version: 1.0.0
 appVersion: "1.0.0"
