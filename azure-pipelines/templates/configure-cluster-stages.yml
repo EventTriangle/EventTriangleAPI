@@ -34,6 +34,9 @@ parameters:
     displayName: 'Password for Redis HELM release.'
     type: string
 
+  - name: entraIdAuthSecret
+    type: string
+
 stages:
   - stage: 'Configure_AKS_${{ parameters.environment }}'
     displayName: 'Configure_AKS_${{ parameters.environment }}'
@@ -59,14 +62,6 @@ stages:
                     kubernetesCluster: ${{ parameters.kubernetesCluster }}
                     command: 'login'
 
-                # - task: replacetokens@5
-                #   displayName: 'Replace tokens in secrets'
-                #   inputs:
-                #     rootDirectory: ${{ parameters.workingDirectory }}
-                #     targetFiles: ${{ parameters.transformTargetFiles }}
-                #     tokenPattern: 'doublebraces'
-                #     writeBOM: false
-
                 - task: PowerShell@2
                   displayName: 'Deploy Namespace'
                   inputs:
@@ -74,14 +69,6 @@ stages:
                     script: 'kubectl create namespace ${{ parameters.namespace }} --dry-run=client -o yaml | kubectl apply -f -'
                     pwsh: true
                     workingDirectory: ${{ parameters.workingDirectory }}
-
-                # - task: PowerShell@2
-                #   displayName: 'Deploy Secrets'
-                #   inputs:
-                #     targetType: 'inline'
-                #     script: 'kubectl apply -f ./secrets --namespace ${{ parameters.namespace }}'
-                #     pwsh: true
-                #     workingDirectory: ${{ parameters.workingDirectory }}
 
                 - task: PowerShell@2
                   displayName: 'Deploy Postgres'
@@ -128,17 +115,6 @@ stages:
                     pwsh: true
                     workingDirectory: ${{ parameters.workingDirectory }}
 
-                # - task: PowerShell@2
-                #   displayName: 'Wait for deployments'
-                #   inputs:
-                #     targetType: 'filePath'
-                #     filePath: ${{ parameters.workingDirectory }}/scripts/wait-deployments.ps1
-                #     arguments: '-Namespace ${{ parameters.namespace }}
-                #                 -RabbitRelease event-rabbitmq
-                #                 -PostgresDeployment postgresdb'
-                #     pwsh: true
-                #     workingDirectory: ${{ parameters.workingDirectory }}
-
                 - task: PowerShell@2
                   displayName: 'Configure Cloudflare DNS'
                   inputs:
@@ -148,9 +124,12 @@ stages:
                     pwsh: true
                     workingDirectory: '$(System.DefaultWorkingDirectory)/cloudflare'
 
-                # - pwsh: |
-                #     helm upgrade --install auth-app .\auth-service-chart\ --values .\auth-service-chart\values.yaml --namespace "event-triangle"
-                #     helm upgrade --install consumer-app .\consumer-service-chart\ --values .\consumer-service-chart\values.yaml --namespace "event-triangle"
-                #     helm upgrade --install sender-app .\sender-service-chart\ --values .\sender-service-chart\values.yaml --namespace "event-triangle"
-                #   workingDirectory: $(System.DefaultWorkingDirectory)\helm
-                #   displayName: Deploy Web Apps
+                - pwsh: |
+                    helm upgrade --install auth-app .\auth-service-chart `
+                      --values .\auth-service-chart\values.yaml `
+                      --set entra_id_auth_secret=${{ parameters.entraIdAuthSecret }} `
+                      --set namespace=${{ parameters.namespace }}
+                      --namespace "${{ parameters.namespace }}" `
+                      --create-namespace
+                  workingDirectory: $(System.DefaultWorkingDirectory)/helm
+                  displayName: Deploy Auth Chart
