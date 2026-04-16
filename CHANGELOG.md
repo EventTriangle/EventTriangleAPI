@@ -49,3 +49,4 @@ and this project adheres to [Semantic Versioning v2.0.0](https://semver.org/spec
 - Platform updates
 - Azure DevOps library terraform
 - Wrap platform postgres deployment to powershell script
+- Update verify encoding script
