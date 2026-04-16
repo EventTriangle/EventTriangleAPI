@@ -31,7 +31,7 @@ $body = @{
 } | ConvertTo-Json -Depth 4
 
 # Perform the API request
-$response = curl $url `
+$response = curl -s -S $url `
     -X PATCH `
     -H "Authorization: Bearer $ApiToken" `
     -H "Content-Type: application/json" `
@@ -42,13 +42,13 @@ $responseJson = $response | ConvertFrom-Json
 # Check the response
 if ($responseJson.success -eq $true)
 {
-    Write-Host "DNS record updated successfully."
-    Write-Host "Response: $response"
+    Write-Host "DNS record updated successfully." -ForegroundColor Green
+    exit 0
 }
 else
 {
-    Write-Host "Failed to update DNS record."
-    Write-Host "Response: $( $response )"
+    Write-Host "Failed to update DNS record." -ForegroundColor Red
+    exit 1
 }
 
 #.\Update-CloudflareDnsRecord.ps1 -ApiToken $env:CLOUDFLARE_API_KEY `
