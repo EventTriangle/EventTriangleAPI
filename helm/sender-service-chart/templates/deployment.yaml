@@ -24,10 +24,23 @@ spec:
           env:
             - name: ASPNETCORE_ENVIRONMENT
               value: "Docker"
-          {{- range .Values.env }}
-            - name: {{ .name }}
+            - name: RabbitMqHost
               valueFrom:
-                {{ .type }}:
-                  name: {{ .refName }}
-                  key: {{ .key }}
-          {{- end }}
+                secretKeyRef:
+                  name: {{ .Release.Name }}-secret
+                  key: RabbitMqHost
+            - name: RabbitMqUsername
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-secret
+                  key: RabbitMqUsername
+            - name: RabbitMqPassword
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-secret
+                  key: RabbitMqPassword
+            - name: DatabaseConnectionString
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-secret
+                  key: SenderDatabaseConnectionString

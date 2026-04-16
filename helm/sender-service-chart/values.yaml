@@ -1,5 +1,7 @@
 replicaCount: 1
-namespace: event-triangle
+
+namespace: event-triangle-dev
+
 image:
   repository: kaminome/sender-service
   tag: latest
@@ -15,23 +17,11 @@ service:
       targetPort: 81
   type: ClusterIP
 
-env:
-  - name: RabbitMqHost
-    type: secretKeyRef
-    refName: event-rabbitmq-default-user
-    key: host
+rabbit_mq_host: "rabbitmq-cluster.rabbitmq-dev.svc"
+rabbitmq_username: "rabbitmq-user"
+rabbitmq_password: "myPa55w0rd"
 
-  - name: RabbitMqUsername
-    type: secretKeyRef
-    refName: event-rabbitmq-default-user
-    key: username
 
-  - name: RabbitMqPassword
-    type: secretKeyRef
-    refName: event-rabbitmq-default-user
-    key: password
-
-  - name: DatabaseConnectionString
-    type: secretKeyRef
-    refName: connection-creds
-    key: SenderDatabaseConnectionString
+postgres_host: "pgsql-dev-service.pgsql-dev.svc"
+postgres_user: "postgres"
+postgres_password: "s8SefXkZZlqd"
