@@ -1,0 +1,42 @@
+{
+  "editor.mouseWheelZoom": true,
+  "editor.fontSize": 13,
+  "editor.rulers": [
+    80
+  ],
+  "editor.wordWrap": "off",
+  "window.zoomLevel": 0,
+  "editor.fontFamily": "JetBrains Mono, Consolas, 'Courier New', monospace",
+  "editor.fontLigatures": true,
+  "editor.lineHeight": 1.6,
+  "editor.letterSpacing": 0.2,
+  "files.autoSave": "afterDelay",
+  "files.autoSaveDelay": 1000,
+  "[latex]": {
+    "editor.defaultFormatter": "James-Yu.latex-workshop",
+    "editor.formatOnSave": true
+  },
+  "latex-workshop.formatting.latex": "tex-fmt",
+  "latex-workshop.latex.autoBuild.run": "never",
+  "cSpell.language": "en",
+  "cSpell.enabled": true,
+  "cSpell.words": [
+    "Bohner",
+    "Butzer",
+    "Cereceda",
+    "Eulerian",
+    "Faulhaber",
+    "howpublished",
+    "Kolosov",
+    "Mathematica",
+    "OEIS",
+    "ORCID",
+    "pandoc",
+    "Principia",
+    "Refactorization",
+    "Riordan",
+    "tabl",
+    "Worpitzky",
+    "Zenodo"
+  ]
+}

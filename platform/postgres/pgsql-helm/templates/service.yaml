@@ -4,10 +4,10 @@ metadata:
   name: {{ .Release.Name }}-service
   namespace: {{ .Values.namespace }}
   labels:
-    app: {{ .Release.Name }}
+    app: {{ .Release.Name }}-service
 spec:
   type: ClusterIP
   ports:
     - port: 5432
   selector:
-    app: {{ .Release.Name }}
+    app: {{ .Release.Name }}-service

@@ -1,6 +1,6 @@
 apiVersion: v2
-name: event-triangle-auth
-description: A Helm chart for event-triangle-auth
+name: auth-app
+description: A Helm chart for auth app.
 type: application
 version: 1.0.0
 appVersion: "1.0.0"

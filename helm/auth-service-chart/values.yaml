@@ -1,5 +1,14 @@
-namespace: event-triangle
+namespace: event-triangle-dev
 replicaCount: 1
+
+entra_id_auth_secret: "My_3nt4ra_s3cr3t"
+rabbit_mq_host: "rabbitmq-cluster.rabbitmq-dev.svc"
+redis_url: "redis-server-dev-master.redis-dev.svc"
+redis_password: "Rx9nJ781GMe5"
+
+postgres_host: "pgsql-dev-service.pgsql-dev.svc"
+postgres_user: "postgres"
+postgres_password: "s8SefXkZZlqd"
 
 image:
   repository: kaminome/auth-service
@@ -9,27 +18,6 @@ image:
 ports:
   - containerPort: 80
   - containerPort: 81
-
-env:
-  - name: EVENT_TRIANGLE_AD_CLIENT_SECRET
-    type: secretKeyRef
-    refName: connection-creds
-    key: EVENT_TRIANGLE_AD_CLIENT_SECRET
-
-  - name: DatabaseConnectionString
-    type: secretKeyRef
-    refName: connection-creds
-    key: AuthDatabaseConnectionString
-
-  - name: RedisPassword
-    type: secretKeyRef
-    refName: connection-creds
-    key: RedisPassword
-
-  - name: RedisUrl
-    type: secretKeyRef
-    refName: connection-creds
-    key: RedisUrl
 
 service:
   type: ClusterIP
