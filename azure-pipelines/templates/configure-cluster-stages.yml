@@ -86,11 +86,11 @@ stages:
                 - task: PowerShell@2
                   displayName: 'Deploy Postgres'
                   inputs:
-                    targetType: 'inline'
-                    script: |
-                      helm upgrade --install pgsql-dev .\pgsql-helm\ --values .\pgsql-helm\values.yaml --namespace pgsql-dev --create-namespace
+                    targetType: 'filePath'
+                    filePath: '${{ parameters.workingDirectory }}/postgres/Deploy-Postgres.ps1'
+                    arguments: '-HelmReleaseName "pgsql-dev" -Namespace "pgsql-dev"'
                     pwsh: true
-                    workingDirectory: ${{ parameters.workingDirectory }}\postgres
+                    workingDirectory: ${{ parameters.workingDirectory }}
 
                 - task: PowerShell@2
                   displayName: 'Deploy Nginx Ingress'
