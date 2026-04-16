@@ -10,4 +10,4 @@ spec:
   ports:
     - port: 5432
   selector:
-    app: {{ .Release.Name }}-service
+    app: {{ .Release.Name }}
