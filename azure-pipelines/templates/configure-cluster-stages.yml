@@ -128,7 +128,7 @@ stages:
                     helm upgrade --install auth-app .\auth-service-chart `
                       --values .\auth-service-chart\values.yaml `
                       --set entra_id_auth_secret=${{ parameters.entraIdAuthSecret }} `
-                      --set namespace=${{ parameters.namespace }}
+                      --set namespace=${{ parameters.namespace }} `
                       --namespace "${{ parameters.namespace }}" `
                       --create-namespace
                   workingDirectory: $(System.DefaultWorkingDirectory)/helm
