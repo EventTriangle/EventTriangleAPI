@@ -114,7 +114,7 @@ stages:
                   workingDirectory: ${{ parameters.workingDirectory }}
 
                 - powershell: |
-                    terraform apply -auto-approve main.tfplan
+                    terraform apply -parallelism=15 -auto-approve "main.tfplan"
                   displayName: 'Terraform Apply'
                   workingDirectory: ${{ parameters.workingDirectory }}
                   env:

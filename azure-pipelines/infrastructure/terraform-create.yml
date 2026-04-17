@@ -27,8 +27,8 @@ variables:
     value: "Terraform_Plan"
   - name: applyStageName
     value: "Terraform_Apply"
-  - name: TF_LOG
-    value: 'INFO'
+  # - name: TF_LOG
+  #   value: 'INFO'
 
 stages:
   - template: ../templates/terraform-plan-stages.yml

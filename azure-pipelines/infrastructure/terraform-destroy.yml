@@ -22,8 +22,8 @@ variables:
     value: "Terraform_Plan_Destroy"
   - name: applyStageName
     value: "Terraform_Destroy"
-  - name: TF_LOG
-    value: 'INFO'
+  # - name: TF_LOG
+  #   value: 'INFO'
 
 stages:
   - template: ../templates/terraform-plan-stages.yml
