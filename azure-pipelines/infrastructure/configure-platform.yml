@@ -27,7 +27,7 @@ variables:
     value: 'false'
 
 stages:
-  - template: ../templates/configure-cluster-stages.yml
+  - template: ../templates/configure-platform-stages.yml
     parameters:
       vmImage: windows-latest
       environment: dev
