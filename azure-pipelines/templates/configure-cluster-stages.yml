@@ -53,6 +53,10 @@ stages:
                 - checkout: self
                   fetchDepth: 0
 
+                - pwsh: |
+                    choco --version
+                  displayName: 'Check Chocolatey'
+
                 - task: Kubernetes@1
                   displayName: 'Kubernetes Login'
                   inputs:
