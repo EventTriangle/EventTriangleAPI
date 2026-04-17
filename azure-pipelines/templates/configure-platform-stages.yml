@@ -38,11 +38,11 @@ parameters:
     type: string
 
 stages:
-  - stage: 'Configure_AKS_${{ parameters.environment }}'
-    displayName: 'Configure_AKS_${{ parameters.environment }}'
+  - stage: 'Configure_Platform_${{ parameters.environment }}'
+    displayName: 'Configure_Platform_${{ parameters.environment }}'
     jobs:
-      - deployment: 'Configure_AKS_${{ parameters.environment }}'
-        displayName: 'Configure_AKS_${{ parameters.environment }}'
+      - deployment: 'Configure_Platform_${{ parameters.environment }}'
+        displayName: 'Configure_Platform_${{ parameters.environment }}'
         pool:
           vmImage: ${{ parameters.vmImage }}
         environment: ${{ parameters.environment }}
