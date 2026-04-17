@@ -53,10 +53,6 @@ stages:
                 - checkout: self
                   fetchDepth: 0
 
-                - pwsh: |
-                    choco --version
-                  displayName: 'Check Chocolatey'
-
                 - task: Kubernetes@1
                   displayName: 'Kubernetes Login'
                   inputs:
@@ -65,6 +61,17 @@ stages:
                     azureResourceGroup: ${{ parameters.azureResourceGroup }}
                     kubernetesCluster: ${{ parameters.kubernetesCluster }}
                     command: 'login'
+
+                - pwsh: |
+                    choco --version
+                    choco install flux -y
+                    flux -v
+                  displayName: 'Choco install Flux CLI'
+
+                - pwsh: |
+                    kubectl apply -f ./fluxcd/flux-install.yaml
+                  displayName: 'Configure Flux for AKS'
+                  workingDirectory: ${{ parameters.workingDirectory }}
 
                 - task: PowerShell@2
                   displayName: 'Deploy Namespace'
