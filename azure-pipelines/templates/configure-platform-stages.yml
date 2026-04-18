@@ -136,7 +136,7 @@ stages:
                     workingDirectory: '$(System.DefaultWorkingDirectory)/cloudflare'
 
                 - pwsh: |
-                    helm upgrade --install auth .\auth-secrets `
+                    helm upgrade --install auth-secrets .\auth-secrets `
                       --values .\auth-secrets\values.yaml `
                       --set entra_id_auth_secret=${{ parameters.entraIdAuthSecret }} `
                       --set namespace=${{ parameters.namespace }} `
@@ -149,7 +149,7 @@ stages:
                     $creds=.\Get-RabbitMq-Credentials.ps1
                     $username=$creds["username"]
                     $password=$creds["password"]
-                    helm upgrade --install consumer .\consumer-secrets\ `
+                    helm upgrade --install consumer-secrets .\consumer-secrets\ `
                     --values .\consumer-secrets\values.yaml `
                     --set rabbitmq_username="$username" `
                     --set rabbitmq_password="$password" `
@@ -162,7 +162,7 @@ stages:
                     $creds=.\Get-RabbitMq-Credentials.ps1
                     $username=$creds["username"]
                     $password=$creds["password"]
-                    helm upgrade --install sender .\sender-secrets\ `
+                    helm upgrade --install sender-secrets .\sender-secrets\ `
                     --values .\sender-secrets\values.yaml `
                     --set rabbitmq_username="$username" `
                     --set rabbitmq_password="$password" `
