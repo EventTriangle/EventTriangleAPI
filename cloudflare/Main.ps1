@@ -9,10 +9,10 @@ param (
 # Set error handling and preferences
 $ErrorActionPreference = "Stop"
 
-Write-Host "Starting Cloudflare DNS Records Update Script..." -ForegroundColor Cyan
+Write-Host "Starting Cloudflare DNS Records Update Script..."
 
 # Step 1: Get Zone ID
-Write-Host "Fetching Zone ID for Zone Name: $ZoneName..." -ForegroundColor Yellow
+Write-Host "Fetching Zone ID for Zone Name: $ZoneName..."
 $zoneId = $(./Get-CloudflareZoneId.ps1 -ApiToken $ApiToken -ZoneName $ZoneName)
 
 if (-not $zoneId) {
@@ -20,10 +20,10 @@ if (-not $zoneId) {
     exit 1
 }
 
-Write-Host "Zone ID Retrieved: $zoneId" -ForegroundColor Green
+Write-Host "Zone ID Retrieved: $zoneId"
 
 # Step 2: Get DNS Records
-Write-Host "Fetching existing DNS records for Zone ID: $zoneId..." -ForegroundColor Yellow
+Write-Host "Fetching existing DNS records for Zone ID: $zoneId..."
 $dnsRecords = $(.\Get-CloudflareDnsRecords.ps1 -ApiToken $ApiToken -ZoneId "$zoneId")
 
 if (-not $dnsRecords -or -not ($dnsRecords -is [hashtable])) {
@@ -31,10 +31,10 @@ if (-not $dnsRecords -or -not ($dnsRecords -is [hashtable])) {
     exit 1
 }
 
-Write-Host "DNS Records Retrieved: $($dnsRecords.Count) records found." -ForegroundColor Green
+Write-Host "DNS Records Retrieved: $($dnsRecords.Count) records found."
 
 # Step 3: Get New DNS Entries
-Write-Host "Fetching new DNS entries to update..." -ForegroundColor Yellow
+Write-Host "Fetching new DNS entries to update..."
 $newDnsEntries = $(.\Get-NewDnsEntries.ps1)
 
 if (-not $newDnsEntries -or -not ($newDnsEntries -is [hashtable])) {
@@ -42,23 +42,23 @@ if (-not $newDnsEntries -or -not ($newDnsEntries -is [hashtable])) {
     exit 1
 }
 
-Write-Host "New DNS Entries Retrieved: $($newDnsEntries.Count) entries to process." -ForegroundColor Green
+Write-Host "New DNS Entries Retrieved: $($newDnsEntries.Count) entries to process."
 
 # Step 4: Process Each New DNS Entry
-Write-Host "Starting to process new DNS entries..." -ForegroundColor Cyan
+Write-Host "Starting to process new DNS entries..."
 foreach ($entry in $newDnsEntries.GetEnumerator()) {
     $dnsName = $entry.Name
     $ipAddress = $entry.Value
 
-    Write-Host "`nProcessing Entry: $dnsName => $ipAddress" -ForegroundColor Cyan
+    Write-Host "`nProcessing Entry: $dnsName => $ipAddress"
 
     # Check if the DNS name exists in the current DNS records
     if ($dnsRecords.ContainsKey($dnsName)) {
         # Get the record ID for the existing DNS record
         $recordId = $dnsRecords[$dnsName]
 
-        Write-Host "Found existing DNS record for $dnsName. Record ID: $recordId" -ForegroundColor Green
-        Write-Host "Updating DNS record for $dnsName with IP Address: $ipAddress" -ForegroundColor Yellow
+        Write-Host "Found existing DNS record for $dnsName. Record ID: $recordId"
+        Write-Host "Updating DNS record for $dnsName with IP Address: $ipAddress"
 
         # Update the DNS record
         try {
@@ -68,7 +68,7 @@ foreach ($entry in $newDnsEntries.GetEnumerator()) {
                 -RecordId $recordId `
                 -IpAddress $ipAddress
 
-            Write-Host "Successfully updated DNS record for $dnsName." -ForegroundColor Green
+            Write-Host "Successfully updated DNS record for $dnsName => $ipAddress" -ForegroundColor Green
         } catch {
             Write-Error "Failed to update DNS record for $dnsName. Error: $_"
         }

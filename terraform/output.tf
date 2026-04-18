@@ -11,7 +11,7 @@ output "subscription" {
 }
 
 output "cluster_connect_command" {
-  value = "az aks get-credentials --resource-group ${azurerm_resource_group.public.name} --name ${module.aks.name} --subscription ${var.subscription_id}"
+  value = "az aks get-credentials --resource-group ${azurerm_resource_group.public.name} --name ${module.aks.name} --subscription ${var.subscription_id} --overwrite-existing"
 }
 
 output "grafana_endpoint" {

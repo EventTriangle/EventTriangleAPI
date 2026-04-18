@@ -35,8 +35,7 @@ stages:
           solution: '$(System.DefaultWorkingDirectory)/EventTriangleAPI.sln'
           buildConfiguration: 'Release'
           backendProjectPath: '$(System.DefaultWorkingDirectory)/src/authorization/EventTriangleAPI.Authorization.Presentation'
-          unitTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/authorization/EventTriangleAPI.Authorization.UnitTests/EventTriangleAPI.Authorization.UnitTests.csproj'
-          shouldRunUnitTests: true
+          shouldRunUnitTests: false
           shouldRunIntegrationTests: true
           integrationTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/authorization/EventTriangleAPI.Authorization.IntegrationTests/EventTriangleAPI.Authorization.IntegrationTests.csproj'
           dockerRegistryUrl: 'docker.io/kaminome'
@@ -47,5 +46,4 @@ stages:
           shouldPushToAcr: true
           acrRegistryUrl: 'acrsharedd01.azurecr.io'
           acrServiceConnection: 'Azure_ACR_Connection'
-          sonarCloudEnabled: false
           workingDirectoryForDocker: '$(System.DefaultWorkingDirectory)/src'

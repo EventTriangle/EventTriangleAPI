@@ -1,0 +1,10 @@
+namespace: event-triangle-dev
+
+rabbit_mq_host: "rabbitmq-cluster.rabbitmq-dev.svc"
+rabbitmq_username: "rabbitmq-user"
+rabbitmq_password: "myPa55w0rd"
+
+
+postgres_host: "pgsql-dev-service.pgsql-dev.svc"
+postgres_user: "postgres"
+postgres_password: "s8SefXkZZlqd"

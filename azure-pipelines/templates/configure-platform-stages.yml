@@ -1,0 +1,177 @@
+parameters:
+  - name: vmImage
+    default: 'windows-latest'
+    type: string
+
+  - name: environment
+    type: string
+
+  - name: serviceConnection
+    type: string
+
+  - name: azureResourceGroup
+    type: string
+
+  - name: kubernetesCluster
+    type: string
+
+  - name: namespace
+    type: string
+
+  - name: workingDirectory
+    displayName: 'Working directory for Platform'
+    type: string
+
+  - name: cloudflareApiKey
+    displayName: 'Cloudflare API Token'
+    type: string
+
+  - name: cloudflareZone
+    displayName: 'Zone name of DNS in cloudflare (e.g razumovsky.me)'
+    type: string
+
+  - name: redisPassword
+    displayName: 'Password for Redis HELM release.'
+    type: string
+
+  - name: entraIdAuthSecret
+    type: string
+
+stages:
+  - stage: 'Configure_Platform_${{ parameters.environment }}'
+    displayName: 'Configure_Platform_${{ parameters.environment }}'
+    jobs:
+      - deployment: 'Configure_Platform_${{ parameters.environment }}'
+        displayName: 'Configure_Platform_${{ parameters.environment }}'
+        pool:
+          vmImage: ${{ parameters.vmImage }}
+        environment: ${{ parameters.environment }}
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: self
+                  fetchDepth: 0
+
+                - task: Kubernetes@1
+                  displayName: 'Kubernetes Login'
+                  inputs:
+                    connectionType: 'Azure Resource Manager'
+                    azureSubscriptionEndpoint: ${{ parameters.serviceConnection }}
+                    azureResourceGroup: ${{ parameters.azureResourceGroup }}
+                    kubernetesCluster: ${{ parameters.kubernetesCluster }}
+                    command: 'login'
+
+                - pwsh: |
+                    choco --version
+                    choco install flux -y
+                    flux -v
+                  displayName: 'Choco install Flux CLI'
+
+                - pwsh: |
+                    kubectl apply -f ./fluxcd/flux-install.yaml
+                  displayName: 'Configure Flux for AKS'
+                  workingDirectory: ${{ parameters.workingDirectory }}
+
+                - pwsh: |
+                    kubectl apply -f ./fluxcd/git-repository.yaml
+                  displayName: 'Configure Flux GitRepository'
+                  workingDirectory: ${{ parameters.workingDirectory }}
+
+                - task: PowerShell@2
+                  displayName: 'Deploy Namespace'
+                  inputs:
+                    targetType: 'inline'
+                    script: 'kubectl create namespace ${{ parameters.namespace }} --dry-run=client -o yaml | kubectl apply -f -'
+                    pwsh: true
+                    workingDirectory: ${{ parameters.workingDirectory }}
+
+                - task: PowerShell@2
+                  displayName: 'Deploy Postgres'
+                  inputs:
+                    targetType: 'filePath'
+                    filePath: '${{ parameters.workingDirectory }}/postgres/Deploy-Postgres.ps1'
+                    arguments: '-HelmReleaseName "pgsql-dev" -Namespace "pgsql-dev"'
+                    pwsh: true
+                    workingDirectory: ${{ parameters.workingDirectory }}
+
+                - task: PowerShell@2
+                  displayName: 'Deploy Nginx Ingress'
+                  inputs:
+                    targetType: 'filePath'
+                    filePath: ${{ parameters.workingDirectory }}/nginx-ingress/Install-Nginx-Ingress.ps1
+                    arguments: '-HelmReleaseName "nginx-ingress-dev" -Namespace "ing-dev"'
+                    pwsh: true
+                    workingDirectory: ${{ parameters.workingDirectory }}
+
+                - task: PowerShell@2
+                  displayName: 'Install RabbitMq'
+                  inputs:
+                    targetType: 'filePath'
+                    filePath: ${{ parameters.workingDirectory }}/rabbitmq/Install-RabbitMq.ps1
+                    arguments: '-RabbitMqNamespace "rabbitmq-dev" -RabbitMqClusterName "rabbitmq-cluster"'
+                    pwsh: true
+                    workingDirectory: ${{ parameters.workingDirectory }}
+
+                - task: PowerShell@2
+                  displayName: 'Deploy CertManager'
+                  inputs:
+                    targetType: 'filePath'
+                    filePath: ${{ parameters.workingDirectory }}/cert-manager/Install-Cert-Manager.ps1
+                    arguments: '-HelmReleaseName "cert-manager" -Namespace "cert-manager-dev"'
+                    pwsh: true
+                    workingDirectory: ${{ parameters.workingDirectory }}
+
+                - task: PowerShell@2
+                  displayName: 'Deploy Redis'
+                  inputs:
+                    targetType: 'filePath'
+                    filePath: ${{ parameters.workingDirectory }}/redis/Install-Redis.ps1
+                    arguments: '-Namespace "redis-dev" -HelmRelease "redis-server-dev" -Password "${{ parameters.redisPassword }}"'
+                    pwsh: true
+                    workingDirectory: ${{ parameters.workingDirectory }}
+
+                - task: PowerShell@2
+                  displayName: 'Configure Cloudflare DNS'
+                  inputs:
+                    targetType: 'filePath'
+                    filePath: $(System.DefaultWorkingDirectory)/cloudflare/Main.ps1
+                    arguments: '-ApiToken ${{ parameters.cloudflareApiKey }} -ZoneName ${{ parameters.cloudflareZone }}'
+                    pwsh: true
+                    workingDirectory: '$(System.DefaultWorkingDirectory)/cloudflare'
+
+                - pwsh: |
+                    helm upgrade --install auth-secrets .\auth-secrets `
+                      --values .\auth-secrets\values.yaml `
+                      --set entra_id_auth_secret=${{ parameters.entraIdAuthSecret }} `
+                      --set namespace=${{ parameters.namespace }} `
+                      --namespace "${{ parameters.namespace }}" `
+                      --create-namespace
+                  workingDirectory: $(System.DefaultWorkingDirectory)/helm
+                  displayName: Deploy Auth Secrets
+
+                - pwsh: |
+                    $creds=.\Get-RabbitMq-Credentials.ps1
+                    $username=$creds["username"]
+                    $password=$creds["password"]
+                    helm upgrade --install consumer-secrets .\consumer-secrets\ `
+                    --values .\consumer-secrets\values.yaml `
+                    --set rabbitmq_username="$username" `
+                    --set rabbitmq_password="$password" `
+                    --namespace "${{ parameters.namespace }}" `
+                    --create-namespace
+                  workingDirectory: $(System.DefaultWorkingDirectory)/helm
+                  displayName: Deploy Consumer Secrets
+
+                - pwsh: |
+                    $creds=.\Get-RabbitMq-Credentials.ps1
+                    $username=$creds["username"]
+                    $password=$creds["password"]
+                    helm upgrade --install sender-secrets .\sender-secrets\ `
+                    --values .\sender-secrets\values.yaml `
+                    --set rabbitmq_username="$username" `
+                    --set rabbitmq_password="$password" `
+                    --namespace "event-triangle-dev" `
+                    --create-namespace
+                  workingDirectory: $(System.DefaultWorkingDirectory)/helm
+                  displayName: Deploy Sender Secrets

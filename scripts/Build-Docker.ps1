@@ -18,6 +18,9 @@ param (
     [string]$GitVersion,
 
     [Parameter(Mandatory = $true)]
+    [string]$CommitSha,
+
+    [Parameter(Mandatory = $true)]
     [string]$WorkingDirectory
 )
 
@@ -25,16 +28,22 @@ Write-Output "Changing directory to $WorkingDirectory"
 Set-Location $WorkingDirectory
 
 # Define image tags
-$GIT_VERSION_IMAGE = "$DockerRegistryUrl/$ImageRepository`:$gitVersion"
+$GIT_VERSION_IMAGE = "$DockerRegistryUrl/$ImageRepository`:$GitVersion"
 $LATEST_VERSION_IMAGE = "$DockerRegistryUrl/$ImageRepository`:latest"
-$ACR_GIT_VERSION_IMAGE = "$AcrRegistryUrl/$ImageRepository`:$gitVersion"
+$SHA_TAG = "$DockerRegistryUrl/$ImageRepository`:$GitVersion-$CommitSha"
+
+$ACR_GIT_VERSION_IMAGE = "$AcrRegistryUrl/$ImageRepository`:$GitVersion"
 $ACR_LATEST_VERSION_IMAGE = "$AcrRegistryUrl/$ImageRepository`:latest"
+$ACR_SHA_TAG = "$AcrRegistryUrl/$ImageRepository`:$GitVersion-$CommitSha"
 
 # Output image tags
 Write-Output "DOCKERHUB_GIT_VERSION_IMAGE: $GIT_VERSION_IMAGE"
 Write-Output "DOCKERHUB_GIT_LATEST_VERSION_IMAGE: $LATEST_VERSION_IMAGE"
+Write-Output "DOCKERHUB_SHA_VERSION_IMAGE: $SHA_TAG"
+
 Write-Output "ACR_GIT_VERSION_IMAGE: $ACR_GIT_VERSION_IMAGE"
 Write-Output "ACR_LATEST_VERSION_IMAGE: $ACR_LATEST_VERSION_IMAGE"
+Write-Output "ACR_SHA_IMAGE: $ACR_SHA_TAG"
 
 # Build the Docker image
 docker build --build-arg FRONT_API_URL="$DockerBuildParameterUrl" `
@@ -46,6 +55,8 @@ docker build --build-arg FRONT_API_URL="$DockerBuildParameterUrl" `
 docker tag "$GIT_VERSION_IMAGE" "$LATEST_VERSION_IMAGE"
 docker tag "$GIT_VERSION_IMAGE" "$ACR_LATEST_VERSION_IMAGE"
 docker tag "$GIT_VERSION_IMAGE" "$ACR_GIT_VERSION_IMAGE"
+docker tag "$GIT_VERSION_IMAGE" "$SHA_TAG"
+docker tag "$GIT_VERSION_IMAGE" "$ACR_SHA_TAG"
 
 # List images
 docker image ls

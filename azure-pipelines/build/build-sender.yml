@@ -3,6 +3,9 @@ trigger:
   branches:
     include:
       - main
+  tags:
+    include:
+      - v*
 
 pr: none
 
@@ -36,5 +39,4 @@ stages:
           shouldPushToAcr: true
           acrRegistryUrl: 'acrsharedd01.azurecr.io'
           acrServiceConnection: 'Azure_ACR_Connection'
-          sonarCloudEnabled: false
           workingDirectoryForDocker: '$(System.DefaultWorkingDirectory)/src'

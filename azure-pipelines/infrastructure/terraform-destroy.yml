@@ -11,16 +11,19 @@ trigger: none
 pr: none
 
 variables:
-  - group: Azure_Terraform_Integration
+  - group: Terraform_Azure_Credentials
+  - group: Terraform_Backend_StateFile_Settings
   - group: Terraform_Auto_Tfvars_Json_Transform
-  - group: Prefix_Library
   - group: AKS_Settings
+  - group: Prefix_Library
   - name: System.Debug
     value: 'false'
   - name: planStageName
     value: "Terraform_Plan_Destroy"
   - name: applyStageName
     value: "Terraform_Destroy"
+  # - name: TF_LOG
+  #   value: 'INFO'
 
 stages:
   - template: ../templates/terraform-plan-stages.yml
@@ -54,6 +57,6 @@ stages:
       clientId: $(library-client-id)
       clientSecret: $(library-client-secret)
       tenantId: $(library-tenant-id)
-      environment: 'aks'
+      environment: dev
       dependsOn: [ '${{ variables.planStageName }}' ]
       condition: ${{ variables.planStageName }}

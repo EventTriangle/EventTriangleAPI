@@ -11,7 +11,7 @@ $ErrorActionPreference = "Stop"
 $url = "https://api.cloudflare.com/client/v4/zones"
 
 # Perform the API request
-$response = $( curl $url -H "Authorization: Bearer $ApiToken" -H "Content-Type: application/json" )
+$response = $( curl -s -S $url -H "Authorization: Bearer $ApiToken" -H "Content-Type: application/json" )
 
 # Parse the JSON response
 $json = $response | ConvertFrom-Json

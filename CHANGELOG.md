@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning v2.0.0](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.0] - In Progress
+## [1.0.0] - 18-Apr-2026
 
 ### Changed
 
@@ -46,3 +46,12 @@ and this project adheres to [Semantic Versioning v2.0.0](https://semver.org/spec
 - Platform: Change PostgeSQL to be cluster IP
 - Disable terraform log info
 - Add AKS node pool name
+- Platform updates
+- Azure DevOps library terraform
+- Wrap platform postgres deployment to powershell script
+- Update verify encoding script
+- Rename platform pipeline
+- Run SonarCloud scan only if source branch is main (add if condition)
+- For Docker CI/CD build: add one more tag with short commit sha
+- Add build pipelines trigger on tag
+- Docker script add logs

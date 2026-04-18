@@ -1,0 +1,42 @@
+#pr:
+#  paths:
+#    include:
+#      - terraform
+#      - build/terraform-plan-apply.yml
+#    exclude:
+#      - terraform/README.md
+
+#trigger:
+#  batch: true
+#  branches:
+#    include:
+#      - docs
+
+trigger: none
+pr: none
+
+variables:
+  - group: Terraform_Azure_Credentials
+  - group: Cloudflare_API_Key
+  - group: Postgres_Settings
+  - group: Redis_Credentials
+  - group: AKS_Settings
+  - group: Prefix_Library
+  - group: Entra_ID_Auth_Secret
+  - name: System.Debug
+    value: 'false'
+
+stages:
+  - template: ../templates/configure-platform-stages.yml
+    parameters:
+      vmImage: windows-latest
+      environment: dev
+      workingDirectory: $(System.DefaultWorkingDirectory)/platform
+      serviceConnection: Azure_Connection
+      azureResourceGroup: $(library-aks-resource-group)
+      kubernetesCluster: $(library-aks-cluster-name)
+      namespace: $(library-aks-namespace)
+      cloudflareApiKey: $(cloudflare-api-key)
+      cloudflareZone: $(cloudflare-zone-name)
+      redisPassword: $(library-redis-password)
+      entraIdAuthSecret: $(library-entra-id-auth-secret)

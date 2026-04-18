@@ -19,6 +19,9 @@
 *.lock.info
 *.conf
 *.txt
+terraform-azdo-libraries/.terraform
+terraform-azdo-libraries/*.lock.hcl
+terraform-azdo-libraries/*.tfvars.json
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
