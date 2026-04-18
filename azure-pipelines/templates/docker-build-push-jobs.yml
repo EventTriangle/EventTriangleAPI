@@ -108,7 +108,7 @@ jobs:
           Get-ChildItem Env: | Sort-Object Name
 
           Write-Host "=== PIPELINE VARIABLES ==="
-          Write-Host "FullSemVer: $(gitversion.FullSemVer)"
+          Write-Host "FullSemVer: $(version_step.FullSemVer)"
           Write-Host "SemVer: $(version_step.SemVer)"
           Write-Host "ShortSha: $(version_step.ShortSha)"
         displayName: Debug environment
