@@ -149,17 +149,17 @@ jobs:
           arguments: '-c ${{ parameters.buildConfiguration }} -p:Version=$(version_step.semVer) --no-restore'
 
       - task: SonarCloudAnalyze@4
-        condition: eq(variables['Build.SourceBranchName'], 'main')
+        condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'main'))
         inputs: {}
 
       - task: SonarCloudPublish@4
-        condition: eq(variables['Build.SourceBranchName'], 'main')
+        condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'main'))
         inputs:
           pollingTimeoutSec: "300"
 
       - task: DotnetCoreCLI@2
         displayName: 'Run unit tests'
-        condition: eq(${{ parameters.shouldRunUnitTests }}, true)
+        condition: and(succeeded(), eq(parameters.shouldRunUnitTests, true))
         inputs:
           command: 'test'
           projects: '${{ parameters.unitTestsProjectPath }}'
@@ -167,7 +167,7 @@ jobs:
 
       - task: DotNetCoreCLI@2
         displayName: 'Run integration tests'
-        condition: eq(${{ parameters.shouldRunIntegrationTests }}, true)
+        condition: and(succeeded(), eq(parameters.shouldRunIntegrationTests, true))
         inputs:
           command: 'test'
           projects: '${{ parameters.integrationTestsProjectPath }}'
@@ -184,7 +184,8 @@ jobs:
                       -DockerBuildParameterUrl ${{ parameters.dockerBuildParameterUrl }}
                       -DockerfilePath ${{ parameters.dockerfilePath }}
                       -GitVersion $(version_step.semVer)
-                      -WorkingDirectory ${{ parameters.workingDirectoryForDocker }}"
+                      -WorkingDirectory ${{ parameters.workingDirectoryForDocker }}
+                      -CommitSha $(version_step.ShortSha)"
           errorActionPreference: 'stop'
           pwsh: true
 
@@ -201,7 +202,7 @@ jobs:
 
       - task: Docker@2
         displayName: 'Push to ACR'
-        condition: eq(${{ parameters.shouldPushToAcr }}, true)
+        condition: and(succeeded(), eq(parameters.shouldPushToAcr, true))
         inputs:
           command: push
           containerRegistry: ${{ parameters.acrServiceConnection }}

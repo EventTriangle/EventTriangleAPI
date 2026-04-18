@@ -27,6 +27,7 @@
     "choco",
     "Creds",
     "Eulerian",
+    "eventtriangleapi",
     "Faulhaber",
     "fluxcd",
     "gitversion",
@@ -34,6 +35,7 @@
     "Kolosov",
     "Mathematica",
     "OEIS",
+    "opencover",
     "ORCID",
     "pandoc",
     "Postge",
@@ -42,6 +44,8 @@
     "Riordan",
     "SOURCEBRANCHNAME",
     "tabl",
+    "updatebuildnumber",
+    "vstest",
     "Worpitzky",
     "Zenodo"
   ]
