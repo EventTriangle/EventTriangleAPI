@@ -73,6 +73,11 @@ stages:
                   displayName: 'Configure Flux for AKS'
                   workingDirectory: ${{ parameters.workingDirectory }}
 
+                - pwsh: |
+                    kubectl apply -f ./fluxcd/git-repository.yaml
+                  displayName: 'Configure Flux GitRepository'
+                  workingDirectory: ${{ parameters.workingDirectory }}
+
                 - task: PowerShell@2
                   displayName: 'Deploy Namespace'
                   inputs:
