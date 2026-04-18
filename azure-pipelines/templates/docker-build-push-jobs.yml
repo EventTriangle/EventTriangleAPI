@@ -77,12 +77,22 @@ parameters:
     default: 'https://auth.eventtriangle.razumovsky.me/'
     type: string
 
+  - name: dotnetSdkVersion
+    type: string
+    default: '10.x'
+
 jobs:
   - job: ${{ parameters.JobName }}
     displayName: ${{ parameters.JobName }}
     steps:
       - checkout: self
         fetchDepth: 0
+
+      - task: UseDotNet@2
+        displayName: 'Install .NET SDK ${{ parameters.dotnetSdkVersion }}'
+        inputs:
+          packageType: 'sdk'
+          version: '${{ parameters.dotnetSdkVersion }}'
 
       - task: gitversion-setup@4.5.0
         displayName: 'GitVersion Setup'
