@@ -1,21 +1,4 @@
-replicaCount: 1
-
 namespace: event-triangle-dev
-
-image:
-  repository: kaminome/sender-service
-  tag: latest
-  pullPolicy: Always
-
-service:
-  ports:
-    - name: http
-      port: 80
-      targetPort: 80
-    - name: grpc
-      port: 81
-      targetPort: 81
-  type: ClusterIP
 
 rabbit_mq_host: "rabbitmq-cluster.rabbitmq-dev.svc"
 rabbitmq_username: "rabbitmq-user"

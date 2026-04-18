@@ -136,8 +136,8 @@ stages:
                     workingDirectory: '$(System.DefaultWorkingDirectory)/cloudflare'
 
                 - pwsh: |
-                    helm upgrade --install auth-app .\auth-service-chart `
-                      --values .\auth-service-chart\values.yaml `
+                    helm upgrade --install auth .\auth-secrets `
+                      --values .\auth-secrets\values.yaml `
                       --set entra_id_auth_secret=${{ parameters.entraIdAuthSecret }} `
                       --set namespace=${{ parameters.namespace }} `
                       --namespace "${{ parameters.namespace }}" `
@@ -149,8 +149,8 @@ stages:
                     $creds=.\Get-RabbitMq-Credentials.ps1
                     $username=$creds["username"]
                     $password=$creds["password"]
-                    helm upgrade --install consumer-app .\consumer-service-chart\ `
-                    --values .\consumer-service-chart\values.yaml `
+                    helm upgrade --install consumer .\consumer-secrets\ `
+                    --values .\consumer-secrets\values.yaml `
                     --set rabbitmq_username="$username" `
                     --set rabbitmq_password="$password" `
                     --namespace "${{ parameters.namespace }}" `
@@ -162,8 +162,8 @@ stages:
                     $creds=.\Get-RabbitMq-Credentials.ps1
                     $username=$creds["username"]
                     $password=$creds["password"]
-                    helm upgrade --install sender-app .\sender-service-chart\ `
-                    --values .\sender-service-chart\values.yaml `
+                    helm upgrade --install sender .\sender-secrets\ `
+                    --values .\sender-secrets\values.yaml `
                     --set rabbitmq_username="$username" `
                     --set rabbitmq_password="$password" `
                     --namespace "event-triangle-dev" `
