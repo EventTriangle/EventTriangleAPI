@@ -109,7 +109,8 @@ jobs:
 
           Write-Host "=== PIPELINE VARIABLES ==="
           Write-Host "FullSemVer: $(gitversion.FullSemVer)"
-          Write-Host "SemVer: $(gitversion.SemVer)"
+          Write-Host "SemVer: $(version_step.SemVer)"
+          Write-Host "ShortSha: $(version_step.ShortSha)"
         displayName: Debug environment
 
       - task: DotNetCoreCLI@2
