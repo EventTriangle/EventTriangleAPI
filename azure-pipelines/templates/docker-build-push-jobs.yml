@@ -23,6 +23,7 @@ parameters:
 
   - name: unitTestsProjectPath
     displayName: 'Unit tests project path'
+    default: ''
     type: string
 
   - name: shouldRunUnitTests

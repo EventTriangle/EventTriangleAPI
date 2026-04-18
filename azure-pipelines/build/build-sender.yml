@@ -3,6 +3,9 @@ trigger:
   branches:
     include:
       - main
+  tags:
+    include:
+      - v*
 
 pr: none
 
