@@ -52,3 +52,4 @@ and this project adheres to [Semantic Versioning v2.0.0](https://semver.org/spec
 - Update verify encoding script
 - Rename platform pipeline
 - Run SonarCloud scan only if source branch is main (add if condition)
+- For Docker CI/CD build: add one more tag with short commit sha

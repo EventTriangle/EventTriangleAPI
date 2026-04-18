@@ -196,6 +196,7 @@ jobs:
           repository: ${{ parameters.dockerRegistryUrl }}/${{ parameters.imageRepository }}
           tags: |
             $(version_step.semVer)
+            $(version_step.semVer)-$(version_step.ShortSha)
             latest
 
       - task: Docker@2
@@ -207,4 +208,5 @@ jobs:
           repository: ${{ parameters.imageRepository }}
           tags: |
             $(version_step.semVer)
+            $(version_step.semVer)-$(version_step.ShortSha)
             latest
