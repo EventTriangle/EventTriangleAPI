@@ -76,11 +76,6 @@ parameters:
     default: 'https://auth.eventtriangle.razumovsky.me/'
     type: string
 
-  - name: sonarCloudEnabled
-    displayName: 'Is SonarCloud scan enabled'
-    default: false
-    type: boolean
-
 jobs:
   - job: ${{ parameters.JobName }}
     displayName: ${{ parameters.JobName }}
@@ -111,6 +106,9 @@ jobs:
           Write-Host "FullSemVer: $(version_step.FullSemVer)"
           Write-Host "SemVer: $(version_step.SemVer)"
           Write-Host "ShortSha: $(version_step.ShortSha)"
+
+          Write-Host "=== PIPELINE VARIABLES ==="
+          Write-Host "Build Source branch: $env:BUILD_SOURCEBRANCHNAME"
         displayName: Debug environment
 
       - task: DotNetCoreCLI@2
@@ -121,7 +119,7 @@ jobs:
           arguments: '--verbosity minimal'
           nugetConfigPath: 'nuget.config'
 
-      - ${{ if eq(parameters.sonarCloudEnabled, true) }}:
+      - ${{ if eq('$env:BUILD_SOURCEBRANCHNAME', 'main') }}:
         - task: SonarCloudPrepare@4
           inputs:
             SonarCloud: SonarCloud_Service_Connection
@@ -141,11 +139,11 @@ jobs:
           projects: '${{ parameters.solution }}'
           arguments: '-c ${{ parameters.buildConfiguration }} -p:Version=$(version_step.semVer) --no-restore'
 
-      - ${{ if eq(parameters.sonarCloudEnabled, true) }}:
+      - ${{ if eq('$env:BUILD_SOURCEBRANCHNAME', 'main') }}:
         - task: SonarCloudAnalyze@4
           inputs: {}
 
-      - ${{ if eq(parameters.sonarCloudEnabled, true) }}:
+      - ${{ if eq('$env:BUILD_SOURCEBRANCHNAME', 'main') }}:
         - task: SonarCloudPublish@4
           inputs:
             pollingTimeoutSec: "300"
