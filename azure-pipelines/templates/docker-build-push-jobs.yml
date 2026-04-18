@@ -159,7 +159,7 @@ jobs:
 
       - task: DotnetCoreCLI@2
         displayName: 'Run unit tests'
-        condition: and(succeeded(), eq(parameters.shouldRunUnitTests, true))
+        condition: and(succeeded(), eq(${{ parameters.shouldRunUnitTests }}, true))
         inputs:
           command: 'test'
           projects: '${{ parameters.unitTestsProjectPath }}'
@@ -167,7 +167,7 @@ jobs:
 
       - task: DotNetCoreCLI@2
         displayName: 'Run integration tests'
-        condition: and(succeeded(), eq(parameters.shouldRunIntegrationTests, true))
+        condition: and(succeeded(), eq(${{ parameters.shouldRunIntegrationTests }}, true))
         inputs:
           command: 'test'
           projects: '${{ parameters.integrationTestsProjectPath }}'
@@ -202,7 +202,7 @@ jobs:
 
       - task: Docker@2
         displayName: 'Push to ACR'
-        condition: and(succeeded(), eq(parameters.shouldPushToAcr, true))
+        condition: and(succeeded(), eq(${{ parameters.shouldPushToAcr }}, true))
         inputs:
           command: push
           containerRegistry: ${{ parameters.acrServiceConnection }}
