@@ -143,7 +143,7 @@ stages:
                       --namespace "${{ parameters.namespace }}" `
                       --create-namespace
                   workingDirectory: $(System.DefaultWorkingDirectory)/helm
-                  displayName: Deploy Auth Chart
+                  displayName: Deploy Auth Secrets
 
                 - pwsh: |
                     $creds=.\Get-RabbitMq-Credentials.ps1
@@ -156,7 +156,7 @@ stages:
                     --namespace "${{ parameters.namespace }}" `
                     --create-namespace
                   workingDirectory: $(System.DefaultWorkingDirectory)/helm
-                  displayName: Deploy Consumer App
+                  displayName: Deploy Consumer Secrets
 
                 - pwsh: |
                     $creds=.\Get-RabbitMq-Credentials.ps1
@@ -169,4 +169,4 @@ stages:
                     --namespace "event-triangle-dev" `
                     --create-namespace
                   workingDirectory: $(System.DefaultWorkingDirectory)/helm
-                  displayName: Deploy Sender App
+                  displayName: Deploy Sender Secrets
