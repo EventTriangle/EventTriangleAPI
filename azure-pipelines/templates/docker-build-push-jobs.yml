@@ -157,21 +157,21 @@ jobs:
         inputs:
           pollingTimeoutSec: "300"
 
-      - ${{ if eq(parameters.shouldRunUnitTests, true) }}:
-          - task: DotnetCoreCLI@2
-            displayName: 'Run unit tests'
-            inputs:
-              command: 'test'
-              projects: '${{ parameters.unitTestsProjectPath }}'
-              arguments: '--no-build --configuration ${{ parameters.buildConfiguration }} --collect "Code Coverage"'
+      - task: DotnetCoreCLI@2
+        displayName: 'Run unit tests'
+        condition: eq(${{ parameters.shouldRunUnitTests }}, true)
+        inputs:
+          command: 'test'
+          projects: '${{ parameters.unitTestsProjectPath }}'
+          arguments: '--no-build --configuration ${{ parameters.buildConfiguration }} --collect "Code Coverage"'
 
-      - ${{ if eq(parameters.shouldRunIntegrationTests, true) }}:
-          - task: DotNetCoreCLI@2
-            displayName: 'Run integration tests'
-            inputs:
-              command: 'test'
-              projects: '${{ parameters.integrationTestsProjectPath }}'
-              arguments: '--no-build --configuration ${{ parameters.buildConfiguration }} --collect "Code Coverage"'
+      - task: DotNetCoreCLI@2
+        displayName: 'Run integration tests'
+        condition: eq(${{ parameters.shouldRunIntegrationTests }}, true)
+        inputs:
+          command: 'test'
+          projects: '${{ parameters.integrationTestsProjectPath }}'
+          arguments: '--no-build --configuration ${{ parameters.buildConfiguration }} --collect "Code Coverage"'
 
       - task: PowerShell@2
         displayName: 'Build Docker Image'
@@ -198,13 +198,13 @@ jobs:
             $(version_step.semVer)
             latest
 
-      - ${{ if eq(parameters.shouldPushToAcr, true) }}:
-        - task: Docker@2
-          displayName: 'Push to ACR'
-          inputs:
-            command: push
-            containerRegistry: ${{ parameters.acrServiceConnection }}
-            repository: ${{ parameters.imageRepository }}
-            tags: |
-              $(version_step.semVer)
-              latest
+      - task: Docker@2
+        displayName: 'Push to ACR'
+        condition: eq(${{ parameters.shouldPushToAcr }}, true)
+        inputs:
+          command: push
+          containerRegistry: ${{ parameters.acrServiceConnection }}
+          repository: ${{ parameters.imageRepository }}
+          tags: |
+            $(version_step.semVer)
+            latest
