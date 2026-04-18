@@ -103,6 +103,15 @@ jobs:
           Action: '##vso[build.updatebuildnumber]'
           BuildVersion: $(version_step.semVer)
 
+      - pwsh: |
+          Write-Host "=== ENV VARIABLES ==="
+          Get-ChildItem Env: | Sort-Object Name
+
+          Write-Host "=== PIPELINE VARIABLES ==="
+          Write-Host "FullSemVer: $(gitversion.FullSemVer)"
+          Write-Host "SemVer: $(gitversion.SemVer)"
+        displayName: Debug environment
+
       - task: DotNetCoreCLI@2
         displayName: 'Dotnet restore'
         inputs:

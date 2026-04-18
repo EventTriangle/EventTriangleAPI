@@ -10,7 +10,7 @@ variables:
   - name: appName
     value: 'AuthorizationAPI'
   - name: System.Debug
-    value: 'false'
+    value: 'true'
 
 pool:
   vmImage: 'ubuntu-latest'
