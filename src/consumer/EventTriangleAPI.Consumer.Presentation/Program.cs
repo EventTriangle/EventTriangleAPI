@@ -22,6 +22,7 @@ builder.Services.AddControllers(o =>
 {
     o.Conventions.Add(new RouteTokenTransformerConvention(new CustomParameterTransformer()));
 });
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwagger();
 builder.Services.AddSignalR();

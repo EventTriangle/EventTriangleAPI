@@ -49,13 +49,18 @@ builder.Services.AddScoped(_ => azAdConfig);
 builder.Services.AddScoped<RefreshTokenCommandHandler>();
 builder.Services.AddScoped<GetTokenCommandHandler>();
 
+// ######################################################## GRPC CONFIGS ########################################################
+
 builder.Services.AddGrpc();
+builder.Logging.AddFilter("Grpc", LogLevel.Debug);
+
+// ######################################################## GRPC CONFIGS ########################################################
+
 builder.Services.AddHttpClient();
 
 builder.Services.AddTicketStore();
 builder.Services.AddHostedServices();
 
-builder.Logging.AddFilter("Grpc", LogLevel.Debug);
 
 // redis configs start
 
