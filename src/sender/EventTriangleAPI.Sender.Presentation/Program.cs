@@ -15,7 +15,7 @@ using Microsoft.IdentityModel.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
-if (builder.Environment.EnvironmentName == "Docker")
+if (builder.Environment.EnvironmentName == "Docker" || builder.Environment.EnvironmentName == "Kubernetes")
 {
     builder.WebHost.ConfigureKestrel(options =>
     {
