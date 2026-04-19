@@ -17,7 +17,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.WebHost.ConfigureKestrel(options =>
 {
-    options.ListenAnyIP(8080, listenOptions => listenOptions.Protocols = HttpProtocols.Http1AndHttp2);
+    options.ListenAnyIP(8080, listenOptions => listenOptions.Protocols = HttpProtocols.Http1); // for HTTP/1.1
+    options.ListenAnyIP(8081, listenOptions => listenOptions.Protocols = HttpProtocols.Http2); // for GRPC HTTP/2
 });
 
 var configurationSection = builder.Configuration.GetSection(AppSettingsConstants.AzureAd);
