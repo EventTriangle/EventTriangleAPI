@@ -1,6 +1,6 @@
 using System.Reflection;
 using Microsoft.Net.Http.Headers;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 
 namespace EventTriangleAPI.Sender.Presentation.DependencyInjection;
 
@@ -31,22 +31,22 @@ public static class SwaggerServices
                 }
             );
 
-            c.AddSecurityRequirement(
-                new OpenApiSecurityRequirement
-                {
-                    {
-                        new OpenApiSecurityScheme
-                        {
-                            Reference = new OpenApiReference
-                            {
-                                Type = ReferenceType.SecurityScheme,
-                                Id = "token"
-                            },
-                        },
-                        Array.Empty<string>()
-                    }
-                }
-            );
+            //c.AddSecurityRequirement(
+            //    new OpenApiSecurityRequirement
+            //    {
+            //        {
+            //            new OpenApiSecurityScheme
+            //            {
+            //                Reference = new OpenApiReference
+            //                {
+            //                    Type = ReferenceType.SecurityScheme,
+            //                    Id = "token"
+            //                },
+            //            },
+            //            Array.Empty<string>()
+            //        }
+            //    }
+            //);
         });
 
         return serviceCollection;

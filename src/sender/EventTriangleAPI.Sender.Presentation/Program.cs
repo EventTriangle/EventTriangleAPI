@@ -15,14 +15,11 @@ using Microsoft.IdentityModel.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
-if (builder.Environment.EnvironmentName == "Docker")
+builder.WebHost.ConfigureKestrel(options =>
 {
-    builder.WebHost.ConfigureKestrel(options =>
-    {
-        options.ListenAnyIP(80, listenOptions => listenOptions.Protocols = HttpProtocols.Http1);
-        options.ListenAnyIP(81, listenOptions => listenOptions.Protocols = HttpProtocols.Http2);
-    });
-}
+    options.ListenAnyIP(8080, listenOptions => listenOptions.Protocols = HttpProtocols.Http1); // for HTTP/1.1
+    options.ListenAnyIP(8081, listenOptions => listenOptions.Protocols = HttpProtocols.Http2); // for GRPC HTTP/2
+});
 
 var configurationSection = builder.Configuration.GetSection(AppSettingsConstants.AzureAd);
 var databaseConnectionString = builder.Configuration[AppSettingsConstants.DatabaseConnectionString];
@@ -71,7 +68,7 @@ IdentityModelEventSource.ShowPII = true;
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseRouting();
 

@@ -1,7 +1,6 @@
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
 WORKDIR /app
-EXPOSE 80
-EXPOSE 81
+EXPOSE 8080
 
 ENV ASPNETCORE_FORWARDEDHEADERS_ENABLED=true
 
@@ -19,7 +18,7 @@ ARG FRONT_API_URL
 RUN sed -i "s|https://localhost:7000/|$FRONT_API_URL|" ./src/assets/config/config.json
 RUN ng build --output-path "dist/client"
 
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS publish
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS publish
 WORKDIR /src
 COPY ["authorization/EventTriangleAPI.Authorization.BusinessLogic/EventTriangleAPI.Authorization.BusinessLogic.csproj", "authorization/EventTriangleAPI.Authorization.BusinessLogic/"]
 COPY ["authorization/EventTriangleAPI.Authorization.Domain/EventTriangleAPI.Authorization.Domain.csproj", "authorization/EventTriangleAPI.Authorization.Domain/"]
