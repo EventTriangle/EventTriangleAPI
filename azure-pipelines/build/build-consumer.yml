@@ -25,13 +25,6 @@ stages:
       - template: ../templates/docker-build-push-jobs.yml
         parameters:
           JobName: 'Docker_Push_${{ variables.appName }}'
-          #solution: '$(System.DefaultWorkingDirectory)/EventTriangleAPI.sln'
-          #buildConfiguration: 'Release'
-          #backendProjectPath: '$(System.DefaultWorkingDirectory)/src/consumer/EventTriangleAPI.Consumer.Presentation'
-          #unitTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/consumer/EventTriangleAPI.Consumer.UnitTests/EventTriangleAPI.Consumer.UnitTests.csproj'
-          #shouldRunUnitTests: true
-          #shouldRunIntegrationTests: true
-          #integrationTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/consumer/EventTriangleAPI.Consumer.IntegrationTests/EventTriangleAPI.Consumer.IntegrationTests.csproj'
           dockerRegistryUrl: 'docker.io/kaminome'
           imageRepository: 'consumer-service'
           dockerfilePath: '$(System.DefaultWorkingDirectory)/src/consumer/Dockerfile'
@@ -39,7 +32,6 @@ stages:
           shouldPushToAcr: true
           acrRegistryUrl: 'acrsharedd01.azurecr.io'
           acrServiceConnection: 'Azure_ACR_Connection'
-          #sonarCloudEnabled: false
           workingDirectoryForDocker: '$(System.DefaultWorkingDirectory)/src'
 
   - stage: 'Build_Test_Scan_${{ variables.appName }}'
@@ -55,12 +47,4 @@ stages:
           shouldRunUnitTests: true
           shouldRunIntegrationTests: true
           integrationTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/consumer/EventTriangleAPI.Consumer.IntegrationTests/EventTriangleAPI.Consumer.IntegrationTests.csproj'
-          #dockerRegistryUrl: 'docker.io/kaminome'
-          #imageRepository: 'consumer-service'
-          #dockerfilePath: '$(System.DefaultWorkingDirectory)/src/consumer/Dockerfile'
-          #dockerServiceConnection: 'Docker_Hub_Connection'
-          #shouldPushToAcr: true
-          #acrRegistryUrl: 'acrsharedd01.azurecr.io'
-          #acrServiceConnection: 'Azure_ACR_Connection'
           sonarCloudEnabled: false
-          #workingDirectoryForDocker: '$(System.DefaultWorkingDirectory)/src'

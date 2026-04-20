@@ -25,12 +25,6 @@ stages:
       - template: ../templates/docker-build-push-jobs.yml
         parameters:
           JobName: 'Docker_Push_${{ variables.appName }}'
-          #solution: '$(System.DefaultWorkingDirectory)/EventTriangleAPI.sln'
-          #buildConfiguration: 'Release'
-          #backendProjectPath: '$(System.DefaultWorkingDirectory)/src/authorization/EventTriangleAPI.Authorization.Presentation'
-          #shouldRunUnitTests: false
-          #shouldRunIntegrationTests: true
-          #integrationTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/authorization/EventTriangleAPI.Authorization.IntegrationTests/EventTriangleAPI.Authorization.IntegrationTests.csproj'
           dockerRegistryUrl: 'docker.io/kaminome'
           dockerBuildParameterUrl: 'https://auth-eventtriangle.razumovsky.me/'
           imageRepository: 'auth-service'
@@ -39,8 +33,6 @@ stages:
           shouldPushToAcr: true
           acrRegistryUrl: 'acrsharedd01.azurecr.io'
           acrServiceConnection: 'Azure_ACR_Connection'
-          #sonarCloudEnabled: true
-          #sonarCloudServiceConnection: 'SonarCloud_Service_Connection'
           workingDirectoryForDocker: '$(System.DefaultWorkingDirectory)/src'
 
   - stage: 'Build_Test_Scan_${{ variables.appName }}'
@@ -55,14 +47,5 @@ stages:
           shouldRunUnitTests: false
           shouldRunIntegrationTests: true
           integrationTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/authorization/EventTriangleAPI.Authorization.IntegrationTests/EventTriangleAPI.Authorization.IntegrationTests.csproj'
-          #dockerRegistryUrl: 'docker.io/kaminome'
-          #dockerBuildParameterUrl: 'https://auth-eventtriangle.razumovsky.me/'
-          #imageRepository: 'auth-service'
-          #dockerfilePath: '$(System.DefaultWorkingDirectory)/src/authorization/Dockerfile'
-          #dockerServiceConnection: 'Docker_Hub_Connection'
-          #shouldPushToAcr: true
-          #acrRegistryUrl: 'acrsharedd01.azurecr.io'
-          #acrServiceConnection: 'Azure_ACR_Connection'
           sonarCloudEnabled: true
           sonarCloudServiceConnection: 'SonarCloud_Service_Connection'
-          #workingDirectoryForDocker: '$(System.DefaultWorkingDirectory)/src'
