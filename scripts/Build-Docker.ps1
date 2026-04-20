@@ -24,6 +24,10 @@ param (
     [string]$WorkingDirectory
 )
 
+$ErrorActionPreference = "Stop"
+
+$InitDirectory = Get-Location
+
 Write-Output "Changing directory to $WorkingDirectory"
 Set-Location $WorkingDirectory
 
@@ -45,11 +49,16 @@ Write-Output "ACR_GIT_VERSION_IMAGE: $ACR_GIT_VERSION_IMAGE"
 Write-Output "ACR_LATEST_VERSION_IMAGE: $ACR_LATEST_VERSION_IMAGE"
 Write-Output "ACR_SHA_IMAGE: $ACR_SHA_TAG"
 
+$sw = [System.Diagnostics.Stopwatch]::StartNew()
+
 # Build the Docker image
 docker build --build-arg FRONT_API_URL="$DockerBuildParameterUrl" `
              --build-arg VERSION="$gitVersion" `
              -t "$GIT_VERSION_IMAGE" `
              -f "$DockerfilePath" .
+
+$sw.Stop()
+Write-Host "Docker build occupied: $($sw.Elapsed.TotalSeconds)"
 
 # Tag the images
 docker tag "$GIT_VERSION_IMAGE" "$LATEST_VERSION_IMAGE"
@@ -61,6 +70,10 @@ docker tag "$GIT_VERSION_IMAGE" "$ACR_SHA_TAG"
 # List images
 docker image ls
 
+Write-Host "Set location back to $InitDirectory..."
+
+Set-Location $InitDirectory
+
 # EXAMPLE CALL
 #.\Build-Docker.ps1 `
 #	-DockerRegistryUrl "docker.io/kaminome"`
@@ -69,4 +82,5 @@ docker image ls
 #	-DockerBuildParameterUrl "https://auth-eventtriangle.razumovsky.me/" `
 #	-DockerfilePath "E:\RiderProjects\02_DOTNET_PROJECTS\EventTriangleAPI\src\authorization\Dockerfile" `
 #	-GitVersion "1.0.0" `
+#	-CommitSha "8e33ce9" `
 #	-WorkingDirectory "E:\RiderProjects\02_DOTNET_PROJECTS\EventTriangleAPI\src"
