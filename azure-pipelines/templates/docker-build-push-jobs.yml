@@ -48,6 +48,10 @@ parameters:
     type: string
     displayName: 'DockerHub Registry URL. For Docker Hub it is: docker.io/kaminome.'
 
+  - name: shouldPushToDockerHub
+    type: boolean
+    default: false
+
   - name: shouldPushToAcr
     type: boolean
     default: false
@@ -225,7 +229,7 @@ jobs:
 
       - task: Docker@2
         displayName: 'Push to DockerHub'
-        condition: succeeded()
+        condition: and(succeeded(), eq(${{ parameters.shouldPushToDockerHub }}, true))
         inputs:
           command: push
           containerRegistry: ${{ parameters.dockerServiceConnection }}
