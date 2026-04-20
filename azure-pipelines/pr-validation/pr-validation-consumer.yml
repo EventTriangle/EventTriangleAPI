@@ -5,20 +5,42 @@ pr:
     include:
       - develop
       - main
+
   paths:
     include:
-      - azure-pipelines
-      - platform
-      - helm
-      - cloudflare
-      - src/consumer/EventTriangleAPI.Consumer.Application
-      - src/consumer/EventTriangleAPI.Consumer.BusinessLogic
-      - src/consumer/EventTriangleAPI.Consumer.Domain
-      - src/consumer/EventTriangleAPI.Consumer.Presentation
-      - src/consumer/EventTriangleAPI.Consumer.IntegrationTests
-      - src/consumer/EventTriangleAPI.Consumer.UnitTests
-      - src/shared/EventTriangleAPI.Shared.Application
-      - src/shared/EventTriangleAPI.Shared.DTO
+      # Consumer service (ALL layers)
+      - src/consumer/**
+
+      # Shared code used by auth
+      - src/shared/**
+
+      # Pipeline itself (so changes validate)
+      - azure-pipelines/**
+      - azure-pipelines/templates/**
+
+    exclude:
+      # Docs
+      - '**/*.md'
+
+      # Docker compose (global/dev only)
+      - '**/docker-compose*.yml'
+      - '**/docker-compose*.yaml'
+
+      # Ignore other services explicitly
+      - src/authorization/**
+      - src/sender/**
+
+      # Helm & infra (unless auth-specific)
+      - helm/**
+      - platform/**
+      - cloudflare/**
+      - docs/**
+      - kubernetes/**
+      - img/**
+      - terraform/**
+      - terraform-azdo-libraries/**
+      - .github/**
+      - LICENSE
 
 variables:
   - name: appName
