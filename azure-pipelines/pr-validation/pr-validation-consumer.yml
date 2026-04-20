@@ -45,7 +45,7 @@ pr:
 
 variables:
   - name: appName
-    value: 'ConsumerAPI'
+    value: 'Consumer'
   - name: System.Debug
     value: 'false'
 
@@ -58,7 +58,7 @@ stages:
     jobs:
       - template: ../templates/docker-build-push-jobs.yml
         parameters:
-          JobName: 'PR_Validation_${{ variables.appName }}'
+          JobName: 'Docker_Push_${{ variables.appName }}'
           solution: '$(System.DefaultWorkingDirectory)/EventTriangleAPI.sln'
           buildConfiguration: 'Release'
           backendProjectPath: '$(System.DefaultWorkingDirectory)/src/consumer/EventTriangleAPI.Consumer.Presentation'
