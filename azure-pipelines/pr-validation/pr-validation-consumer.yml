@@ -1,7 +1,7 @@
 trigger: none
 
 pr:
-  autoCancel: true  
+  autoCancel: true
   branches:
     include:
       - develop
