@@ -12,28 +12,21 @@ EXPOSE 8080
 
 FROM node:18.15.0-alpine AS angularBuild
 
-WORKDIR /angular
+WORKDIR /angular/EventTriangle.Client
 
-COPY ["authorization/EventTriangle.Client/package.json", "EventTriangle.Client/"]
-COPY ["authorization/EventTriangle.Client/package-lock.json", "EventTriangle.Client/"]
-
-WORKDIR "EventTriangle.Client"
+COPY authorization/EventTriangle.Client/package.json ./
+COPY authorization/EventTriangle.Client/package-lock.json ./
+COPY authorization/EventTriangle.Client/angular.json ./
+COPY authorization/EventTriangle.Client/tsconfig*.json ./
 
 RUN npm ci
 
-WORKDIR /angular
-
-COPY ["authorization/EventTriangle.Client", "EventTriangle.Client/"]
-
-RUN npm install -g @angular/cli@15.2.7
-
-WORKDIR "EventTriangle.Client"
+COPY authorization/EventTriangle.Client/src ./src
 
 ARG FRONT_API_URL
-
 RUN sed -i "s|https://localhost:7000/|$FRONT_API_URL|" ./src/assets/config/config.json
 
-RUN ng build --output-path "dist/client"
+RUN npm run build -- --output-path dist/client
 
 #######################################################################################################
 #                                          BUILD DOTNET
