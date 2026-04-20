@@ -21,8 +21,6 @@ WORKDIR /angular
 
 COPY ["authorization/EventTriangle.Client", "EventTriangle.Client/"]
 
-#RUN npm install -g @angular/cli@15.2.7
-
 WORKDIR "EventTriangle.Client"
 
 ARG FRONT_API_URL
@@ -50,13 +48,7 @@ WORKDIR "authorization/EventTriangleAPI.Authorization.Presentation"
 
 ARG VERSION
 
-RUN dotnet publish "EventTriangleAPI.Authorization.Presentation.csproj" \
-  -c Release \
-  -p:Version=$VERSION \
-  -o /app/publish \
-  /p:UseAppHost=false \
-  /p:PublishTrimmed=true \
-  /p:TieredCompilation=false
+RUN dotnet publish "EventTriangleAPI.Authorization.Presentation.csproj" -c Release -p:Version=$VERSION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
