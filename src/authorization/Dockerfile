@@ -23,9 +23,6 @@ RUN npm ci
 
 COPY authorization/EventTriangle.Client/src ./src
 
-ARG FRONT_API_URL
-RUN sed -i "s|https://localhost:7000/|$FRONT_API_URL|" ./src/assets/config/config.json
-
 RUN npm run build -- --output-path dist/client
 
 #######################################################################################################

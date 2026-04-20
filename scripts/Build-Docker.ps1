@@ -9,9 +9,6 @@ param (
     [string]$AcrRegistryUrl,
 
     [Parameter(Mandatory = $true)]
-    [string]$DockerBuildParameterUrl,
-
-    [Parameter(Mandatory = $true)]
     [string]$DockerfilePath,
 
     [Parameter(Mandatory = $true)]
@@ -52,8 +49,7 @@ Write-Output "ACR_SHA_IMAGE: $ACR_SHA_TAG"
 $sw = [System.Diagnostics.Stopwatch]::StartNew()
 
 # Build the Docker image
-docker build --build-arg FRONT_API_URL="$DockerBuildParameterUrl" `
-             --build-arg VERSION="$gitVersion" `
+docker build --build-arg VERSION="$gitVersion" `
              -t "$GIT_VERSION_IMAGE" `
              -f "$DockerfilePath" .
 
@@ -79,7 +75,6 @@ Set-Location $InitDirectory
 #	-DockerRegistryUrl "docker.io/kaminome"`
 #	-ImageRepository "auth-service" `
 #	-AcrRegistryUrl "azuredevopsacrd01.azurecr.io" `
-#	-DockerBuildParameterUrl "https://auth-eventtriangle.razumovsky.me/" `
 #	-DockerfilePath "E:\RiderProjects\02_DOTNET_PROJECTS\EventTriangleAPI\src\authorization\Dockerfile" `
 #	-GitVersion "1.0.0" `
 #	-CommitSha "8e33ce9" `

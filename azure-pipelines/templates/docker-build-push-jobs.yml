@@ -45,11 +45,6 @@ parameters:
     displayName: 'Azure container registry service connection in Azure DevOps.'
     type: string
 
-  - name: dockerBuildParameterUrl
-    displayName: 'Build parameter for Docker: Base URL'
-    default: 'https://auth.eventtriangle.razumovsky.me/'
-    type: string
-
 jobs:
   - job: ${{ parameters.JobName }}
     displayName: ${{ parameters.JobName }}
@@ -96,7 +91,6 @@ jobs:
           arguments: "-DockerRegistryUrl ${{ parameters.dockerRegistryUrl }}
                       -ImageRepository ${{ parameters.imageRepository }}
                       -AcrRegistryUrl ${{ parameters.acrRegistryUrl }}
-                      -DockerBuildParameterUrl ${{ parameters.dockerBuildParameterUrl }}
                       -DockerfilePath ${{ parameters.dockerfilePath }}
                       -GitVersion $(version_step.semVer)
                       -WorkingDirectory ${{ parameters.workingDirectoryForDocker }}
