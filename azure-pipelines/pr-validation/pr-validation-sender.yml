@@ -59,13 +59,6 @@ stages:
       - template: ../templates/docker-build-push-jobs.yml
         parameters:
           JobName: 'Docker_Push_${{ variables.appName }}'
-          #solution: '$(System.DefaultWorkingDirectory)/EventTriangleAPI.sln'
-          #buildConfiguration: 'Release'
-          #backendProjectPath: '$(System.DefaultWorkingDirectory)/src/sender/EventTriangleAPI.Sender.Presentation'
-          #unitTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/sender/EventTriangleAPI.Sender.UnitTests/EventTriangleAPI.Sender.UnitTests.csproj'
-          #shouldRunIntegrationTests: true
-          #shouldRunUnitTests: true
-          #integrationTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/sender/EventTriangleAPI.Sender.IntegrationTests/EventTriangleAPI.Sender.IntegrationTests.csproj'
           dockerRegistryUrl: 'docker.io/kaminome'
           imageRepository: 'sender-service'
           dockerfilePath: '$(System.DefaultWorkingDirectory)/src/sender/Dockerfile'
