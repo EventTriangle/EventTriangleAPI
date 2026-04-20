@@ -3,10 +3,10 @@ parameters:
     displayName: 'Job Name'
     type: string
 
-  - name: workingDirectoryForDocker
-    displayName: 'Working directory for Docker Build'
-    default: '$(System.DefaultWorkingDirectory)/src'
-    type: string
+  # - name: workingDirectoryForDocker
+  #   displayName: 'Working directory for Docker Build'
+  #   default: '$(System.DefaultWorkingDirectory)/src'
+  #   type: string
 
   - name: solution
     displayName: 'Solution file path'
@@ -44,42 +44,42 @@ parameters:
     default: '6.x'
     type: string
 
-  - name: dockerRegistryUrl
-    type: string
-    displayName: 'DockerHub Registry URL. For Docker Hub it is: docker.io/kaminome.'
+  # - name: dockerRegistryUrl
+  #   type: string
+  #   displayName: 'DockerHub Registry URL. For Docker Hub it is: docker.io/kaminome.'
 
-  - name: shouldPushToDockerHub
-    type: boolean
-    default: false
+  # - name: shouldPushToDockerHub
+  #   type: boolean
+  #   default: false
 
-  - name: shouldPushToAcr
-    type: boolean
-    default: false
+  # - name: shouldPushToAcr
+  #   type: boolean
+  #   default: false
 
-  - name: acrRegistryUrl
-    type: string
-    displayName: 'ACR Registry URL. For ACR it is FQDN URL of container registry: azuredevopsacrd01.azurecr.io'
+  # - name: acrRegistryUrl
+  #   type: string
+  #   displayName: 'ACR Registry URL. For ACR it is FQDN URL of container registry: azuredevopsacrd01.azurecr.io'
 
-  - name: imageRepository
-    displayName: 'Image Repository name'
-    type: string
+  # - name: imageRepository
+  #   displayName: 'Image Repository name'
+  #   type: string
 
-  - name: dockerfilePath
-    displayName: 'Dockerfile path'
-    type: string
+  # - name: dockerfilePath
+  #   displayName: 'Dockerfile path'
+  #   type: string
 
-  - name: dockerServiceConnection
-    displayName: 'Docker container registry service connection in Azure DevOps.'
-    type: string
+  # - name: dockerServiceConnection
+  #   displayName: 'Docker container registry service connection in Azure DevOps.'
+  #   type: string
 
-  - name: acrServiceConnection
-    displayName: 'Azure container registry service connection in Azure DevOps.'
-    type: string
+  # - name: acrServiceConnection
+  #   displayName: 'Azure container registry service connection in Azure DevOps.'
+  #   type: string
 
-  - name: dockerBuildParameterUrl
-    displayName: 'Build parameter for Docker: Base URL'
-    default: 'https://auth.eventtriangle.razumovsky.me/'
-    type: string
+  # - name: dockerBuildParameterUrl
+  #   displayName: 'Build parameter for Docker: Base URL'
+  #   default: 'https://auth.eventtriangle.razumovsky.me/'
+  #   type: string
 
   - name: dotnetSdkVersion
     type: string

@@ -25,13 +25,13 @@ stages:
       - template: ../templates/docker-build-push-jobs.yml
         parameters:
           JobName: 'Docker_Push_${{ variables.appName }}'
-          solution: '$(System.DefaultWorkingDirectory)/EventTriangleAPI.sln'
-          buildConfiguration: 'Release'
-          backendProjectPath: '$(System.DefaultWorkingDirectory)/src/sender/EventTriangleAPI.Sender.Presentation'
-          unitTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/sender/EventTriangleAPI.Sender.UnitTests/EventTriangleAPI.Sender.UnitTests.csproj'
-          shouldRunIntegrationTests: true
-          shouldRunUnitTests: true
-          integrationTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/sender/EventTriangleAPI.Sender.IntegrationTests/EventTriangleAPI.Sender.IntegrationTests.csproj'
+          #solution: '$(System.DefaultWorkingDirectory)/EventTriangleAPI.sln'
+          #buildConfiguration: 'Release'
+          #backendProjectPath: '$(System.DefaultWorkingDirectory)/src/sender/EventTriangleAPI.Sender.Presentation'
+          #unitTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/sender/EventTriangleAPI.Sender.UnitTests/EventTriangleAPI.Sender.UnitTests.csproj'
+          #shouldRunIntegrationTests: true
+          #shouldRunUnitTests: true
+          #integrationTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/sender/EventTriangleAPI.Sender.IntegrationTests/EventTriangleAPI.Sender.IntegrationTests.csproj'
           dockerRegistryUrl: 'docker.io/kaminome'
           imageRepository: 'sender-service'
           dockerfilePath: '$(System.DefaultWorkingDirectory)/src/sender/Dockerfile'
@@ -39,5 +39,28 @@ stages:
           shouldPushToAcr: true
           acrRegistryUrl: 'acrsharedd01.azurecr.io'
           acrServiceConnection: 'Azure_ACR_Connection'
-          sonarCloudEnabled: false
+          #sonarCloudEnabled: false
           workingDirectoryForDocker: '$(System.DefaultWorkingDirectory)/src'
+
+  - stage: 'Build_Test_Scan_${{ variables.appName }}'
+    displayName: 'Build_Test_Scan_${{ variables.appName }}'
+    jobs:
+      - template: ../templates/build-test-scan-jobs.yml
+        parameters:
+          JobName: 'Build_Test_Scan_${{ variables.appName }}'
+          solution: '$(System.DefaultWorkingDirectory)/EventTriangleAPI.sln'
+          buildConfiguration: 'Release'
+          backendProjectPath: '$(System.DefaultWorkingDirectory)/src/sender/EventTriangleAPI.Sender.Presentation'
+          unitTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/sender/EventTriangleAPI.Sender.UnitTests/EventTriangleAPI.Sender.UnitTests.csproj'
+          shouldRunIntegrationTests: true
+          shouldRunUnitTests: true
+          integrationTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/sender/EventTriangleAPI.Sender.IntegrationTests/EventTriangleAPI.Sender.IntegrationTests.csproj'
+          #dockerRegistryUrl: 'docker.io/kaminome'
+          #imageRepository: 'sender-service'
+          #dockerfilePath: '$(System.DefaultWorkingDirectory)/src/sender/Dockerfile'
+          #dockerServiceConnection: 'Docker_Hub_Connection'
+          #shouldPushToAcr: true
+          #acrRegistryUrl: 'acrsharedd01.azurecr.io'
+          #acrServiceConnection: 'Azure_ACR_Connection'
+          sonarCloudEnabled: false
+          #workingDirectoryForDocker: '$(System.DefaultWorkingDirectory)/src'
