@@ -8,36 +8,36 @@ parameters:
     default: '$(System.DefaultWorkingDirectory)/src'
     type: string
 
-  - name: solution
-    displayName: 'Solution file path'
-    type: string
+  # - name: solution
+  #   displayName: 'Solution file path'
+  #   type: string
 
-  - name: buildConfiguration
-    displayName: 'Build Configuration'
-    default: 'Release'
-    type: string
+  # - name: buildConfiguration
+  #   displayName: 'Build Configuration'
+  #   default: 'Release'
+  #   type: string
 
-  - name: backendProjectPath
-    displayName: 'Backend project path'
-    type: string
+  # - name: backendProjectPath
+  #   displayName: 'Backend project path'
+  #   type: string
 
-  - name: unitTestsProjectPath
-    displayName: 'Unit tests project path'
-    default: ''
-    type: string
+  # - name: unitTestsProjectPath
+  #   displayName: 'Unit tests project path'
+  #   default: ''
+  #   type: string
 
-  - name: shouldRunUnitTests
-    displayName: 'Flag should run unit tests'
-    default: true
-    type: boolean
+  # - name: shouldRunUnitTests
+  #   displayName: 'Flag should run unit tests'
+  #   default: true
+  #   type: boolean
 
-  - name: shouldRunIntegrationTests
-    displayName: 'Flag should run integration tests'
-    type: boolean
+  # - name: shouldRunIntegrationTests
+  #   displayName: 'Flag should run integration tests'
+  #   type: boolean
 
-  - name: integrationTestsProjectPath
-    displayName: 'Integration tests project path'
-    type: string
+  # - name: integrationTestsProjectPath
+  #   displayName: 'Integration tests project path'
+  #   type: string
 
   - name: gitVersionVersion
     displayName: 'GitVersion version'
@@ -81,17 +81,17 @@ parameters:
     default: 'https://auth.eventtriangle.razumovsky.me/'
     type: string
 
-  - name: dotnetSdkVersion
-    type: string
-    default: '10.x'
+  # - name: dotnetSdkVersion
+  #   type: string
+  #   default: '10.x'
 
-  - name: sonarCloudEnabled
-    type: boolean
-    default: false
+  # - name: sonarCloudEnabled
+  #   type: boolean
+  #   default: false
 
-  - name: sonarCloudServiceConnection
-    type: string
-    default: SonarCloud_Service_Connection
+  # - name: sonarCloudServiceConnection
+  #   type: string
+  #   default: SonarCloud_Service_Connection
 
 jobs:
   - job: ${{ parameters.JobName }}

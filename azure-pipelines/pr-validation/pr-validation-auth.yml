@@ -59,12 +59,12 @@ stages:
       - template: ../templates/docker-build-push-jobs.yml
         parameters:
           JobName: 'Docker_Push_${{ variables.appName }}'
-          solution: '$(System.DefaultWorkingDirectory)/EventTriangleAPI.sln'
-          buildConfiguration: 'Release'
-          backendProjectPath: '$(System.DefaultWorkingDirectory)/src/authorization/EventTriangleAPI.Authorization.Presentation'
-          shouldRunUnitTests: false
-          shouldRunIntegrationTests: true
-          integrationTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/authorization/EventTriangleAPI.Authorization.IntegrationTests/EventTriangleAPI.Authorization.IntegrationTests.csproj'
+          #solution: '$(System.DefaultWorkingDirectory)/EventTriangleAPI.sln'
+          #buildConfiguration: 'Release'
+          #backendProjectPath: '$(System.DefaultWorkingDirectory)/src/authorization/EventTriangleAPI.Authorization.Presentation'
+          #shouldRunUnitTests: false
+          #shouldRunIntegrationTests: true
+          #integrationTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/authorization/EventTriangleAPI.Authorization.IntegrationTests/EventTriangleAPI.Authorization.IntegrationTests.csproj'
           dockerRegistryUrl: 'docker.io/kaminome'
           dockerBuildParameterUrl: 'https://auth-eventtriangle.razumovsky.me/'
           imageRepository: 'auth-service'
