@@ -113,8 +113,9 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 
-app.MapReverseProxy();
 app.MapControllers();
+
+app.MapReverseProxy();
 
 app.MigrateDatabase();
 
