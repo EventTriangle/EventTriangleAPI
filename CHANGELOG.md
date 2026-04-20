@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning v2.0.0](https://semver.org/spec
 - Upgrade .NET version to 10
 - Organize ports for apps, containers, services
 - Run sonar scan only on auth service CI, skip other services
+- Ignore docker compose file for azure devops CI
+- Skip CI if updates was only in MD files (trigger update)
+- DockerFiles optimization for faster builds
+- Split CI by separate Jobs to speed up builds
 
 ## [1.0.0] - 18-Apr-2026
 
