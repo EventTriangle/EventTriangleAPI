@@ -98,21 +98,25 @@ jobs:
 
       - task: UseDotNet@2
         displayName: 'Install .NET SDK ${{ parameters.dotnetSdkVersion }}'
+        condition: succeeded()
         inputs:
           packageType: 'sdk'
           version: '${{ parameters.dotnetSdkVersion }}'
 
       - task: gitversion-setup@4.5.0
         displayName: 'GitVersion Setup'
+        condition: succeeded()
         inputs:
           versionSpec: ${{ parameters.gitVersionVersion }}
 
       - task: gitversion-execute@4.5.0
         name: version_step # step id used as a reference for output values
         displayName: Determine Version
+        condition: succeeded()
 
       - bash: echo $Action$BuildVersion
         displayName: 'Set Build Version'
+        condition: succeeded()
         env:
           Action: '##vso[build.updatebuildnumber]'
           BuildVersion: $(version_step.semVer)
@@ -127,6 +131,7 @@ jobs:
           Write-Host "ShortSha: $(version_step.ShortSha)"
           Write-Host "Build Source branch: $env:BUILD_SOURCEBRANCHNAME"
         displayName: Debug environment
+        condition: succeeded()
 
       # - task: PowerShell@2
       #   displayName: 'Debug branch condition'
@@ -139,6 +144,7 @@ jobs:
 
       - task: DotNetCoreCLI@2
         displayName: 'Dotnet restore'
+        condition: succeeded()
         inputs:
           command: 'restore'
           projects: '${{ parameters.solution }}'
@@ -163,6 +169,7 @@ jobs:
 
       - task: DotNetCoreCLI@2
         displayName: 'Build solution'
+        condition: succeeded()
         inputs:
           command: 'build'
           projects: '${{ parameters.solution }}'
@@ -201,6 +208,7 @@ jobs:
 
       - task: PowerShell@2
         displayName: 'Build Docker Image'
+        condition: succeeded()
         inputs:
           targetType: 'filePath'
           filePath: '$(System.DefaultWorkingDirectory)/scripts/Build-Docker.ps1'
@@ -217,6 +225,7 @@ jobs:
 
       - task: Docker@2
         displayName: 'Push to DockerHub'
+        condition: succeeded()
         inputs:
           command: push
           containerRegistry: ${{ parameters.dockerServiceConnection }}
