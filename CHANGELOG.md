@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning v2.0.0](https://semver.org/spec
 - Add dotnet install step to CI/CD
 - Upgrade .NET version to 10
 - Organize ports for apps, containers, services
+- Run sonar scan only on auth service CI, skip other services
 
 ## [1.0.0] - 18-Apr-2026
 

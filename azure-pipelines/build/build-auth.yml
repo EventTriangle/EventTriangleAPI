@@ -39,4 +39,6 @@ stages:
           shouldPushToAcr: true
           acrRegistryUrl: 'acrsharedd01.azurecr.io'
           acrServiceConnection: 'Azure_ACR_Connection'
+          sonarCloudEnabled: true
+          sonarCloudServiceConnection: 'SonarCloud_Service_Connection'
           workingDirectoryForDocker: '$(System.DefaultWorkingDirectory)/src'

@@ -81,6 +81,14 @@ parameters:
     type: string
     default: '10.x'
 
+  - name: sonarCloudEnabled
+    type: boolean
+    default: false
+
+  - name: sonarCloudServiceConnection
+    type: string
+    default: SonarCloud_Service_Connection
+
 jobs:
   - job: ${{ parameters.JobName }}
     displayName: ${{ parameters.JobName }}
@@ -117,19 +125,17 @@ jobs:
           Write-Host "FullSemVer: $(version_step.FullSemVer)"
           Write-Host "SemVer: $(version_step.SemVer)"
           Write-Host "ShortSha: $(version_step.ShortSha)"
-
-          Write-Host "=== PIPELINE VARIABLES ==="
           Write-Host "Build Source branch: $env:BUILD_SOURCEBRANCHNAME"
         displayName: Debug environment
 
-      - task: PowerShell@2
-        displayName: 'Debug branch condition'
-        condition: ne(variables['Build.SourceBranchName'], 'main')
-        inputs:
-          targetType: 'inline'
-          script: |
-            Write-Host "Running because branch is NOT main"
-            Write-Host "Branch: $env:BUILD_SOURCEBRANCHNAME"
+      # - task: PowerShell@2
+      #   displayName: 'Debug branch condition'
+      #   condition: ne(variables['Build.SourceBranchName'], 'main')
+      #   inputs:
+      #     targetType: 'inline'
+      #     script: |
+      #       Write-Host "Running because branch is NOT main"
+      #       Write-Host "Branch: $env:BUILD_SOURCEBRANCHNAME"
 
       - task: DotNetCoreCLI@2
         displayName: 'Dotnet restore'
@@ -140,9 +146,12 @@ jobs:
           nugetConfigPath: 'nuget.config'
 
       - task: SonarCloudPrepare@4
-        condition: eq(variables['Build.SourceBranchName'], 'main')
+        condition: and(
+          succeeded(),
+          ${{ parameters.sonarCloudEnabled }},
+          eq(variables['Build.SourceBranchName'], 'main'))
         inputs:
-          SonarCloud: SonarCloud_Service_Connection
+          SonarCloud: ${{ parameters.sonarCloudServiceConnection }}
           organization: event-triangle
           scannerMode: dotnet
           projectKey: event-triangle-api
@@ -160,11 +169,17 @@ jobs:
           arguments: '-c ${{ parameters.buildConfiguration }} -p:Version=$(version_step.semVer) --no-restore'
 
       - task: SonarCloudAnalyze@4
-        condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'main'))
+        condition: and(
+          succeeded(),
+          ${{ parameters.sonarCloudEnabled }},
+          eq(variables['Build.SourceBranchName'], 'main'))
         inputs: {}
 
       - task: SonarCloudPublish@4
-        condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'main'))
+        condition: and(
+          succeeded(),
+          ${{ parameters.sonarCloudEnabled }},
+          eq(variables['Build.SourceBranchName'], 'main'))
         inputs:
           pollingTimeoutSec: "300"
 
