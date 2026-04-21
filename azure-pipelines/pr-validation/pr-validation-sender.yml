@@ -1,28 +1,51 @@
 trigger: none
 
 pr:
+  autoCancel: true
   branches:
     include:
       - develop
       - main
+
   paths:
     include:
-      - azure-pipelines
-      - platform
-      - helm
-      - cloudflare
-      - src/sender/EventTriangleAPI.Sender.Application
-      - src/sender/EventTriangleAPI.Sender.BusinessLogic
-      - src/sender/EventTriangleAPI.Sender.Domain
-      - src/sender/EventTriangleAPI.Sender.Presentation
-      - src/sender/EventTriangleAPI.Sender.IntegrationTests
-      - src/sender/EventTriangleAPI.Sender.UnitTests
-      - src/shared/EventTriangleAPI.Shared.Application
-      - src/shared/EventTriangleAPI.Shared.DTO
+      # Sender service (ALL layers)
+      - src/sender/**
+
+      # Shared code used by auth
+      - src/shared/**
+
+      # Pipeline itself (so changes validate)
+      - azure-pipelines/**
+      - azure-pipelines/templates/**
+
+    exclude:
+      # Docs
+      - '**/*.md'
+
+      # Docker compose (global/dev only)
+      - '**/docker-compose*.yml'
+      - '**/docker-compose*.yaml'
+
+      # Ignore other services explicitly
+      - src/consumer/**
+      - src/authorization/**
+
+      # Helm & infra (unless auth-specific)
+      - helm/**
+      - platform/**
+      - cloudflare/**
+      - docs/**
+      - kubernetes/**
+      - img/**
+      - terraform/**
+      - terraform-azdo-libraries/**
+      - .github/**
+      - LICENSE
 
 variables:
   - name: appName
-    value: 'SenderAPI'
+    value: 'Sender'
   - name: System.Debug
     value: 'false'
 
@@ -35,18 +58,12 @@ stages:
     jobs:
       - template: ../templates/docker-build-push-jobs.yml
         parameters:
-          JobName: 'PR_Validation_${{ variables.appName }}'
-          solution: '$(System.DefaultWorkingDirectory)/EventTriangleAPI.sln'
-          buildConfiguration: 'Release'
-          backendProjectPath: '$(System.DefaultWorkingDirectory)/src/sender/EventTriangleAPI.Sender.Presentation'
-          unitTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/sender/EventTriangleAPI.Sender.UnitTests/EventTriangleAPI.Sender.UnitTests.csproj'
-          shouldRunIntegrationTests: true
-          shouldRunUnitTests: true
-          integrationTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/sender/EventTriangleAPI.Sender.IntegrationTests/EventTriangleAPI.Sender.IntegrationTests.csproj'
+          JobName: 'Docker_Push_${{ variables.appName }}'
           dockerRegistryUrl: 'docker.io/kaminome'
           imageRepository: 'sender-service'
           dockerfilePath: '$(System.DefaultWorkingDirectory)/src/sender/Dockerfile'
           dockerServiceConnection: 'Docker_Hub_Connection'
+          shouldPushToDockerHub: true
           shouldPushToAcr: true
           acrRegistryUrl: 'acrsharedd01.azurecr.io'
           acrServiceConnection: 'Azure_ACR_Connection'

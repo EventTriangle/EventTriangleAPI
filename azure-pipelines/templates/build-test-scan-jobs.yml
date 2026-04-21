@@ -1,0 +1,160 @@
+parameters:
+  - name: JobName
+    displayName: 'Job Name'
+    type: string
+
+  - name: solution
+    displayName: 'Solution file path'
+    type: string
+
+  - name: buildConfiguration
+    displayName: 'Build Configuration'
+    default: 'Release'
+    type: string
+
+  - name: backendProjectPath
+    displayName: 'Backend project path'
+    type: string
+
+  - name: unitTestsProjectPath
+    displayName: 'Unit tests project path'
+    default: ''
+    type: string
+
+  - name: shouldRunUnitTests
+    displayName: 'Flag should run unit tests'
+    default: true
+    type: boolean
+
+  - name: shouldRunIntegrationTests
+    displayName: 'Flag should run integration tests'
+    type: boolean
+
+  - name: integrationTestsProjectPath
+    displayName: 'Integration tests project path'
+    type: string
+
+  - name: gitVersionVersion
+    displayName: 'GitVersion version'
+    default: '6.x'
+    type: string
+
+  - name: dotnetSdkVersion
+    type: string
+    default: '10.x'
+
+  - name: sonarCloudEnabled
+    type: boolean
+    default: false
+
+  - name: sonarCloudServiceConnection
+    type: string
+    default: SonarCloud_Service_Connection
+
+jobs:
+  - job: ${{ parameters.JobName }}
+    displayName: ${{ parameters.JobName }}
+    steps:
+      - checkout: self
+        fetchDepth: 0
+
+      - task: UseDotNet@2
+        displayName: 'Install .NET SDK ${{ parameters.dotnetSdkVersion }}'
+        condition: succeeded()
+        inputs:
+          packageType: 'sdk'
+          version: '${{ parameters.dotnetSdkVersion }}'
+
+      - task: gitversion-setup@4.5.0
+        displayName: 'GitVersion Setup'
+        condition: succeeded()
+        inputs:
+          versionSpec: ${{ parameters.gitVersionVersion }}
+
+      - task: gitversion-execute@4.5.0
+        name: version_step # step id used as a reference for output values
+        displayName: Determine Version
+        condition: succeeded()
+
+      - bash: echo $Action$BuildVersion
+        displayName: 'Set Build Version'
+        condition: succeeded()
+        env:
+          Action: '##vso[build.updatebuildnumber]'
+          BuildVersion: $(version_step.semVer)
+
+      - pwsh: |
+          Write-Host "=== ENV VARIABLES ==="
+          Get-ChildItem Env: | Sort-Object Name
+
+          Write-Host "=== PIPELINE VARIABLES ==="
+          Write-Host "FullSemVer: $(version_step.FullSemVer)"
+          Write-Host "SemVer: $(version_step.SemVer)"
+          Write-Host "ShortSha: $(version_step.ShortSha)"
+          Write-Host "Build Source branch: $env:BUILD_SOURCEBRANCHNAME"
+        displayName: Debug environment
+        condition: succeeded()
+
+      - task: DotNetCoreCLI@2
+        displayName: 'Dotnet restore'
+        condition: succeeded()
+        inputs:
+          command: 'restore'
+          projects: '${{ parameters.solution }}'
+          arguments: '--verbosity minimal'
+          nugetConfigPath: 'nuget.config'
+
+      - task: SonarCloudPrepare@4
+        condition: and(
+          succeeded(),
+          ${{ parameters.sonarCloudEnabled }},
+          eq(variables['Build.SourceBranchName'], 'main'))
+        inputs:
+          SonarCloud: ${{ parameters.sonarCloudServiceConnection }}
+          organization: event-triangle
+          scannerMode: dotnet
+          projectKey: event-triangle-api
+          projectName: eventtriangleapi
+          extraProperties: |
+            sonar.cs.vstest.reportsPaths=$(Agent.TempDirectory)/**/*.trx
+            sonar.cs.opencover.reportsPaths=$(Agent.TempDirectory)/**/*opencover.xml
+            sonar.exclusions=**/Properties/**, **/bin/**, **/obj/**, **/Migrations/**
+
+      - task: DotNetCoreCLI@2
+        displayName: 'Build solution'
+        condition: succeeded()
+        inputs:
+          command: 'build'
+          projects: '${{ parameters.solution }}'
+          arguments: '-c ${{ parameters.buildConfiguration }} -p:Version=$(version_step.semVer) --no-restore'
+
+      - task: SonarCloudAnalyze@4
+        condition: and(
+          succeeded(),
+          ${{ parameters.sonarCloudEnabled }},
+          eq(variables['Build.SourceBranchName'], 'main'))
+        inputs: {}
+
+      - task: SonarCloudPublish@4
+        condition: and(
+          succeeded(),
+          ${{ parameters.sonarCloudEnabled }},
+          eq(variables['Build.SourceBranchName'], 'main'))
+        inputs:
+          pollingTimeoutSec: "300"
+
+      - task: DotnetCoreCLI@2
+        displayName: 'Run unit tests'
+        condition: and(succeeded(), eq(${{ parameters.shouldRunUnitTests }}, true))
+        inputs:
+          command: 'test'
+          projects: '${{ parameters.unitTestsProjectPath }}'
+          arguments: '--no-build --configuration ${{ parameters.buildConfiguration }} --collect "Code Coverage"'
+
+      - task: DotNetCoreCLI@2
+        displayName: 'Run integration tests'
+        condition: and(succeeded(), eq(${{ parameters.shouldRunIntegrationTests }}, true))
+        inputs:
+          command: 'test'
+          projects: '${{ parameters.integrationTestsProjectPath }}'
+          arguments: '--no-build --configuration ${{ parameters.buildConfiguration }} --collect "Code Coverage"'

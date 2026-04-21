@@ -40,10 +40,10 @@ runs:
     - name: Determine Version
       uses: gittools/actions/gitversion/execute@v4.5.0
 
-    - name: Setup .NET 8.x SDK
+    - name: Setup .NET 10.x SDK
       uses: actions/setup-dotnet@v5
       with:
-        dotnet-version: 8.x
+        dotnet-version: 10.x
 
     - name: NuGet Cache
       uses: actions/cache@v5
