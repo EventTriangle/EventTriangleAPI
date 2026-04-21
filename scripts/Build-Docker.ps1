@@ -59,6 +59,7 @@ docker buildx build --load `
     --build-arg VERSION="$gitVersion" `
     --cache-from "type=registry,ref=$LATEST_VERSION_IMAGE" `
     --cache-to "type=inline" `
+    --build-arg BUILDKIT_INLINE_CACHE=1 `
     -t "$GIT_VERSION_IMAGE" `
     -f "$DockerfilePath" .
 
