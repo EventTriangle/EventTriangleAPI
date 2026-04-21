@@ -67,9 +67,9 @@ $sw = [System.Diagnostics.Stopwatch]::StartNew()
 
 # Build the Docker image
 docker buildx build --load `
-    --build-arg VERSION="$gitVersion" `
     --cache-from "type=registry,ref=$LATEST_VERSION_IMAGE" `
     --cache-to "type=inline" `
+    -t "$GIT_VERSION_IMAGE" `
     -f "$DockerfilePath" .
 
 $sw.Stop()
