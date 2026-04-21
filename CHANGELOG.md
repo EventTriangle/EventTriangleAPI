@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning v2.0.0](https://semver.org/spec
 - Skip CI if updates was only in MD files (trigger update)
 - DockerFiles optimization for faster builds
 - Split CI by separate Jobs to speed up builds
+- Use Docker cache in CI
+- Transform Frontend URL by using volume mount and configmaps
 
 ## [1.0.0] - 18-Apr-2026
 
