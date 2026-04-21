@@ -23,6 +23,12 @@ param (
 
 $ErrorActionPreference = "Stop"
 
+Write-Host "================================================================================"
+
+docker --version
+
+Write-Host "================================================================================"
+
 # Variable to use modern Docker BuildKit
 $env:DOCKER_BUILDKIT = "1"
 
@@ -41,6 +47,9 @@ $ACR_LATEST_VERSION_IMAGE = "$AcrRegistryUrl/$ImageRepository`:latest"
 $ACR_SHA_TAG = "$AcrRegistryUrl/$ImageRepository`:$GitVersion-$CommitSha"
 
 # Output image tags
+
+Write-Host "================================================================================"
+
 Write-Output "DOCKERHUB_GIT_VERSION_IMAGE: $GIT_VERSION_IMAGE"
 Write-Output "DOCKERHUB_GIT_LATEST_VERSION_IMAGE: $LATEST_VERSION_IMAGE"
 Write-Output "DOCKERHUB_SHA_VERSION_IMAGE: $SHA_TAG"
@@ -48,6 +57,8 @@ Write-Output "DOCKERHUB_SHA_VERSION_IMAGE: $SHA_TAG"
 Write-Output "ACR_GIT_VERSION_IMAGE: $ACR_GIT_VERSION_IMAGE"
 Write-Output "ACR_LATEST_VERSION_IMAGE: $ACR_LATEST_VERSION_IMAGE"
 Write-Output "ACR_SHA_IMAGE: $ACR_SHA_TAG"
+
+Write-Host "================================================================================"
 
 # Try to pull cache image
 docker pull "$LATEST_VERSION_IMAGE" 2>$null
@@ -59,7 +70,6 @@ docker buildx build --load `
     --build-arg VERSION="$gitVersion" `
     --cache-from "type=registry,ref=$LATEST_VERSION_IMAGE" `
     --cache-to "type=inline" `
-    --build-arg BUILDKIT_INLINE_CACHE=1 `
     -t "$GIT_VERSION_IMAGE" `
     -f "$DockerfilePath" .
 
