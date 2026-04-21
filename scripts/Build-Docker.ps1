@@ -23,6 +23,9 @@ param (
 
 $ErrorActionPreference = "Stop"
 
+# Variable to use modern Docker BuildKit
+$env:DOCKER_BUILDKIT = "1"
+
 $InitDirectory = Get-Location
 
 Write-Output "Changing directory to $WorkingDirectory"

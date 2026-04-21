@@ -30,6 +30,7 @@ stages:
           dockerfilePath: '$(System.DefaultWorkingDirectory)/src/authorization/Dockerfile'
           dockerServiceConnection: 'Docker_Hub_Connection'
           shouldPushToAcr: true
+          shouldPushToDockerHub: true
           acrRegistryUrl: 'acrsharedd01.azurecr.io'
           acrServiceConnection: 'Azure_ACR_Connection'
           workingDirectoryForDocker: '$(System.DefaultWorkingDirectory)/src'
