@@ -49,12 +49,18 @@ Write-Output "ACR_GIT_VERSION_IMAGE: $ACR_GIT_VERSION_IMAGE"
 Write-Output "ACR_LATEST_VERSION_IMAGE: $ACR_LATEST_VERSION_IMAGE"
 Write-Output "ACR_SHA_IMAGE: $ACR_SHA_TAG"
 
+# Try to pull cache image
+docker pull "$LATEST_VERSION_IMAGE" 2>$null
+
 $sw = [System.Diagnostics.Stopwatch]::StartNew()
 
 # Build the Docker image
-docker buildx build --load --build-arg VERSION="$gitVersion" `
-             -t "$GIT_VERSION_IMAGE" `
-             -f "$DockerfilePath" .
+docker buildx build --load `
+    --build-arg VERSION="$gitVersion" `
+    --cache-from "type=registry,ref=$LATEST_VERSION_IMAGE" `
+    --cache-to "type=inline" `
+    -t "$GIT_VERSION_IMAGE" `
+    -f "$DockerfilePath" .
 
 $sw.Stop()
 Write-Host "Docker build occupied: $($sw.Elapsed.TotalSeconds)"
