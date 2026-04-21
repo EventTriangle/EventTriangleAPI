@@ -19,7 +19,7 @@ RUN dotnet restore "sender/EventTriangleAPI.Sender.Presentation/EventTriangleAPI
 COPY . .
 WORKDIR "sender/EventTriangleAPI.Sender.Presentation"
 ARG VERSION
-RUN dotnet publish "EventTriangleAPI.Sender.Presentation.csproj" -c Release -p:Version=$VERSION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "EventTriangleAPI.Sender.Presentation.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app

@@ -60,10 +60,7 @@ WORKDIR /src/authorization/EventTriangleAPI.Authorization.Presentation
 
 ARG VERSION
 
-RUN dotnet publish -c Release \
-    -p:Version=$VERSION \
-    -o /app/publish \
-    /p:UseAppHost=false
+RUN dotnet publish -c Release -o /app/publish /p:UseAppHost=false
 
 #######################################################################################################
 # FINAL IMAGE
