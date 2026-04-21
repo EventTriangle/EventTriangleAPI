@@ -20,12 +20,16 @@
 *.user
 *.userosscache
 *.sln.docstates
+**/.editorconfig
+*.sln
+*.config
 
 # =========================
 # Git
 # =========================
 .git/
 .gitignore
+.gitattributes
 
 # =========================
 # Logs / temp
@@ -45,3 +49,15 @@ Thumbs.db
 # =========================
 **/*Tests/
 **/*.Test*/
+
+# =========================
+# OTHER
+# =========================
+**/bin
+**/obj
+**/.vs
+**/.vscode
+**/*.md
+**/docker-compose*
+.git
+**/scripts
