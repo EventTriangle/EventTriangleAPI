@@ -52,7 +52,7 @@ Write-Output "ACR_SHA_IMAGE: $ACR_SHA_TAG"
 $sw = [System.Diagnostics.Stopwatch]::StartNew()
 
 # Build the Docker image
-docker build --build-arg VERSION="$gitVersion" `
+docker buildx build --load --build-arg VERSION="$gitVersion" `
              -t "$GIT_VERSION_IMAGE" `
              -f "$DockerfilePath" .
 
