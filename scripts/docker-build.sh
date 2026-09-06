@@ -5,7 +5,8 @@ set -eu
 # Parameters (used only if the corresponding env var is not set)
 WORKING_DIRECTORY="${WORKING_DIRECTORY:-${1:-}}"
 VERSION_TAG="${VERSION_TAG:-${2:-}}"
-CACHE_IMAGE="${CACHE_IMAGE:-${3:-}}"
+LATEST_TAG="${VERSION_TAG:-${2:-}}"
+CACHE_IMAGE_TAG="${CACHE_IMAGE:-${3:-}}"
 
 if [[ -z "$WORKING_DIRECTORY" || -z "$VERSION_TAG" ]]; then
     echo "Usage:"

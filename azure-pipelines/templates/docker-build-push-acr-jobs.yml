@@ -65,3 +65,10 @@ jobs:
           echo "Build Source branch: $BUILD_SOURCEBRANCHNAME"
         displayName: Debug environment
         condition: succeeded()
+
+      - bash: |
+          cd ./scripts
+          chmod +x docker-inspect.sh
+          ./docker-inspect.sh
+        displayName: Docker inspect
+        condition: succeeded()
