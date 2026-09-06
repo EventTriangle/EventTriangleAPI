@@ -1,17 +1,26 @@
-GIT_VERSION_IMAGE="${{ parameters.dockerRegistryUrl }}/${{ parameters.imageRepository }}:$(GitVersion.SemVer)"
-LATEST_VERSION_IMAGE="${{ parameters.dockerRegistryUrl }}/${{ parameters.imageRepository }}:latest"
-echo "GIT_VERSION_IMAGE: $GIT_VERSION_IMAGE"
-echo "LATEST_VERSION_IMAGE: $LATEST_VERSION_IMAGE"
+#!/bin/sh
 
-ACR_GIT_VERSION_IMAGE="${{ parameters.acrRegistryUrl }}/${{ parameters.imageRepository }}:$(GitVersion.SemVer)"
-ACR_LATEST_VERSION_IMAGE="${{ parameters.acrRegistryUrl }}/${{ parameters.imageRepository }}:latest"
-echo "ACR_GIT_VERSION_IMAGE: $ACR_GIT_VERSION_IMAGE"
-echo "ACR_LATEST_VERSION_IMAGE: $ACR_LATEST_VERSION_IMAGE"
+set -eu
 
-docker build --build-arg FRONT_API_URL="${{ parameters.dockerBuildParameterUrl }}" \
-            --build-arg VERSION=$(GitVersion.SemVer) -t "$GIT_VERSION_IMAGE" \
-            -f ${{ parameters.dockerfilePath }} .
+# Parameters (used only if the corresponding env var is not set)
+WORKING_DIRECTORY="${WORKING_DIRECTORY:-${1:-}}"
+VERSION_TAG="${VERSION_TAG:-${2:-}}"
+CACHE_IMAGE="${CACHE_IMAGE:-${3:-}}"
 
-docker tag "$GIT_VERSION_IMAGE" "$LATEST_VERSION_IMAGE"
-docker tag "$GIT_VERSION_IMAGE" "$ACR_LATEST_VERSION_IMAGE"
-docker tag "$GIT_VERSION_IMAGE" "$ACR_GIT_VERSION_IMAGE"
+if [[ -z "$WORKING_DIRECTORY" || -z "$VERSION_TAG" ]]; then
+    echo "Usage:"
+    echo "  $0 <working_directory> <version_tag> [http_proxy] [http_host] [https_proxy] [https_host] [no_proxy] [cache_image]"
+    exit 1
+fi
+
+echo "Building image: ${VERSION_TAG}"
+
+docker buildx build \
+    --progress=plain \
+    --cache-to type=inline \
+    --cache-from type=registry,ref="${CACHE_IMAGE}" \
+    --tag "${VERSION_TAG}" \
+    --tag "${CACHE_IMAGE}" \
+    --file "${WORKING_DIRECTORY}/Dockerfile" \
+    --push \
+    "${WORKING_DIRECTORY}"

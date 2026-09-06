@@ -1,0 +1,67 @@
+parameters:
+  - name: jobName
+    displayName: 'Job Name'
+    type: string
+
+  - name: workingDirectoryForDocker
+    displayName: 'Working directory for Docker Build'
+    default: '$(System.DefaultWorkingDirectory)/src'
+    type: string
+
+  - name: gitVersionVersion
+    displayName: 'GitVersion version'
+    default: '6.x'
+    type: string
+
+  - name: acrRegistryUrl
+    type: string
+    displayName: 'ACR Registry URL. For ACR it is FQDN URL of container registry: azuredevopsacrd01.azurecr.io'
+
+  - name: imageRepository
+    displayName: 'Image Repository name'
+    type: string
+
+  - name: dockerfilePath
+    displayName: 'Dockerfile path'
+    type: string
+
+  - name: acrServiceConnection
+    displayName: 'Azure container registry service connection in Azure DevOps.'
+    type: string
+
+jobs:
+  - job: ${{ parameters.jobName }}
+    displayName: ${{ parameters.jobName }}
+    steps:
+      - checkout: self
+        fetchDepth: 0
+
+      - task: gitversion-setup@4.5.0
+        displayName: 'GitVersion Setup'
+        condition: succeeded()
+        inputs:
+          versionSpec: ${{ parameters.gitVersionVersion }}
+
+      - task: gitversion-execute@4.5.0
+        name: version_step # step id used as a reference for output values
+        displayName: Determine Version
+        condition: succeeded()
+
+      - bash: echo $Action$BuildVersion
+        displayName: 'Set Build Version'
+        condition: succeeded()
+        env:
+          Action: '##vso[build.updatebuildnumber]'
+          BuildVersion: $(version_step.semVer)
+
+      - bash: |
+          echo "=== ENV VARIABLES ==="
+          printenv
+
+          echo "=== PIPELINE VARIABLES ==="
+          echo "FullSemVer: $(version_step.FullSemVer)"
+          echo "SemVer: $(version_step.SemVer)"
+          echo "ShortSha: $(version_step.ShortSha)"
+          echo "Build Source branch: $BUILD_SOURCEBRANCHNAME"
+        displayName: Debug environment
+        condition: succeeded()
