@@ -1,10 +1,12 @@
-#!/bin/sh
+#!/bin/bash
 
-set -eu
+set -euo pipefail
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_FILE="$(realpath "${BASH_SOURCE[0]}")"
+SCRIPT_DIR="$(dirname "$SCRIPT_FILE")"
 
-echo "Script directory: $SCRIPT_DIR"
+echo "Script file      : $SCRIPT_FILE"
+echo "Script directory : $SCRIPT_DIR"
 
 WORKING_DIRECTORY="$(realpath "$SCRIPT_DIR/../src/authorization")"
 SHARED_CONTEXT="$(realpath "$SCRIPT_DIR/../src/shared")"
@@ -16,7 +18,7 @@ VERSION_TAG="acrsharedd01.azurecr.io/auth-service:$SEM_VER"
 LATEST_TAG="acrsharedd01.azurecr.io/auth-service:latest"
 CACHE_IMAGE_TAG="acrsharedd01.azurecr.io/auth-service:buildcache"
 
-./docker-build.sh \
+$SCRIPT_DIR/docker-build.sh \
     --working-directory "$WORKING_DIRECTORY" \
     --docker-file "$DOCKER_FILE" \
     --version-tag "$VERSION_TAG" \
