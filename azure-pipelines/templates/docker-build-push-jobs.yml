@@ -79,7 +79,7 @@ jobs:
         displayName: "Docker Login"
         inputs:
           command: login
-          containerRegistry: ${{ parameters.acrServiceConnection }}
+          containerRegistry: ${{ parameters.dockerServiceConnection }}
 
       - bash: |
           set -euo pipefail
