@@ -2,26 +2,129 @@
 
 set -eu
 
-# Parameters (used only if the corresponding env var is not set)
-WORKING_DIRECTORY="${WORKING_DIRECTORY:-${1:-}}"
-VERSION_TAG="${VERSION_TAG:-${2:-}}"
-LATEST_TAG="${VERSION_TAG:-${2:-}}"
-CACHE_IMAGE_TAG="${CACHE_IMAGE:-${3:-}}"
-
-if [[ -z "$WORKING_DIRECTORY" || -z "$VERSION_TAG" ]]; then
+usage() {
     echo "Usage:"
-    echo "  $0 <working_directory> <version_tag> [http_proxy] [http_host] [https_proxy] [https_host] [no_proxy] [cache_image]"
+    echo "  $0 \\"
+    echo "    --working-directory <path> \\"
+    echo "    --docker-file <path> \\"
+    echo "    --version-tag <tag> \\"
+    echo "    --latest-tag <tag> \\"
+    echo "    --cache-image-tag <tag>"
+}
+
+# ==============================================================================
+# Parameters
+# ==============================================================================
+
+WORKING_DIRECTORY=""
+DOCKER_FILE=""
+VERSION_TAG=""
+LATEST_TAG=""
+CACHE_IMAGE_TAG=""
+
+while [ "$#" -gt 0 ]; do
+    case "$1" in
+        --working-directory)
+            WORKING_DIRECTORY="${2:-}"
+            shift 2
+            ;;
+        --docker-file)
+            DOCKER_FILE="${2:-}"
+            shift 2
+            ;;
+        --version-tag)
+            VERSION_TAG="${2:-}"
+            shift 2
+            ;;
+        --latest-tag)
+            LATEST_TAG="${2:-}"
+            shift 2
+            ;;
+        --cache-image-tag)
+            CACHE_IMAGE_TAG="${2:-}"
+            shift 2
+            ;;
+        --help|-h)
+            usage
+            exit 0
+            ;;
+        *)
+            echo "[ERROR] Unknown parameter: $1"
+            echo
+            usage
+            exit 1
+            ;;
+    esac
+done
+
+# ==============================================================================
+# Validation
+# ==============================================================================
+
+if [ -z "$WORKING_DIRECTORY" ]; then
+    echo "[ERROR] --working-directory must not be empty."
     exit 1
 fi
 
-echo "Building image: ${VERSION_TAG}"
+if [ -z "$DOCKER_FILE" ]; then
+    echo "[ERROR] --docker-file must not be empty."
+    exit 1
+fi
 
-docker buildx build \
+if [ -z "$VERSION_TAG" ]; then
+    echo "[ERROR] --version-tag must not be empty."
+    exit 1
+fi
+
+if [ -z "$LATEST_TAG" ]; then
+    echo "[ERROR] --latest-tag must not be empty."
+    exit 1
+fi
+
+if [ -z "$CACHE_IMAGE_TAG" ]; then
+    echo "[ERROR] --cache-image-tag must not be empty."
+    exit 1
+fi
+
+if [ ! -d "$WORKING_DIRECTORY" ]; then
+    echo "[ERROR] Working directory does not exist: $WORKING_DIRECTORY"
+    exit 1
+fi
+
+if [ ! -f "$DOCKER_FILE" ]; then
+    echo "[ERROR] Dockerfile does not exist: $DOCKER_FILE"
+    exit 1
+fi
+
+# ==============================================================================
+# Configuration
+# ==============================================================================
+
+echo "============================================================"
+echo "Docker Build Configuration"
+echo "============================================================"
+echo "Working directory : $WORKING_DIRECTORY"
+echo "Dockerfile        : $DOCKER_FILE"
+echo "Version tag       : $VERSION_TAG"
+echo "Latest tag        : $LATEST_TAG"
+echo "Cache image tag   : $CACHE_IMAGE_TAG"
+echo "============================================================"
+
+# ==============================================================================
+# Build
+# ==============================================================================
+
+echo "Building image: $VERSION_TAG"
+
+DOCKER_BUILDKIT=1 docker buildx build \
     --progress=plain \
     --cache-to type=inline \
-    --cache-from type=registry,ref="${CACHE_IMAGE}" \
+    --cache-from type=registry,ref="${CACHE_IMAGE_TAG}" \
     --tag "${VERSION_TAG}" \
-    --tag "${CACHE_IMAGE}" \
-    --file "${WORKING_DIRECTORY}/Dockerfile" \
+    --tag "${CACHE_IMAGE_TAG}" \
+    --tag "${LATEST_TAG}" \
+    --file "${DOCKER_FILE}" \
     --push \
     "${WORKING_DIRECTORY}"
+
+echo "Build completed successfully."
