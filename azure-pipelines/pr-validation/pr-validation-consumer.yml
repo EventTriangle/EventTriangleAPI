@@ -58,12 +58,11 @@ stages:
   - stage: "PR_Validation_${{ variables.appName }}"
     displayName: "PR_Validation_${{ variables.appName }}"
     jobs:
-      - template: "../templates/docker-build-push-acr-jobs.yml"
+      - template: "../templates/docker-build-push-jobs.yml"
         parameters:
           jobName: "Docker_Build_${{ variables.appName }}"
           imageRepository: "consumer-service"
           dockerfilePath: "$(System.DefaultWorkingDirectory)/src/consumer/Dockerfile"
-          acrRegistryUrl: "acrsharedd01.azurecr.io"
-          acrServiceConnection: "Azure_ACR_Connection"
-          workingDirectoryForDocker: "$(System.DefaultWorkingDirectory)/src"
+          registryUrl: "acrsharedd01.azurecr.io"
+          dockerServiceConnection: "Azure_ACR_Connection"
           scriptFile: "$(System.DefaultWorkingDirectory)/scripts/build-consumer.sh"

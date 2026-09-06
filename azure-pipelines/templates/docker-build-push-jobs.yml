@@ -3,19 +3,17 @@ parameters:
     displayName: 'Job Name'
     type: string
 
-  - name: workingDirectoryForDocker
-    displayName: 'Working directory for Docker Build'
-    default: '$(System.DefaultWorkingDirectory)/src'
-    type: string
-
   - name: gitVersionVersion
     displayName: 'GitVersion version'
     default: '6.x'
     type: string
 
-  - name: acrRegistryUrl
+  - name: registryUrl
     type: string
-    displayName: 'ACR Registry URL. For ACR it is FQDN URL of container registry: azuredevopsacrd01.azurecr.io'
+    displayName: >
+      ACR Registry URL.
+      For ACR it is FQDN URL of container registry: azuredevopsacrd01.azurecr.io.
+      For Docker Hub it is: docker.io/petrkolosov.
 
   - name: imageRepository
     displayName: 'Image Repository name'
@@ -25,7 +23,7 @@ parameters:
     displayName: 'Dockerfile path'
     type: string
 
-  - name: acrServiceConnection
+  - name: dockerServiceConnection
     displayName: 'Azure container registry service connection in Azure DevOps.'
     type: string
 
@@ -67,21 +65,21 @@ jobs:
           echo "SemVer: $(version_step.SemVer)"
           echo "ShortSha: $(version_step.ShortSha)"
           echo "Build Source branch: $BUILD_SOURCEBRANCHNAME"
-        displayName: Debug environment
+        displayName: Debug Environment
         condition: succeeded()
 
       - bash: |
           cd ./scripts
           chmod +x docker-inspect.sh
           ./docker-inspect.sh
-        displayName: Docker inspect
+        displayName: Docker Inspect
         condition: succeeded()
 
       - task: Docker@2
         displayName: "Docker Login"
         inputs:
           command: login
-          containerRegistry: Azure_ACR_Connection
+          containerRegistry: ${{ parameters.acrServiceConnection }}
 
       - bash: |
           set -euo pipefail
