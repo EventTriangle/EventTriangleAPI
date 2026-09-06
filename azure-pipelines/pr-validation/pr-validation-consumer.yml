@@ -60,7 +60,7 @@ stages:
     jobs:
       - template: "../templates/docker-build-push-acr-jobs.yml"
         parameters:
-          jobName: "Docker_Push_${{ variables.appName }}"
+          jobName: "Docker_Build_${{ variables.appName }}"
           imageRepository: "consumer-service"
           dockerfilePath: "$(System.DefaultWorkingDirectory)/src/consumer/Dockerfile"
           acrRegistryUrl: "acrsharedd01.azurecr.io"
