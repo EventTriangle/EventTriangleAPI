@@ -2,9 +2,17 @@
 
 set -eu
 
-WORKING_DIRECTORY="$(realpath "../src/authorization")"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+echo "Script directory: $SCRIPT_DIR"
+
+WORKING_DIRECTORY="$(realpath "$SCRIPT_DIR/../src/authorization")"
+SHARED_CONTEXT="$(realpath "$SCRIPT_DIR/../src/shared")"
 DOCKER_FILE="$WORKING_DIRECTORY/Dockerfile"
-VERSION_TAG="acrsharedd01.azurecr.io/auth-service:1.0.0-local"
+
+SEM_VER="${1:-1.0.0-local}"
+
+VERSION_TAG="acrsharedd01.azurecr.io/auth-service:$SEM_VER"
 LATEST_TAG="acrsharedd01.azurecr.io/auth-service:latest"
 CACHE_IMAGE_TAG="acrsharedd01.azurecr.io/auth-service:buildcache"
 
@@ -13,4 +21,5 @@ CACHE_IMAGE_TAG="acrsharedd01.azurecr.io/auth-service:buildcache"
     --docker-file "$DOCKER_FILE" \
     --version-tag "$VERSION_TAG" \
     --latest-tag "$LATEST_TAG" \
-    --cache-image-tag "$CACHE_IMAGE_TAG"
+    --cache-image-tag "$CACHE_IMAGE_TAG" \
+    --shared-context "$SHARED_CONTEXT"

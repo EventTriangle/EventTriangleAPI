@@ -9,7 +9,8 @@ usage() {
     echo "    --docker-file <path> \\"
     echo "    --version-tag <tag> \\"
     echo "    --latest-tag <tag> \\"
-    echo "    --cache-image-tag <tag>"
+    echo "    --cache-image-tag <tag> \\"
+    echo "    --shared-context <path>"
 }
 
 # ==============================================================================
@@ -21,6 +22,7 @@ DOCKER_FILE=""
 VERSION_TAG=""
 LATEST_TAG=""
 CACHE_IMAGE_TAG=""
+SHARED_CONTEXT=""
 
 while [ "$#" -gt 0 ]; do
     case "$1" in
@@ -42,6 +44,10 @@ while [ "$#" -gt 0 ]; do
             ;;
         --cache-image-tag)
             CACHE_IMAGE_TAG="${2:-}"
+            shift 2
+            ;;
+        --shared-context)
+            SHARED_CONTEXT="${2:-}"
             shift 2
             ;;
         --help|-h)
@@ -96,6 +102,16 @@ if [ ! -f "$DOCKER_FILE" ]; then
     exit 1
 fi
 
+if [ -z "$SHARED_CONTEXT" ]; then
+    echo "[ERROR] --shared-context must not be empty."
+    exit 1
+fi
+
+if [ ! -d "$SHARED_CONTEXT" ]; then
+    echo "[ERROR] Shared context directory does not exist: $SHARED_CONTEXT"
+    exit 1
+fi
+
 # ==============================================================================
 # Configuration
 # ==============================================================================
@@ -108,6 +124,8 @@ echo "Dockerfile        : $DOCKER_FILE"
 echo "Version tag       : $VERSION_TAG"
 echo "Latest tag        : $LATEST_TAG"
 echo "Cache image tag   : $CACHE_IMAGE_TAG"
+echo "Shared context    : $SHARED_CONTEXT"
+echo "DOCKER_BUILDKIT   : $DOCKER_BUILDKIT"
 echo "============================================================"
 
 # ==============================================================================
@@ -116,10 +134,11 @@ echo "============================================================"
 
 echo "Building image: $VERSION_TAG"
 
-DOCKER_BUILDKIT=1 docker buildx build \
+docker buildx build \
     --progress=plain \
     --cache-to type=inline \
     --cache-from type=registry,ref="${CACHE_IMAGE_TAG}" \
+    --build-context shared="${SHARED_CONTEXT}" \
     --tag "${VERSION_TAG}" \
     --tag "${CACHE_IMAGE_TAG}" \
     --tag "${LATEST_TAG}" \
