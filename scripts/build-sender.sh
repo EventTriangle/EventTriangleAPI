@@ -2,9 +2,24 @@
 
 set -eu
 
-./build.sh \
-    --working-directory "${CI_PROJECT_DIR}/2.346.1" \
-    --docker-file "${CI_PROJECT_DIR}/2.346.1/Dockerfile" \
-    --version-tag "${IMAGE}:2.346.1-33" \
-    --latest-tag "${IMAGE}:latest" \
-    --cache-image-tag "${IMAGE}:buildcache"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+echo "Script directory: $SCRIPT_DIR"
+
+WORKING_DIRECTORY="$(realpath "$SCRIPT_DIR/../src/sender")"
+SHARED_CONTEXT="$(realpath "$SCRIPT_DIR/../src/shared")"
+DOCKER_FILE="$WORKING_DIRECTORY/Dockerfile"
+
+SEM_VER="${1:-1.0.0-local}"
+
+VERSION_TAG="acrsharedd01.azurecr.io/sender-service:$SEM_VER"
+LATEST_TAG="acrsharedd01.azurecr.io/sender-service:latest"
+CACHE_IMAGE_TAG="acrsharedd01.azurecr.io/sender-service:buildcache"
+
+./docker-build.sh \
+    --working-directory "$WORKING_DIRECTORY" \
+    --docker-file "$DOCKER_FILE" \
+    --version-tag "$VERSION_TAG" \
+    --latest-tag "$LATEST_TAG" \
+    --cache-image-tag "$CACHE_IMAGE_TAG" \
+    --shared-context "$SHARED_CONTEXT"
