@@ -1,0 +1,27 @@
+# .NET build output
+**/bin/
+**/obj/
+
+# Angular / Node
+**/node_modules/
+**/dist/
+**/.angular/
+
+# IDE
+.vs/
+.vscode/
+.idea/
+
+# Tests - if they aren't required by the image build
+EventTriangleAPI.Sender.UnitTests/
+EventTriangleAPI.Sender.IntegrationTests/
+
+# Git
+.git/
+.gitignore
+
+# Misc
+**/*.user
+**/*.suo
+**/*.tmp
+**/*.log
