@@ -1,0 +1,18 @@
+# .NET build output
+**/bin/
+**/obj/
+
+# IDE
+.vs/
+.vscode/
+.idea/
+
+# Git
+.git/
+.gitignore
+
+# Misc
+**/*.user
+**/*.suo
+**/*.tmp
+**/*.log

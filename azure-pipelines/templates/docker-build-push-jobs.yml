@@ -1,11 +1,6 @@
 parameters:
-  - name: JobName
+  - name: jobName
     displayName: 'Job Name'
-    type: string
-
-  - name: workingDirectoryForDocker
-    displayName: 'Working directory for Docker Build'
-    default: '$(System.DefaultWorkingDirectory)/src'
     type: string
 
   - name: gitVersionVersion
@@ -13,21 +8,12 @@ parameters:
     default: '6.x'
     type: string
 
-  - name: dockerRegistryUrl
+  - name: registryUrl
     type: string
-    displayName: 'DockerHub Registry URL. For Docker Hub it is: docker.io/kaminome.'
-
-  - name: shouldPushToDockerHub
-    type: boolean
-    default: false
-
-  - name: shouldPushToAcr
-    type: boolean
-    default: false
-
-  - name: acrRegistryUrl
-    type: string
-    displayName: 'ACR Registry URL. For ACR it is FQDN URL of container registry: azuredevopsacrd01.azurecr.io'
+    displayName: >
+      ACR Registry URL.
+      For ACR it is FQDN URL of container registry: azuredevopsacrd01.azurecr.io.
+      For Docker Hub it is: docker.io/petrkolosov.
 
   - name: imageRepository
     displayName: 'Image Repository name'
@@ -38,16 +24,16 @@ parameters:
     type: string
 
   - name: dockerServiceConnection
-    displayName: 'DockerHub service connection in Azure DevOps.'
-    type: string
-
-  - name: acrServiceConnection
     displayName: 'Azure container registry service connection in Azure DevOps.'
     type: string
 
+  - name: scriptFile
+    displayName: Docker build script path
+    type: string
+
 jobs:
-  - job: ${{ parameters.JobName }}
-    displayName: ${{ parameters.JobName }}
+  - job: ${{ parameters.jobName }}
+    displayName: ${{ parameters.jobName }}
     steps:
       - checkout: self
         fetchDepth: 0
@@ -70,54 +56,35 @@ jobs:
           Action: '##vso[build.updatebuildnumber]'
           BuildVersion: $(version_step.semVer)
 
-      - pwsh: |
-          Write-Host "=== ENV VARIABLES ==="
-          Get-ChildItem Env: | Sort-Object Name
+      - bash: |
+          echo "=== ENV VARIABLES ==="
+          printenv
 
-          Write-Host "=== PIPELINE VARIABLES ==="
-          Write-Host "FullSemVer: $(version_step.FullSemVer)"
-          Write-Host "SemVer: $(version_step.SemVer)"
-          Write-Host "ShortSha: $(version_step.ShortSha)"
-          Write-Host "Build Source branch: $env:BUILD_SOURCEBRANCHNAME"
-        displayName: Debug environment
+          echo "=== PIPELINE VARIABLES ==="
+          echo "FullSemVer: $(version_step.FullSemVer)"
+          echo "SemVer: $(version_step.SemVer)"
+          echo "ShortSha: $(version_step.ShortSha)"
+          echo "Build Source branch: $BUILD_SOURCEBRANCHNAME"
+        displayName: Debug Environment
         condition: succeeded()
 
-      - task: PowerShell@2
-        displayName: 'Build Docker Image'
+      - bash: |
+          cd ./scripts
+          chmod +x docker-inspect.sh
+          ./docker-inspect.sh
+        displayName: Docker Inspect
         condition: succeeded()
-        inputs:
-          targetType: 'filePath'
-          filePath: '$(System.DefaultWorkingDirectory)/scripts/Build-Docker.ps1'
-          arguments: "-DockerRegistryUrl ${{ parameters.dockerRegistryUrl }}
-                      -ImageRepository ${{ parameters.imageRepository }}
-                      -AcrRegistryUrl ${{ parameters.acrRegistryUrl }}
-                      -DockerfilePath ${{ parameters.dockerfilePath }}
-                      -GitVersion $(version_step.semVer)
-                      -WorkingDirectory ${{ parameters.workingDirectoryForDocker }}
-                      -CommitSha $(version_step.ShortSha)"
-          errorActionPreference: 'stop'
-          pwsh: true
 
       - task: Docker@2
-        displayName: 'Push to DockerHub'
-        condition: and(succeeded(), eq(${{ parameters.shouldPushToDockerHub }}, true))
+        displayName: "Docker Login"
         inputs:
-          command: push
+          command: login
           containerRegistry: ${{ parameters.dockerServiceConnection }}
-          repository: ${{ parameters.dockerRegistryUrl }}/${{ parameters.imageRepository }}
-          tags: |
-            $(version_step.semVer)
-            $(version_step.semVer)-$(version_step.ShortSha)
-            latest
 
-      - task: Docker@2
-        displayName: 'Push to ACR'
-        condition: and(succeeded(), eq(${{ parameters.shouldPushToAcr }}, true))
-        inputs:
-          command: push
-          containerRegistry: ${{ parameters.acrServiceConnection }}
-          repository: ${{ parameters.imageRepository }}
-          tags: |
-            $(version_step.semVer)
-            $(version_step.semVer)-$(version_step.ShortSha)
-            latest
+      - bash: |
+          set -euo pipefail
+          SCRIPT_FILE="${{ parameters.scriptFile }}"
+          echo "Script file: ${SCRIPT_FILE}"
+          chmod +x "${SCRIPT_FILE}"
+          "${SCRIPT_FILE}" $(version_step.SemVer)
+        displayName: "Docker Build"

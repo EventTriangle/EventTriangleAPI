@@ -22,15 +22,11 @@ stages:
   - stage: 'Docker_Push_${{ variables.appName }}'
     displayName: 'Docker_Push_${{ variables.appName }}'
     jobs:
-      - template: ../templates/docker-build-push-jobs.yml
+      - template: ../templates/docker-build-push-acr-jobs.yml
         parameters:
-          JobName: 'Docker_Push_${{ variables.appName }}'
-          dockerRegistryUrl: 'docker.io/kaminome'
+          jobName: 'Docker_Push_${{ variables.appName }}'
           imageRepository: 'consumer-service'
           dockerfilePath: '$(System.DefaultWorkingDirectory)/src/consumer/Dockerfile'
-          dockerServiceConnection: 'Docker_Hub_Connection'
-          shouldPushToDockerHub: true
-          shouldPushToAcr: true
           acrRegistryUrl: 'acrsharedd01.azurecr.io'
           acrServiceConnection: 'Azure_ACR_Connection'
           workingDirectoryForDocker: '$(System.DefaultWorkingDirectory)/src'

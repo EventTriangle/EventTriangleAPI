@@ -1,5 +1,5 @@
 parameters:
-  - name: JobName
+  - name: jobName
     displayName: 'Job Name'
     type: string
 
