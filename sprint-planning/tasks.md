@@ -29,14 +29,15 @@ The Azure Terraform root remains directly under `terraform/`, and observability 
 
 - [ ] Move Azure configuration into `terraform/infrastructure/`, with reusable `modules/aks`, `modules/acr-access`, and an `environments/dev/` root.
 - [ ] Separate environment values, backend configuration, provider constraints, and module inputs; retain appropriate dependency lock files.
+- [ ] Move retained configuration values from `terraform/terraform.auto.tfvars.json` into `default` attributes of the corresponding variable declarations in the new infrastructure root's `variables.tf`, then remove the redundant auto.tfvars file. Keep environment overrides explicit and supply secrets through protected inputs.
 - [ ] Remove Log Analytics, Prometheus, and Grafana modules and associated variables, outputs, locals, tfvars, and AKS monitoring configuration.
 - [ ] Retain AKS, required supporting resources, and the requested ACR pull permission. Parameterize the hard-coded ACR resource group.
 - [ ] Document why ACR pull permission remains alongside Docker Hub application images; do not silently remove the explicitly requested permission.
 - [ ] Export non-secret AKS identifiers needed by subsequent pipeline stages.
-- [ ] Update `.azdo/infrastructure/` and Terraform templates, including the hard-coded `terraform/terraform.auto.tfvars.json` transformation path.
+- [ ] Update `.azdo/infrastructure/` and Terraform templates to use the new root and variable defaults; remove the obsolete `terraform/terraform.auto.tfvars.json` transformation step and its unused inputs.
 - [ ] Preserve existing backend/state associations; document any required state migration and review the plan for unintended cluster replacement.
 
-**Acceptance criteria:** Terraform formatting and validation pass. The reviewed migration plan removes only intended observability resources without unintended AKS replacement. A subsequent plan after apply has no unexpected changes.
+**Acceptance criteria:** Terraform formatting and validation pass. Retained auto.tfvars values are represented as variable defaults, and pipelines no longer require the removed file or its transformation step. The reviewed migration plan removes only intended observability resources without unintended AKS replacement. A subsequent plan after apply has no unexpected changes.
 
 ## TASK-03 — Implement Cloudflare DNS Terraform
 
