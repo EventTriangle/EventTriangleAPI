@@ -8,7 +8,7 @@ This backlog contains unfinished work identified from the current repository. It
 
 ## TASK-01 — Document required developer access and credentials
 
-**Objective:** 5. **Dependencies:** Begin immediately; finalize against TASK-04, TASK-05, TASK-09, TASK-10, TASK-11, TASK-12.
+**Objective:** 5. **Dependencies:** Begin immediately; finalize against TASK-04, TASK-05, TASK-09, TASK-10, TASK-11, TASK-12, TASK-13.
 
 - [ ] Create `sprint-planning/developer-access.md` and link it and the deployment design from the root README.
 - [ ] For each access requirement, document purpose, required scope, owner, provisioning steps, secure storage location, consumers, and rotation/revocation procedure. Include no actual secret values.
@@ -42,7 +42,7 @@ The Azure Terraform root remains directly under `terraform/`, and observability 
 
 ## TASK-03 — Implement Cloudflare DNS Terraform
 
-**Objective:** 1. **Dependencies:** TASK-08 for final ingress output integration.
+**Objective:** 1. **Dependencies:** TASK-09 for final ingress output integration.
 
 No Cloudflare Terraform root exists in the current repository.
 
@@ -72,7 +72,7 @@ No Cloudflare Terraform root exists in the current repository.
 
 ## TASK-05 — Manage Azure DevOps pipelines through Terraform
 
-**Objective:** 6.1. **Dependencies:** TASK-04; finalize deployment registration after TASK-12.
+**Objective:** 6.1. **Dependencies:** TASK-04; finalize deployment registration after TASK-13.
 
 - [ ] Inventory existing Azure DevOps pipeline definitions and map them to the maintained `.azdo/` YAML entry points.
 - [ ] Add provider-managed definitions in `terraform/azure-devops/` for the required build, PR-validation, deployment, and retained teardown pipelines.
@@ -114,21 +114,34 @@ Application build scripts still tag images for `acrsharedd01.azurecr.io`. The th
 
 **Acceptance criteria:** Each chart lints, renders valid resources, and runs its application with the required backing services. Multiple namespaces/releases do not collide, and charts contain no real credentials.
 
-## TASK-08 — Configure Flux-managed platform releases and Traefik
+## TASK-08 — Migrate `.deprecated/platform/` to the FluxCD repository
 
-**Objective:** Remaining Helm migration from 3; 13. **Dependencies:** None; feeds TASK-11 and TASK-12.
+**Objective:** Remaining platform migration from 3. **Dependencies:** None; feeds TASK-09, TASK-12, and TASK-13.
 
-- [ ] Inspect the target Flux repository and identify which platform resources already exist before implementing missing releases or environment values.
-- [ ] Configure the required PostgreSQL, RabbitMQ, Redis, cert-manager where needed, and Traefik Helm releases with pinned versions.
-- [ ] Define dev namespaces, sources, reconciliation dependencies, storage, and required secret references.
-- [ ] Install Traefik through its Helm release, configure the ingress class and external LoadBalancer service, and preserve required application host/path routing.
-- [ ] Decide TLS issuance and certificate ownership, including whether DNS must exist before certificates can become ready.
+- [ ] Inventory installers, manifests, configuration, and helper scripts in `.deprecated/platform/` and map each required responsibility to its destination in the FluxCD repository.
+- [ ] Inspect the target FluxCD repository and reuse existing platform resources before adding missing releases or environment values.
+- [ ] Convert required PostgreSQL, RabbitMQ, Redis, and cert-manager installations into Flux-managed Helm releases with pinned versions and supporting manifests.
+- [ ] Define dev namespaces, chart sources, reconciliation dependencies, persistent storage, and external secret references without copying plaintext credentials from archived files.
+- [ ] Record a migration or retirement decision for remaining platform assets, including monitoring configuration and bootstrap helpers; coordinate Flux operator bootstrap with TASK-13.
 - [ ] Document persistence/data migration and release ownership to avoid two controllers managing the same resources.
-- [ ] Define how the pipeline discovers the Traefik address and checks platform readiness.
+- [ ] Define platform readiness checks and document the mapping from archived assets to maintained FluxCD resources. Handle ingress replacement in TASK-09.
 
-**Acceptance criteria:** Flux reconciles the required platform resources and Traefik exposes a usable external address. Platform installation requires no separate manual Helm invocation.
+**Acceptance criteria:** Every required responsibility from `.deprecated/platform/` has a maintained FluxCD destination or an explicit handoff to TASK-09/TASK-13. Flux reconciles the migrated platform services without manual installer scripts or Helm commands, and persistent data and secret handling are accounted for.
 
-## TASK-09 — Add Helm chart validation in GitHub Actions
+## TASK-09 — Implement Traefik ingress through Helm
+
+**Objective:** 13. **Dependencies:** TASK-08 for FluxCD environment conventions and certificate-controller integration; feeds TASK-03, TASK-12, and TASK-13.
+
+- [ ] Add a pinned Traefik Helm release and chart source to the FluxCD repository with dev environment values.
+- [ ] Configure its namespace, ingress class, entry points, and external LoadBalancer service.
+- [ ] Replace required NGINX routing behavior with Traefik-compatible configuration, preserving application host/path routing and coordinating chart ingress values with TASK-07.
+- [ ] Define TLS issuance, certificate ownership, and redirects where required, including whether DNS must exist before certificates can become ready.
+- [ ] Define how the deployment pipeline discovers and validates the Traefik external IP or hostname for Cloudflare Terraform.
+- [ ] Add bounded ingress readiness checks and verify application routing after application releases are available.
+
+**Acceptance criteria:** Flux installs and reconciles Traefik through Helm, its service exposes a usable external address, and application routes work with the intended TLS configuration. The pipeline can consume its address without a manual lookup.
+
+## TASK-10 — Add Helm chart validation in GitHub Actions
 
 **Objective:** 11. **Dependencies:** TASK-07.
 
@@ -139,9 +152,9 @@ Application build scripts still tag images for `acrsharedd01.azurecr.io`. The th
 
 **Acceptance criteria:** Valid charts pass lint, rendering, and schema validation; invalid charts fail CI with actionable diagnostics. PR validation does not require publication credentials.
 
-## TASK-10 — Publish Helm charts to GHCR OCI
+## TASK-11 — Publish Helm charts to GHCR OCI
 
-**Objective:** 10. **Dependencies:** TASK-07, TASK-09.
+**Objective:** 10. **Dependencies:** TASK-07, TASK-10.
 
 - [ ] Define chart versioning and a trusted release trigger; add a GitHub Actions workflow to validate, package, and publish charts to GHCR OCI.
 - [ ] Configure minimum required workflow permissions and intended public package visibility; verify the free-publication requirement against the target account settings.
@@ -150,9 +163,9 @@ Application build scripts still tag images for `acrsharedd01.azurecr.io`. The th
 
 **Acceptance criteria:** A trusted release publishes versioned OCI charts only after validation passes. Public artifacts can be pulled without publisher credentials, and existing released versions are protected from accidental replacement.
 
-## TASK-11 — Configure Flux application releases
+## TASK-12 — Configure Flux application releases
 
-**Objective:** Application deployment portion of the main objective. **Dependencies:** TASK-06, TASK-07, TASK-08, TASK-10.
+**Objective:** Application deployment portion of the main objective. **Dependencies:** TASK-06, TASK-07, TASK-08, TASK-09, TASK-11.
 
 - [ ] Inspect existing Flux application configuration and add only missing OCI sources, Helm releases, and dev values.
 - [ ] Pin application image versions/digests and chart versions; configure dependency ordering and reconciliation timeouts.
@@ -161,9 +174,9 @@ Application build scripts still tag images for `acrsharedd01.azurecr.io`. The th
 
 **Acceptance criteria:** Flux deploys all three applications from the intended Docker Hub images and published chart versions without plaintext secrets in Git. A Git-controlled upgrade and rollback reconcile successfully.
 
-## TASK-12 — Implement and document one-run deployment orchestration
+## TASK-13 — Implement and document one-run deployment orchestration
 
-**Objective:** Automate infrastructure and platform so that microservices are deployed autimatically in a single pipeline run in Azure DevOps. This pipeline run should configure Azure infrastructure, Cloudflare records, FluxCD instance in AKS, Microservices deployment as fluxCD manifests., 14. **Dependencies:** TASK-02, TASK-03, TASK-04, TASK-06, TASK-08, TASK-10, TASK-11; register the entry point through TASK-05.
+**Objective:** Automate infrastructure and platform so that microservices are deployed autimatically in a single pipeline run in Azure DevOps. This pipeline run should configure Azure infrastructure, Cloudflare records, FluxCD instance in AKS, Microservices deployment as fluxCD manifests., 14. **Dependencies:** TASK-02, TASK-03, TASK-04, TASK-06, TASK-08, TASK-09, TASK-11, TASK-12; register the entry point through TASK-05.
 
 - [ ] Write `sprint-planning/deployment-design.md` describing prerequisites, stage contracts, ownership, failure handling, and rollback.
 - [ ] Add the canonical deployment entry point under `.azdo/infrastructure/` and reusable stage templates.
@@ -185,9 +198,9 @@ Application build scripts still tag images for `acrsharedd01.azurecr.io`. The th
 
 **Acceptance criteria:** A fresh dev environment reaches working application endpoints in one pipeline run after documented prerequisites. Re-running is safe; readiness failure prevents DNS changes and produces useful diagnostics.
 
-## TASK-13 — Verify the integrated result
+## TASK-14 — Verify the integrated result
 
-**Objective:** End-to-end acceptance of remaining work. **Dependencies:** TASK-01 through TASK-12.
+**Objective:** End-to-end acceptance of remaining work. **Dependencies:** TASK-01 through TASK-13.
 
 - [ ] Validate all Terraform roots and review migration plans for unintended replacements or removals.
 - [ ] Verify chart validation/publication and image publication with the intended runtime pull access.
@@ -202,11 +215,11 @@ Application build scripts still tag images for `acrsharedd01.azurecr.io`. The th
 
 ## Delivery order
 
-1. Start with the access inventory (01), then begin Terraform restructuring (02), Azure DevOps configuration (04), Docker Hub migration (06), and platform reconciliation (08).
-2. Add Cloudflare Terraform (03), pipeline definitions (05), and application charts (07) as their inputs become available.
-3. Complete chart validation (09), then OCI publication (10), then Flux application releases (11).
-4. Integrate the deployment pipeline (12), finalize its Terraform registration (05) and access documentation (01).
-5. Execute integrated acceptance checks (13).
+1. Start with the access inventory (01), then begin Terraform restructuring (02), Azure DevOps configuration (04), Docker Hub migration (06), and platform migration (08).
+2. Add Cloudflare Terraform (03), pipeline definitions (05), application charts (07), and Traefik ingress (09) as their inputs become available.
+3. Complete chart validation (10), then OCI publication (11), then Flux application releases (12).
+4. Integrate the deployment pipeline (13), finalize its Terraform registration (05) and access documentation (01).
+5. Execute integrated acceptance checks (14).
 
 ## External implementation references
 
