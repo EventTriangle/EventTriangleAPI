@@ -1,313 +1,211 @@
-# Sprint tasks: automated infrastructure and GitOps deployment
-
-## Objective
-
-Deliver one Azure DevOps pipeline run that provisions Azure AKS, bootstraps the FluxCD operator and its repository configuration, waits for platform and application deployments, and creates Cloudflare DNS records through Terraform. Flux manages platform Helm releases and microservice releases. Application images are hosted on Docker Hub; application Helm charts are published to GitHub Container Registry (GHCR) as OCI artifacts.
-
-Source: [objective.txt](objective.txt). This document is an implementation backlog; checkboxes describe work to perform, not completed changes.
-
-## Scope and implementation decisions
-
-- Target `dev` first and keep environment configuration separate from reusable modules so additional environments can be added.
-- Keep Azure Terraform focused on AKS, its supporting resource group/configuration, and the explicitly requested ACR pull permission. Remove Azure observability modules and their inputs, outputs, and dependencies.
-- Retain the requested ACR pull permission during the Docker Hub migration. Record its remaining purpose and whether it becomes optional; removing it entirely requires resolving the conflicting requirements in objectives 2.1 and 4.
-- Use `deprecated/` consistently; the `depracated` spelling in the objective is treated as a typo.
-- Bootstrap prerequisites such as cloud accounts, Terraform state storage, service connections, and credentials must be documented. Once established, normal deployment requires one pipeline invocation without a separate platform run.
-- Keep maintained documentation in the root README, component READMEs, and `sprint-planning/`; remove `docs/` after migrating information that is still needed.
-- Application chart publication and image publication are release prerequisites. The deployment pipeline must select and verify exact existing versions, or invoke and await their builds within the same run; it must never depend on manually triggering a second deployment pipeline.
-
-## Proposed repository layout
-
-```text
-terraform/
-  infrastructure/
-    modules/
-      aks/
-      acr-access/
-    environments/
-      dev/
-    README.md
-  cloudflare/
-    environments/
-      dev/
-    README.md
-  azure-devops/
-    README.md
-charts/
-  authorization/
-  sender/
-  consumer/
-azure-pipelines/
-  infrastructure/
-  templates/
-.github/workflows/
-  helm-validation.yml
-  helm-publication.yml
-deprecated/
-  platform/
-  kubernetes/
-  azure-pipelines/
-sprint-planning/
-  objective.txt
-  tasks.md
-  deployment-design.md
-  developer-access.md
-```
-
-Flux environment manifests and platform Helm releases belong in the selected Flux repository. Chart names and workflow filenames above are proposed implementation targets.
-
-## Detailed backlog
-
-### TASK-01 — Define deployment contracts and migration inventory
-
-**Objective coverage:** Main objective, 14. **Dependencies:** None.
-
-- [ ] Inventory active pipeline entry points, template consumers, Terraform roots/state keys, container build scripts, Kubernetes manifests, secret charts, and platform installers.
-- [ ] Map the authorization, sender, and consumer applications to image names, ports, environment variables, probes, service names, ingress routes, and dependencies.
-- [ ] Inventory PostgreSQL, RabbitMQ, Redis, cert-manager, ingress, and existing persistent data; define migration and rollback ownership.
-- [ ] Specify the Flux repository URL, branch/ref, environment path, namespace conventions, reconciliation interval, and authentication method.
-- [ ] Define pipeline inputs: environment, Azure subscription/service connection, cluster settings, Flux source/ref/path, application release versions, DNS zone/hostnames, and timeouts.
-- [ ] Record the ACR permission decision, secret delivery mechanism, TLS issuance method, and whether deployment consumes published artifacts or builds them in-run.
-- [ ] Write `sprint-planning/deployment-design.md` with stage inputs/outputs and ownership boundaries between Terraform, pipeline bootstrap, and Flux.
-
-**Acceptance criteria:** Every existing deployment responsibility has a destination or explicit retirement decision. Deployment inputs and prerequisites are documented, including all unresolved choices before dependent implementation starts.
-
-### TASK-02 — Restructure Azure Terraform and remove observability
+# Remaining sprint tasks: automated infrastructure and deployment
 
-**Objective coverage:** 2, 2.1. **Dependencies:** TASK-01.
-
-- [ ] Move the existing Azure Terraform into `terraform/infrastructure/`, separating reusable modules from `environments/dev/` root configuration.
-- [ ] Preserve AKS and ACR pull-permission modules and required supporting resources. Parameterize the currently hard-coded ACR resource group.
-- [ ] Remove `log_analytics`, `prometheus`, and `grafana` modules and all related locals, variables, outputs, flags, AKS settings, and dependencies.
-- [ ] Separate environment values from module defaults; declare provider/version constraints and commit appropriate provider lock files.
-- [ ] Export the resource group, cluster name, and other non-secret values required by later pipeline stages.
-- [ ] Document backend initialization, state locking, state-key ownership, and path migration. Preserve existing state associations; use explicit state migration only where addresses/backends change.
-- [ ] Update infrastructure create/destroy and plan/apply templates to use the new paths.
-- [ ] Review the migration plan for unintended AKS replacement and explicitly identify observability resources scheduled for removal.
-
-**Acceptance criteria:** Formatting and validation pass. A reviewed plan contains only intended changes, retains AKS and requested registry access, and has no remaining observability module dependencies. A second apply is idempotent.
+Source: `sprint-planning/objective.txt`.
 
-### TASK-03 — Replace Cloudflare PowerShell with Terraform
+Deliver one Azure DevOps pipeline run that provisions AKS, configures the FluxCD operator and repository reconciliation, waits for platform/application readiness, and provisions Cloudflare DNS through Terraform.
 
-**Objective coverage:** 1, 14. **Dependencies:** TASK-01; integration depends on TASK-09 and TASK-12.
+This backlog contains unfinished work identified from the current repository. It uses the existing `.azdo/` pipeline layout and `.deprecated/` archive convention. External service configuration and Flux repository contents have not been verified; integration tasks must inspect and reuse any existing implementation before adding resources.
 
-- [ ] Inventory record behavior in `cloudflare/*.ps1`, including hostnames, record types, proxy settings, and TTL.
-- [ ] Create an independent Terraform root under `terraform/cloudflare/environments/dev/` using the Cloudflare provider with declared version constraints.
-- [ ] Define inputs for zone identification, desired records, ingress address, TTL, and proxy behavior; supply credentials through secret environment variables.
-- [ ] Give Cloudflare a separate backend state key from Azure infrastructure and Azure DevOps configuration.
-- [ ] Accept the ingress IP or hostname emitted by the readiness stage, validate it, and choose the corresponding DNS record type.
-- [ ] Document/import existing records before managing them to prevent duplicate record creation or unintended removal.
-- [ ] Replace all active PowerShell DNS invocations, then remove the obsolete `cloudflare/` scripts.
+## TASK-01 — Restructure and simplify infrastructure Terraform
 
-**Acceptance criteria:** Terraform creates/updates the required records from pipeline outputs; a repeated apply produces no unintended changes. No active workflow calls the removed scripts, and invalid or missing ingress addresses stop the DNS stage.
+**Objective:** 2, 2.1. **Dependencies:** None.
 
-### TASK-04 — Move and simplify Azure DevOps Terraform
+The Azure Terraform root remains directly under `terraform/`, and observability modules are still referenced by `terraform/main.tf`.
 
-**Objective coverage:** 6. **Dependencies:** TASK-01, TASK-02.
+- [ ] Move Azure configuration into `terraform/infrastructure/`, with reusable `modules/aks`, `modules/acr-access`, and an `environments/dev/` root.
+- [ ] Separate environment values, backend configuration, provider constraints, and module inputs; retain appropriate dependency lock files.
+- [ ] Remove Log Analytics, Prometheus, and Grafana modules and associated variables, outputs, locals, tfvars, and AKS monitoring configuration.
+- [ ] Retain AKS, required supporting resources, and the requested ACR pull permission. Parameterize the hard-coded ACR resource group.
+- [ ] Document why ACR pull permission remains alongside Docker Hub application images; do not silently remove the explicitly requested permission.
+- [ ] Export non-secret AKS identifiers needed by subsequent pipeline stages.
+- [ ] Update `.azdo/infrastructure/` and Terraform templates, including the hard-coded `terraform/terraform.auto.tfvars.json` transformation path.
+- [ ] Preserve existing backend/state associations; document any required state migration and review the plan for unintended cluster replacement.
 
-- [ ] Move `terraform-azdo-libraries/` into `terraform/azure-devops/` and update references and backend instructions.
-- [ ] Start with the Terraform backend configuration variable group as the minimal retained library.
-- [ ] Audit platform-era libraries for Cloudflare, database, Redis, AKS, prefix, Entra ID, Azure credentials, and tfvars transformation against the replacement design.
-- [ ] Remove unused values/groups only after their active consumers are removed or migrated. Keep or recreate values required by the unified pipeline in their documented destination.
-- [ ] Preserve Terraform resource/state associations where possible and review planned variable-group deletions.
-- [ ] Document the initial provisioning order so creating Azure DevOps libraries does not depend on the pipeline that consumes them.
+**Acceptance criteria:** Terraform formatting and validation pass. The reviewed migration plan removes only intended observability resources without unintended AKS replacement. A subsequent plan after apply has no unexpected changes.
 
-**Acceptance criteria:** The new root validates, the backend library is available, and all active variable references resolve. Retired platform settings are absent from the maintained configuration.
+## TASK-02 — Implement Cloudflare DNS Terraform
 
-### TASK-05 — Publish application images to Docker Hub
+**Objective:** 1. **Dependencies:** TASK-07 for final ingress output integration.
 
-**Objective coverage:** 4. **Dependencies:** TASK-01.
+No Cloudflare Terraform root exists in the current repository.
 
-- [ ] Define repositories under `docker.io/petrokolosov` for authorization, sender, and consumer, and document their visibility.
-- [ ] Update `azure-pipelines/build/`, `azure-pipelines/templates/docker-build-push-jobs.yml`, and applicable scripts to authenticate, build, and push to Docker Hub.
-- [ ] Correct the existing template example that uses `petrkolosov` instead of the requested `petrokolosov` namespace.
-- [ ] Adopt reproducible version tags and record image digests for deployment and rollback; avoid relying on `latest`.
-- [ ] Update maintained image references and remove active dependence on ACR login scripts/service connections for application publication.
-- [ ] Configure cluster pull credentials if repositories require them; document pull limits and authentication requirements during implementation.
-- [ ] Remove broad environment dumps from image-build jobs where newly supplied credentials could be exposed.
+- [ ] Add `terraform/cloudflare/` with provider/version configuration, variables, outputs, and separate dev environment/backend state.
+- [ ] Define zone, hostnames, record types, TTL, and proxy settings from the required application endpoints.
+- [ ] Accept the Traefik external IP or hostname as a pipeline input; validate it before planning DNS changes.
+- [ ] Supply the Cloudflare token through protected pipeline environment variables rather than committed configuration.
+- [ ] Inspect existing DNS records and import those that Terraform should own before applying changes.
+- [ ] Document standalone plan/apply instructions and how the deployment pipeline supplies ingress outputs.
 
-**Acceptance criteria:** All three application images can be published and pulled by AKS using documented credentials and exact references. Existing build/test steps still run successfully.
+**Acceptance criteria:** Terraform manages the required records without duplicates, a second apply is idempotent, and missing/invalid ingress addresses fail before DNS mutation.
 
-### TASK-06 — Implement application Helm charts
+## TASK-03 — Relocate and simplify Azure DevOps configuration Terraform
 
-**Objective coverage:** 9. **Dependencies:** TASK-01, TASK-05 for final image defaults.
+**Objective:** 6. **Dependencies:** TASK-01 for backend/environment conventions.
 
-- [ ] Create charts under `charts/authorization`, `charts/sender`, and `charts/consumer`, with metadata, defaults, templates, and README examples.
-- [ ] Translate required behavior from `kubernetes/` into Deployments, Services, configurable ingress, service accounts where needed, and optional autoscaling.
-- [ ] Parameterize replicas, image repository/tag/digest, ports, resources, probes, scheduling, ingress hostnames, and pull-secret references.
-- [ ] Define application configuration and external Secret references for database, RabbitMQ, Redis, and Entra ID dependencies as applicable.
-- [ ] Replace the operational role of `helm/auth-secrets`, `helm/sender-secrets`, and `helm/consumer-secrets`; document their retirement or migration so two systems do not own the same Secret.
-- [ ] Ensure release/namespace naming supports multiple environments; add values validation for required configuration where useful.
-- [ ] Provide dev example values without credentials and document upgrade, rollback, and dependency expectations.
+`terraform-azdo-libraries/` still contains platform-era variable groups and reads provider credentials from a local PAT file.
 
-**Acceptance criteria:** Each chart lints and renders valid manifests for default/example values and the intended dev configuration. All three workloads start with the configured dependencies and no plaintext credentials are committed.
+- [ ] Move the root into `terraform/azure-devops/`, preserving resource/state associations and updating its README.
+- [ ] Keep the Terraform backend configuration library as the initial minimal library and parameterize account/container/state settings.
+- [ ] Map every remaining variable-group consumer in active `.azdo/` pipelines before removing unused Cloudflare, PostgreSQL, Redis, AKS, prefix, Entra ID, and transformation settings.
+- [ ] Migrate still-required configuration and credentials to their chosen destination before deleting old groups.
+- [ ] Replace the provider's local token-file dependency with documented secure authentication suitable for local use and automation.
+- [ ] Document bootstrap ordering for state storage, provider access, libraries, and the pipelines that consume them to avoid a circular dependency.
 
-### TASK-07 — Add GitHub Actions chart validation
+**Acceptance criteria:** The relocated root validates and its plan preserves intended resources. Active pipeline variables resolve, and unused platform libraries are removed from maintained Terraform.
 
-**Objective coverage:** 11. **Dependencies:** TASK-06.
+## TASK-04 — Manage Azure DevOps pipelines through Terraform
 
-- [ ] Add a pull-request/push workflow covering chart changes and workflow changes.
-- [ ] Run Helm lint and template rendering for each affected chart and relevant example/dev values.
-- [ ] Validate rendered Kubernetes resources against the target Kubernetes schema with an explicitly selected validation tool.
-- [ ] Validate any required custom-resource schemas explicitly; document exceptions rather than silently skipping all unknown kinds.
-- [ ] Check chart dependencies and report actionable failures without requiring deployment credentials.
-- [ ] Document and configure the validation check required before chart release/merge, where repository permissions permit.
+**Objective:** 6.1. **Dependencies:** TASK-03; finalize deployment registration after TASK-09.
 
-**Acceptance criteria:** A valid chart change passes; a deliberate invalid value/template/schema fixture fails the appropriate check. Pull requests from untrusted branches cannot publish artifacts.
+- [ ] Inventory existing Azure DevOps pipeline definitions and map them to the maintained `.azdo/` YAML entry points.
+- [ ] Add provider-managed definitions in `terraform/azure-devops/` for the required build, PR-validation, deployment, and retained teardown pipelines.
+- [ ] Configure repository connection, default branch, YAML path, naming, and trigger ownership consistently with the YAML definitions.
+- [ ] Import existing definitions where appropriate instead of creating duplicates; record required repository/service-connection identifiers as inputs.
+- [ ] Configure required variable-group, service-connection, and environment permissions where supported; document any external bootstrap requirements.
+- [ ] Update stale PR path filters from `azure-pipelines/**` to `.azdo/**` and ensure referenced templates exist.
 
-### TASK-08 — Publish Helm charts to GHCR OCI
+**Acceptance criteria:** Applying Terraform creates or adopts the intended pipeline definitions, every definition resolves its YAML path, and a second apply does not create duplicates. Each retained pipeline can be queued with its documented access.
 
-**Objective coverage:** 10. **Dependencies:** TASK-06, TASK-07.
+## TASK-05 — Complete Docker Hub image migration
 
-- [ ] Define a release trigger and chart-version policy, including behavior when multiple charts change.
-- [ ] Implement a GitHub Actions workflow that validates, packages, authenticates to GHCR, and publishes versioned OCI charts.
-- [ ] Grant only required workflow permissions and restrict publication to the intended trusted release context.
-- [ ] Define the package namespace and make intended packages publicly readable, verifying the objective's free-publication requirement against account/package settings.
-- [ ] Prevent unintended replacement of an existing chart version; record artifact version/digest and source revision.
-- [ ] Document OCI pull/install examples and the matching Flux source configuration.
+**Objective:** 4. **Dependencies:** None.
 
-**Acceptance criteria:** A versioned release publishes all selected charts, and an independent client can pull the intended public artifacts without publication credentials. Validation failure prevents publication.
+Application build scripts still tag images for `acrsharedd01.azurecr.io`. The three `.azdo/build/` entry points reference `docker-build-push-acr-jobs.yml`, which is no longer an active template.
 
-### TASK-09 — Move platform installation to Flux and adopt Traefik
+- [ ] Define Docker Hub repositories under `petrokolosov` for authorization, sender, and consumer and confirm repository visibility/access.
+- [ ] Update `scripts/build-auth.sh`, `scripts/build-sender.sh`, and `scripts/build-consumer.sh` to use Docker Hub for version, latest, and cache references.
+- [ ] Wire all three build entry points to the maintained `.azdo/templates/docker-build-push-jobs.yml` template with matching parameter names and script paths.
+- [ ] Replace ACR publication connections and active PR-validation registry references with the appropriate Docker Hub configuration.
+- [ ] Correct registry examples and update maintained README image/build instructions.
+- [ ] Ensure application tests gate release publication and untrusted PR validation cannot push images or access publisher credentials.
+- [ ] Record immutable version tags/digests for deployment and rollback; configure runtime pull credentials if needed.
+- [ ] Remove broad environment dumps from publishing jobs where credentials could be exposed.
 
-**Objective coverage:** 3, 13. **Dependencies:** TASK-01.
+**Acceptance criteria:** All three image builds publish to `docker.io/petrokolosov`, their pipelines resolve active templates, and AKS can pull the selected versions. Application image publication no longer depends on ACR.
 
-- [ ] Inspect the referenced Flux repository and agree the target environment layout before making repository changes.
-- [ ] Represent required platform components as Flux-managed Helm releases and supporting manifests: PostgreSQL, RabbitMQ, Redis, cert-manager where needed, and Traefik.
-- [ ] Replace active NGINX ingress installation/configuration with the Traefik Helm chart, pinned chart versions, ingress class, service exposure, and environment values.
-- [ ] Preserve host/path routing requirements and define TLS behavior, redirects, and certificate references. Do not expose the Traefik dashboard unintentionally.
-- [ ] Define reconciliation dependencies for namespaces, CRDs/controllers, secrets, backing services, and application releases.
-- [ ] Define persistent storage and data migration for stateful platform services; prevent resource ownership conflicts during migration.
-- [ ] Keep Azure observability modules removed; inventory any platform monitoring releases and document whether they are retained as Flux-managed components or retired.
-- [ ] Remove the standalone configure-platform entry point and its exclusive template once replacement deployment is verified.
+## TASK-06 — Implement microservice Helm charts
 
-**Acceptance criteria:** Flux reconciles the required platform releases, Traefik receives a usable external address, and ingress routes can serve the applications. No ongoing platform installation depends on a manually executed PowerShell or Helm command.
+**Objective:** 9. **Dependencies:** TASK-05 for final image references.
 
-### TASK-10 — Define Flux application releases and secret delivery
+- [ ] Create `charts/authorization/`, `charts/sender/`, and `charts/consumer/`, each with chart metadata, values, templates, and usage documentation.
+- [ ] Translate required application behavior into Deployments, Services, configurable ingress, and optional autoscaling, using archived manifests only as reference.
+- [ ] Parameterize names/namespaces, replicas, image tags/digests, ports, requests/limits, scheduling, and startup/readiness/liveness probes.
+- [ ] Map each service's database, RabbitMQ, Redis, Entra ID, and interservice configuration as applicable.
+- [ ] Reference externally supplied Secrets and image-pull secrets; keep credentials out of chart defaults and rendered examples.
+- [ ] Support Traefik ingress class, host/path routing, and configurable TLS references.
+- [ ] Add dev example values and useful values-schema constraints; document dependencies and upgrade/rollback behavior.
 
-**Objective coverage:** Main objective, 3, 9. **Dependencies:** TASK-05, TASK-06, TASK-08, TASK-09.
+**Acceptance criteria:** Each chart lints, renders valid resources, and runs its application with the required backing services. Multiple namespaces/releases do not collide, and charts contain no real credentials.
 
-- [ ] Add Flux OCI chart sources and application Helm releases in the chosen Flux repository/environment path.
-- [ ] Pin chart versions and application image versions/digests, with explicit environment values and namespaces.
-- [ ] Implement the secret delivery mechanism selected in TASK-01, including initial bootstrap and rotation requirements.
-- [ ] Ensure required secrets/configuration and backing services are available before dependent application releases reconcile.
-- [ ] Define how a deployment selects a Git revision and how artifact changes reach that revision; include repository write access only if automation actually needs to update Git.
-- [ ] Document application rollback through a Git/version change and reconcile it in the dev environment.
+## TASK-07 — Configure Flux-managed platform releases and Traefik
 
-**Acceptance criteria:** Flux deploys all three applications from published OCI charts and Docker Hub images. A Git-controlled version update and rollback both reconcile successfully, without secrets in Git or chart artifacts.
+**Objective:** Remaining Helm migration from 3; 13. **Dependencies:** None; feeds TASK-08 and TASK-09.
 
-### TASK-11 — Automate Flux operator bootstrap
+- [ ] Inspect the target Flux repository and identify which platform resources already exist before implementing missing releases or environment values.
+- [ ] Configure the required PostgreSQL, RabbitMQ, Redis, cert-manager where needed, and Traefik Helm releases with pinned versions.
+- [ ] Define dev namespaces, sources, reconciliation dependencies, storage, and required secret references.
+- [ ] Install Traefik through its Helm release, configure the ingress class and external LoadBalancer service, and preserve required application host/path routing.
+- [ ] Decide TLS issuance and certificate ownership, including whether DNS must exist before certificates can become ready.
+- [ ] Document persistence/data migration and release ownership to avoid two controllers managing the same resources.
+- [ ] Define how the pipeline discovers the Traefik address and checks platform readiness.
 
-**Objective coverage:** 14. **Dependencies:** TASK-02, TASK-04, TASK-09, TASK-10.
+**Acceptance criteria:** Flux reconciles the required platform resources and Traefik exposes a usable external address. Platform installation requires no separate manual Helm invocation.
 
-- [ ] Inspect the referenced Ansible bootstrap repository and choose a pinned revision and invocation contract.
-- [ ] Prepare the pipeline agent with the required tools and authenticated access to AKS.
-- [ ] Install/configure the Flux operator and its managed Flux instance using the selected approach; distinguish operator readiness from Flux controller readiness.
-- [ ] Configure the selected Git source, ref, path, and credentials, plus the root reconciliation resource that applies repository contents.
-- [ ] Wait for the operator, controllers, Git source, and root reconciliation to become ready with bounded retries and useful diagnostics.
-- [ ] Make repeated bootstrap runs safe and document controller/operator upgrade ownership.
+## TASK-08 — Add chart validation, OCI publication, and Flux application releases
 
-**Acceptance criteria:** On a newly provisioned dev cluster, automated bootstrap starts reconciliation from the intended repository revision/path. Re-running it does not create duplicate installations or require manual commands.
+**Objective:** 10, 11; application deployment portion of the main objective. **Dependencies:** TASK-05, TASK-06, TASK-07.
 
-### TASK-12 — Implement the single-run Azure DevOps deployment pipeline
+### Chart validation
 
-**Objective coverage:** Main objective, 14. **Dependencies:** TASK-02 through TASK-11.
+- [ ] Add a GitHub Actions workflow triggered by chart/workflow changes on PRs and relevant pushes.
+- [ ] Run Helm lint, template rendering for supported values, and Kubernetes schema validation for all affected charts.
+- [ ] Explicitly validate required custom resources or document narrowly scoped schema exceptions.
+- [ ] Ensure PR validation requires no publication secrets and produces actionable failures.
 
-- [ ] Create one deployment entry point and reusable stage templates using the agreed parameters and service connections.
-- [ ] Implement the sequence below, with stage outputs passed explicitly rather than hard-coded resource names.
-  1. Validate configuration, access, tooling, and selected application/chart artifacts; build/publish them here if that is the chosen release contract.
-  2. Initialize, plan, and apply `terraform/infrastructure/environments/dev`.
-  3. Read AKS outputs, authenticate, and bootstrap the Flux operator/instance and repository reconciliation.
-  4. Wait for required Flux releases, application rollouts, and the Traefik external address.
-  5. Initialize, plan, and apply `terraform/cloudflare/environments/dev` using that address.
-  6. Verify DNS resolution, certificate readiness where applicable, and external application smoke tests.
-- [ ] Separate pre-DNS workload readiness from post-DNS TLS/external checks. If certificate issuance or probes require DNS, design the dependency order to avoid a readiness deadlock.
-- [ ] Configure bounded timeouts, failure propagation, protected diagnostic artifacts, and environment deployment concurrency so overlapping runs cannot race state or release selection.
-- [ ] On reconciliation failures, collect relevant Flux status, pod events, and rollout status without exposing secrets; prevent the DNS stage from running after failed deployment readiness.
-- [ ] Define safe re-run behavior after partial failure and rollback through pinned artifact/Git versions. Do not automatically destroy persistent infrastructure on deployment failure.
-- [ ] Update active create/destroy and build documentation to identify the canonical deployment entry point and the separately controlled teardown procedure.
+### OCI publication
 
-**Acceptance criteria:** One run deploys a fresh dev environment from documented bootstrap prerequisites through working DNS and applications. A repeated run is safe. Failed rollout or missing ingress address blocks DNS mutation and produces actionable diagnostics.
+- [ ] Define chart versioning and a trusted release trigger; add a GitHub Actions workflow to validate, package, and publish charts to GHCR OCI.
+- [ ] Configure minimum required workflow permissions and intended public package visibility; verify the free-publication requirement against the target account settings.
+- [ ] Prevent accidental replacement of a released version and record source revision, chart version, and artifact digest.
+- [ ] Document chart pull/install examples and confirm published public artifacts can be pulled without publisher credentials.
 
-### TASK-13 — Deprecate legacy assets and remove obsolete documentation
+### Flux application deployment
 
-**Objective coverage:** 3, 7, 8, 12. **Dependencies:** TASK-09, TASK-12, TASK-14 documentation replacements.
+- [ ] Inspect existing Flux application configuration and add only missing OCI sources, Helm releases, and dev values.
+- [ ] Pin application image versions/digests and chart versions; configure dependency ordering and reconciliation timeouts.
+- [ ] Implement secret delivery and bootstrap requirements for application and repository credentials without plaintext secrets in Git.
+- [ ] Define how the selected release revision reaches Flux and how upgrades/rollbacks are performed through Git.
 
-- [ ] Move `platform/` to `deprecated/platform/` after its responsibilities are handled by Flux/bootstrap.
-- [ ] Move `kubernetes/` to `deprecated/kubernetes/` after application charts and Flux manifests cover active deployments.
-- [ ] Move `azure-pipelines/deprecated/` to `deprecated/azure-pipelines/`.
-- [ ] Add an archive README explaining that these files are historical and identifying their replacements.
-- [ ] Migrate necessary setup/runbook content from `docs/` to maintained READMEs or sprint planning documents, then remove `docs/`.
-- [ ] Resolve the legacy `helm/` secret charts and helper scripts according to TASK-06; remove all active use of superseded assets.
-- [ ] Update README links, pipeline working directories, path filters, and scripts; exclude deprecated files from active chart/deployment discovery.
+**Acceptance criteria:** Invalid charts fail CI; valid releases publish retrievable OCI artifacts. Flux deploys all three applications from the intended Docker Hub images and chart versions, and a Git-controlled rollback reconciles successfully.
 
-**Acceptance criteria:** The requested legacy folders are archived in the correct locations, `docs/` is absent, and maintained pipelines/documentation do not rely on removed or deprecated operational paths.
+## TASK-09 — Implement and document one-run deployment orchestration
 
-### TASK-14 — Document developer access and the deployment runbook
+**Objective:** Main objective, 14. **Dependencies:** TASK-01, TASK-02, TASK-03, TASK-05, TASK-07, TASK-08; register the entry point through TASK-04.
 
-**Objective coverage:** 5, 14. **Dependencies:** Start with TASK-01; finalize after TASK-12.
+- [ ] Write `sprint-planning/deployment-design.md` describing prerequisites, stage contracts, ownership, failure handling, and rollback.
+- [ ] Add the canonical deployment entry point under `.azdo/infrastructure/` and reusable stage templates.
+- [ ] Parameterize environment, Azure connection, Flux repository/ref/path, release versions, DNS configuration, and bounded timeouts.
+- [ ] Define whether deployment consumes existing published artifacts or builds them in-run. Verify exact selected images/charts exist before infrastructure deployment; no second manual pipeline invocation should be necessary.
+- [ ] Implement the following dependent stages:
+  1. Validate prerequisites and selected artifacts.
+  2. Plan/apply Azure Terraform and export AKS identifiers.
+  3. Authenticate to AKS and bootstrap the Flux operator and managed Flux instance using a verified, pinned installation approach.
+  4. Configure repository authentication, source/ref/path, and root reconciliation; wait for operator/controllers and source readiness.
+  5. Wait for platform/application rollouts and a valid Traefik address.
+  6. Plan/apply Cloudflare Terraform with that address.
+  7. Check DNS, TLS where configured, and externally accessible application endpoints.
+- [ ] Inspect the objective's Ansible example before choosing bootstrap parameters; verify the repository URL and pin a revision.
+- [ ] Split pre-DNS readiness from post-DNS certificate/external checks so TLS issuance cannot deadlock the DNS stage.
+- [ ] Pass outputs explicitly between stages; prevent DNS updates after failed deployment readiness.
+- [ ] Add concurrency control, bounded waits, secret-safe diagnostics, and safe retries after partial failure.
+- [ ] Document initial account/state/service-connection bootstrapping separately from the normal single-run deployment, plus controlled teardown and persistent-data handling.
 
-- [ ] Create `sprint-planning/developer-access.md` with every required account, credential, service connection, and permission. Record purpose, scope, owner, storage location, provisioning steps, rotation/revocation, and consuming workflow; never record actual secret values.
-- [ ] Cover Azure subscription/resource group access, resource provisioning permissions, role-assignment permissions for ACR access, AKS authentication/authorization, and Terraform backend data access.
-- [ ] Cover Azure DevOps project/repository access, pipeline/service-connection use, variable-group administration, and the authentication method needed by the Azure DevOps Terraform provider.
-- [ ] Cover Cloudflare DNS-edit access limited to the relevant zone and any read access needed for zone discovery.
-- [ ] Cover Docker Hub push credentials and conditional private-image pull credentials; separate publisher and runtime identities where applicable.
-- [ ] Cover GitHub source access, GitHub Actions/GHCR publication permissions, Flux repository read credentials, optional automation write credentials, and conditional private-chart pull credentials.
-- [ ] Cover application credentials for PostgreSQL, RabbitMQ, Redis, and Entra ID as used by the applications, plus credentials/keys required by the selected secret-management and TLS mechanisms.
-- [ ] Distinguish required, conditional, and non-secret configuration values; identify where workload identity or public read access avoids an additional token.
-- [ ] Finalize `sprint-planning/deployment-design.md` with bootstrap, deployment, readiness gates, DNS/TLS ordering, rollback, troubleshooting, and teardown/data-retention instructions.
-- [ ] Link both documents from the root README and add component README links for Terraform, charts, and workflows.
+**Acceptance criteria:** A fresh dev environment reaches working application endpoints in one pipeline run after documented prerequisites. Re-running is safe; readiness failure prevents DNS changes and produces useful diagnostics.
 
-**Acceptance criteria:** A developer with the documented access can provision prerequisites and run the deployment without discovering undocumented credentials or manual platform steps. Every secret-consuming job has a documented credential source.
+## TASK-10 — Document required developer access and credentials
 
-### TASK-15 — Validate the complete migration
+**Objective:** 5. **Dependencies:** Begin immediately; finalize against TASK-03, TASK-04, TASK-08, TASK-09.
 
-**Objective coverage:** All objectives. **Dependencies:** TASK-12, TASK-13, TASK-14.
+- [ ] Create `sprint-planning/developer-access.md` and link it and the deployment design from the root README.
+- [ ] For each access requirement, document purpose, required scope, owner, provisioning steps, secure storage location, consumers, and rotation/revocation procedure. Include no actual secret values.
+- [ ] Cover Azure subscription/resource permissions, ACR role-assignment rights, AKS access, and Terraform backend data access.
+- [ ] Cover Azure DevOps project/pipeline administration, repository connections, service connections, variable groups, and Terraform provider authentication.
+- [ ] Cover scoped Cloudflare DNS access and any zone-discovery permission.
+- [ ] Cover Docker Hub publisher access and conditional private-image pull credentials.
+- [ ] Cover GitHub repository access, Actions/GHCR publishing, Flux read access, optional automation write access, and conditional private-chart pull credentials.
+- [ ] Cover application-specific PostgreSQL, RabbitMQ, Redis, and Entra ID credentials and the selected secret/TLS mechanism.
+- [ ] Include credentials required by retained pipeline steps, such as SonarCloud where enabled, after auditing active consumers.
+- [ ] Distinguish required credentials, conditional credentials, and non-secret identifiers; document authentication choices that avoid static tokens.
 
-- [ ] Execute Terraform formatting/validation and review plans for all three roots with their appropriate initialization configuration.
-- [ ] Run chart lint/template/schema checks, publish a test release, and confirm chart/image pulls using the same access model as Flux and AKS.
-- [ ] Run the unified pipeline against a fresh dev environment after documented account/backend bootstrapping.
-- [ ] Verify platform and application health, Traefik routing, DNS targets, TLS where configured, and representative authorized application flows.
-- [ ] Run it again to verify idempotency and run an application upgrade/rollback to verify GitOps ownership.
-- [ ] Exercise invalid Flux repository credentials, an unavailable image/chart version, readiness timeout, and rejected Cloudflare credentials; confirm bounded failures and recovery instructions.
-- [ ] Review moved-state plans for unintended replacement and confirm persistent data remains intact during migration.
-- [ ] Search maintained files for stale paths, ACR application-image references, NGINX configuration, removed observability inputs, and retired platform library names.
-- [ ] Record run links, selected revisions/artifact versions, validation results, and any accepted limitations in the deployment design document.
+**Acceptance criteria:** Every active secret consumer has a documented source, and a developer can establish prerequisites and deploy without discovering undocumented access requirements.
 
-**Acceptance criteria:** The main objective is demonstrated with reproducible evidence; all required migration paths and failure gates have been checked, and there are no undocumented manual steps between pipeline start and application availability.
+## TASK-11 — Verify the integrated result
 
-## Suggested execution order
+**Objective:** End-to-end acceptance of remaining work. **Dependencies:** TASK-01 through TASK-10.
 
-1. **Design and foundation:** TASK-01, then TASK-02, TASK-04, and the initial access inventory in TASK-14.
-2. **Artifacts and platform:** TASK-03, TASK-05, TASK-06, and TASK-09 can progress independently after their design inputs are agreed.
-3. **Chart automation and GitOps:** TASK-07 → TASK-08 → TASK-10 → TASK-11.
-4. **Integration:** TASK-12, followed by final documentation in TASK-14.
-5. **Cleanup and acceptance:** TASK-13 → TASK-15.
+- [ ] Validate all Terraform roots and review migration plans for unintended replacements or removals.
+- [ ] Verify chart validation/publication and image publication with the intended runtime pull access.
+- [ ] Run the unified pipeline in dev; record the run, Git revisions, artifact versions, and resulting endpoints.
+- [ ] Check Flux reconciliation, application health, ingress routing, DNS, TLS, and a representative authenticated application flow.
+- [ ] Re-run deployment to check idempotency and exercise an application upgrade/rollback.
+- [ ] Exercise unavailable artifacts, invalid repository credentials, readiness timeout, and Cloudflare authentication failure; verify bounded failures and documented recovery.
+- [ ] Check active files for broken template paths, stale `azure-pipelines/` filters, obsolete Terraform paths, and application ACR references.
+- [ ] Record verification evidence and remaining limitations in the deployment design.
 
-## Objective traceability
+**Acceptance criteria:** The single-run objective is demonstrated with reproducible evidence and no undocumented manual deployment steps.
 
-| Source objective | Implementation tasks |
-| --- | --- |
-| Main objective: single pipeline deployment | 01, 10, 11, 12, 15 |
-| 1: Cloudflare Terraform | 03 |
-| 2 and 2.1: infrastructure structure and cleanup | 02 |
-| 3: remove platform pipeline; Flux-managed Helm; archive platform | 09, 10, 13 |
-| 4: Docker Hub images | 05 |
-| 5: developer tokens and access | 14 |
-| 6: Azure DevOps Terraform relocation and cleanup | 04 |
-| 7: archive Kubernetes folder | 13 |
-| 8: remove docs folder | 13 |
-| 9: application Helm charts | 06 |
-| 10: OCI chart publication | 08 |
-| 11: Helm CI validation | 07 |
-| 12: relocate deprecated pipelines | 13 |
-| 13: Traefik through Helm | 09 |
-| 14: end-to-end pipeline design and implementation | 01, 03, 11, 12, 14, 15 |
+## Delivery order
 
-## References supplied in the objective
+1. Start Terraform restructuring (01), Azure DevOps configuration (03), Docker Hub migration (05), platform reconciliation (07), and the access inventory (10).
+2. Add Cloudflare Terraform (02), pipeline definitions (04), and application charts (06) as their inputs become available.
+3. Complete chart automation and Flux application releases (08).
+4. Integrate the deployment pipeline (09), finalize its Terraform registration (04) and access documentation (10).
+5. Execute integrated acceptance checks (11).
 
-- [Flux repository example](https://github.com/kolosovpetro/fluxcd-repository)
-- [Flux operator Ansible example](https://github.com/kolosovpetro/fluxcd-operator-install-ansible)
+## External implementation references
+
+- [Flux repository example supplied in the objective](https://github.com/kolosovpetro/fluxcd-repository)
+- [Ansible example URL supplied in the objective](https://github.com/kolosovpetro/.fluxcd-operator-install-ansible)
 - [Target Docker Hub namespace](https://hub.docker.com/repositories/petrokolosov)
 
-The external example repositories could not be retrieved during planning. Their exact structure, variables, and bootstrap interfaces must be verified in TASK-01, TASK-09, and TASK-11 before implementation; this backlog does not assume their contents.
+The GitHub examples could not be retrieved during this review. Their implementation status and interfaces remain unverified; inspect them before implementing the related integration work.
