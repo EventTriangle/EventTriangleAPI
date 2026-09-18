@@ -1,16 +1,14 @@
 # Remaining sprint tasks: automated infrastructure and deployment
 
-Source: `sprint-planning/objective.txt`.
+## Main objective
 
-Deliver one Azure DevOps pipeline run that provisions AKS, configures the FluxCD operator and repository reconciliation, waits for platform/application readiness, and provisions Cloudflare DNS through Terraform.
-
-This backlog contains unfinished work identified from the current repository. It uses the existing `.azdo/` pipeline layout and `.deprecated/` archive convention. External service configuration and Flux repository contents have not been verified; integration tasks must inspect and reuse any existing implementation before adding resources.
+Automate infrastructure and platform so that microservices are deployed autimatically in a single pipeline run in Azure DevOps. This pipeline run should configure Azure infrastructure, Cloudflare records, FluxCD instance in AKS, Microservices deployment as fluxCD manifests.
 
 ## TASK-01 — Document required developer access and credentials
 
 **Objective:** 5. **Dependencies:** Begin immediately; finalize against TASK-04, TASK-05, TASK-08, TASK-11, TASK-10, TASK-12, TASK-13.
 
-- [ ] Create `sprint-planning/developer-access.md` and link it and the deployment design from the root README.
+- [ ] Create `developer-access.md` and link it and the deployment design from the root README.
 - [ ] For each access requirement, document purpose, required scope, owner, provisioning steps, secure storage location, consumers, and rotation/revocation procedure. Include no actual secret values.
 - [ ] Cover Azure subscription/resource permissions, ACR role-assignment rights, AKS access, and Terraform backend data access.
 - [ ] Cover Azure DevOps project/pipeline administration, repository connections, service connections, variable groups, and Terraform provider authentication.
@@ -87,18 +85,19 @@ No Cloudflare Terraform root exists in the current repository.
 
 **Objective:** 4. **Dependencies:** None.
 
-Application build scripts still tag images for `acrsharedd01.azurecr.io`. The three `.azdo/build/` entry points reference `docker-build-push-acr-jobs.yml`, which is no longer an active template.
+Application build scripts still tag images for `acrsharedd01.azurecr.io`. The three `.azdo/build/` entry points reference `docker-build-push-acr-jobs.yml`, extend it for dockerhub repositories too.
 
 - [ ] Define Docker Hub repositories under `petrokolosov` for authorization, sender, and consumer and confirm repository visibility/access.
-- [ ] Update `scripts/build-auth.sh`, `scripts/build-sender.sh`, and `scripts/build-consumer.sh` to use Docker Hub for version, latest, and cache references.
-- [ ] Wire all three build entry points to the maintained `.azdo/templates/docker-build-push-jobs.yml` template with matching parameter names and script paths.
+- [ ] Add dedicated `scripts/dockerhub/build-auth.sh`, `scripts/dockerhub/build-sender.sh`, and `scripts/dockerhub/build-consumer.sh` scripts using Docker Hub for version, latest, and cache references. Preserve the existing ACR build scripts.
+- [ ] Reuse `scripts/docker-build.sh` from the new scripts, resolving Dockerfile and shared-context paths correctly from `scripts/dockerhub/` and accepting the application version as an argument.
+- [ ] Wire all three build entry points to the maintained `.azdo/templates/docker-build-push-jobs.yml` template with matching parameter names and the new Docker Hub script paths.
 - [ ] Replace ACR publication connections and active PR-validation registry references with the appropriate Docker Hub configuration.
-- [ ] Correct registry examples and update maintained README image/build instructions.
+- [ ] Correct registry examples and document Docker Hub authentication, required environment variables, and commands for running each new script in the maintained README.
 - [ ] Ensure application tests gate release publication and untrusted PR validation cannot push images or access publisher credentials.
 - [ ] Record immutable version tags/digests for deployment and rollback; configure runtime pull credentials if needed.
 - [ ] Remove broad environment dumps from publishing jobs where credentials could be exposed.
 
-**Acceptance criteria:** All three image builds publish to `docker.io/petrokolosov`, their pipelines resolve active templates, and AKS can pull the selected versions. Application image publication no longer depends on ACR.
+**Acceptance criteria:** All three dedicated Docker Hub scripts publish version, latest, and cache tags under `docker.io/petrokolosov`, and their pipelines invoke the new scripts through active templates. The existing ACR scripts remain unchanged, Docker Hub publication does not require ACR authentication, and AKS can pull the selected versions.
 
 ## TASK-07 — Migrate `.deprecated/platform/` to the FluxCD repository
 
@@ -141,7 +140,7 @@ Application build scripts still tag images for `acrsharedd01.azurecr.io`. The th
 
 **Acceptance criteria:** Each chart lints, renders valid resources, and runs its application with the required backing services. Multiple namespaces/releases do not collide, and charts contain no real credentials.
 
-## TASK-10 — Publish Helm charts to GHCR OCI
+## TASK-10 — Publish HELM charts to GHCR OCI
 
 **Objective:** 10. **Dependencies:** TASK-09, TASK-11.
 
@@ -152,7 +151,7 @@ Application build scripts still tag images for `acrsharedd01.azurecr.io`. The th
 
 **Acceptance criteria:** A trusted release publishes versioned OCI charts only after validation passes. Public artifacts can be pulled without publisher credentials, and existing released versions are protected from accidental replacement.
 
-## TASK-11 — Add Helm chart validation in GitHub Actions
+## TASK-11 — Add HELM chart validation in GitHub Actions
 
 **Objective:** 11. **Dependencies:** TASK-09.
 
