@@ -199,7 +199,7 @@ Application build scripts still tag images for `acrsharedd01.azurecr.io`. The th
 
 ## TASK-14 — Verify the integrated result
 
-**Objective:** End-to-end acceptance of remaining work. **Dependencies:** TASK-01 through TASK-13.
+**Objective:** End-to-end acceptance of remaining work. **Dependencies:** TASK-01 through TASK-13, TASK-15.
 
 - [ ] Validate all Terraform roots and review migration plans for unintended replacements or removals.
 - [ ] Verify chart validation/publication and image publication with the intended runtime pull access.
@@ -212,13 +212,27 @@ Application build scripts still tag images for `acrsharedd01.azurecr.io`. The th
 
 **Acceptance criteria:** The single-run objective is demonstrated with reproducible evidence and no undocumented manual deployment steps.
 
+## TASK-15 — Migrate Azure DevOps service connections to Terraform
+
+**Objective:** Manage project service connections as code. **Dependencies:** TASK-04; coordinate pipeline permissions and references with TASK-05 before final deployment verification.
+
+- [ ] Run `bash scripts/list-service-connections.sh PROJECT_ID [ORGANIZATION_URL]` to inventory existing connection IDs, names, types, authentication schemes, and sharing status.
+- [ ] Map each retained connection to its pipeline consumers and the appropriate Azure DevOps Terraform provider resource under `terraform/azure-devops/`; document unsupported types and their handling.
+- [ ] Define connection configuration using environment inputs and protected credential sources. Obtain any required credentials from their owners; the inventory does not export secrets.
+- [ ] Import existing connections using their IDs and the resource-specific import format, preserving names and shared-project references to avoid breaking consumers.
+- [ ] Manage required pipeline authorizations and usage permissions, coordinating ownership with TASK-05 and avoiding unrestricted access where unnecessary.
+- [ ] Review plans for unexpected replacement/deletion, validate each retained connection through its consuming pipeline, and verify a second plan has no unintended changes.
+- [ ] Document imports, authentication setup, credential rotation, and any bootstrap requirements in the Azure DevOps Terraform README and developer access guide.
+
+**Acceptance criteria:** Retained supported service connections are managed by Terraform without duplicate connections or broken pipeline references. Credentials are supplied securely, required authorizations work, and unsupported types have documented ownership and handling.
+
 ## Delivery order
 
 1. Start with the access inventory (01), then begin Terraform restructuring (02), Azure DevOps configuration (04), Docker Hub migration (06), and platform migration (07).
 2. Add Cloudflare Terraform (03), pipeline definitions (05), application charts (09), and Traefik ingress (08) as their inputs become available.
 3. Complete chart validation (11), then OCI publication (10), then Flux application releases (12).
 4. Integrate the deployment pipeline (13), finalize its Terraform registration (05) and access documentation (01).
-5. Execute integrated acceptance checks (14).
+5. Complete service-connection migration (15) and verify consuming pipeline permissions before executing integrated acceptance checks (14).
 
 ## External implementation references
 
