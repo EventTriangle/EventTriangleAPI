@@ -11,7 +11,7 @@
 *.sln.docstates
 
 # terraform
-#*.lock.hcl
+*.lock.hcl
 *.tfplan
 *.tfstate
 /terraform/.terraform
