@@ -110,6 +110,8 @@ No Cloudflare Terraform root exists in the current repository.
 
 Application build scripts still tag images for `acrsharedd01.azurecr.io`. The three `.azdo/build/` entry points reference `docker-build-push-acr-jobs.yml`, extend it for dockerhub repositories too.
 
+DockerHub url: https://hub.docker.com/repositories/petrokolosov
+
 - [ ] Define Docker Hub repositories under `petrokolosov` for authorization, sender, and consumer and confirm repository visibility/access.
 - [ ] Add dedicated `scripts/dockerhub/build-auth.sh`, `scripts/dockerhub/build-sender.sh`, and `scripts/dockerhub/build-consumer.sh` scripts using Docker Hub for version, latest, and cache references. Preserve the existing ACR build scripts.
 - [ ] Reuse `scripts/docker-build.sh` from the new scripts, resolving Dockerfile and shared-context paths correctly from `scripts/dockerhub/` and accepting the application version as an argument.
@@ -164,17 +166,27 @@ Application build scripts still tag images for `acrsharedd01.azurecr.io`. The th
 - [ ] Explicitly validate required custom resources or document narrowly scoped schema exceptions.
 - [ ] Ensure PR validation requires no publication secrets and produces actionable failures.
 
-## TASK-15 — Configure GitOps FluxCD manifest repository
+## TASK-15 — Create a private GitOps FluxCD manifest repository
+
+See example: https://github.com/kolosovpetro/fluxcd-repository
 
 - [ ] Inspect existing Flux application configuration and add only missing OCI sources, HELM releases, and dev values.
 - [ ] Pin application image versions/digests and chart versions; configure dependency ordering and reconciliation timeouts.
 - [ ] Implement secret delivery and bootstrap requirements for application and repository credentials without plaintext secrets in Git.
 - [ ] Define how the selected release revision reaches Flux and how upgrades/rollbacks are performed through Git.
 
-## Examples
+## TASK-16 — Create a private Ansible role repository for FluxCD operator bootstrap
 
-- [Flux repository example supplied in the objective](https://github.com/kolosovpetro/fluxcd-repository)
-- [Ansible example URL supplied in the objective](https://github.com/kolosovpetro/.fluxcd-operator-install-ansible)
-- [Target Docker Hub namespace](https://hub.docker.com/repositories/petrokolosov)
+See example: https://github.com/kolosovpetro/fluxcd-operator-install-ansible
 
-The GitHub examples could not be retrieved during this review. Their implementation status and interfaces remain unverified; inspect them before implementing the related integration work.
+- [ ] Create a private Git repository for the Ansible role and configure developer and Azure DevOps pipeline access through the credentials documented in TASK-01.
+- [ ] Add a reusable role structure with defaults, tasks, templates, metadata, pinned dependencies, and an example playbook for configuring the target AKS cluster.
+- [ ] Implement installation and configuration of the FluxCD operator and its managed Flux instance, with configurable namespace and pinned operator/controller versions.
+- [ ] Parameterize Kubernetes authentication, Flux manifest repository URL, branch/tag/commit reference, environment path, reconciliation interval, and readiness timeouts.
+- [ ] Configure the managed Flux instance to synchronize with the manifest repository from TASK-15, including the Git source and root reconciliation needed to apply its manifests.
+- [ ] Provision repository authentication from protected inputs or existing Kubernetes Secrets. Keep credentials out of Git and Ansible logs, and document separate access for fetching the private role repository and reading the manifest repository.
+- [ ] Make bootstrap idempotent and wait for operator, controllers, source synchronization, and root reconciliation readiness with bounded timeouts and useful failure diagnostics.
+- [ ] Add Ansible lint/syntax checks and verify bootstrap against a test cluster, including a second run and a repository authentication failure.
+- [ ] Document local and Azure DevOps invocation, required permissions, variable examples, credential rotation, and upgrade/rollback steps. Define the pipeline integration in TASK-03 using a pinned role repository revision.
+
+**Acceptance criteria:** The private repository contains a reusable, tested Ansible role that configures the FluxCD operator and starts reconciliation from the intended manifest repository reference and path. Repeated execution is safe, readiness failures are reported, and credentials are not committed or printed.
