@@ -6,6 +6,8 @@ Automate infrastructure and platform so that microservices are deployed autimati
 
 ## TASK-01 — Document required developer access and credentials
 
+**Dependencies:** None.
+
 - [ ] Create `developer-access.md` and link it and the deployment design from the root README.
 - [ ] For each access requirement, document purpose, required scope, owner, provisioning steps, secure storage location, consumers, and rotation/revocation procedure. Include no actual secret values.
 - [ ] Cover Azure subscription/resource permissions, ACR role-assignment rights, AKS access, and Terraform backend data access.
@@ -18,6 +20,8 @@ Automate infrastructure and platform so that microservices are deployed autimati
 - [ ] Distinguish required credentials, conditional credentials, and non-secret identifiers; document authentication choices that avoid static tokens.
 
 ## TASK-02 — Configure WSL with Ubuntu 26.04 and install development tools
+
+**Dependencies:** None.
 
 - [ ] Enable WSL 2 on Windows, install Ubuntu 26.04 using the verified distribution identifier, and confirm the distribution runs under WSL 2.
 - [ ] Configure the Linux user, sudo access, package updates, Git, and repository checkout under the Linux home directory; document any required WSL networking or systemd settings.
@@ -32,6 +36,8 @@ Automate infrastructure and platform so that microservices are deployed autimati
 **Acceptance criteria:** A fresh WSL 2 Ubuntu 26.04 environment can install and run all listed tools using the documented steps. Version checks and Docker connectivity checks pass, and no undocumented installer compatibility workarounds are required.
 
 ## TASK-03 — Document one-run deployment orchestration
+
+**Dependencies:** None.
 
 One click on pipeline should fully deploy infrastructure and microservices.
 
@@ -55,6 +61,8 @@ One click on pipeline should fully deploy infrastructure and microservices.
 
 ## TASK-04 — Restructure and simplify infrastructure Terraform
 
+**Dependencies:** TASK-02
+
 - [ ] Move Azure configuration into `terraform/infrastructure/`, with reusable `modules/aks`, `modules/acr-access`, and an `environments/dev/` root.
 - [ ] Separate environment values, backend configuration, provider constraints, and module inputs; retain appropriate dependency lock files.
 - [ ] Move retained configuration values from `terraform/terraform.auto.tfvars.json` into `default` attributes of the corresponding variable declarations in the new infrastructure root's `variables.tf`, then remove the redundant auto.tfvars file. Keep environment overrides explicit and supply secrets through protected inputs.
@@ -67,6 +75,8 @@ One click on pipeline should fully deploy infrastructure and microservices.
 
 ## TASK-05 — Implement Cloudflare DNS Terraform
 
+**Dependencies:** TASK-02
+
 No Cloudflare Terraform root exists in the current repository.
 
 - [ ] Add `terraform/cloudflare/` with provider/version configuration, variables, outputs, and separate dev environment/backend state.
@@ -78,9 +88,9 @@ No Cloudflare Terraform root exists in the current repository.
 
 ## TASK-06 — Cleanup Azure DevOps Variable Groups Terraform
 
-`terraform-azdo-libraries/` still contains platform-era variable groups and reads provider credentials from a local PAT file.
+**Dependencies:** TASK-02
 
-- [ ] Move the root into `terraform/azure-devops/`, preserving resource/state associations and updating its README.
+- [ ] Move the folder `terraform-azdo-libraries` under `terraform/azure-devops/`, preserving resource/state associations and updating its README.
 - [ ] Keep the Terraform backend configuration library as the initial minimal library and parameterize account/container/state settings.
 - [ ] Map every remaining variable-group consumer in active `.azdo/` pipelines before removing unused Cloudflare, PostgreSQL, Redis, AKS, prefix, Entra ID, and transformation settings.
 - [ ] Migrate still-required configuration and credentials to their chosen destination before deleting old groups.
@@ -88,6 +98,8 @@ No Cloudflare Terraform root exists in the current repository.
 - [ ] Document bootstrap ordering for state storage, provider access, libraries, and the pipelines that consume them to avoid a circular dependency.
 
 ## TASK-07 — Manage Azure DevOps pipelines through Terraform
+
+**Dependencies:** TASK-02
 
 - [ ] Inventory existing Azure DevOps pipeline definitions and map them to the maintained `.azdo/` YAML entry points.
 - [ ] Add provider-managed definitions in `terraform/azure-devops/` for the required build, PR-validation, deployment, and retained teardown pipelines.
@@ -97,6 +109,8 @@ No Cloudflare Terraform root exists in the current repository.
 - [ ] Update stale PR path filters from `azure-pipelines/**` to `.azdo/**` and ensure referenced templates exist.
 
 ## TASK-08 — Migrate Azure DevOps service connections to Terraform
+
+**Dependencies:** TASK-02
 
 - [ ] Run `bash scripts/list-service-connections.sh PROJECT_ID [ORGANIZATION_URL]` to inventory existing connection IDs, names, types, authentication schemes, and sharing status.
 - [ ] Map each retained connection to its pipeline consumers and the appropriate Azure DevOps Terraform provider resource under `terraform/azure-devops/`; document unsupported types and their handling.
@@ -108,7 +122,11 @@ No Cloudflare Terraform root exists in the current repository.
 
 ## TASK-09 — Complete Docker Hub image migration
 
+**Dependencies:** TASK-02
+
 Application build scripts still tag images for `acrsharedd01.azurecr.io`. The three `.azdo/build/` entry points reference `docker-build-push-acr-jobs.yml`, extend it for dockerhub repositories too.
+
+DockerHub url: https://hub.docker.com/repositories/petrokolosov
 
 - [ ] Define Docker Hub repositories under `petrokolosov` for authorization, sender, and consumer and confirm repository visibility/access.
 - [ ] Add dedicated `scripts/dockerhub/build-auth.sh`, `scripts/dockerhub/build-sender.sh`, and `scripts/dockerhub/build-consumer.sh` scripts using Docker Hub for version, latest, and cache references. Preserve the existing ACR build scripts.
@@ -122,6 +140,8 @@ Application build scripts still tag images for `acrsharedd01.azurecr.io`. The th
 
 ## TASK-10 — Migrate `.deprecated/platform/` to the FluxCD repository
 
+**Dependencies:** TASK-15
+
 - [ ] Inventory installers, manifests, configuration, and helper scripts in `.deprecated/platform/` and map each required responsibility to its destination in the FluxCD repository.
 - [ ] Inspect the target FluxCD repository and reuse existing platform resources before adding missing releases or environment values.
 - [ ] Convert required PostgreSQL, RabbitMQ, Redis, and cert-manager installations into Flux-managed HELM releases with pinned versions and supporting manifests.
@@ -132,6 +152,8 @@ Application build scripts still tag images for `acrsharedd01.azurecr.io`. The th
 
 ## TASK-11 — Implement Traefik ingress through HELM
 
+**Dependencies:** TASK-10
+
 - [ ] Add a pinned Traefik HELM release and chart source to the FluxCD repository with dev environment values.
 - [ ] Configure its namespace, ingress class, entry points, and external LoadBalancer service.
 - [ ] Replace required NGINX routing behavior with Traefik-compatible configuration, preserving application host/path routing and coordinating chart ingress values with TASK-12.
@@ -140,6 +162,8 @@ Application build scripts still tag images for `acrsharedd01.azurecr.io`. The th
 - [ ] Add bounded ingress readiness checks and verify application routing after application releases are available.
 
 ## TASK-12 — Implement microservice HELM charts
+
+**Dependencies:** TASK-02
 
 - [ ] Create `charts/authorization/`, `charts/sender/`, and `charts/consumer/`, each with chart metadata, values, templates, and usage documentation.
 - [ ] Translate required application behavior into Deployments, Services, configurable ingress, and optional autoscaling, using archived manifests only as reference.
@@ -151,6 +175,8 @@ Application build scripts still tag images for `acrsharedd01.azurecr.io`. The th
 
 ## TASK-13 — Publish HELM charts to GHCR OCI
 
+**Dependencies:** TASK-12
+
 - [ ] Define chart versioning and a trusted release trigger; add a GitHub Actions workflow to validate, package, and publish charts to GHCR OCI.
 - [ ] Automate semantic versioning using GitVersion setup and execute tasks in the publication workflow. Fetch full Git history and tags, use the repository's `GitVersion.yml` configuration, and apply the calculated semantic version to each packaged chart's `version` without manual version edits.
 - [ ] Configure minimum required workflow permissions and intended public package visibility; verify the free-publication requirement against the target account settings.
@@ -159,22 +185,37 @@ Application build scripts still tag images for `acrsharedd01.azurecr.io`. The th
 
 ## TASK-14 — Add HELM chart validation in GitHub Actions
 
+**Dependencies:** TASK-12
+
 - [ ] Add a GitHub Actions workflow triggered by chart/workflow changes on PRs and relevant pushes.
 - [ ] Run HELM lint, template rendering for supported values, and Kubernetes schema validation for all affected charts.
 - [ ] Explicitly validate required custom resources or document narrowly scoped schema exceptions.
 - [ ] Ensure PR validation requires no publication secrets and produces actionable failures.
 
-## TASK-15 — Configure GitOps FluxCD manifest repository
+## TASK-15 — Create a private GitOps FluxCD manifest repository
 
+**Dependencies:** TASK-02
+
+See example: https://github.com/kolosovpetro/fluxcd-repository
+
+- [ ] Establish the repository foundation first: create the private repository, configure access, define the dev environment path and namespace/secret conventions, and add a minimal root reconciliation structure usable by TASK-16.
 - [ ] Inspect existing Flux application configuration and add only missing OCI sources, HELM releases, and dev values.
 - [ ] Pin application image versions/digests and chart versions; configure dependency ordering and reconciliation timeouts.
 - [ ] Implement secret delivery and bootstrap requirements for application and repository credentials without plaintext secrets in Git.
 - [ ] Define how the selected release revision reaches Flux and how upgrades/rollbacks are performed through Git.
 
-## Examples
+## TASK-16 — Create a private Ansible role repository for FluxCD operator bootstrap
 
-- [Flux repository example supplied in the objective](https://github.com/kolosovpetro/fluxcd-repository)
-- [Ansible example URL supplied in the objective](https://github.com/kolosovpetro/.fluxcd-operator-install-ansible)
-- [Target Docker Hub namespace](https://hub.docker.com/repositories/petrokolosov)
+**Dependencies:** TASK-02
 
-The GitHub examples could not be retrieved during this review. Their implementation status and interfaces remain unverified; inspect them before implementing the related integration work.
+See example: https://github.com/kolosovpetro/fluxcd-operator-install-ansible
+
+- [ ] Create a private Git repository for the Ansible role and configure developer and Azure DevOps pipeline access through the credentials documented in TASK-01.
+- [ ] Add a reusable role structure with defaults, tasks, templates, metadata, pinned dependencies, and an example playbook for configuring the target AKS cluster.
+- [ ] Implement installation and configuration of the FluxCD operator and its managed Flux instance, with configurable namespace and pinned operator/controller versions.
+- [ ] Parameterize Kubernetes authentication, Flux manifest repository URL, branch/tag/commit reference, environment path, reconciliation interval, and readiness timeouts.
+- [ ] Configure the managed Flux instance to synchronize with the manifest repository from TASK-15, including the Git source and root reconciliation needed to apply its manifests.
+- [ ] Provision repository authentication from protected inputs or existing Kubernetes Secrets. Keep credentials out of Git and Ansible logs, and document separate access for fetching the private role repository and reading the manifest repository.
+- [ ] Make bootstrap idempotent and wait for operator, controllers, source synchronization, and root reconciliation readiness with bounded timeouts and useful failure diagnostics.
+- [ ] Add Ansible lint/syntax checks and verify bootstrap against a test cluster, including a second run and a repository authentication failure.
+- [ ] Document local and Azure DevOps invocation, required permissions, variable examples, credential rotation, and upgrade/rollback steps. Define the pipeline integration in TASK-03 using a pinned role repository revision.
