@@ -33,11 +33,6 @@ parameters:
     displayName: 'Sas Token'
     type: string
 
-  - name: prefix
-    displayName: 'Prefix'
-    default: 'd01'
-    type: string
-
   - name: subscriptionId
     displayName: 'Azure Subscription Id'
     type: string
@@ -75,17 +70,10 @@ stages:
             inputs:
               terraformVersion: '${{ parameters.terraformVersion }}'
 
-          - task: FileTransform@2
-            displayName: 'Transform terraform.auto.tfvars.json'
-            inputs:
-              folderPath: '$(System.DefaultWorkingDirectory)'
-              xmlTransformationRules: ''
-              jsonTargetFiles: 'terraform/terraform.auto.tfvars.json'
-
           - powershell: |
               terraform init -backend=false
               terraform validate
-              terraform fmt -check
+              terraform fmt -check -recursive "$(System.DefaultWorkingDirectory)/terraform/infrastructure"
             displayName: "Run tf validate"
             workingDirectory: '${{ parameters.workingDirectory }}'
 
@@ -94,7 +82,7 @@ stages:
                 -backend-config="storage_account_name=$env:TF_STATE_BLOB_ACCOUNT_NAME" `
                 -backend-config="container_name=$env:TF_STATE_BLOB_CONTAINER_NAME" `
                 -backend-config="key=$env:TF_STATE_BLOB_FILE" `
-                -backend-config="sas_token=$env:TF_STATE_BLOB_SAS_TOKEN" -reconfigure -upgrade
+                -backend-config="sas_token=$env:TF_STATE_BLOB_SAS_TOKEN" -reconfigure
             displayName: 'Terraform Init'
             workingDirectory: ${{ parameters.workingDirectory }}
             env:
@@ -105,7 +93,7 @@ stages:
 
           - ${{ if eq(parameters.destroy, false) }}:
             - powershell: |
-                terraform plan -var "prefix=${{ parameters.prefix }}" -out main.tfplan
+                terraform plan -out main.tfplan
               displayName: 'Terraform Plan'
               workingDirectory: ${{ parameters.workingDirectory }}
               env:
@@ -116,7 +104,7 @@ stages:
 
           - ${{ if eq(parameters.destroy, true) }}:
             - powershell: |
-                terraform plan -destroy -var "prefix=${{ parameters.prefix }}" -out main.tfplan
+                terraform plan -destroy -out main.tfplan
               displayName: 'Terraform Plan'
               workingDirectory: ${{ parameters.workingDirectory }}
               env:

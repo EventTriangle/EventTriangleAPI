@@ -1,1 +1,7 @@
-terraform plan -destroy -out main.tfplan
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+terraform -chdir="${SCRIPT_DIR}/infrastructure/environments/dev" plan -destroy -out main.tfplan

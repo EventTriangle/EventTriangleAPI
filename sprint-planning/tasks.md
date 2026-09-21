@@ -23,15 +23,15 @@ Automate infrastructure and platform so that microservices are deployed autimati
 
 **Dependencies:** None.
 
-- [ ] Enable WSL 2 on Windows, install Ubuntu 26.04 using the verified distribution identifier, and confirm the distribution runs under WSL 2.
-- [ ] Configure the Linux user, sudo access, package updates, Git, and repository checkout under the Linux home directory; document any required WSL networking or systemd settings.
-- [ ] Review the installers in `scripts/` for Ubuntu 26.04 and CPU architecture compatibility before executing them. Resolve package-source compatibility, including the Azure CLI installer's hard-coded `noble` repository and Terraform's codename-based repository.
-- [ ] Install prerequisites and run the existing installers for Azure CLI (`scripts/azure-cli/install-az-cli.sh`), Terraform (`scripts/install-terraform/install-terraform.sh`), Python/pip/venv/pipx (`scripts/install-python/install-python.sh`), and HELM (`scripts/install-helm/install-helm.sh`).
-- [ ] Run the existing installers for kubectl (`scripts/kubectl/install-kubectl.sh`), Flux CLI (`scripts/install-fluxcd-client/install-fluxcd-client.sh`), k9s (`scripts/k9s/install-k9s.sh`), jq (`scripts/jq/install-jq.sh`), and yq (`scripts/yq/install-yq.sh`).
-- [ ] Install the Azure DevOps CLI extension and configure authentication using the developer access guide. Treat login, image-build, and deployment scripts separately from software installers.
-- [ ] Configure Docker access from WSL and verify Docker Buildx is available for the repository's build scripts; document any additional setup not covered by existing installers.
-- [ ] Verify installed tool versions, PATH availability in a fresh shell, Docker connectivity, and safe re-running of installers; fix installer compatibility issues discovered during setup.
-- [ ] Document the Windows and Ubuntu setup steps, installer execution order, tested versions, and troubleshooting in `scripts/README.md`, and link it from the root README.
+- [x] Enable WSL 2 on Windows, install Ubuntu 26.04 using the verified distribution identifier, and confirm the distribution runs under WSL 2.
+- [x] Configure the Linux user, sudo access, package updates, Git, and repository checkout under the Linux home directory; document any required WSL networking or systemd settings.
+- [x] Review the installers in `scripts/` for Ubuntu 26.04 and CPU architecture compatibility before executing them. Resolve package-source compatibility, including the Azure CLI installer's hard-coded `noble` repository and Terraform's codename-based repository.
+- [x] Install prerequisites and run the existing installers for Azure CLI (`scripts/azure-cli/install-az-cli.sh`), Terraform (`scripts/install-terraform/install-terraform.sh`), Python/pip/venv/pipx (`scripts/install-python/install-python.sh`), and HELM (`scripts/install-helm/install-helm.sh`).
+- [x] Run the existing installers for kubectl (`scripts/kubectl/install-kubectl.sh`), Flux CLI (`scripts/install-fluxcd-client/install-fluxcd-client.sh`), k9s (`scripts/k9s/install-k9s.sh`), jq (`scripts/jq/install-jq.sh`), and yq (`scripts/yq/install-yq.sh`).
+- [x] Install the Azure DevOps CLI extension and configure authentication using the developer access guide. Treat login, image-build, and deployment scripts separately from software installers.
+- [x] Configure Docker access from WSL and verify Docker Buildx is available for the repository's build scripts; document any additional setup not covered by existing installers.
+- [x] Verify installed tool versions, PATH availability in a fresh shell, Docker connectivity, and safe re-running of installers; fix installer compatibility issues discovered during setup.
+- [x] Document the Windows and Ubuntu setup steps, installer execution order, tested versions, and troubleshooting in `scripts/README.md`, and link it from the root README.
 
 **Acceptance criteria:** A fresh WSL 2 Ubuntu 26.04 environment can install and run all listed tools using the documented steps. Version checks and Docker connectivity checks pass, and no undocumented installer compatibility workarounds are required.
 
@@ -63,15 +63,15 @@ One click on pipeline should fully deploy infrastructure and microservices.
 
 **Dependencies:** TASK-02
 
-- [ ] Move Azure configuration into `terraform/infrastructure/`, with reusable `modules/aks`, `modules/acr-access`, and an `environments/dev/` root.
-- [ ] Separate environment values, backend configuration, provider constraints, and module inputs; retain appropriate dependency lock files.
-- [ ] Move retained configuration values from `terraform/terraform.auto.tfvars.json` into `default` attributes of the corresponding variable declarations in the new infrastructure root's `variables.tf`, then remove the redundant auto.tfvars file. Keep environment overrides explicit and supply secrets through protected inputs.
-- [ ] Remove Log Analytics, Prometheus, and Grafana modules and associated variables, outputs, locals, tfvars, and AKS monitoring configuration.
-- [ ] Retain AKS, required supporting resources, and the requested ACR pull permission. Parameterize the hard-coded ACR resource group.
-- [ ] Document why ACR pull permission remains alongside Docker Hub application images; do not silently remove the explicitly requested permission.
-- [ ] Export non-secret AKS identifiers needed by subsequent pipeline stages.
-- [ ] Update `.azdo/infrastructure/` and Terraform templates to use the new root and variable defaults; remove the obsolete `terraform/terraform.auto.tfvars.json` transformation step and its unused inputs.
-- [ ] Preserve existing backend/state associations; document any required state migration and review the plan for unintended cluster replacement.
+- [x] Move Azure configuration into `terraform/infrastructure/`, with reusable `modules/aks`, `modules/acr-access`, and an `environments/dev/` root.
+- [x] Separate environment values, backend configuration, provider constraints, and module inputs; retain appropriate dependency lock files.
+- [x] Move retained configuration values from `terraform/terraform.auto.tfvars.json` into `default` attributes of the corresponding variable declarations in the new infrastructure root's `variables.tf`, then remove the redundant auto.tfvars file. Keep environment overrides explicit and supply secrets through protected inputs.
+- [x] Remove Log Analytics, Prometheus, and Grafana modules and associated variables, outputs, locals, tfvars, and AKS monitoring configuration.
+- [x] Retain AKS, required supporting resources, and the requested ACR pull permission. Parameterize the hard-coded ACR resource group.
+- [x] Document why ACR pull permission remains alongside Docker Hub application images; do not silently remove the explicitly requested permission.
+- [x] Export non-secret AKS identifiers needed by subsequent pipeline stages.
+- [x] Update `.azdo/infrastructure/` and Terraform templates to use the new root and variable defaults; remove the obsolete `terraform/terraform.auto.tfvars.json` transformation step and its unused inputs.
+- [x] Preserve existing backend/state associations; document any required state migration and review the plan for unintended cluster replacement.
 
 ## TASK-05 — Implement Cloudflare DNS Terraform
 

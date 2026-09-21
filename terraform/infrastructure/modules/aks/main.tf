@@ -28,18 +28,4 @@ resource "azurerm_kubernetes_cluster" "aks" {
     network_plugin = "azure"
     network_policy = "azure"
   }
-
-  dynamic "oms_agent" {
-    for_each = var.should_deploy_log_analytics ? [1] : []
-    content {
-      log_analytics_workspace_id      = var.log_analytics_workspace_id
-      msi_auth_for_monitoring_enabled = true
-    }
-  }
-
-  lifecycle {
-    ignore_changes = [
-      monitor_metrics
-    ]
-  }
 }
