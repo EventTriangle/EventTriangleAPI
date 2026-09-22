@@ -1,0 +1,147 @@
+trigger: none
+pr: none
+
+parameters:
+  - name: traefikEndpoint
+    displayName: 'Traefik external IP or hostname'
+    type: string
+    default: ''
+
+  - name: recordType
+    displayName: 'Cloudflare DNS record type'
+    type: string
+    default: 'AUTO'
+    values:
+      - AUTO
+      - A
+      - AAAA
+      - CNAME
+
+  - name: applyChanges
+    displayName: 'Apply the reviewed DNS plan'
+    type: boolean
+    default: false
+
+variables:
+  - group: Cloudflare_API_Key
+  - group: Terraform_Backend_StateFile_Settings
+  - name: terraformVersion
+    value: '1.16.0'
+  - name: workingDirectory
+    value: '$(System.DefaultWorkingDirectory)/terraform/cloudflare/environments/dev'
+  - name: cloudflareStateFile
+    value: 'cloudflare-dev.tfstate'
+
+stages:
+  - stage: Cloudflare_Plan
+    displayName: 'Cloudflare DNS Plan'
+    jobs:
+      - job: Cloudflare_Plan
+        displayName: 'Validate and plan Cloudflare DNS'
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - checkout: self
+            fetchDepth: 0
+
+          - task: TerraformInstaller@1
+            displayName: 'Install Terraform $(terraformVersion)'
+            inputs:
+              terraformVersion: '$(terraformVersion)'
+
+          - bash: |
+              terraform/cloudflare/validate-traefik-endpoint.sh "$TRAEFIK_ENDPOINT" "$RECORD_TYPE"
+            displayName: 'Validate Traefik endpoint'
+            env:
+              TRAEFIK_ENDPOINT: ${{ parameters.traefikEndpoint }}
+              RECORD_TYPE: ${{ parameters.recordType }}
+
+          - bash: |
+              terraform init -backend=false
+              terraform validate
+              terraform fmt -check -recursive "$(System.DefaultWorkingDirectory)/terraform/cloudflare"
+            displayName: 'Validate Cloudflare Terraform'
+            workingDirectory: '$(workingDirectory)'
+
+          - bash: |
+              terraform init \
+                -backend-config="storage_account_name=$TF_STATE_BLOB_ACCOUNT_NAME" \
+                -backend-config="container_name=$TF_STATE_BLOB_CONTAINER_NAME" \
+                -backend-config="key=$TF_STATE_BLOB_FILE" \
+                -backend-config="sas_token=$TF_STATE_BLOB_SAS_TOKEN" \
+                -reconfigure
+            displayName: 'Initialize Cloudflare state'
+            workingDirectory: '$(workingDirectory)'
+            env:
+              TF_STATE_BLOB_ACCOUNT_NAME: $(library-storage-account)
+              TF_STATE_BLOB_CONTAINER_NAME: $(library-storage-container)
+              TF_STATE_BLOB_FILE: $(cloudflareStateFile)
+              TF_STATE_BLOB_SAS_TOKEN: $(library-sas-token)
+
+          - bash: terraform plan -input=false -out=cloudflare.tfplan
+            displayName: 'Plan Cloudflare DNS'
+            workingDirectory: '$(workingDirectory)'
+            env:
+              CLOUDFLARE_API_TOKEN: $(cloudflare-api-key)
+              TF_VAR_traefik_endpoint: ${{ parameters.traefikEndpoint }}
+              TF_VAR_record_type: ${{ parameters.recordType }}
+              TF_IN_AUTOMATION: 'true'
+
+          - task: PublishPipelineArtifact@1
+            displayName: 'Publish Cloudflare plan'
+            inputs:
+              targetPath: '$(workingDirectory)/cloudflare.tfplan'
+              artifact: 'cloudflare-plan'
+
+  - ${{ if eq(parameters.applyChanges, true) }}:
+    - stage: Cloudflare_Apply
+      displayName: 'Cloudflare DNS Apply'
+      dependsOn: Cloudflare_Plan
+      condition: succeeded()
+      jobs:
+        - deployment: Cloudflare_Apply
+          displayName: 'Apply reviewed Cloudflare DNS plan'
+          pool:
+            vmImage: 'ubuntu-latest'
+          environment: dev
+          strategy:
+            runOnce:
+              deploy:
+                steps:
+                  - checkout: self
+                    fetchDepth: 0
+
+                  - task: TerraformInstaller@1
+                    displayName: 'Install Terraform $(terraformVersion)'
+                    inputs:
+                      terraformVersion: '$(terraformVersion)'
+
+                  - task: DownloadPipelineArtifact@2
+                    displayName: 'Download Cloudflare plan'
+                    inputs:
+                      artifact: 'cloudflare-plan'
+                      path: '$(Pipeline.Workspace)/cloudflare-plan'
+
+                  - bash: |
+                      terraform init \
+                        -backend-config="storage_account_name=$TF_STATE_BLOB_ACCOUNT_NAME" \
+                        -backend-config="container_name=$TF_STATE_BLOB_CONTAINER_NAME" \
+                        -backend-config="key=$TF_STATE_BLOB_FILE" \
+                        -backend-config="sas_token=$TF_STATE_BLOB_SAS_TOKEN" \
+                        -reconfigure
+                    displayName: 'Initialize Cloudflare state'
+                    workingDirectory: '$(workingDirectory)'
+                    env:
+                      TF_STATE_BLOB_ACCOUNT_NAME: $(library-storage-account)
+                      TF_STATE_BLOB_CONTAINER_NAME: $(library-storage-container)
+                      TF_STATE_BLOB_FILE: $(cloudflareStateFile)
+                      TF_STATE_BLOB_SAS_TOKEN: $(library-sas-token)
+
+                  - bash: terraform apply -input=false -auto-approve "$(Pipeline.Workspace)/cloudflare-plan/cloudflare.tfplan"
+                    displayName: 'Apply Cloudflare DNS'
+                    workingDirectory: '$(workingDirectory)'
+                    env:
+                      CLOUDFLARE_API_TOKEN: $(cloudflare-api-key)
+                      TF_VAR_traefik_endpoint: ${{ parameters.traefikEndpoint }}
+                      TF_VAR_record_type: ${{ parameters.recordType }}
+                      TF_IN_AUTOMATION: 'true'

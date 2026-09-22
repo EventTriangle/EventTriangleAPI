@@ -79,12 +79,12 @@ One click on pipeline should fully deploy infrastructure and microservices.
 
 No Cloudflare Terraform root exists in the current repository.
 
-- [ ] Add `terraform/cloudflare/` with provider/version configuration, variables, outputs, and separate dev environment/backend state.
-- [ ] Define zone, hostnames, record types, TTL, and proxy settings from the required application endpoints.
-- [ ] Accept the Traefik external IP or hostname as a pipeline input; validate it before planning DNS changes.
-- [ ] Supply the Cloudflare token through protected pipeline environment variables rather than committed configuration.
-- [ ] Inspect existing DNS records and import those that Terraform should own before applying changes.
-- [ ] Document standalone plan/apply instructions and how the deployment pipeline supplies ingress outputs.
+- [x] Add `terraform/cloudflare/` with provider/version configuration, variables, outputs, and separate dev environment/backend state.
+- [x] Define zone, hostnames, record types, TTL, and proxy settings from the required application endpoints.
+- [x] Accept the Traefik external IP or hostname as a pipeline input; validate it before planning DNS changes.
+- [x] Supply the Cloudflare token through protected pipeline environment variables rather than committed configuration.
+- [x] Inspect existing DNS records and import those that Terraform should own before applying changes.
+- [x] Document standalone plan/apply instructions and how the deployment pipeline supplies ingress outputs.
 
 ## TASK-06 — Cleanup Azure DevOps Variable Groups Terraform
 

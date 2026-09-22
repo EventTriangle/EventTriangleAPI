@@ -13,10 +13,12 @@
 # terraform
 *.lock.hcl
 !terraform/infrastructure/environments/dev/.terraform.lock.hcl
+!terraform/cloudflare/environments/dev/.terraform.lock.hcl
 *.tfplan
 *.tfstate
 .terraform/
 terraform/infrastructure/environments/*/backend.hcl
+terraform/cloudflare/environments/*/backend.hcl
 *.backup
 *.lock.info
 *.conf
