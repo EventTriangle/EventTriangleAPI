@@ -12,9 +12,11 @@
 
 # terraform
 *.lock.hcl
+!terraform/infrastructure/environments/dev/.terraform.lock.hcl
 *.tfplan
 *.tfstate
-/terraform/.terraform
+.terraform/
+terraform/infrastructure/environments/*/backend.hcl
 *.backup
 *.lock.info
 *.conf
@@ -384,4 +386,3 @@ coverage.opencover.xml
 **/*.typings
 **/*.DS_Store
 **/*.Thumbs.db
-

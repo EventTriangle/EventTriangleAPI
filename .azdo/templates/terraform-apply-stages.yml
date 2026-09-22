@@ -88,18 +88,11 @@ stages:
                     terraformVersion: '${{ parameters.terraformVersion }}'
 
                 - powershell: |
-                    echo "Logging in to Azure..."
-                    az login --service-principal -u ${{ parameters.clientId }} -p ${{ parameters.clientSecret }} --tenant ${{ parameters.tenantId }}
-                    echo "Run an Azure CLI command to verify"
-                    az aks list --output table
-                  displayName: 'Azure CLI Login and List AKS Clusters'
-
-                - powershell: |
                     terraform init `
                       -backend-config="storage_account_name=$env:TF_STATE_BLOB_ACCOUNT_NAME" `
                       -backend-config="container_name=$env:TF_STATE_BLOB_CONTAINER_NAME" `
                       -backend-config="key=$env:TF_STATE_BLOB_FILE" `
-                      -backend-config="sas_token=$env:TF_STATE_BLOB_SAS_TOKEN" -reconfigure -upgrade
+                      -backend-config="sas_token=$env:TF_STATE_BLOB_SAS_TOKEN" -reconfigure
                   displayName: 'Terraform Init'
                   workingDirectory: ${{ parameters.workingDirectory }}
                   env:

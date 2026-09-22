@@ -1,1 +1,7 @@
-terraform fmt -recursive
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+terraform fmt -recursive "${SCRIPT_DIR}/infrastructure"
