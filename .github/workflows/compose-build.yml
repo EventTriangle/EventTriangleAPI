@@ -12,25 +12,29 @@ on:
   workflow_dispatch:
 
 jobs:
-  angular-build:
+  compose-build:
     name: Docker compose build
-    runs-on: ${{ matrix.environment }}
-    strategy:
-      matrix:
-        environment:
-          - ubuntu-latest
+    runs-on: ubuntu-latest
+    env:
+      EVENT_TRIANGLE_AD_CLIENT_SECRET: 'TEST_SECRET'
     steps:
-      - name: 'Checkout'
+      - name: Checkout
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
+      - name: Validate Docker compose
+        run: docker compose config --quiet
+
       - name: Docker compose build
-        run: |
-          docker compose build
+        run: docker compose build
 
       - name: Docker compose up
+        run: docker compose up --detach --wait --wait-timeout 180
+
+      - name: Docker compose diagnostics and cleanup
+        if: always()
         run: |
-          docker compose up -d
-        env:
-          EVENT_TRIANGLE_AD_CLIENT_SECRET: 'TEST_SECRET'
+          docker compose ps --all || true
+          docker compose logs --no-color || true
+          docker compose down --volumes --remove-orphans
