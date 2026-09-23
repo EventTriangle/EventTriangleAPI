@@ -82,12 +82,14 @@ record with the same name.
 
 ## Pipeline input
 
-`.azdo/cloudflare/terraform-dns.yml` accepts `traefikPublicIp` as a runtime
-parameter. The deployment pipeline should obtain the IPv4 address from
-`status.loadBalancer.ingress[0].ip` on the Traefik service, pass it to this
-pipeline/root as `TF_VAR_traefik_public_ip`, and run DNS only after Traefik
-readiness succeeds. The pipeline passes the Cloudflare token only as
-`CLOUDFLARE_API_TOKEN` from the protected `Cloudflare_API_Key` variable group.
+`.azdo/cloudflare/terraform-dns.yml` authenticates to AKS and calls
+`get-traefik-public-ip.sh`. The script reads
+`status.loadBalancer.ingress[0].ip` from the Traefik service with `kubectl` and
+sets `TF_VAR_traefik_public_ip` for the Terraform plan. A plan-only test falls
+back to the variable default `10.10.190.1` when Traefik is not installed; an
+apply refuses to continue without a live service IP. The pipeline passes the
+Cloudflare token only as `CLOUDFLARE_API_TOKEN` from the protected
+`Cloudflare_API_Key` variable group.
 
 TASK-03 will connect this root to the complete deployment-stage output. TASK-11
 will define the final Traefik service name and readiness command.

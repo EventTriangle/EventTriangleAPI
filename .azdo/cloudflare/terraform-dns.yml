@@ -2,11 +2,6 @@ trigger: none
 pr: none
 
 parameters:
-  - name: traefikPublicIp
-    displayName: 'Traefik public IPv4 address'
-    type: string
-    default: ''
-
   - name: applyChanges
     displayName: 'Apply the reviewed DNS plan'
     type: boolean
@@ -14,6 +9,7 @@ parameters:
 
 variables:
   - group: Cloudflare_API_Key
+  - group: Terraform_Azure_Credentials
   - group: Terraform_Backend_StateFile_Settings
   - name: terraformVersion
     value: '1.16.0'
@@ -21,6 +17,16 @@ variables:
     value: '$(System.DefaultWorkingDirectory)/terraform/cloudflare/environments/dev'
   - name: cloudflareStateFile
     value: 'cloudflare-dev.tfstate'
+  - name: aksResourceGroup
+    value: 'rg-aks-d01'
+  - name: aksClusterName
+    value: 'my-aks-cluster-d01'
+  - name: traefikNamespace
+    value: 'traefik'
+  - name: traefikServiceName
+    value: 'traefik'
+  - name: traefikPublicIp
+    value: '10.10.190.1'
 
 stages:
   - stage: Cloudflare_Plan
@@ -40,10 +46,33 @@ stages:
               terraformVersion: '$(terraformVersion)'
 
           - bash: |
-              terraform/cloudflare/validate-traefik-endpoint.sh "$TRAEFIK_PUBLIC_IP"
-            displayName: 'Validate Traefik public IP'
+              bash scripts/azure-cli/az-login.sh
+              az account set --subscription "$AZURE_SUBSCRIPTION_ID"
+              az aks get-credentials \
+                --resource-group "$AKS_RESOURCE_GROUP" \
+                --name "$AKS_CLUSTER_NAME" \
+                --overwrite-existing
+            displayName: 'Connect to AKS'
             env:
-              TRAEFIK_PUBLIC_IP: ${{ parameters.traefikPublicIp }}
+              AZURE_CLIENT_ID: $(library-client-id)
+              AZURE_CLIENT_SECRET: $(library-client-secret)
+              AZURE_TENANT_ID: $(library-tenant-id)
+              AZURE_SUBSCRIPTION_ID: $(library-subscription-id)
+              AKS_RESOURCE_GROUP: $(aksResourceGroup)
+              AKS_CLUSTER_NAME: $(aksClusterName)
+
+          - bash: |
+              terraform/cloudflare/get-traefik-public-ip.sh \
+                "$TRAEFIK_NAMESPACE" \
+                "$TRAEFIK_SERVICE_NAME" \
+                "$TRAEFIK_FALLBACK_IP" \
+                "$REQUIRE_LIVE_IP"
+            displayName: 'Get Traefik public IP'
+            env:
+              TRAEFIK_NAMESPACE: $(traefikNamespace)
+              TRAEFIK_SERVICE_NAME: $(traefikServiceName)
+              TRAEFIK_FALLBACK_IP: $(traefikPublicIp)
+              REQUIRE_LIVE_IP: ${{ parameters.applyChanges }}
 
           - bash: |
               terraform init -backend=false
@@ -72,7 +101,7 @@ stages:
             workingDirectory: '$(workingDirectory)'
             env:
               CLOUDFLARE_API_TOKEN: $(cloudflare-api-key)
-              TF_VAR_traefik_public_ip: ${{ parameters.traefikPublicIp }}
+              TF_VAR_traefik_public_ip: $(traefikPublicIp)
               TF_IN_AUTOMATION: 'true'
 
           - task: PublishPipelineArtifact@1
@@ -130,5 +159,4 @@ stages:
                     workingDirectory: '$(workingDirectory)'
                     env:
                       CLOUDFLARE_API_TOKEN: $(cloudflare-api-key)
-                      TF_VAR_traefik_public_ip: ${{ parameters.traefikPublicIp }}
                       TF_IN_AUTOMATION: 'true'
