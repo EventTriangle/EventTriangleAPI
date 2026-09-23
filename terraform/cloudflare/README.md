@@ -8,8 +8,8 @@ The current application endpoint is:
 
 - `auth-eventtriangle.razumovsky.me`
 
-The root manages one `A` record whose content is the Traefik public IPv4 address
-obtained by the deployment Bash script.
+The root manages one `A` record whose content is the Traefik public IPv4 address.
+For now that address uses the default from `environments/dev/variables.tf`.
 
 ## Authentication and permissions
 
@@ -55,7 +55,6 @@ instead of recreated. Inspect it first through the Cloudflare dashboard or API,
 then import it with the zone ID and record ID:
 
 ```bash
-export TF_VAR_traefik_public_ip="<current Traefik public IPv4 address>"
 terraform import \
   cloudflare_dns_record.application \
   '<zone-id>/<dns-record-id>'
@@ -66,10 +65,7 @@ Do not repeat the import unless the state has been deliberately replaced.
 
 ## Local plan and apply
 
-Validate the Traefik address before asking Terraform to contact Cloudflare:
-
 ```bash
-../../validate-traefik-endpoint.sh "$TF_VAR_traefik_public_ip"
 terraform fmt -check -recursive ../..
 terraform validate
 terraform plan -out=cloudflare.tfplan
@@ -80,16 +76,13 @@ Review the plan before applying it. Changing the Traefik LoadBalancer address is
 expected to update the existing DNS record in place; it must not create a second
 record with the same name.
 
-## Pipeline input
+## Pipeline
 
-`.azdo/cloudflare/terraform-dns.yml` authenticates to AKS and calls
-`get-traefik-public-ip.sh`. The script reads
-`status.loadBalancer.ingress[0].ip` from the Traefik service with `kubectl` and
-sets `TF_VAR_traefik_public_ip` for the Terraform plan. A plan-only test falls
-back to the variable default `10.10.190.1` when Traefik is not installed; an
-apply refuses to continue without a live service IP. The pipeline passes the
-Cloudflare token only as `CLOUDFLARE_API_TOKEN` from the protected
-`Cloudflare_API_Key` variable group.
+`.azdo/cloudflare/terraform-dns.yml` reuses the shared Terraform plan and apply
+templates and points them at the Cloudflare Terraform base path. It does not
+connect to AKS or override `traefik_public_ip`; Terraform uses the current
+default value. The pipeline passes the Cloudflare token only as
+`CLOUDFLARE_API_TOKEN` from the protected `Cloudflare_API_Key` variable group.
 
 TASK-03 will connect this root to the complete deployment-stage output. TASK-11
 will define the final Traefik service name and readiness command.
