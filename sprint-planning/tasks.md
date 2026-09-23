@@ -90,12 +90,12 @@ No Cloudflare Terraform root exists in the current repository.
 
 **Dependencies:** TASK-02
 
-- [ ] Move the folder `terraform-azdo-libraries` under `terraform/azure-devops/`, preserving resource/state associations and updating its README.
-- [ ] Keep the Terraform backend configuration library as the initial minimal library and parameterize account/container/state settings.
-- [ ] Map every remaining variable-group consumer in active `.azdo/` pipelines before removing unused Cloudflare, PostgreSQL, Redis, AKS, prefix, Entra ID, and transformation settings.
+- [x] Move the folder `terraform-azdo-libraries` under `terraform/azure-devops/`, preserving resource/state associations and updating its README.
+- [x] Keep the Terraform backend configuration library as the initial minimal library and parameterize account/container/state settings.
+- [x] Map every remaining variable-group consumer in active `.azdo/` pipelines before removing unused Cloudflare, PostgreSQL, Redis, AKS, prefix, Entra ID, and transformation settings.
 - [ ] Migrate still-required configuration and credentials to their chosen destination before deleting old groups.
-- [ ] Replace the provider's local token-file dependency with documented secure authentication suitable for local use and automation.
-- [ ] Document bootstrap ordering for state storage, provider access, libraries, and the pipelines that consume them to avoid a circular dependency.
+- [x] Replace the provider's local token-file dependency with documented secure authentication suitable for local use and automation.
+- [x] Document bootstrap ordering for state storage, provider access, libraries, and the pipelines that consume them to avoid a circular dependency.
 
 ## TASK-07 — Manage Azure DevOps pipelines through Terraform
 
