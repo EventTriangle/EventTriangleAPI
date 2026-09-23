@@ -1,69 +1,121 @@
-version: '3.9'
-
 services:
   auth-service:
     build:
-      context: src
+      context: src/authorization
+      additional_contexts:
+        shared: src/shared
       args:
         VERSION: '1.0.0.0'
         FRONT_API_URL: 'http://localhost:7000/'
-      dockerfile: authorization/Dockerfile
+      dockerfile: Dockerfile
     ports:
-      - "7000:80"
+      - "7000:8080"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Docker
-      - EVENT_TRIANGLE_AD_CLIENT_SECRET=${EVENT_TRIANGLE_AD_CLIENT_SECRET}
+      ASPNETCORE_ENVIRONMENT: Docker
+      EVENT_TRIANGLE_AD_CLIENT_SECRET: ${EVENT_TRIANGLE_AD_CLIENT_SECRET}
+      RedisUrl: redis
+      RedisPassword: ${REDIS_PASSWORD:-redis}
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c ': >/dev/tcp/127.0.0.1/8080'"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 10s
 
   consumer-service:
     build:
-      context: src
+      context: src/consumer
+      additional_contexts:
+        shared: src/shared
       args:
         VERSION: '1.0.0.0'
-      dockerfile: consumer/Dockerfile
+      dockerfile: Dockerfile
     ports:
-      - "7001:80"
+      - "7001:8080"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Docker
+      ASPNETCORE_ENVIRONMENT: Docker
     depends_on:
-      - db
-      - rabbit
+      db:
+        condition: service_healthy
+      rabbit:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c ': >/dev/tcp/127.0.0.1/8080'"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 10s
 
   sender-service:
     build:
-      context: src
+      context: src/sender
+      additional_contexts:
+        shared: src/shared
       args:
         VERSION: '1.0.0.0'
-      dockerfile: sender/Dockerfile
+      dockerfile: Dockerfile
     ports:
-      - "7002:80"
-      - "7005:81"
+      - "7002:8080"
+      - "7005:8081"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Docker
+      ASPNETCORE_ENVIRONMENT: Docker
     depends_on:
-      - db
-      - rabbit
+      db:
+        condition: service_healthy
+      rabbit:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c ': >/dev/tcp/127.0.0.1/8080'"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 10s
   
   db:
-    image: postgres:latest
+    image: postgres:17-alpine
     restart: always
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
     ports:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
-    container_name: pgsql-db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready --username postgres"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 5s
   
   rabbit:
     image: rabbitmq:4-management
     environment:
-      - RABBITMQ_DEFAULT_USER=guest
-      - RABBITMQ_DEFAULT_PASS=guest
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
     ports:
       - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+
+  redis:
+    image: redis:7-alpine
+    command: redis-server --requirepass ${REDIS_PASSWORD:-redis}
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli --no-auth-warning -a ${REDIS_PASSWORD:-redis} ping | grep PONG"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 5s
 
 volumes:
   pgdata:
