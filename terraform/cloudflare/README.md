@@ -36,12 +36,11 @@ different key from the Azure infrastructure state:
 - container: `tfstatecontainer01`
 - key: `cloudflare-dev.tfstate`
 
-Copy `environments/dev/backend.hcl.example` to the ignored
-`environments/dev/backend.hcl`, add the SAS token locally, and initialize with:
+Create the ignored `environments/dev/backend.hcl` locally with the storage
+account, container, state key, and SAS token, then initialize with:
 
 ```bash
 cd terraform/cloudflare/environments/dev
-cp backend.hcl.example backend.hcl
 terraform init -backend-config=backend.hcl
 ```
 
