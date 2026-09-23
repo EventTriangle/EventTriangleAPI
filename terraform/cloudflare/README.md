@@ -1,17 +1,15 @@
 # Cloudflare DNS Terraform
 
 The development root in `environments/dev` manages the public application DNS
-records that point to the Traefik LoadBalancer. The zone itself is discovered by
-name and remains outside this Terraform state.
+record that points to the Traefik LoadBalancer. The zone itself remains outside
+this Terraform state and is referenced by its Cloudflare zone ID.
 
 The current application endpoint is:
 
 - `auth-eventtriangle.razumovsky.me`
 
-All configured hostnames use the same Traefik endpoint. An IPv4 address creates
-an `A` record, an IPv6 address creates an `AAAA` record, and a DNS hostname
-creates a `CNAME` record. Set `record_type` explicitly only when automatic
-detection is not appropriate.
+The root manages one `A` record whose content is the Traefik public IPv4 address
+obtained by the deployment Bash script.
 
 ## Authentication and permissions
 
@@ -57,9 +55,9 @@ instead of recreated. Inspect it first through the Cloudflare dashboard or API,
 then import it with the zone ID and record ID:
 
 ```bash
-export TF_VAR_traefik_endpoint="<current A/AAAA address or hostname>"
+export TF_VAR_traefik_public_ip="<current Traefik public IPv4 address>"
 terraform import \
-  'cloudflare_dns_record.application["auth-eventtriangle"]' \
+  cloudflare_dns_record.application \
   '<zone-id>/<dns-record-id>'
 ```
 
@@ -71,7 +69,7 @@ Do not repeat the import unless the state has been deliberately replaced.
 Validate the Traefik address before asking Terraform to contact Cloudflare:
 
 ```bash
-../../validate-traefik-endpoint.sh "$TF_VAR_traefik_endpoint" AUTO
+../../validate-traefik-endpoint.sh "$TF_VAR_traefik_public_ip"
 terraform fmt -check -recursive ../..
 terraform validate
 terraform plan -out=cloudflare.tfplan
@@ -84,11 +82,11 @@ record with the same name.
 
 ## Pipeline input
 
-`.azdo/cloudflare/terraform-dns.yml` accepts `traefikEndpoint` as a runtime
-parameter. The deployment pipeline should obtain the address from
-`status.loadBalancer.ingress[0].ip` or `.hostname` on the Traefik service, pass
-it to this pipeline/root as `TF_VAR_traefik_endpoint`, and run DNS only after
-Traefik readiness succeeds. The pipeline passes the Cloudflare token only as
+`.azdo/cloudflare/terraform-dns.yml` accepts `traefikPublicIp` as a runtime
+parameter. The deployment pipeline should obtain the IPv4 address from
+`status.loadBalancer.ingress[0].ip` on the Traefik service, pass it to this
+pipeline/root as `TF_VAR_traefik_public_ip`, and run DNS only after Traefik
+readiness succeeds. The pipeline passes the Cloudflare token only as
 `CLOUDFLARE_API_TOKEN` from the protected `Cloudflare_API_Key` variable group.
 
 TASK-03 will connect this root to the complete deployment-stage output. TASK-11

@@ -2,20 +2,10 @@ trigger: none
 pr: none
 
 parameters:
-  - name: traefikEndpoint
-    displayName: 'Traefik external IP or hostname'
+  - name: traefikPublicIp
+    displayName: 'Traefik public IPv4 address'
     type: string
     default: ''
-
-  - name: recordType
-    displayName: 'Cloudflare DNS record type'
-    type: string
-    default: 'AUTO'
-    values:
-      - AUTO
-      - A
-      - AAAA
-      - CNAME
 
   - name: applyChanges
     displayName: 'Apply the reviewed DNS plan'
@@ -50,11 +40,10 @@ stages:
               terraformVersion: '$(terraformVersion)'
 
           - bash: |
-              terraform/cloudflare/validate-traefik-endpoint.sh "$TRAEFIK_ENDPOINT" "$RECORD_TYPE"
-            displayName: 'Validate Traefik endpoint'
+              terraform/cloudflare/validate-traefik-endpoint.sh "$TRAEFIK_PUBLIC_IP"
+            displayName: 'Validate Traefik public IP'
             env:
-              TRAEFIK_ENDPOINT: ${{ parameters.traefikEndpoint }}
-              RECORD_TYPE: ${{ parameters.recordType }}
+              TRAEFIK_PUBLIC_IP: ${{ parameters.traefikPublicIp }}
 
           - bash: |
               terraform init -backend=false
@@ -83,8 +72,7 @@ stages:
             workingDirectory: '$(workingDirectory)'
             env:
               CLOUDFLARE_API_TOKEN: $(cloudflare-api-key)
-              TF_VAR_traefik_endpoint: ${{ parameters.traefikEndpoint }}
-              TF_VAR_record_type: ${{ parameters.recordType }}
+              TF_VAR_traefik_public_ip: ${{ parameters.traefikPublicIp }}
               TF_IN_AUTOMATION: 'true'
 
           - task: PublishPipelineArtifact@1
@@ -142,6 +130,5 @@ stages:
                     workingDirectory: '$(workingDirectory)'
                     env:
                       CLOUDFLARE_API_TOKEN: $(cloudflare-api-key)
-                      TF_VAR_traefik_endpoint: ${{ parameters.traefikEndpoint }}
-                      TF_VAR_record_type: ${{ parameters.recordType }}
+                      TF_VAR_traefik_public_ip: ${{ parameters.traefikPublicIp }}
                       TF_IN_AUTOMATION: 'true'
