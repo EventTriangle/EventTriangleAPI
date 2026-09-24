@@ -61,6 +61,11 @@ parameters:
     displayName: 'Azure Tenant Id'
     type: string
 
+  - name: terraformEnvironment
+    displayName: 'Additional Terraform environment variables'
+    type: object
+    default: {}
+
 stages:
   - stage: ${{ parameters.stageName }}
     displayName: ${{ parameters.stageName }}
@@ -115,3 +120,5 @@ stages:
                     ARM_CLIENT_ID: ${{ parameters.clientId }}
                     ARM_CLIENT_SECRET: ${{ parameters.clientSecret }}
                     ARM_TENANT_ID: ${{ parameters.tenantId }}
+                    ${{ each variable in parameters.terraformEnvironment }}:
+                      ${{ variable.key }}: ${{ variable.value }}

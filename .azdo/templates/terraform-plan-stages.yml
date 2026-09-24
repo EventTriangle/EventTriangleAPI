@@ -13,6 +13,11 @@ parameters:
     type: string
     default: 'latest'
 
+  - name: terraformBasePath
+    displayName: 'Terraform base path checked by fmt'
+    type: string
+    default: '$(System.DefaultWorkingDirectory)/terraform/infrastructure'
+
   - name: workingDirectory
     displayName: 'Working Directory for Terraform'
     type: string
@@ -53,6 +58,11 @@ parameters:
     displayName: 'Should destroy infrastructure'
     type: boolean
 
+  - name: terraformEnvironment
+    displayName: 'Additional Terraform environment variables'
+    type: object
+    default: {}
+
 stages:
   - stage: ${{ parameters.stageName }}
     displayName: ${{ parameters.stageName }}
@@ -73,7 +83,7 @@ stages:
           - powershell: |
               terraform init -backend=false
               terraform validate
-              terraform fmt -check -recursive "$(System.DefaultWorkingDirectory)/terraform/infrastructure"
+              terraform fmt -check -recursive "${{ parameters.terraformBasePath }}"
             displayName: "Run tf validate"
             workingDirectory: '${{ parameters.workingDirectory }}'
 
@@ -101,6 +111,8 @@ stages:
                 ARM_CLIENT_ID: ${{ parameters.clientId }}
                 ARM_CLIENT_SECRET: ${{ parameters.clientSecret }}
                 ARM_TENANT_ID: ${{ parameters.tenantId }}
+                ${{ each variable in parameters.terraformEnvironment }}:
+                  ${{ variable.key }}: ${{ variable.value }}
 
           - ${{ if eq(parameters.destroy, true) }}:
             - powershell: |
@@ -112,6 +124,8 @@ stages:
                 ARM_CLIENT_ID: ${{ parameters.clientId }}
                 ARM_CLIENT_SECRET: ${{ parameters.clientSecret }}
                 ARM_TENANT_ID: ${{ parameters.tenantId }}
+                ${{ each variable in parameters.terraformEnvironment }}:
+                  ${{ variable.key }}: ${{ variable.value }}
 
           - powershell: |
               cp main.tfplan $(Build.ArtifactStagingDirectory)

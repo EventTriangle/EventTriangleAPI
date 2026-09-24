@@ -1,0 +1,64 @@
+trigger: none
+pr: none
+
+parameters:
+  - name: applyChanges
+    displayName: 'Apply the reviewed DNS plan'
+    type: boolean
+    default: false
+
+variables:
+  - group: Cloudflare_API_Key
+  - group: Terraform_Azure_Credentials
+  - group: Terraform_Backend_StateFile_Settings
+  - name: terraformVersion
+    value: '1.16.0'
+  - name: workingDirectory
+    value: '$(System.DefaultWorkingDirectory)/terraform/cloudflare/environments/dev'
+  - name: cloudflareStateFile
+    value: 'cloudflare-dev.tfstate'
+  - name: planStageName
+    value: 'Cloudflare_Plan'
+  - name: applyStageName
+    value: 'Cloudflare_Apply'
+
+stages:
+  - template: ../templates/terraform-plan-stages.yml
+    parameters:
+      stageName: ${{ variables.planStageName }}
+      vmImage: windows-latest
+      terraformVersion: $(terraformVersion)
+      terraformBasePath: $(System.DefaultWorkingDirectory)/terraform/cloudflare
+      workingDirectory: $(workingDirectory)
+      storageAccount: $(library-storage-account)
+      storageContainer: $(library-storage-container)
+      stateFile: $(cloudflareStateFile)
+      sasToken: $(library-sas-token)
+      subscriptionId: $(library-subscription-id)
+      clientId: $(library-client-id)
+      clientSecret: $(library-client-secret)
+      tenantId: $(library-tenant-id)
+      destroy: false
+      terraformEnvironment:
+        CLOUDFLARE_API_TOKEN: $(cloudflare-api-key)
+
+  - ${{ if eq(parameters.applyChanges, true) }}:
+    - template: ../templates/terraform-apply-stages.yml
+      parameters:
+        stageName: ${{ variables.applyStageName }}
+        vmImage: windows-latest
+        terraformVersion: $(terraformVersion)
+        workingDirectory: $(workingDirectory)
+        storageAccount: $(library-storage-account)
+        storageContainer: $(library-storage-container)
+        stateFile: $(cloudflareStateFile)
+        sasToken: $(library-sas-token)
+        subscriptionId: $(library-subscription-id)
+        clientId: $(library-client-id)
+        clientSecret: $(library-client-secret)
+        tenantId: $(library-tenant-id)
+        environment: dev
+        dependsOn: [ '${{ variables.planStageName }}' ]
+        condition: ${{ variables.planStageName }}
+        terraformEnvironment:
+          CLOUDFLARE_API_TOKEN: $(cloudflare-api-key)
