@@ -1,4 +1,0 @@
-storage_account_name = "tfstatestorage011"
-container_name       = "tfstatecontainer01"
-key                  = "cloudflare-dev.tfstate"
-sas_token            = "<supply-through-a-protected-local-or-pipeline-value>"

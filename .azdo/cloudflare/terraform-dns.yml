@@ -17,16 +17,6 @@ variables:
     value: '$(System.DefaultWorkingDirectory)/terraform/cloudflare/environments/dev'
   - name: cloudflareStateFile
     value: 'cloudflare-dev.tfstate'
-  - name: aksResourceGroup
-    value: 'rg-aks-d01'
-  - name: aksClusterName
-    value: 'my-aks-cluster-d01'
-  - name: traefikNamespace
-    value: 'traefik'
-  - name: traefikServiceName
-    value: 'traefik'
-  - name: traefikPublicIp
-    value: '10.10.190.1'
   - name: planStageName
     value: 'Cloudflare_Plan'
   - name: applyStageName
@@ -36,10 +26,9 @@ stages:
   - template: ../templates/terraform-plan-stages.yml
     parameters:
       stageName: ${{ variables.planStageName }}
-      vmImage: ubuntu-latest
+      vmImage: windows-latest
       terraformVersion: $(terraformVersion)
-      terraformScriptType: bash
-      terraformFormatDirectory: $(System.DefaultWorkingDirectory)/terraform/cloudflare
+      terraformBasePath: $(System.DefaultWorkingDirectory)/terraform/cloudflare
       workingDirectory: $(workingDirectory)
       storageAccount: $(library-storage-account)
       storageContainer: $(library-storage-container)
@@ -50,48 +39,15 @@ stages:
       clientSecret: $(library-client-secret)
       tenantId: $(library-tenant-id)
       destroy: false
-      planFileName: cloudflare.tfplan
       terraformEnvironment:
         CLOUDFLARE_API_TOKEN: $(cloudflare-api-key)
-        TF_VAR_traefik_public_ip: $(traefikPublicIp)
-        TF_IN_AUTOMATION: 'true'
-      beforeTerraformSteps:
-        - bash: |
-            bash scripts/azure-cli/az-login.sh
-            az account set --subscription "$AZURE_SUBSCRIPTION_ID"
-            az aks get-credentials \
-              --resource-group "$AKS_RESOURCE_GROUP" \
-              --name "$AKS_CLUSTER_NAME" \
-              --overwrite-existing
-          displayName: 'Connect to AKS'
-          env:
-            AZURE_CLIENT_ID: $(library-client-id)
-            AZURE_CLIENT_SECRET: $(library-client-secret)
-            AZURE_TENANT_ID: $(library-tenant-id)
-            AZURE_SUBSCRIPTION_ID: $(library-subscription-id)
-            AKS_RESOURCE_GROUP: $(aksResourceGroup)
-            AKS_CLUSTER_NAME: $(aksClusterName)
-
-        - bash: |
-            terraform/cloudflare/get-traefik-public-ip.sh \
-              "$TRAEFIK_NAMESPACE" \
-              "$TRAEFIK_SERVICE_NAME" \
-              "$TRAEFIK_FALLBACK_IP" \
-              "$REQUIRE_LIVE_IP"
-          displayName: 'Get Traefik public IP'
-          env:
-            TRAEFIK_NAMESPACE: $(traefikNamespace)
-            TRAEFIK_SERVICE_NAME: $(traefikServiceName)
-            TRAEFIK_FALLBACK_IP: $(traefikPublicIp)
-            REQUIRE_LIVE_IP: ${{ parameters.applyChanges }}
 
   - ${{ if eq(parameters.applyChanges, true) }}:
     - template: ../templates/terraform-apply-stages.yml
       parameters:
         stageName: ${{ variables.applyStageName }}
-        vmImage: ubuntu-latest
+        vmImage: windows-latest
         terraformVersion: $(terraformVersion)
-        terraformScriptType: bash
         workingDirectory: $(workingDirectory)
         storageAccount: $(library-storage-account)
         storageContainer: $(library-storage-container)
@@ -104,7 +60,5 @@ stages:
         environment: dev
         dependsOn: [ '${{ variables.planStageName }}' ]
         condition: ${{ variables.planStageName }}
-        planFileName: cloudflare.tfplan
         terraformEnvironment:
           CLOUDFLARE_API_TOKEN: $(cloudflare-api-key)
-          TF_IN_AUTOMATION: 'true'
