@@ -78,12 +78,11 @@ locals {
 resource "azuredevops_build_definition" "pipeline" {
   for_each = local.pipelines
 
-  project_id              = var.project_id
-  name                    = each.value.name
-  path                    = each.value.folder
-  agent_pool_name         = "Azure Pipelines"
-  job_authorization_scope = "project"
-  queue_status            = "enabled"
+  project_id      = var.project_id
+  name            = each.value.name
+  path            = each.value.folder
+  agent_pool_name = "Azure Pipelines"
+  queue_status    = "enabled"
 
   ci_trigger {
     use_yaml = true
