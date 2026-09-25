@@ -1,39 +1,19 @@
-import {
-  to = azuredevops_build_definition.pipeline["pr_validation_auth"]
-  id = "29327428-805a-440b-9d16-fcf0ac20edb2/23"
+locals {
+  pipeline_import_ids = {
+    pr_validation_auth     = 23
+    pr_validation_sender   = 24
+    pr_validation_consumer = 25
+    build_auth             = 26
+    build_consumer         = 27
+    build_sender           = 28
+    terraform_create       = 32
+    terraform_destroy      = 33
+  }
 }
 
 import {
-  to = azuredevops_build_definition.pipeline["pr_validation_sender"]
-  id = "29327428-805a-440b-9d16-fcf0ac20edb2/24"
-}
+  for_each = local.pipeline_import_ids
 
-import {
-  to = azuredevops_build_definition.pipeline["pr_validation_consumer"]
-  id = "29327428-805a-440b-9d16-fcf0ac20edb2/25"
-}
-
-import {
-  to = azuredevops_build_definition.pipeline["build_auth"]
-  id = "29327428-805a-440b-9d16-fcf0ac20edb2/26"
-}
-
-import {
-  to = azuredevops_build_definition.pipeline["build_consumer"]
-  id = "29327428-805a-440b-9d16-fcf0ac20edb2/27"
-}
-
-import {
-  to = azuredevops_build_definition.pipeline["build_sender"]
-  id = "29327428-805a-440b-9d16-fcf0ac20edb2/28"
-}
-
-import {
-  to = azuredevops_build_definition.pipeline["terraform_create"]
-  id = "29327428-805a-440b-9d16-fcf0ac20edb2/32"
-}
-
-import {
-  to = azuredevops_build_definition.pipeline["terraform_destroy"]
-  id = "29327428-805a-440b-9d16-fcf0ac20edb2/33"
+  to = azuredevops_build_definition.pipeline[each.key]
+  id = "${var.project_id}/${each.value}"
 }
