@@ -50,9 +50,10 @@ Variable:
 
 - `cloudflare-api-key`: protected Cloudflare API token.
 
-The former `cloudflare-zone-name` variable was migrated to the default of
+The former `cloudflare-zone-name` variable was replaced by the
+`cloudflare_zone_id` default in
 `terraform/cloudflare/environments/dev/variables.tf`; the active pipeline no
-longer consumes it.
+longer consumes a zone value from Azure DevOps.
 
 ## Removed groups
 

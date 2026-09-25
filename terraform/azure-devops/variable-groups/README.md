@@ -53,10 +53,10 @@ Service identity permission to manage variable groups.
 
 ## Backend initialization
 
-Copy the example to an ignored file and add the protected SAS token:
+Create the ignored `backend.hcl` locally with the storage account, container,
+state key, and protected SAS token:
 
 ```bash
-cp backend.hcl.example backend.hcl
 terraform init -backend-config=backend.hcl
 ```
 
@@ -94,8 +94,9 @@ corresponding group in Azure DevOps on apply.
 
 - `library-state-file` now points directly to `azure.tfstate`; it no longer
   depends on the removed `Prefix_Library` expansion.
-- `cloudflare-zone-name` moved into the Cloudflare Terraform environment
-  defaults and is no longer stored in Azure DevOps.
+- The Cloudflare zone identifier moved to the `cloudflare_zone_id` default in
+  `terraform/cloudflare/environments/dev/variables.tf` and is no longer stored
+  in Azure DevOps.
 - Azure service-principal credentials remain temporarily because active
   infrastructure pipelines still consume them. TASK-08 will migrate those
   pipelines to a service connection before this group can be removed.
