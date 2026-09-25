@@ -75,7 +75,7 @@ Supply secrets only through protected environment variables:
 ```bash
 export TF_VAR_backend_sas_token="<backend SAS token>"
 export TF_VAR_azure_client_secret="<Azure service-principal secret>"
-export TF_VAR_cloudflare_api_token="<Cloudflare API token>"
+export TF_VAR_cloudflare_api_key="<Cloudflare API key>"
 ```
 
 Then run:

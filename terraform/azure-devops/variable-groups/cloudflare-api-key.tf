@@ -7,6 +7,6 @@ resource "azuredevops_variable_group" "cloudflare_api_key" {
   variable {
     name         = "cloudflare-api-key"
     is_secret    = true
-    secret_value = var.cloudflare_api_token
+    secret_value = var.cloudflare_api_key
   }
 }

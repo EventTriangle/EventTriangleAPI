@@ -48,7 +48,7 @@ Active consumer:
 
 Variable:
 
-- `cloudflare-api-key`: protected Cloudflare API token.
+- `cloudflare-api-key`: protected Cloudflare API key.
 
 The former `cloudflare-zone-name` variable was replaced by the
 `cloudflare_zone_id` default in

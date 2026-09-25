@@ -58,8 +58,8 @@ variable "azure_tenant_id" {
   default     = "b40a105f-0643-4922-8e60-10fc1abf9c4b"
 }
 
-variable "cloudflare_api_token" {
-  description = "Cloudflare API token consumed by the Cloudflare DNS pipeline."
+variable "cloudflare_api_key" {
+  description = "Cloudflare API key consumed by the Cloudflare DNS pipeline."
   type        = string
   sensitive   = true
 }
