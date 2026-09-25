@@ -2,7 +2,7 @@ resource "azuredevops_variable_group" "terraform_azure_credentials" {
   project_id   = var.project_id
   name         = "Terraform_Azure_Credentials"
   description  = "Terraform Azure Credentials"
-  allow_access = true
+  allow_access = false
 
   variable {
     name  = "library-client-id"

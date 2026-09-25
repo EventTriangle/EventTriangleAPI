@@ -5,9 +5,32 @@ variable "organization_url" {
 }
 
 variable "project_id" {
-  description = "Azure DevOps project ID that owns the variable groups."
+  description = "Azure DevOps project ID that owns the managed resources."
   type        = string
   default     = "29327428-805a-440b-9d16-fcf0ac20edb2"
+}
+
+variable "github_repository_id" {
+  description = "GitHub repository in OWNER/REPOSITORY form used by all YAML pipelines."
+  type        = string
+  default     = "EventTriangle/EventTriangleAPI"
+}
+
+variable "github_service_connection_id" {
+  description = "Existing Azure DevOps GitHub service-connection ID used to read the repository."
+  type        = string
+  default     = "00d968fc-300a-44de-b20a-026b3555785b"
+}
+
+variable "pipeline_default_branch" {
+  description = "Fully qualified default branch stored on Azure DevOps pipeline definitions."
+  type        = string
+  default     = "refs/heads/main"
+
+  validation {
+    condition     = startswith(var.pipeline_default_branch, "refs/heads/")
+    error_message = "pipeline_default_branch must use the refs/heads/<branch> form."
+  }
 }
 
 variable "backend_storage_account_name" {

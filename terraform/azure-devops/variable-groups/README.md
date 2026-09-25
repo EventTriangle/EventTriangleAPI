@@ -1,76 +1,56 @@
-# Azure DevOps variable groups Terraform
+# Azure DevOps Terraform
 
-This root manages only the variable groups still consumed by active pipelines.
-See `VARIABLE_GROUP_CONSUMERS.md` for the complete consumer and removal map.
+This Terraform root manages the retained variable groups, maintained YAML
+pipeline definitions, the `dev` deployment environment, and pipeline-specific
+resource authorizations. Service-connection resources remain in TASK-08.
 
-The root moved from `terraform-azdo-libraries/` without adding a module layer,
-so retained resource addresses are unchanged:
-
-- `azuredevops_variable_group.terraform_backend_settings`
-- `azuredevops_variable_group.terraform_azure_credentials`
-- `azuredevops_variable_group.cloudflare_api_key`
-
-It continues to use the existing remote state blob:
+The root remains in `terraform/azure-devops/variable-groups/` to preserve the
+working TASK-06 layout. Its existing variable-group resource addresses and
+remote backend are unchanged:
 
 - storage account: `tfstatestorage011`
 - container: `tfstatecontainer01`
 - key: `event.triangle.azdo.libraries.tfstate`
 
-No `terraform state mv` is required for the directory move. Always initialize
-this root against that exact state key before planning, otherwise Terraform will
-attempt to create duplicate variable groups.
+Always initialize this exact state before planning. See
+`PIPELINE_INVENTORY.md` before the first pipeline apply because eight existing
+definitions must be imported rather than recreated.
 
 ## Bootstrap order
 
-This Terraform root cannot create its own backend because Terraform must access
-the backend before it can plan resources. The initial order is therefore:
+1. Create or identify the Azure Storage backend outside this root.
+2. Authenticate the Azure DevOps provider and initialize the existing state.
+3. Plan the declarative imports from `imports.tf` and confirm the eight existing
+   definitions are imported and updated in place.
+4. Confirm that no still-required legacy variable groups or secrets are being
+   destroyed.
+5. Apply the retained variable groups, pipeline definitions, `dev` environment,
+   and their permissions.
+6. Run the infrastructure and Cloudflare pipelines only after reviewing their
+   own Terraform plans.
 
-1. Create or identify the Azure Storage account and container outside this root.
-2. Obtain a backend SAS token and initialize this root against the existing
-   `event.triangle.azdo.libraries.tfstate` blob.
-3. Authenticate the Azure DevOps provider.
-4. Plan/apply the retained variable groups.
-5. Authorize and run pipelines that consume those groups.
+This root cannot create its own backend, provider PAT, or initial GitHub service
+connection. The applying identity needs permission to administer build
+definitions, variable groups, environments, and pipeline resource
+authorizations in the Azure DevOps project.
 
-The backend group then supplies backend settings to normal infrastructure and
-Cloudflare pipeline runs. It does not bootstrap the state used to create itself.
+## Authentication and initialization
 
-## Local authentication
-
-Do not create `azdo-pat-token.txt` or put a PAT in Terraform configuration.
-The provider reads its documented environment variables:
+Do not commit an Azure DevOps PAT or backend SAS token. Export them locally:
 
 ```bash
 export AZDO_ORG_SERVICE_URL="https://dev.azure.com/EventTriangle"
 export AZDO_PERSONAL_ACCESS_TOKEN="<scoped Azure DevOps PAT>"
 ```
 
-Use the narrowest PAT scopes that allow variable-group read/manage operations.
-For automation, map a protected secret variable to
-`AZDO_PERSONAL_ACCESS_TOKEN`. An Azure Pipeline may instead map
-`$(System.AccessToken)` after enabling OAuth-token access and granting its Build
-Service identity permission to manage variable groups.
-
-## Backend initialization
-
 Create the ignored `backend.hcl` locally with the storage account, container,
-state key, and protected SAS token:
+state key, and protected SAS token, then initialize:
 
 ```bash
-terraform init -backend-config=backend.hcl
+terraform init -reconfigure -backend-config=backend.hcl
 ```
 
-The backend account, container, and state key published to infrastructure
-pipelines are ordinary Terraform inputs and can be overridden without editing
-resource files:
-
-```bash
-export TF_VAR_backend_storage_account_name="tfstatestorage011"
-export TF_VAR_backend_container_name="tfstatecontainer01"
-export TF_VAR_infrastructure_state_key="azure.tfstate"
-```
-
-Supply secrets only through protected environment variables:
+Supply variable-group secrets through protected environment variables:
 
 ```bash
 export TF_VAR_backend_sas_token="<backend SAS token>"
@@ -83,20 +63,44 @@ Then run:
 ```bash
 terraform fmt -check
 terraform validate
-terraform plan -out=variable-groups.tfplan
-terraform apply variable-groups.tfplan
+terraform plan -out=azure-devops.tfplan
+terraform apply azure-devops.tfplan
 ```
 
-Review every plan. Removing a variable-group resource from this root deletes the
-corresponding group in Azure DevOps on apply.
+Review every plan. This root owns real Azure DevOps configuration, so removing
+a managed resource can delete or deauthorize the corresponding object.
+
+## Pipeline ownership
+
+Terraform owns each pipeline's name, folder, GitHub repository connection,
+default branch, YAML path, and queue status. The `.azdo/` entry points own their
+CI and PR trigger rules; Terraform uses the YAML trigger configuration instead
+of duplicating those rules.
+
+The variable groups are not open to every pipeline. Terraform grants access
+only where the active YAML consumes a group:
+
+- backend settings: `Terraform Create`, `Terraform Destroy`, `Cloudflare DNS`;
+- Azure credentials: `Terraform Create`, `Terraform Destroy`;
+- Cloudflare API key: `Cloudflare DNS`.
+
+The Cloudflare pipeline deliberately receives no Azure service-principal
+credentials.
+
+## External service connections
+
+The existing GitHub connection is required to create or import the YAML
+definitions. ACR/Docker Hub and SonarCloud connections remain external until
+TASK-08. Until then, authorize those external connections manually only for the
+pipelines that consume them.
 
 ## Migration notes
 
-- `library-state-file` now points directly to `azure.tfstate`; it no longer
-  depends on the removed `Prefix_Library` expansion.
-- The Cloudflare zone identifier moved to the `cloudflare_zone_id` default in
-  `terraform/cloudflare/environments/dev/variables.tf` and is no longer stored
-  in Azure DevOps.
-- Azure service-principal credentials remain temporarily because active
-  infrastructure pipelines still consume them. TASK-08 will migrate those
-  pipelines to a service connection before this group can be removed.
+- `library-state-file` points directly to `azure.tfstate`; it no longer depends
+  on `Prefix_Library` expansion.
+- The Cloudflare zone identifier is the `cloudflare_zone_id` default in the
+  Cloudflare Terraform environment.
+- Azure service-principal credentials remain until TASK-08 migrates the active
+  infrastructure pipelines to a maintained service connection.
+- PostgreSQL, Redis, and Entra ID secrets must be migrated to their selected
+  GitOps secret mechanism before their legacy variable groups are deleted.

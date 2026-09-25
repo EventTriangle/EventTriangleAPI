@@ -2,7 +2,7 @@ resource "azuredevops_variable_group" "cloudflare_api_key" {
   project_id   = var.project_id
   name         = "Cloudflare_API_Key"
   description  = "Cloudflare API Key"
-  allow_access = true
+  allow_access = false
 
   variable {
     name         = "cloudflare-api-key"

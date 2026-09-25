@@ -2,7 +2,7 @@ resource "azuredevops_variable_group" "terraform_backend_settings" {
   project_id   = var.project_id
   name         = "Terraform_Backend_StateFile_Settings"
   description  = "Terraform Backend StateFile Settings"
-  allow_access = true
+  allow_access = false
 
   variable {
     name         = "library-sas-token"
