@@ -52,8 +52,8 @@ parameters:
     default: SonarCloud_Service_Connection
 
 jobs:
-  - job: ${{ parameters.JobName }}
-    displayName: ${{ parameters.JobName }}
+  - job: ${{ parameters.jobName }}
+    displayName: ${{ parameters.jobName }}
     steps:
       - checkout: self
         fetchDepth: 0

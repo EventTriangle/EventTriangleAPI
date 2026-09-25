@@ -16,8 +16,7 @@ pr:
       - src/shared/**
 
       # Pipeline itself (so changes validate)
-      - azure-pipelines/**
-      - azure-pipelines/templates/**
+      - .azdo/**
 
     exclude:
       # Docs
@@ -39,7 +38,7 @@ pr:
       - kubernetes/**
       - img/**
       - terraform/**
-      - terraform-azdo-libraries/**
+      - terraform/azure-devops/**
       - .github/**
       - LICENSE
 

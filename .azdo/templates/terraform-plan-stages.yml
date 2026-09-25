@@ -41,18 +41,22 @@ parameters:
   - name: subscriptionId
     displayName: 'Azure Subscription Id'
     type: string
+    default: ''
 
   - name: clientId
     displayName: 'Azure Client Id'
     type: string
+    default: ''
 
   - name: clientSecret
     displayName: 'Azure Client Secret'
     type: string
+    default: ''
 
   - name: tenantId
     displayName: 'Azure Tenant Id'
     type: string
+    default: ''
 
   - name: destroy
     displayName: 'Should destroy infrastructure'

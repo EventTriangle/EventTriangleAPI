@@ -9,7 +9,6 @@ parameters:
 
 variables:
   - group: Cloudflare_API_Key
-  - group: Terraform_Azure_Credentials
   - group: Terraform_Backend_StateFile_Settings
   - name: terraformVersion
     value: '1.16.0'
@@ -34,10 +33,6 @@ stages:
       storageContainer: $(library-storage-container)
       stateFile: $(cloudflareStateFile)
       sasToken: $(library-sas-token)
-      subscriptionId: $(library-subscription-id)
-      clientId: $(library-client-id)
-      clientSecret: $(library-client-secret)
-      tenantId: $(library-tenant-id)
       destroy: false
       terraformEnvironment:
         CLOUDFLARE_API_TOKEN: $(cloudflare-api-key)
@@ -53,10 +48,6 @@ stages:
         storageContainer: $(library-storage-container)
         stateFile: $(cloudflareStateFile)
         sasToken: $(library-sas-token)
-        subscriptionId: $(library-subscription-id)
-        clientId: $(library-client-id)
-        clientSecret: $(library-client-secret)
-        tenantId: $(library-tenant-id)
         environment: dev
         dependsOn: [ '${{ variables.planStageName }}' ]
         condition: ${{ variables.planStageName }}
