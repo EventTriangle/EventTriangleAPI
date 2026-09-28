@@ -31,7 +31,7 @@ stages:
   - template: ../templates/terraform-plan-stages.yml
     parameters:
       stageName: ${{ variables.planStageName }}
-      VmImage: windows-latest
+      vmImage: ubuntu-latest
       terraformVersion: 1.16.0
       workingDirectory: $(System.DefaultWorkingDirectory)/terraform/infrastructure/environments/dev
       storageAccount: $(library-storage-account)
@@ -47,7 +47,7 @@ stages:
   - template: ../templates/terraform-apply-stages.yml
     parameters:
       stageName: ${{ variables.applyStageName }}
-      VmImage: windows-latest
+      vmImage: ubuntu-latest
       terraformVersion: 1.16.0
       workingDirectory: $(System.DefaultWorkingDirectory)/terraform/infrastructure/environments/dev
       storageAccount: $(library-storage-account)
