@@ -10,9 +10,9 @@ All existing definitions use the GitHub repository
 
 | Terraform key | Existing ID | Azure DevOps name | Maintained YAML entry point |
 | --- | ---: | --- | --- |
-| `pr_validation_auth` | 23 | PR Validation Auth | `.azdo/pr-validation/pr-validation-auth.yml` |
-| `pr_validation_sender` | 24 | PR Validation Sender | `.azdo/pr-validation/pr-validation-sender.yml` |
-| `pr_validation_consumer` | 25 | PR Validation Consumer | `.azdo/pr-validation/pr-validation-consumer.yml` |
+| `pr_validation_auth` | 39 | PR Validation Auth | `.azdo/pr-validation/pr-validation-auth.yml` |
+| `pr_validation_sender` | 37 | PR Validation Sender | `.azdo/pr-validation/pr-validation-sender.yml` |
+| `pr_validation_consumer` | 38 | PR Validation Consumer | `.azdo/pr-validation/pr-validation-consumer.yml` |
 | `build_auth` | 26 | Build Auth | `.azdo/build/build-auth.yml` |
 | `build_consumer` | 27 | Build Consumer | `.azdo/build/build-consumer.yml` |
 | `build_sender` | 28 | Build Sender | `.azdo/build/build-sender.yml` |
@@ -28,9 +28,10 @@ replacement is validated, then delete it through an explicit retirement step.
 
 ## Required imports
 
-`imports.tf` declares all eight imports. A normal `terraform plan` proposes
-their import and in-place update. Do not also run manual `terraform import`
-commands for the same definitions.
+`imports.tf` declares imports for the five retained Build and Infrastructure
+definitions. The three PR Validation definitions were deliberately deleted and
+recreated by Terraform, so their new IDs are state-managed and must not be
+added back to the import map.
 
 Do not import `cloudflare_dns`; no definition with that name currently exists.
 Terraform creates it after the plan is reviewed.

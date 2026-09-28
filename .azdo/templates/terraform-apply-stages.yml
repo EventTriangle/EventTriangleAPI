@@ -5,7 +5,7 @@ parameters:
 
   - name: vmImage
     displayName: 'Vm Image'
-    default: 'windows-latest'
+    default: 'ubuntu-latest'
     type: string
 
   - name: terraformVersion
@@ -45,6 +45,11 @@ parameters:
     displayName: 'Condition'
     type: string
 
+  - name: additionalCondition
+    displayName: 'Additional stage condition'
+    type: string
+    default: 'true'
+
   - name: subscriptionId
     displayName: 'Azure Subscription Id'
     type: string
@@ -74,7 +79,7 @@ stages:
   - stage: ${{ parameters.stageName }}
     displayName: ${{ parameters.stageName }}
     dependsOn: ${{ parameters.dependsOn }}
-    condition: succeeded('${{ parameters.condition }}')
+    condition: and(succeeded('${{ parameters.condition }}'), ${{ parameters.additionalCondition }})
     jobs:
       - deployment: ${{ parameters.stageName }}
         displayName: ${{ parameters.stageName }}
@@ -96,12 +101,13 @@ stages:
                   inputs:
                     terraformVersion: '${{ parameters.terraformVersion }}'
 
-                - powershell: |
-                    terraform init `
-                      -backend-config="storage_account_name=$env:TF_STATE_BLOB_ACCOUNT_NAME" `
-                      -backend-config="container_name=$env:TF_STATE_BLOB_CONTAINER_NAME" `
-                      -backend-config="key=$env:TF_STATE_BLOB_FILE" `
-                      -backend-config="sas_token=$env:TF_STATE_BLOB_SAS_TOKEN" -reconfigure
+                - bash: |
+                    terraform init \
+                      -backend-config="storage_account_name=${TF_STATE_BLOB_ACCOUNT_NAME}" \
+                      -backend-config="container_name=${TF_STATE_BLOB_CONTAINER_NAME}" \
+                      -backend-config="key=${TF_STATE_BLOB_FILE}" \
+                      -backend-config="sas_token=${TF_STATE_BLOB_SAS_TOKEN}" \
+                      -reconfigure
                   displayName: 'Terraform Init'
                   workingDirectory: ${{ parameters.workingDirectory }}
                   env:
@@ -110,12 +116,12 @@ stages:
                     TF_STATE_BLOB_FILE: ${{ parameters.stateFile }}
                     TF_STATE_BLOB_SAS_TOKEN: ${{ parameters.sasToken }}
 
-                - powershell: |
-                    cp $(Agent.BuildDirectory)/drop/main.tfplan main.tfplan
+                - bash: |
+                    cp "${AGENT_BUILDDIRECTORY}/drop/main.tfplan" main.tfplan
                   displayName: 'Copy Plan'
                   workingDirectory: ${{ parameters.workingDirectory }}
 
-                - powershell: |
+                - bash: |
                     terraform apply -parallelism=15 -auto-approve "main.tfplan"
                   displayName: 'Terraform Apply'
                   workingDirectory: ${{ parameters.workingDirectory }}
