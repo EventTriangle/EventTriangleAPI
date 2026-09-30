@@ -1,0 +1,88 @@
+variable "organization_url" {
+  description = "Azure DevOps organization URL used by the provider."
+  type        = string
+  default     = "https://dev.azure.com/EventTriangle"
+}
+
+variable "project_id" {
+  description = "Azure DevOps project ID that owns the managed resources."
+  type        = string
+  default     = "29327428-805a-440b-9d16-fcf0ac20edb2"
+}
+
+variable "github_repository_id" {
+  description = "GitHub repository in OWNER/REPOSITORY form used by all YAML pipelines."
+  type        = string
+  default     = "EventTriangle/EventTriangleAPI"
+}
+
+variable "github_service_connection_id" {
+  description = "Existing Azure DevOps GitHub service-connection ID used to read the repository."
+  type        = string
+  default     = "00d968fc-300a-44de-b20a-026b3555785b"
+}
+
+variable "pipeline_default_branch" {
+  description = "Fully qualified default branch stored on Azure DevOps pipeline definitions."
+  type        = string
+  default     = "refs/heads/main"
+
+  validation {
+    condition     = startswith(var.pipeline_default_branch, "refs/heads/")
+    error_message = "pipeline_default_branch must use the refs/heads/<branch> form."
+  }
+}
+
+variable "backend_storage_account_name" {
+  description = "Azure Storage account used by the infrastructure Terraform backend."
+  type        = string
+  default     = "tfstatestorage011"
+}
+
+variable "backend_container_name" {
+  description = "Azure Blob container used by the infrastructure Terraform backend."
+  type        = string
+  default     = "tfstatecontainer01"
+}
+
+variable "infrastructure_state_key" {
+  description = "Blob key used by the Azure infrastructure Terraform root."
+  type        = string
+  default     = "azure.tfstate"
+}
+
+variable "backend_sas_token" {
+  description = "SAS token exposed to infrastructure pipelines as a protected variable."
+  type        = string
+  sensitive   = true
+}
+
+variable "azure_client_id" {
+  description = "Azure service-principal client ID consumed by infrastructure pipelines."
+  type        = string
+  default     = "ab0a5dc1-ee52-4574-96e0-469f237928a6"
+}
+
+variable "azure_client_secret" {
+  description = "Azure service-principal client secret consumed by infrastructure pipelines."
+  type        = string
+  sensitive   = true
+}
+
+variable "azure_subscription_id" {
+  description = "Azure subscription ID consumed by infrastructure pipelines."
+  type        = string
+  default     = "1b08b9a2-ac6d-4b86-8a2f-8fef552c8371"
+}
+
+variable "azure_tenant_id" {
+  description = "Microsoft Entra tenant ID consumed by infrastructure pipelines."
+  type        = string
+  default     = "b40a105f-0643-4922-8e60-10fc1abf9c4b"
+}
+
+variable "cloudflare_api_key" {
+  description = "Cloudflare API key consumed by the Cloudflare DNS pipeline."
+  type        = string
+  sensitive   = true
+}

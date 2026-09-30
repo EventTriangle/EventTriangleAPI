@@ -5,7 +5,7 @@ parameters:
 
   - name: vmImage
     displayName: 'Vm Image'
-    default: 'windows-latest'
+    default: 'ubuntu-latest'
     type: string
 
   - name: terraformVersion
@@ -41,18 +41,22 @@ parameters:
   - name: subscriptionId
     displayName: 'Azure Subscription Id'
     type: string
+    default: ''
 
   - name: clientId
     displayName: 'Azure Client Id'
     type: string
+    default: ''
 
   - name: clientSecret
     displayName: 'Azure Client Secret'
     type: string
+    default: ''
 
   - name: tenantId
     displayName: 'Azure Tenant Id'
     type: string
+    default: ''
 
   - name: destroy
     displayName: 'Should destroy infrastructure'
@@ -80,19 +84,20 @@ stages:
             inputs:
               terraformVersion: '${{ parameters.terraformVersion }}'
 
-          - powershell: |
+          - bash: |
               terraform init -backend=false
               terraform validate
               terraform fmt -check -recursive "${{ parameters.terraformBasePath }}"
             displayName: "Run tf validate"
             workingDirectory: '${{ parameters.workingDirectory }}'
 
-          - powershell: |
-              terraform init `
-                -backend-config="storage_account_name=$env:TF_STATE_BLOB_ACCOUNT_NAME" `
-                -backend-config="container_name=$env:TF_STATE_BLOB_CONTAINER_NAME" `
-                -backend-config="key=$env:TF_STATE_BLOB_FILE" `
-                -backend-config="sas_token=$env:TF_STATE_BLOB_SAS_TOKEN" -reconfigure
+          - bash: |
+              terraform init \
+                -backend-config="storage_account_name=${TF_STATE_BLOB_ACCOUNT_NAME}" \
+                -backend-config="container_name=${TF_STATE_BLOB_CONTAINER_NAME}" \
+                -backend-config="key=${TF_STATE_BLOB_FILE}" \
+                -backend-config="sas_token=${TF_STATE_BLOB_SAS_TOKEN}" \
+                -reconfigure
             displayName: 'Terraform Init'
             workingDirectory: ${{ parameters.workingDirectory }}
             env:
@@ -102,7 +107,7 @@ stages:
               TF_STATE_BLOB_SAS_TOKEN: ${{ parameters.sasToken }}
 
           - ${{ if eq(parameters.destroy, false) }}:
-            - powershell: |
+            - bash: |
                 terraform plan -out main.tfplan
               displayName: 'Terraform Plan'
               workingDirectory: ${{ parameters.workingDirectory }}
@@ -115,7 +120,7 @@ stages:
                   ${{ variable.key }}: ${{ variable.value }}
 
           - ${{ if eq(parameters.destroy, true) }}:
-            - powershell: |
+            - bash: |
                 terraform plan -destroy -out main.tfplan
               displayName: 'Terraform Plan'
               workingDirectory: ${{ parameters.workingDirectory }}
@@ -127,8 +132,8 @@ stages:
                 ${{ each variable in parameters.terraformEnvironment }}:
                   ${{ variable.key }}: ${{ variable.value }}
 
-          - powershell: |
-              cp main.tfplan $(Build.ArtifactStagingDirectory)
+          - bash: |
+              cp main.tfplan "${BUILD_ARTIFACTSTAGINGDIRECTORY}/"
             displayName: 'Copy Plan'
             workingDirectory: ${{ parameters.workingDirectory }}
 

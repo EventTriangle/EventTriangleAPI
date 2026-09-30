@@ -52,8 +52,8 @@ parameters:
     default: SonarCloud_Service_Connection
 
 jobs:
-  - job: ${{ parameters.JobName }}
-    displayName: ${{ parameters.JobName }}
+  - job: ${{ parameters.jobName }}
+    displayName: ${{ parameters.jobName }}
     steps:
       - checkout: self
         fetchDepth: 0
@@ -83,15 +83,15 @@ jobs:
           Action: '##vso[build.updatebuildnumber]'
           BuildVersion: $(version_step.semVer)
 
-      - pwsh: |
-          Write-Host "=== ENV VARIABLES ==="
-          Get-ChildItem Env: | Sort-Object Name
+      - bash: |
+          echo "=== ENV VARIABLES ==="
+          printenv | sort
 
-          Write-Host "=== PIPELINE VARIABLES ==="
-          Write-Host "FullSemVer: $(version_step.FullSemVer)"
-          Write-Host "SemVer: $(version_step.SemVer)"
-          Write-Host "ShortSha: $(version_step.ShortSha)"
-          Write-Host "Build Source branch: $env:BUILD_SOURCEBRANCHNAME"
+          echo "=== PIPELINE VARIABLES ==="
+          echo "FullSemVer: $(version_step.FullSemVer)"
+          echo "SemVer: $(version_step.SemVer)"
+          echo "ShortSha: $(version_step.ShortSha)"
+          echo "Build Source branch: ${BUILD_SOURCEBRANCHNAME}"
         displayName: Debug environment
         condition: succeeded()
 

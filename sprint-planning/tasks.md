@@ -90,23 +90,23 @@ No Cloudflare Terraform root exists in the current repository.
 
 **Dependencies:** TASK-02
 
-- [ ] Move the folder `terraform-azdo-libraries` under `terraform/azure-devops/`, preserving resource/state associations and updating its README.
-- [ ] Keep the Terraform backend configuration library as the initial minimal library and parameterize account/container/state settings.
-- [ ] Map every remaining variable-group consumer in active `.azdo/` pipelines before removing unused Cloudflare, PostgreSQL, Redis, AKS, prefix, Entra ID, and transformation settings.
+- [x] Move the folder `terraform-azdo-libraries` under `terraform/azure-devops/`, preserving resource/state associations and updating its README.
+- [x] Keep the Terraform backend configuration library as the initial minimal library and parameterize account/container/state settings.
+- [x] Map every remaining variable-group consumer in active `.azdo/` pipelines before removing unused Cloudflare, PostgreSQL, Redis, AKS, prefix, Entra ID, and transformation settings.
 - [ ] Migrate still-required configuration and credentials to their chosen destination before deleting old groups.
-- [ ] Replace the provider's local token-file dependency with documented secure authentication suitable for local use and automation.
-- [ ] Document bootstrap ordering for state storage, provider access, libraries, and the pipelines that consume them to avoid a circular dependency.
+- [x] Replace the provider's local token-file dependency with documented secure authentication suitable for local use and automation.
+- [x] Document bootstrap ordering for state storage, provider access, libraries, and the pipelines that consume them to avoid a circular dependency.
 
 ## TASK-07 — Manage Azure DevOps pipelines through Terraform
 
 **Dependencies:** TASK-02
 
-- [ ] Inventory existing Azure DevOps pipeline definitions and map them to the maintained `.azdo/` YAML entry points.
-- [ ] Add provider-managed definitions in `terraform/azure-devops/` for the required build, PR-validation, deployment, and retained teardown pipelines.
-- [ ] Configure repository connection, default branch, YAML path, naming, and trigger ownership consistently with the YAML definitions.
-- [ ] Import existing definitions where appropriate instead of creating duplicates; record required repository/service-connection identifiers as inputs.
-- [ ] Configure required variable-group, service-connection, and environment permissions where supported; document any external bootstrap requirements.
-- [ ] Update stale PR path filters from `azure-pipelines/**` to `.azdo/**` and ensure referenced templates exist.
+- [x] Inventory existing Azure DevOps pipeline definitions and map them to the maintained `.azdo/` YAML entry points.
+- [x] Add provider-managed definitions in `terraform/azure-devops/` for the required build, PR-validation, deployment, and retained teardown pipelines.
+- [x] Configure repository connection, default branch, YAML path, naming, and trigger ownership consistently with the YAML definitions.
+- [x] Import existing definitions where appropriate instead of creating duplicates; record required repository/service-connection identifiers as inputs.
+- [x] Configure required variable-group, service-connection, and environment permissions where supported; document any external bootstrap requirements.
+- [x] Update stale PR path filters from `azure-pipelines/**` to `.azdo/**` and ensure referenced templates exist.
 
 ## TASK-08 — Migrate Azure DevOps service connections to Terraform
 

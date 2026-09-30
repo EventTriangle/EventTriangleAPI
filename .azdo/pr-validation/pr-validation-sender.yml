@@ -12,12 +12,11 @@ pr:
       # Sender service (ALL layers)
       - src/sender/**
 
-      # Shared code used by auth
+      # Shared code used by sender
       - src/shared/**
 
       # Pipeline itself (so changes validate)
-      - azure-pipelines/**
-      - azure-pipelines/templates/**
+      - .azdo/**
 
     exclude:
       # Docs
@@ -39,7 +38,7 @@ pr:
       - kubernetes/**
       - img/**
       - terraform/**
-      - terraform-azdo-libraries/**
+      - terraform/azure-devops/**
       - .github/**
       - LICENSE
 
