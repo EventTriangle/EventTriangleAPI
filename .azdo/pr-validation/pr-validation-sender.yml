@@ -47,8 +47,6 @@ variables:
     value: "Sender"
   - name: System.Debug
     value: "false"
-  - name: DOCKER_BUILDKIT
-    value: "1"
 
 pool:
   vmImage: "ubuntu-latest"

@@ -1,20 +1,3 @@
-locals {
-  pipeline_import_ids = {
-    build_auth        = 26
-    build_consumer    = 27
-    build_sender      = 28
-    terraform_create  = 32
-    terraform_destroy = 33
-  }
-}
-
-import {
-  for_each = local.pipeline_import_ids
-
-  to = azuredevops_build_definition.pipeline[each.key]
-  id = "${var.project_id}/${each.value}"
-}
-
 import {
   to = azuredevops_serviceendpoint_github.github
   id = "${var.project_id}/00d968fc-300a-44de-b20a-026b3555785b"

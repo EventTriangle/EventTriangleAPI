@@ -1,6 +1,6 @@
 # Azure DevOps pipeline inventory
 
-Inventory date: 2026-09-23.
+Inventory date: 2026-09-30.
 
 All existing definitions use the GitHub repository
 `EventTriangle/EventTriangleAPI`, default branch `refs/heads/main`, hosted queue
@@ -10,15 +10,15 @@ All existing definitions use the GitHub repository
 
 | Terraform key | Existing ID | Azure DevOps name | Maintained YAML entry point |
 | --- | ---: | --- | --- |
-| `pr_validation_auth` | 39 | PR Validation Auth | `.azdo/pr-validation/pr-validation-auth.yml` |
-| `pr_validation_sender` | 37 | PR Validation Sender | `.azdo/pr-validation/pr-validation-sender.yml` |
-| `pr_validation_consumer` | 38 | PR Validation Consumer | `.azdo/pr-validation/pr-validation-consumer.yml` |
-| `build_auth` | 26 | Build Auth | `.azdo/build/build-auth.yml` |
-| `build_consumer` | 27 | Build Consumer | `.azdo/build/build-consumer.yml` |
-| `build_sender` | 28 | Build Sender | `.azdo/build/build-sender.yml` |
-| `terraform_create` | 32 | Terraform Create | `.azdo/infrastructure/terraform-create.yml` |
-| `terraform_destroy` | 33 | Terraform Destroy | `.azdo/infrastructure/terraform-destroy.yml` |
-| `cloudflare_dns` | new | Cloudflare DNS | `.azdo/cloudflare/terraform-dns.yml` |
+| `pr_validation_auth` | 47 | PR Validation Auth | `.azdo/pr-validation/pr-validation-auth.yml` |
+| `pr_validation_sender` | 41 | PR Validation Sender | `.azdo/pr-validation/pr-validation-sender.yml` |
+| `pr_validation_consumer` | 45 | PR Validation Consumer | `.azdo/pr-validation/pr-validation-consumer.yml` |
+| `build_auth` | 44 | Build Auth | `.azdo/build/build-auth.yml` |
+| `build_consumer` | 43 | Build Consumer | `.azdo/build/build-consumer.yml` |
+| `build_sender` | 48 | Build Sender | `.azdo/build/build-sender.yml` |
+| `terraform_create` | 46 | Terraform Create | `.azdo/infrastructure/terraform-create.yml` |
+| `terraform_destroy` | 42 | Terraform Destroy | `.azdo/infrastructure/terraform-destroy.yml` |
+| `cloudflare_dns` | 40 | Cloudflare DNS | `.azdo/cloudflare/terraform-dns.yml` |
 
 `Configure Platform` (ID 35) is deliberately not imported. It points to the
 retired `azure-pipelines/infrastructure/configure-platform.yml` entry point and
@@ -26,15 +26,11 @@ has no maintained `.azdo/` counterpart. TASK-03 replaces it with the canonical
 one-run deployment pipeline. Keep the old definition disabled until that
 replacement is validated, then delete it through an explicit retirement step.
 
-## Required imports
+## Terraform ownership
 
-`imports.tf` declares imports for the five retained Build and Infrastructure
-definitions. The three PR Validation definitions were deliberately deleted and
-recreated by Terraform, so their new IDs are state-managed and must not be
-added back to the import map.
-
-Do not import `cloudflare_dns`; no definition with that name currently exists.
-Terraform creates it after the plan is reviewed.
+All nine maintained definitions were deleted and recreated by Terraform. Their
+new IDs are recorded in the table above and are managed directly in Terraform
+state. No pipeline import blocks are required.
 
 ## External dependencies
 
