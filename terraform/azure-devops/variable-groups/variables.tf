@@ -84,7 +84,7 @@ variable "azure_subscription_name" {
 variable "docker_hub_username" {
   description = "Docker Hub account used by the existing Docker Hub service connection."
   type        = string
-  default     = "kaminome"
+  default     = "petrokolosov"
 }
 
 variable "docker_hub_token" {
