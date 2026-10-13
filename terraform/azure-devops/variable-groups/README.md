@@ -116,11 +116,17 @@ infrastructure YAML uses the `Terraform_Azure_Credentials` variable group; its
 existing permission for legacy `Configure Platform` is retained until that
 definition is retired.
 
-The migration also removes pre-existing broad access from Docker Hub and ACR
-and stale SonarCloud access from Build Consumer and Build Sender. The provider's
-replacement authorization resource models grants only, so the deprecated
-`azuredevops_resource_authorization` resource is used narrowly for explicit
-denials until the provider offers an equivalent supported mechanism.
+Remove pre-existing broad access from Docker Hub and ACR and stale SonarCloud
+access from Build Consumer and Build Sender using the one-time portal procedure
+in `DEVELOPER_ACCESS.md`, after Terraform has granted access to the intended
+consumers. Terraform manages these grants with the supported
+`azuredevops_pipeline_authorization` resource.
+
+`Azure_Connection` and the pipeline variable group share `azure_client_id` and
+`azure_client_secret`. The target client ID is the default
+`ab0a5dc1-ee52-4574-96e0-469f237928a6`; supply its matching secret. A plan may
+replace the temporary test identity in the variable group with this project
+identity.
 
 The GitHub App installation token cannot be exported or recreated by this
 root. Bootstrap `EventTriangle` in Azure DevOps first, then import it. Azure

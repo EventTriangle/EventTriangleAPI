@@ -134,11 +134,11 @@ consumer map:
 - `Azure_Connection` remains authorized for legacy `Configure Platform` (ID
   35), which is outside the maintained pipeline set.
 
-Terraform explicitly disables all-pipeline access for Docker Hub and ACR,
-grants ACR only to the six image pipelines, and removes the stale SonarCloud
-permissions from Build Consumer and Build Sender. The legacy Azure permission
-is retained until `Configure Platform` is retired so TASK-08 does not silently
-break an unmanaged definition.
+Terraform grants ACR only to the six image pipelines and SonarCloud only to
+Build Auth. Existing all-pipeline access and stale SonarCloud grants require
+the one-time portal cleanup documented in `DEVELOPER_ACCESS.md`. The legacy
+Azure permission is retained until `Configure Platform` is retired so TASK-08
+does not silently break an unmanaged definition.
 
 ## Validation status
 

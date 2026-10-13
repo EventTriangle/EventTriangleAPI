@@ -74,21 +74,6 @@ locals {
     }
   }
 
-  all_pipeline_endpoint_denials = {
-    azure_acr  = azuredevops_serviceendpoint_dockerregistry.azure_acr.id
-    docker_hub = azuredevops_serviceendpoint_dockerregistry.docker_hub.id
-  }
-
-  pipeline_endpoint_denials = {
-    sonarcloud_consumer = {
-      resource_id  = azuredevops_serviceendpoint_sonarcloud.sonarcloud.id
-      pipeline_key = "build_consumer"
-    }
-    sonarcloud_sender = {
-      resource_id  = azuredevops_serviceendpoint_sonarcloud.sonarcloud.id
-      pipeline_key = "build_sender"
-    }
-  }
 }
 
 resource "azuredevops_build_definition" "pipeline" {
@@ -163,28 +148,6 @@ resource "azuredevops_pipeline_authorization" "sonarcloud" {
   resource_id = azuredevops_serviceendpoint_sonarcloud.sonarcloud.id
   type        = "endpoint"
   pipeline_id = azuredevops_build_definition.pipeline["build_auth"].id
-}
-
-# azuredevops_pipeline_authorization represents granted access only. The older
-# resource is retained here because it can also declare an explicit denial,
-# which is required to remove existing broad and stale endpoint permissions.
-resource "azuredevops_resource_authorization" "deny_all_pipelines" {
-  for_each = local.all_pipeline_endpoint_denials
-
-  project_id  = var.project_id
-  resource_id = each.value
-  type        = "endpoint"
-  authorized  = false
-}
-
-resource "azuredevops_resource_authorization" "deny_pipeline" {
-  for_each = local.pipeline_endpoint_denials
-
-  project_id    = var.project_id
-  resource_id   = each.value.resource_id
-  type          = "endpoint"
-  definition_id = azuredevops_build_definition.pipeline[each.value.pipeline_key].id
-  authorized    = false
 }
 
 resource "azuredevops_pipeline_authorization" "variable_group" {

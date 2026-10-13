@@ -34,10 +34,14 @@ Before applying:
 
 1. Export all protected inputs listed in `README.md`.
 2. Run `terraform plan -out=azure-devops.tfplan`.
-3. Confirm five in-place imports, the intended permission tightening, and no
-   service-connection replacement or deletion.
+3. Confirm five in-place imports and no service-connection replacement or
+   deletion. Supply `azure_client_secret` for the target project client
+   `ab0a5dc1-ee52-4574-96e0-469f237928a6`; both Azure_Connection and the pipeline
+   variable group use this pair. Review the transition from the temporary test
+   identity in the variable group to the project identity.
 4. Apply the saved plan.
-5. Exercise each active consumer: repository checkout, ACR login/push, and
+5. Complete the portal permission cleanup below, then exercise each active
+   consumer: repository checkout, ACR login/push, and
    Build Auth SonarCloud preparation and analysis.
 6. Run a second plan and confirm that no unintended changes remain.
 
@@ -72,3 +76,22 @@ replace a client ID with a secret issued for a different service principal.
 - Do not authorize Docker Hub before TASK-09 adds a consumer.
 - Do not authorize `Azure_Connection` until infrastructure YAML consumes it.
 - Never expose endpoint credentials through Terraform outputs.
+
+## One-time permission cleanup
+
+After Terraform has created the required individual grants, open Azure DevOps
+`Project settings > Service connections`, select each connection, and open its
+`Pipeline permissions` settings:
+
+1. `Azure_ACR_Connection`: disable access for all pipelines. Keep the three Build
+   and three PR Validation pipelines explicitly authorized.
+2. `Docker_Hub_Connection`: disable access for all pipelines. No maintained
+   pipeline consumes this connection yet.
+3. `SonarCloud_Service_Connection`: retain Build Auth and remove Build Consumer
+   and Build Sender.
+4. Preserve `Azure_Connection` access for legacy Configure Platform until that
+   pipeline is retired.
+
+This cleanup is manual because the supported Terraform authorization resource
+models grants rather than explicit denials. Do not re-enable broad access;
+check the portal permissions when reviewing later access changes.
