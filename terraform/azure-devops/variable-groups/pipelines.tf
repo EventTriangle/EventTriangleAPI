@@ -144,8 +144,10 @@ resource "azuredevops_pipeline_authorization" "azure_acr" {
 }
 
 resource "azuredevops_pipeline_authorization" "sonarcloud" {
+  count = var.manage_sonarcloud ? 1 : 0
+
   project_id  = var.project_id
-  resource_id = azuredevops_serviceendpoint_sonarcloud.sonarcloud.id
+  resource_id = azuredevops_serviceendpoint_sonarcloud.sonarcloud[0].id
   type        = "endpoint"
   pipeline_id = azuredevops_build_definition.pipeline["build_auth"].id
 }

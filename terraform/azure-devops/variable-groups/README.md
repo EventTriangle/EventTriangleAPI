@@ -26,7 +26,7 @@ TASK-08.
 3. Authenticate the Azure DevOps provider, initialize the existing state, and
    supply every protected input listed below.
 4. Plan the declarative service-connection imports from `imports.tf`. Confirm
-   that all five connections are imported in place with their existing IDs and
+   that four connections (five with SonarCloud enabled) are imported in place with their existing IDs and
    that no replacement or deletion is proposed.
 5. Confirm that no still-required variable group, pipeline, environment, or
    secret is being destroyed.
@@ -97,6 +97,20 @@ The Cloudflare pipeline deliberately receives no Azure service-principal
 credentials.
 
 ## Service-connection ownership
+
+SonarCloud is temporarily deferred. `manage_sonarcloud` defaults to `false`, so
+this root imports four connections and does not require a SonarCloud token or
+modify the existing SonarCloud endpoint. When a working token is available,
+set `TF_VAR_manage_sonarcloud=true` and `TF_VAR_sonarcloud_token`, then review
+and apply the additional import and authorization. Keep `manage_sonarcloud`
+enabled once imported: `prevent_destroy` blocks accidental endpoint deletion.
+
+Build Auth independently exposes the boolean Run Pipeline parameter
+`sonarCloudEnabled`, default `false`. The shared template excludes SonarCloud
+steps when disabled, including their service-connection inputs. Enable the
+parameter for a manual run on `main` after repairing the token. To enable
+analysis for automatic runs, change the parameter's YAML default to `true`.
+Disabling pipeline analysis does not require disabling Terraform management.
 
 TASK-08 retains and imports the existing `EventTriangle`,
 `Docker_Hub_Connection`, `Azure_ACR_Connection`,

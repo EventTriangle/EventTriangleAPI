@@ -24,6 +24,29 @@ Azure DevOps before running Terraform; its installation token cannot be
 exported through the provider. Terraform imports the existing connection and
 manages which pipelines may use it.
 
+### GitHub authentication and permissions
+
+The existing `EventTriangle` connection uses the Azure Pipelines GitHub App
+(`InstallationToken`), not a personal access token. Do not add `auth_personal`
+to the imported resource: that selects PAT authentication rather than preserving
+the current connection.
+
+In GitHub organization settings, configure the installed Azure Pipelines App
+with `Only select repositories` and select `EventTriangle/EventTriangleAPI`.
+An organization administrator must verify this installation scope. GitHub App
+permissions are defined by the application; limit repository access through the
+installation settings instead of creating an additional user PAT. In Azure
+DevOps, authorize the connection only for the nine maintained pipelines.
+
+Provider 1.16.0 requires `description = ""` for GitHub App connections and cannot
+create or update their App authentication. The other service connections have
+descriptions; the GitHub description intentionally remains empty.
+
+References:
+
+- [Microsoft: secure GitHub repository access](https://learn.microsoft.com/en-us/azure/devops/pipelines/security/secure-access-to-repos?view=azure-devops)
+- [Provider 1.16.0: GitHub connection limitations](https://github.com/microsoft/terraform-provider-azuredevops/blob/v1.16.0/website/docs/r/serviceendpoint_github.html.markdown)
+
 ## Import and apply
 
 Import service connections into the shared state only after the TASK-08
@@ -34,7 +57,7 @@ Before applying:
 
 1. Export all protected inputs listed in `README.md`.
 2. Run `terraform plan -out=azure-devops.tfplan`.
-3. Confirm five in-place imports and no service-connection replacement or
+3. Confirm four in-place imports (five when `manage_sonarcloud=true`) and no service-connection replacement or
    deletion. Supply `azure_client_secret` for the target project client
    `ab0a5dc1-ee52-4574-96e0-469f237928a6`; both Azure_Connection and the pipeline
    variable group use this pair. Review the transition from the temporary test
@@ -42,7 +65,9 @@ Before applying:
 4. Apply the saved plan.
 5. Complete the portal permission cleanup below, then exercise each active
    consumer: repository checkout, ACR login/push, and
-   Build Auth SonarCloud preparation and analysis.
+   Build Auth compilation and tests. SonarCloud preparation and analysis are
+   deferred while `sonarCloudEnabled=false`; test them separately once a working
+   token is available and `manage_sonarcloud=true` has been applied.
 6. Run a second plan and confirm that no unintended changes remain.
 
 Docker Hub and `Azure_Connection` currently have no active pipeline consumer;

@@ -117,10 +117,17 @@ variable "azure_acr_password" {
   sensitive   = true
 }
 
+variable "manage_sonarcloud" {
+  description = "Import and manage SonarCloud once a working token is available."
+  type        = bool
+  default     = false
+}
+
 variable "sonarcloud_token" {
   description = "SonarCloud token supplied through TF_VAR_sonarcloud_token."
   type        = string
   sensitive   = true
+  default     = null
 }
 
 variable "cloudflare_api_key" {

@@ -14,7 +14,9 @@ import {
 }
 
 import {
-  to = azuredevops_serviceendpoint_sonarcloud.sonarcloud
+  for_each = var.manage_sonarcloud ? toset(["sonarcloud"]) : toset([])
+
+  to = azuredevops_serviceendpoint_sonarcloud.sonarcloud[0]
   id = "${var.project_id}/993a42ad-5193-4df4-9e9c-b29332e94e4f"
 }
 

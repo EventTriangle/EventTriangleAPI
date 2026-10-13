@@ -9,6 +9,12 @@ trigger:
 
 pr: none
 
+parameters:
+  - name: sonarCloudEnabled
+    displayName: 'Run SonarCloud analysis'
+    type: boolean
+    default: false
+
 variables:
   - name: appName
     value: 'Auth'
@@ -43,5 +49,5 @@ stages:
           shouldRunUnitTests: false
           shouldRunIntegrationTests: true
           integrationTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/authorization/EventTriangleAPI.Authorization.IntegrationTests/EventTriangleAPI.Authorization.IntegrationTests.csproj'
-          sonarCloudEnabled: true
+          sonarCloudEnabled: ${{ parameters.sonarCloudEnabled }}
           sonarCloudServiceConnection: 'SonarCloud_Service_Connection'
