@@ -2,8 +2,6 @@ resource "azuredevops_serviceendpoint_github" "github" {
   project_id            = var.project_id
   service_endpoint_name = "EventTriangle"
 
-  # GitHub App connections are bootstrapped in Azure DevOps and then imported.
-  # The provider cannot create or update their InstallationToken credentials.
   description = ""
 }
 
