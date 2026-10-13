@@ -112,13 +112,29 @@ No Cloudflare Terraform root exists in the current repository.
 
 **Dependencies:** TASK-02
 
-- [ ] Run `bash scripts/list-service-connections.sh PROJECT_ID [ORGANIZATION_URL]` to inventory existing connection IDs, names, types, authentication schemes, and sharing status.
-- [ ] Map each retained connection to its pipeline consumers and the appropriate Azure DevOps Terraform provider resource under `terraform/azure-devops/`; document unsupported types and their handling.
-- [ ] Define connection configuration using environment inputs and protected credential sources. Obtain any required credentials from their owners; the inventory does not export secrets.
-- [ ] Import existing connections using their IDs and the resource-specific import format, preserving names and shared-project references to avoid breaking consumers.
-- [ ] Manage required pipeline authorizations and usage permissions, coordinating ownership with TASK-07 and avoiding unrestricted access where unnecessary.
-- [ ] Review plans for unexpected replacement/deletion, validate each retained connection through its consuming pipeline, and verify a second plan has no unintended changes.
-- [ ] Document imports, authentication setup, credential rotation, and any bootstrap requirements in the Azure DevOps Terraform README and developer access guide.
+**Status:** Completed for the four enabled connections. SonarCloud migration
+and analysis are deferred until a working token is available. Azure resource
+provisioning and its RBAC validation are outside this task's accepted scope.
+
+- [x] Run `bash scripts/list-service-connections.sh PROJECT_ID [ORGANIZATION_URL]` to inventory existing connection IDs, names, types, authentication schemes, and sharing status.
+- [x] Map each retained connection to its pipeline consumers and the appropriate Azure DevOps Terraform provider resource under `terraform/azure-devops/`; document unsupported types and their handling.
+- [x] Define connection configuration using environment inputs and protected credential sources. Obtain any required credentials from their owners; the inventory does not export secrets.
+- [x] Import existing connections using their IDs and the resource-specific import format, preserving names and shared-project references to avoid breaking consumers.
+- [x] Manage required pipeline authorizations and usage permissions, coordinating ownership with TASK-07 and avoiding unrestricted access where unnecessary.
+- [x] Review plans for unexpected replacement/deletion, validate each retained connection through its consuming pipeline, and verify a second plan has no unintended changes.
+- [x] Document imports, authentication setup, credential rotation, and any bootstrap requirements in the Azure DevOps Terraform README and developer access guide.
+
+Validation on 2026-10-13 applies to the four enabled connections; SonarCloud is
+explicitly deferred with `manage_sonarcloud=false`. Apply completed with four
+imports, six additions, twelve updates, and no deletions. A full second plan
+reported `No changes` using the test Azure client `f4b7fe16-77ee-4dcc-9bf6-cfd3b8614843`.
+Docker Hub and ACR authentication succeeded. Azure authentication succeeded,
+but subscription resource-group access returned `403 AuthorizationFailed`;
+the subscription owner must grant the test application the required Azure RBAC
+role before infrastructure access can be considered validated. Build pipeline
+validation succeeded in Azure DevOps runs 1663 (Auth), 1664 (Consumer), and
+1665 (Sender), including ACR image publication, compilation, and integration
+tests. Auth ran with SonarCloud disabled.
 
 ## TASK-09 — Complete Docker Hub image migration
 

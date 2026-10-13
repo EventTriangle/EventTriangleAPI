@@ -1,8 +1,8 @@
 # Azure DevOps Terraform
 
 This Terraform root manages the retained variable groups, maintained YAML
-pipeline definitions, the `dev` deployment environment, and pipeline-specific
-resource authorizations. Service-connection resources remain in TASK-08.
+pipeline definitions, the `dev` deployment environment, retained service
+connections, and pipeline-specific resource authorizations.
 
 The root remains in `terraform/azure-devops/variable-groups/` to preserve the
 working TASK-06 layout. Its existing variable-group resource addresses and
@@ -13,21 +13,26 @@ remote backend are unchanged:
 - key: `event.triangle.azdo.libraries.tfstate`
 
 Always initialize this exact state before planning. See
-`PIPELINE_INVENTORY.md` before the first pipeline apply because eight existing
-definitions must be imported rather than recreated.
+`PIPELINE_INVENTORY.md` for the Terraform-managed definitions and
+`SERVICE_CONNECTION_INVENTORY.md` for the existing connections imported by
+TASK-08.
 
 ## Bootstrap order
 
 1. Create or identify the Azure Storage backend outside this root.
-2. Authenticate the Azure DevOps provider and initialize the existing state.
-3. Plan the declarative imports from `imports.tf` and confirm the eight existing
-   definitions are imported and updated in place.
-4. Confirm that no still-required legacy variable groups or secrets are being
-   destroyed.
-5. Apply the retained variable groups, pipeline definitions, `dev` environment,
-   and their permissions.
-6. Run the infrastructure and Cloudflare pipelines only after reviewing their
-   own Terraform plans.
+2. Merge the TASK-08 configuration before importing connections into the shared
+   state. Applying imports from a feature branch while `main` lacks the matching
+   resources would make plans from `main` propose their deletion.
+3. Authenticate the Azure DevOps provider, initialize the existing state, and
+   supply every protected input listed below.
+4. Plan the declarative service-connection imports from `imports.tf`. Confirm
+   that four connections (five with SonarCloud enabled) are imported in place with their existing IDs and
+   that no replacement or deletion is proposed.
+5. Confirm that no still-required variable group, pipeline, environment, or
+   secret is being destroyed.
+6. Apply the service connections and narrowly scoped pipeline permissions.
+7. Run each consuming pipeline, then produce a second plan and require no
+   unintended changes.
 
 This root cannot create its own backend, provider PAT, or initial GitHub service
 connection. The applying identity needs permission to administer build
@@ -50,12 +55,16 @@ state key, and protected SAS token, then initialize:
 terraform init -reconfigure -backend-config=backend.hcl
 ```
 
-Supply variable-group secrets through protected environment variables:
+Supply variable-group and service-connection secrets through protected
+environment variables:
 
 ```bash
 export TF_VAR_backend_sas_token="<backend SAS token>"
 export TF_VAR_azure_client_secret="<Azure service-principal secret>"
 export TF_VAR_cloudflare_api_key="<Cloudflare API key>"
+export TF_VAR_docker_hub_token="<Docker Hub access token>"
+export TF_VAR_azure_acr_password="<ACR credential>"
+export TF_VAR_sonarcloud_token="<SonarCloud token>"
 ```
 
 Then run:
@@ -87,12 +96,57 @@ only where the active YAML consumes a group:
 The Cloudflare pipeline deliberately receives no Azure service-principal
 credentials.
 
-## External service connections
+## Service-connection ownership
 
-The existing GitHub connection is required to create or import the YAML
-definitions. ACR/Docker Hub and SonarCloud connections remain external until
-TASK-08. Until then, authorize those external connections manually only for the
-pipelines that consume them.
+SonarCloud is temporarily deferred. `manage_sonarcloud` defaults to `false`, so
+this root imports four connections and does not require a SonarCloud token or
+modify the existing SonarCloud endpoint. When a working token is available,
+set `TF_VAR_manage_sonarcloud=true` and `TF_VAR_sonarcloud_token`, then review
+and apply the additional import and authorization. Keep `manage_sonarcloud`
+enabled once imported: `prevent_destroy` blocks accidental endpoint deletion.
+
+Build Auth independently exposes the boolean Run Pipeline parameter
+`sonarCloudEnabled`, default `false`. The shared template excludes SonarCloud
+steps when disabled, including their service-connection inputs. Enable the
+parameter for a manual run on `main` after repairing the token. To enable
+analysis for automatic runs, change the parameter's YAML default to `true`.
+Disabling pipeline analysis does not require disabling Terraform management.
+
+TASK-08 retains and imports the existing `EventTriangle`,
+`Docker_Hub_Connection`, `Azure_ACR_Connection`,
+`SonarCloud_Service_Connection`, and `Azure_Connection` objects. Import keeps
+their IDs and therefore does not require pipeline YAML to change connection
+names.
+
+Terraform grants endpoint access only to current consumers:
+
+- `EventTriangle`: all Terraform-managed pipelines;
+- `Azure_ACR_Connection`: the three Build and three PR Validation pipelines;
+- `SonarCloud_Service_Connection`: Build Auth only.
+
+`Docker_Hub_Connection` remains unauthorized until TASK-09 adds its consumers.
+`Azure_Connection` is not granted to any maintained pipeline while the
+infrastructure YAML uses the `Terraform_Azure_Credentials` variable group; its
+existing permission for legacy `Configure Platform` is retained until that
+definition is retired.
+
+Remove pre-existing broad access from Docker Hub and ACR and stale SonarCloud
+access from Build Consumer and Build Sender using the one-time portal procedure
+in `DEVELOPER_ACCESS.md`, after Terraform has granted access to the intended
+consumers. Terraform manages these grants with the supported
+`azuredevops_pipeline_authorization` resource.
+
+`Azure_Connection` and the pipeline variable group share `azure_client_id` and
+`azure_client_secret`. The target client ID is the default
+`ab0a5dc1-ee52-4574-96e0-469f237928a6`; supply its matching secret. A plan may
+replace the temporary test identity in the variable group with this project
+identity.
+
+The GitHub App installation token cannot be exported or recreated by this
+root. Bootstrap `EventTriangle` in Azure DevOps first, then import it. Azure
+DevOps also does not return stored Docker, SonarCloud, ACR, or Azure secrets;
+their owners must provide current values before the import plan is applied.
+See `DEVELOPER_ACCESS.md` for access and rotation procedures.
 
 ## Migration notes
 
@@ -100,7 +154,8 @@ pipelines that consume them.
   on `Prefix_Library` expansion.
 - The Cloudflare zone identifier is the `cloudflare_zone_id` default in the
   Cloudflare Terraform environment.
-- Azure service-principal credentials remain until TASK-08 migrates the active
-  infrastructure pipelines to a maintained service connection.
+- Azure service-principal credentials remain in the variable group until the
+  infrastructure YAML is explicitly migrated to an Azure task that consumes
+  `Azure_Connection`.
 - PostgreSQL, Redis, and Entra ID secrets must be migrated to their selected
   GitOps secret mechanism before their legacy variable groups are deleted.

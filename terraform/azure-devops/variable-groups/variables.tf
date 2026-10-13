@@ -16,12 +16,6 @@ variable "github_repository_id" {
   default     = "EventTriangle/EventTriangleAPI"
 }
 
-variable "github_service_connection_id" {
-  description = "Existing Azure DevOps GitHub service-connection ID used to read the repository."
-  type        = string
-  default     = "00d968fc-300a-44de-b20a-026b3555785b"
-}
-
 variable "pipeline_default_branch" {
   description = "Fully qualified default branch stored on Azure DevOps pipeline definitions."
   type        = string
@@ -79,6 +73,61 @@ variable "azure_tenant_id" {
   description = "Microsoft Entra tenant ID consumed by infrastructure pipelines."
   type        = string
   default     = "b40a105f-0643-4922-8e60-10fc1abf9c4b"
+}
+
+variable "azure_subscription_name" {
+  description = "Azure subscription name used by the Azure Resource Manager service connection."
+  type        = string
+  default     = "Mitra"
+}
+
+variable "docker_hub_username" {
+  description = "Docker Hub account used by the existing Docker Hub service connection."
+  type        = string
+  default     = "petrokolosov"
+}
+
+variable "docker_hub_token" {
+  description = "Docker Hub access token supplied through TF_VAR_docker_hub_token."
+  type        = string
+  sensitive   = true
+}
+
+variable "azure_acr_registry_url" {
+  description = "Azure Container Registry URL used by Azure_ACR_Connection."
+  type        = string
+  default     = "https://acrsharedd01.azurecr.io"
+}
+
+variable "azure_acr_username" {
+  description = "Registry username used by the existing Azure ACR service connection."
+  type        = string
+  default     = "acrsharedd01"
+}
+
+variable "azure_acr_email" {
+  description = "Email stored on the existing Azure ACR service connection."
+  type        = string
+  default     = "kolosovp94@gmail.com"
+}
+
+variable "azure_acr_password" {
+  description = "Registry password supplied through TF_VAR_azure_acr_password."
+  type        = string
+  sensitive   = true
+}
+
+variable "manage_sonarcloud" {
+  description = "Import and manage SonarCloud once a working token is available."
+  type        = bool
+  default     = false
+}
+
+variable "sonarcloud_token" {
+  description = "SonarCloud token supplied through TF_VAR_sonarcloud_token."
+  type        = string
+  sensitive   = true
+  default     = null
 }
 
 variable "cloudflare_api_key" {
