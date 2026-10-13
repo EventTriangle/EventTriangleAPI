@@ -104,11 +104,12 @@ required by this Terraform root. Azure DevOps does not return stored endpoint
 passwords or tokens through the inventory API, so their current values must be
 obtained from the credential owners before a full plan or apply.
 
-`imports.tf` declares all five connections using the
-`PROJECT_ID/SERVICE_ENDPOINT_ID` format. They are intentionally not imported
-into the shared remote state until this configuration is merged and all current
-credentials are available. Import itself associates existing objects with
-Terraform; the reviewed apply must not replace or delete them.
+`imports.tf` declares the connections using the
+`PROJECT_ID/SERVICE_ENDPOINT_ID` format. GitHub, Docker Hub, ACR, and Azure were
+imported into the shared remote state on 2026-10-13 without replacing or deleting
+them. SonarCloud remains outside state while `manage_sonarcloud=false`.
+Until TASK-08 is merged, apply only this branch's configuration against the
+shared state: the older main configuration lacks these imported resources.
 
 Terraform declares narrowly scoped endpoint permissions:
 
@@ -142,7 +143,21 @@ does not silently break an unmanaged definition.
 
 ## Validation status
 
-As of 2026-10-07:
+As of 2026-10-13:
+
+- Apply completed: four imports, six additions, twelve updates, no deletions;
+- a full post-apply plan reported `No changes` with the same test credentials;
+- Docker Hub username `petrokolosov` and its PAT successfully authenticated;
+- ACR credentials successfully authenticated against the registry;
+- test Azure client `f4b7fe16-77ee-4dcc-9bf6-cfd3b8614843` successfully
+  authenticated, but resource-group enumeration in the subscription returned
+  `403 AuthorizationFailed`. Azure RBAC access still needs the subscription
+  owner's intervention;
+- Build Auth/Consumer/Sender validation runs 1663/1664/1665 on TASK-08 all
+  succeeded after apply, including GitHub checkout, ACR login/image publication,
+  compilation, and integration tests. No SonarCloud tasks were included in Auth.
+
+Prior consuming-pipeline checks:
 
 - GitHub checkout succeeds through `EventTriangle` in the maintained pipelines;
 - ACR login and image publication succeed through `Azure_ACR_Connection`;
