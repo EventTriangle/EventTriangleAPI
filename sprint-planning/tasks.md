@@ -115,10 +115,10 @@ No Cloudflare Terraform root exists in the current repository.
 - [x] Run `bash scripts/list-service-connections.sh PROJECT_ID [ORGANIZATION_URL]` to inventory existing connection IDs, names, types, authentication schemes, and sharing status.
 - [x] Map each retained connection to its pipeline consumers and the appropriate Azure DevOps Terraform provider resource under `terraform/azure-devops/`; document unsupported types and their handling.
 - [ ] Define connection configuration using environment inputs and protected credential sources. Obtain any required credentials from their owners; the inventory does not export secrets.
-- [x] Import existing connections using their IDs and the resource-specific import format, preserving names and shared-project references to avoid breaking consumers.
+- [ ] Import existing connections using their IDs and the resource-specific import format, preserving names and shared-project references to avoid breaking consumers.
 - [ ] Manage required pipeline authorizations and usage permissions, coordinating ownership with TASK-07 and avoiding unrestricted access where unnecessary.
 - [ ] Review plans for unexpected replacement/deletion, validate each retained connection through its consuming pipeline, and verify a second plan has no unintended changes.
-- [ ] Document imports, authentication setup, credential rotation, and any bootstrap requirements in the Azure DevOps Terraform README and developer access guide.
+- [x] Document imports, authentication setup, credential rotation, and any bootstrap requirements in the Azure DevOps Terraform README and developer access guide.
 
 ## TASK-09 — Complete Docker Hub image migration
 

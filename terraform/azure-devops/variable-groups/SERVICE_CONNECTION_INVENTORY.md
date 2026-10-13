@@ -104,10 +104,11 @@ required by this Terraform root. Azure DevOps does not return stored endpoint
 passwords or tokens through the inventory API, so their current values must be
 obtained from the credential owners before a full plan or apply.
 
-All five connections were imported into the existing remote state using the
-`PROJECT_ID/SERVICE_ENDPOINT_ID` format declared in `imports.tf`. Import only
-associated the existing objects with Terraform; it did not update their remote
-configuration.
+`imports.tf` declares all five connections using the
+`PROJECT_ID/SERVICE_ENDPOINT_ID` format. They are intentionally not imported
+into the shared remote state until this configuration is merged and all current
+credentials are available. Import itself associates existing objects with
+Terraform; the reviewed apply must not replace or delete them.
 
 Terraform declares narrowly scoped endpoint permissions:
 
@@ -116,7 +117,37 @@ Terraform declares narrowly scoped endpoint permissions:
 - `Azure_ACR_Connection`: the three Build and three PR Validation pipelines;
 - `SonarCloud_Service_Connection`: Build Auth only.
 
-`Docker_Hub_Connection` remains unauthorized until TASK-09 adds a consumer.
-`Azure_Connection` remains unauthorized while Terraform Create and Destroy use
-the `Terraform_Azure_Credentials` variable group rather than an Azure task that
-accepts a service connection.
+`Docker_Hub_Connection` receives no per-pipeline grant until TASK-09 adds a
+consumer. `Azure_Connection` receives no grant to a maintained pipeline while
+Terraform Create and Destroy use the `Terraform_Azure_Credentials` variable
+group rather than an Azure task that accepts a service connection. Its legacy
+`Configure Platform` permission is retained until that pipeline is retired.
+
+## Existing permission cleanup
+
+The 2026-10-07 permission inventory found configuration broader than the
+consumer map:
+
+- `Docker_Hub_Connection` and `Azure_ACR_Connection` allow every pipeline;
+- `SonarCloud_Service_Connection` allows Build Auth, Build Consumer, and Build
+  Sender even though only Build Auth enables analysis;
+- `Azure_Connection` remains authorized for legacy `Configure Platform` (ID
+  35), which is outside the maintained pipeline set.
+
+Terraform explicitly disables all-pipeline access for Docker Hub and ACR,
+grants ACR only to the six image pipelines, and removes the stale SonarCloud
+permissions from Build Consumer and Build Sender. The legacy Azure permission
+is retained until `Configure Platform` is retired so TASK-08 does not silently
+break an unmanaged definition.
+
+## Validation status
+
+As of 2026-10-07:
+
+- GitHub checkout succeeds through `EventTriangle` in the maintained pipelines;
+- ACR login and image publication succeed through `Azure_ACR_Connection`;
+- SonarCloud preparation reaches the external service but authentication fails,
+  so its token must be replaced before TASK-08 can be completed;
+- Docker Hub has no active consumer until TASK-09;
+- `Azure_Connection` has no maintained consumer and is still associated with
+  legacy `Configure Platform` only.
