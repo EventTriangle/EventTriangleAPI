@@ -127,18 +127,15 @@ resource "azuredevops_pipeline_authorization" "github_repository" {
   pipeline_id = each.value.id
 }
 
-resource "azuredevops_pipeline_authorization" "azure_acr" {
+resource "azuredevops_pipeline_authorization" "docker_hub" {
   for_each = toset([
-    "pr_validation_auth",
-    "pr_validation_sender",
-    "pr_validation_consumer",
     "build_auth",
     "build_sender",
     "build_consumer",
   ])
 
   project_id  = var.project_id
-  resource_id = azuredevops_serviceendpoint_dockerregistry.azure_acr.id
+  resource_id = azuredevops_serviceendpoint_dockerregistry.docker_hub.id
   type        = "endpoint"
   pipeline_id = azuredevops_build_definition.pipeline[each.value].id
 }

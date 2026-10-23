@@ -17,6 +17,8 @@ pr:
 
       # Pipeline itself (so changes validate)
       - .azdo/**
+      - scripts/docker-build.sh
+      - scripts/dockerhub/build-sender.sh
 
     exclude:
       # Docs
@@ -58,8 +60,7 @@ stages:
       - template: "../templates/docker-build-push-jobs.yml"
         parameters:
           jobName: "Docker_Build_${{ variables.appName }}"
-          imageRepository: "sender-service"
-          dockerfilePath: "$(System.DefaultWorkingDirectory)/src/sender/Dockerfile"
-          registryUrl: "acrsharedd01.azurecr.io"
-          dockerServiceConnection: "Azure_ACR_Connection"
-          scriptFile: "$(System.DefaultWorkingDirectory)/scripts/build-sender.sh"
+          imageRepository: "petrokolosov/sender-service"
+          registryUrl: "docker.io"
+          scriptFile: "$(System.DefaultWorkingDirectory)/scripts/dockerhub/build-sender.sh"
+          pushImage: false

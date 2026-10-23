@@ -18,7 +18,8 @@ VERSION_TAG="acrsharedd01.azurecr.io/auth-service:$SEM_VER"
 LATEST_TAG="acrsharedd01.azurecr.io/auth-service:latest"
 CACHE_IMAGE_TAG="acrsharedd01.azurecr.io/auth-service:buildcache"
 
-$SCRIPT_DIR/docker-build.sh \
+bash "$SCRIPT_DIR/docker-build.sh" \
+    --push "${2:-true}" \
     --working-directory "$WORKING_DIRECTORY" \
     --docker-file "$DOCKER_FILE" \
     --version-tag "$VERSION_TAG" \

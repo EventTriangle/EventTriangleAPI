@@ -47,15 +47,9 @@ definitions. The existing per-pipeline endpoint authorizations are managed by
 
 ### `Azure_ACR_Connection`
 
-The connection is passed as `dockerServiceConnection` to the shared
-`.azdo/templates/docker-build-push-jobs.yml` template by:
-
-- `.azdo/build/build-auth.yml`;
-- `.azdo/build/build-sender.yml`;
-- `.azdo/build/build-consumer.yml`;
-- `.azdo/pr-validation/pr-validation-auth.yml`;
-- `.azdo/pr-validation/pr-validation-sender.yml`;
-- `.azdo/pr-validation/pr-validation-consumer.yml`.
+TASK-09 keeps the endpoint and original ACR scripts for rollback but switches
+all maintained publication entry points to Docker Hub. The six old ACR grants
+remain in the deployed TASK-08 state until TASK-09 is merged and applied.
 
 ### `SonarCloud_Service_Connection`
 
@@ -75,9 +69,11 @@ credentials.
 
 ### `Docker_Hub_Connection`
 
-No current YAML entry point references this connection. It is retained for the
-Docker Hub publication work explicitly assigned to TASK-09; TASK-08 should
-import it without wiring it into the current ACR pipelines.
+The connection is passed to the shared Docker template by Build Auth, Build
+Sender, and Build Consumer. Username `petrokolosov` and its PAT were verified.
+The three Build pipelines were authorized during TASK-09 preparation; Terraform
+will record these grants on apply. PR Validation uses the build-only mode and
+has no publisher connection.
 
 ## Import boundary
 
@@ -115,11 +111,10 @@ Terraform declares narrowly scoped endpoint permissions:
 
 - `EventTriangle`: every managed pipeline, because every definition reads the
   GitHub repository through it;
-- `Azure_ACR_Connection`: the three Build and three PR Validation pipelines;
+- `Docker_Hub_Connection`: the three Build pipelines;
 - `SonarCloud_Service_Connection`: Build Auth only.
 
-`Docker_Hub_Connection` receives no per-pipeline grant until TASK-09 adds a
-consumer. `Azure_Connection` receives no grant to a maintained pipeline while
+PR Validation receives no publisher grant. `Azure_Connection` receives no grant to a maintained pipeline while
 Terraform Create and Destroy use the `Terraform_Azure_Credentials` variable
 group rather than an Azure task that accepts a service connection. Its legacy
 `Configure Platform` permission is retained until that pipeline is retired.
@@ -135,9 +130,9 @@ consumer map:
 - `Azure_Connection` remains authorized for legacy `Configure Platform` (ID
   35), which is outside the maintained pipeline set.
 
-Terraform grants ACR only to the six image pipelines and SonarCloud only to
-Build Auth. Existing all-pipeline access and stale SonarCloud grants require
-the one-time portal cleanup documented in `DEVELOPER_ACCESS.md`. The legacy
+The broad access and stale SonarCloud grants were removed during TASK-08.
+TASK-09 replaces the six ACR grants with three Docker Hub grants on apply.
+SonarCloud remains deferred unless explicitly enabled. The legacy
 Azure permission is retained until `Configure Platform` is retired so TASK-08
 does not silently break an unmanaged definition.
 

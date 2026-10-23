@@ -121,19 +121,19 @@ names.
 Terraform grants endpoint access only to current consumers:
 
 - `EventTriangle`: all Terraform-managed pipelines;
-- `Azure_ACR_Connection`: the three Build and three PR Validation pipelines;
+- `Docker_Hub_Connection`: the three Build pipelines;
 - `SonarCloud_Service_Connection`: Build Auth only.
 
-`Docker_Hub_Connection` remains unauthorized until TASK-09 adds its consumers.
+PR Validation receives no publishing service connection. The retained ACR
+connection has no active consumer after TASK-09 and remains available for an
+explicit rollback to the preserved ACR scripts.
 `Azure_Connection` is not granted to any maintained pipeline while the
 infrastructure YAML uses the `Terraform_Azure_Credentials` variable group; its
 existing permission for legacy `Configure Platform` is retained until that
 definition is retired.
 
-Remove pre-existing broad access from Docker Hub and ACR and stale SonarCloud
-access from Build Consumer and Build Sender using the one-time portal procedure
-in `DEVELOPER_ACCESS.md`, after Terraform has granted access to the intended
-consumers. Terraform manages these grants with the supported
+Pre-existing broad Docker Hub/ACR access and stale SonarCloud grants were
+removed during TASK-08. Terraform manages the current grants with the supported
 `azuredevops_pipeline_authorization` resource.
 
 `Azure_Connection` and the pipeline variable group share `azure_client_id` and

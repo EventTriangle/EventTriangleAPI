@@ -84,16 +84,15 @@ jobs:
           BuildVersion: $(version_step.semVer)
 
       - bash: |
-          echo "=== ENV VARIABLES ==="
-          printenv | sort
-
-          echo "=== PIPELINE VARIABLES ==="
-          echo "FullSemVer: $(version_step.FullSemVer)"
-          echo "SemVer: $(version_step.SemVer)"
-          echo "ShortSha: $(version_step.ShortSha)"
-          echo "Build Source branch: ${BUILD_SOURCEBRANCHNAME}"
-        displayName: Debug environment
+          echo "Version: $SEM_VER"
+          echo "Commit: $COMMIT"
+          echo "Branch: $SOURCE_BRANCH"
+        displayName: 'Build information'
         condition: succeeded()
+        env:
+          SEM_VER: $(version_step.SemVer)
+          COMMIT: $(Build.SourceVersion)
+          SOURCE_BRANCH: $(Build.SourceBranch)
 
       - task: DotNetCoreCLI@2
         displayName: 'Dotnet restore'

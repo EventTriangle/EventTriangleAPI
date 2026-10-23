@@ -1,90 +1,99 @@
 parameters:
   - name: jobName
-    displayName: 'Job Name'
     type: string
-
   - name: gitVersionVersion
-    displayName: 'GitVersion version'
+    type: string
     default: '6.x'
-    type: string
-
   - name: registryUrl
+    displayName: 'Registry host (docker.io for Docker Hub)'
     type: string
-    displayName: >
-      ACR Registry URL.
-      For ACR it is FQDN URL of container registry: azuredevopsacrd01.azurecr.io.
-      For Docker Hub it is: docker.io/petrkolosov.
-
+    default: 'docker.io'
   - name: imageRepository
-    displayName: 'Image Repository name'
+    displayName: 'Repository including namespace, e.g. petrokolosov/auth-service'
     type: string
-
-  - name: dockerfilePath
-    displayName: 'Dockerfile path'
-    type: string
-
   - name: dockerServiceConnection
-    displayName: 'Azure container registry service connection in Azure DevOps.'
+    displayName: 'Publishing service connection'
     type: string
-
+    default: ''
   - name: scriptFile
-    displayName: Docker build script path
     type: string
+  - name: pushImage
+    displayName: 'Publish image after tests'
+    type: boolean
+    default: false
 
 jobs:
   - job: ${{ parameters.jobName }}
     displayName: ${{ parameters.jobName }}
+    ${{ if eq(parameters.pushImage, true) }}:
+      condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'), or(eq(variables['Build.SourceBranch'], 'refs/heads/main'), startsWith(variables['Build.SourceBranch'], 'refs/tags/v')))
     steps:
       - checkout: self
         fetchDepth: 0
+        persistCredentials: false
 
       - task: gitversion-setup@4.5.0
         displayName: 'GitVersion Setup'
-        condition: succeeded()
         inputs:
           versionSpec: ${{ parameters.gitVersionVersion }}
 
       - task: gitversion-execute@4.5.0
-        name: version_step # step id used as a reference for output values
-        displayName: Determine Version
-        condition: succeeded()
-
-      - bash: echo $Action$BuildVersion
-        displayName: 'Set Build Version'
-        condition: succeeded()
-        env:
-          Action: '##vso[build.updatebuildnumber]'
-          BuildVersion: $(version_step.semVer)
-
-      - bash: |
-          echo "=== ENV VARIABLES ==="
-          printenv
-
-          echo "=== PIPELINE VARIABLES ==="
-          echo "FullSemVer: $(version_step.FullSemVer)"
-          echo "SemVer: $(version_step.SemVer)"
-          echo "ShortSha: $(version_step.ShortSha)"
-          echo "Build Source branch: $BUILD_SOURCEBRANCHNAME"
-        displayName: Debug Environment
-        condition: succeeded()
-
-      - bash: |
-          cd ./scripts
-          chmod +x docker-inspect.sh
-          ./docker-inspect.sh
-        displayName: Docker Inspect
-        condition: succeeded()
-
-      - task: Docker@2
-        displayName: "Docker Login"
-        inputs:
-          command: login
-          containerRegistry: ${{ parameters.dockerServiceConnection }}
+        name: version_step
+        displayName: 'Determine Version'
 
       - bash: |
           set -euo pipefail
-          SCRIPT_FILE="${{ parameters.scriptFile }}"
-          echo "Script file: ${SCRIPT_FILE}"
-          chmod +x "${SCRIPT_FILE}"
-          "${SCRIPT_FILE}" $(version_step.SemVer)
-        displayName: "Docker Build"
+          echo "##vso[build.updatebuildnumber]${SEM_VER}-${RUN_ID}"
+        displayName: 'Set Build Version'
+        env:
+          SEM_VER: $(version_step.SemVer)
+          RUN_ID: $(Build.BuildId)
+
+      - ${{ if eq(parameters.pushImage, true) }}:
+          - task: Docker@2
+            displayName: 'Docker Hub Login'
+            inputs:
+              command: login
+              containerRegistry: ${{ parameters.dockerServiceConnection }}
+
+      - bash: |
+          set -euo pipefail
+          bash "$SCRIPT_FILE" "${SEM_VER}-${RUN_ID}" "$PUSH_IMAGE"
+        displayName: 'Docker Build'
+        env:
+          SCRIPT_FILE: ${{ parameters.scriptFile }}
+          SEM_VER: $(version_step.SemVer)
+          RUN_ID: $(Build.BuildId)
+          PUSH_IMAGE: ${{ lower(parameters.pushImage) }}
+
+      - ${{ if eq(parameters.pushImage, true) }}:
+          - bash: |
+              set -euo pipefail
+              DIGEST=$(docker buildx imagetools inspect "$IMAGE:$TAG" --format '{{json .Manifest}}' | jq -er '.digest | select(startswith("sha256:"))')
+              mkdir -p "$(dirname "$OUTPUT_FILE")"
+              jq -n --arg image "$IMAGE" --arg tag "${SEM_VER}-${RUN_ID}" \
+                --arg digest "$DIGEST" --arg commit "$COMMIT" \
+                '{image:$image, tag:$tag, digest:$digest, reference:($image+"@"+$digest), commit:$commit}' \
+                > "$OUTPUT_FILE"
+              echo "Published $IMAGE@$DIGEST"
+            displayName: 'Record image version and digest'
+            env:
+              IMAGE: ${{ parameters.registryUrl }}/${{ parameters.imageRepository }}
+              SEM_VER: $(version_step.SemVer)
+              RUN_ID: $(Build.BuildId)
+              COMMIT: $(Build.SourceVersion)
+              TAG: $(version_step.SemVer)-$(Build.BuildId)
+              OUTPUT_FILE: $(Build.ArtifactStagingDirectory)/image/published-image.json
+
+          - task: PublishPipelineArtifact@1
+            displayName: 'Publish image metadata'
+            inputs:
+              targetPath: $(Build.ArtifactStagingDirectory)/image
+              artifact: image-${{ parameters.jobName }}
+
+          - task: Docker@2
+            displayName: 'Docker Hub Logout'
+            condition: always()
+            inputs:
+              command: logout
+              containerRegistry: ${{ parameters.dockerServiceConnection }}

@@ -98,20 +98,23 @@ replace a client ID with a secret issued for a different service principal.
 
 - Keep `grant access permission to all pipelines` disabled.
 - Authorize only the pipelines declared in `pipelines.tf`.
-- Do not authorize Docker Hub before TASK-09 adds a consumer.
+- Authorize Docker Hub only for Build Auth, Build Consumer, and Build Sender;
+  PR Validation must not receive publisher credentials.
 - Do not authorize `Azure_Connection` until infrastructure YAML consumes it.
 - Never expose endpoint credentials through Terraform outputs.
 
 ## One-time permission cleanup
 
-After Terraform has created the required individual grants, open Azure DevOps
+The initial cleanup was completed during TASK-08. When auditing permissions,
+open Azure DevOps
 `Project settings > Service connections`, select each connection, and open its
 `Pipeline permissions` settings:
 
-1. `Azure_ACR_Connection`: disable access for all pipelines. Keep the three Build
-   and three PR Validation pipelines explicitly authorized.
+1. `Azure_ACR_Connection`: disable access for all pipelines. After TASK-09 is
+   merged and its Terraform permissions are applied, remove the six old grants.
 2. `Docker_Hub_Connection`: disable access for all pipelines. No maintained
-   pipeline consumes this connection yet.
+   PR Validation pipeline should consume this connection. Allow only the three
+   Build pipelines.
 3. `SonarCloud_Service_Connection`: retain Build Auth and remove Build Consumer
    and Build Sender.
 4. Preserve `Azure_Connection` access for legacy Configure Platform until that

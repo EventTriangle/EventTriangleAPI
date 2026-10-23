@@ -19,18 +19,6 @@ pool:
   vmImage: 'ubuntu-latest'
 
 stages:
-  - stage: 'Docker_Push_${{ variables.appName }}'
-    displayName: 'Docker_Push_${{ variables.appName }}'
-    jobs:
-      - template: ../templates/docker-build-push-jobs.yml
-        parameters:
-          jobName: 'Docker_Push_${{ variables.appName }}'
-          imageRepository: 'consumer-service'
-          dockerfilePath: '$(System.DefaultWorkingDirectory)/src/consumer/Dockerfile'
-          registryUrl: 'acrsharedd01.azurecr.io'
-          dockerServiceConnection: 'Azure_ACR_Connection'
-          scriptFile: '$(System.DefaultWorkingDirectory)/scripts/build-consumer.sh'
-
   - stage: 'Build_Test_Scan_${{ variables.appName }}'
     displayName: 'Build_Test_Scan_${{ variables.appName }}'
     jobs:
@@ -45,3 +33,17 @@ stages:
           shouldRunIntegrationTests: true
           integrationTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/consumer/EventTriangleAPI.Consumer.IntegrationTests/EventTriangleAPI.Consumer.IntegrationTests.csproj'
           sonarCloudEnabled: false
+
+  - stage: 'Docker_Push_${{ variables.appName }}'
+    displayName: 'Docker_Push_${{ variables.appName }}'
+    dependsOn: 'Build_Test_Scan_${{ variables.appName }}'
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'), or(eq(variables['Build.SourceBranch'], 'refs/heads/main'), startsWith(variables['Build.SourceBranch'], 'refs/tags/v')))
+    jobs:
+      - template: ../templates/docker-build-push-jobs.yml
+        parameters:
+          jobName: 'Docker_Push_${{ variables.appName }}'
+          imageRepository: 'petrokolosov/consumer-service'
+          registryUrl: 'docker.io'
+          dockerServiceConnection: 'Docker_Hub_Connection'
+          scriptFile: '$(System.DefaultWorkingDirectory)/scripts/dockerhub/build-consumer.sh'
+          pushImage: true
