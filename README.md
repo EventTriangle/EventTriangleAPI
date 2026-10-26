@@ -55,6 +55,10 @@ EventTriangleAPI offers realtime communication using SignalR.
 
 ## Infrastructure diagram
 
+Setup: [Azure infrastructure](terraform/infrastructure/README.md),
+[Azure DevOps](terraform/azure-devops/variable-groups/README.md),
+[Cloudflare DNS](terraform/cloudflare/README.md).
+
 ![./img/infrastructure_diagram.png](./img/infrastructure_diagram.png)
 
 ## Technology stack
@@ -103,21 +107,15 @@ EventTriangleAPI offers realtime communication using SignalR.
 - `export EVENT_TRIANGLE_AD_CLIENT_SECRET=<YOUR_AD_SECRET>`
 - `docker compose up`
 
-## How to build docker images
+## How to build and publish docker images
 
 Run from the repository root. Docker Desktop or another Docker daemon must be
 running, with Buildx available. The scripts supply the shared source context
-required by the Dockerfiles; no Dockerfile changes are needed.
-
-```bash
-bash scripts/dockerhub/build-auth.sh 1.0.0-local
-bash scripts/dockerhub/build-sender.sh 1.0.0-local
-bash scripts/dockerhub/build-consumer.sh 1.0.0-local
-```
-
-These commands build and load an image locally without logging in, pushing, or
-reading registry caches. Docker selects the build platform; the Ubuntu CI
-agents build Linux AMD64 images.
+required by the Dockerfiles; no Dockerfile changes are needed. The shared
+`scripts/docker-build.sh` builds and publishes with `docker buildx build --push`.
+There is no boolean push argument or build-only mode. Supply a unique version
+and authenticate to the registry before running a wrapper. Docker selects the
+build platform; the Ubuntu CI agents build Linux AMD64 images.
 
 The public Docker Hub repositories are `petrokolosov/auth-service`,
 `petrokolosov/sender-service`, and `petrokolosov/consumer-service`. Public pull
@@ -133,27 +131,30 @@ source code. For local publication, log in through standard input:
 
 ```bash
 printf '%s' "$DOCKERHUB_TOKEN" | docker login docker.io --username petrokolosov --password-stdin
-bash scripts/dockerhub/build-auth.sh 1.0.0-example true
-bash scripts/dockerhub/build-sender.sh 1.0.0-example true
-bash scripts/dockerhub/build-consumer.sh 1.0.0-example true
+bash scripts/dockerhub/build-auth.sh 1.0.0-example
+bash scripts/dockerhub/build-sender.sh 1.0.0-example
+bash scripts/dockerhub/build-consumer.sh 1.0.0-example
 docker logout docker.io
 ```
 
-The second argument explicitly enables publication. Run application tests first;
-these local shell commands do not run tests themselves. Publishing writes the
-version tag, `latest`, and `buildcache`. The original `scripts/build-*.sh` remain
-available for ACR and preserve their publishing default; use `false` as their
-second argument to build locally instead.
+Run application tests first; these local shell commands do not run tests
+themselves. Every wrapper publishes the version tag, `latest`, and `buildcache`.
+The shared script imports registry cache from `buildcache` and exports inline
+cache metadata with the published images. The original `scripts/build-*.sh`
+remain available for ACR rollback and also publish using the same shared script.
 
 ### Pipeline behavior and deployment references
 
-- Build pipelines run application tests before the publishing stage. Only a
-  successful run on `main` or a `v*` tag may publish.
-- PR Validation uses the same Docker template with `pushImage: false`. Registry
-  login, push, cache publication, and publisher credentials are excluded.
-- `Docker_Hub_Connection` is authorized only for the three Build pipelines.
-  After this change is merged, apply the Azure DevOps Terraform root to migrate
-  permissions; keep the current ACR permissions until then.
+- Build and PR Validation pipelines run application checks before publication.
+  Same-repository PRs may publish, including mutable latest/cache tags. The
+  Docker publishing job skips fork PRs; managed definitions also disable fork
+  triggers and secret sharing. Build CI triggers remain `main` and `v*` tags,
+  while successful manual branch builds are allowed to publish.
+- The shared template logs in with `Docker@2` and the registry service connection,
+  then runs the maintained build script; its `buildx --push` performs publication.
+- Terraform authorizes `Docker_Hub_Connection` for the three Build and three PR
+  Validation pipelines. Apply the reviewed permission changes after the YAML
+  rollout; retain the existing ACR permissions until that transition.
 - CI tags include GitVersion SemVer and the unique Azure DevOps run ID, for
   example `1.0.1-104-1666`. Publication also produces a pipeline artifact with
   `published-image.json` containing the commit, version tag,

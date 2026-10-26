@@ -10,8 +10,7 @@ usage() {
     echo "    --version-tag <tag> \\"
     echo "    --latest-tag <tag> \\"
     echo "    --cache-image-tag <tag> \\"
-    echo "    --shared-context <path> \\"
-    echo "    [--push true|false]"
+    echo "    --shared-context <path>"
 }
 
 # ==============================================================================
@@ -24,7 +23,6 @@ VERSION_TAG=""
 LATEST_TAG=""
 CACHE_IMAGE_TAG=""
 SHARED_CONTEXT=""
-PUSH_IMAGE=false
 
 while [ "$#" -gt 0 ]; do
     case "$1" in
@@ -52,10 +50,6 @@ while [ "$#" -gt 0 ]; do
             SHARED_CONTEXT="${2:-}"
             shift 2
             ;;
-        --push)
-            PUSH_IMAGE="${2:-}"
-            shift 2
-            ;;
         --help|-h)
             usage
             exit 0
@@ -68,11 +62,6 @@ while [ "$#" -gt 0 ]; do
             ;;
     esac
 done
-
-case "$PUSH_IMAGE" in
-    true|false) ;;
-    *) echo "[ERROR] --push must be true or false."; exit 1 ;;
-esac
 
 # ==============================================================================
 # Validation
@@ -144,25 +133,16 @@ echo "============================================================"
 
 echo "Building image: $VERSION_TAG"
 
-BUILD_ARGS=(
-    --progress=plain
-    --build-context "shared=${SHARED_CONTEXT}"
-    --tag "$VERSION_TAG"
-    --file "$DOCKER_FILE"
-)
-
-if [ "$PUSH_IMAGE" = true ]; then
-    BUILD_ARGS+=(
-        --push
-        --cache-to type=inline
-        --cache-from "type=registry,ref=${CACHE_IMAGE_TAG}"
-        --tag "$CACHE_IMAGE_TAG"
-        --tag "$LATEST_TAG"
-    )
-else
-    BUILD_ARGS+=(--load)
-fi
-
-docker buildx build "${BUILD_ARGS[@]}" "$WORKING_DIRECTORY"
+docker buildx build \
+    --progress=plain \
+    --cache-to type=inline \
+    --cache-from type=registry,ref="${CACHE_IMAGE_TAG}" \
+    --build-context shared="${SHARED_CONTEXT}" \
+    --tag "${VERSION_TAG}" \
+    --tag "${CACHE_IMAGE_TAG}" \
+    --tag "${LATEST_TAG}" \
+    --file "${DOCKER_FILE}" \
+    --push \
+    "${WORKING_DIRECTORY}"
 
 echo "Build completed successfully."

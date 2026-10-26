@@ -19,7 +19,6 @@ LATEST_TAG="acrsharedd01.azurecr.io/auth-service:latest"
 CACHE_IMAGE_TAG="acrsharedd01.azurecr.io/auth-service:buildcache"
 
 bash "$SCRIPT_DIR/docker-build.sh" \
-    --push "${2:-true}" \
     --working-directory "$WORKING_DIRECTORY" \
     --docker-file "$DOCKER_FILE" \
     --version-tag "$VERSION_TAG" \

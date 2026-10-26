@@ -14,19 +14,13 @@ parameters:
   - name: dockerServiceConnection
     displayName: 'Publishing service connection'
     type: string
-    default: ''
   - name: scriptFile
     type: string
-  - name: pushImage
-    displayName: 'Publish image after tests'
-    type: boolean
-    default: false
 
 jobs:
   - job: ${{ parameters.jobName }}
     displayName: ${{ parameters.jobName }}
-    ${{ if eq(parameters.pushImage, true) }}:
-      condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'), or(eq(variables['Build.SourceBranch'], 'refs/heads/main'), startsWith(variables['Build.SourceBranch'], 'refs/tags/v')))
+    condition: and(succeeded(), ne(variables['System.PullRequest.IsFork'], 'True'))
     steps:
       - checkout: self
         fetchDepth: 0
@@ -49,51 +43,47 @@ jobs:
           SEM_VER: $(version_step.SemVer)
           RUN_ID: $(Build.BuildId)
 
-      - ${{ if eq(parameters.pushImage, true) }}:
-          - task: Docker@2
-            displayName: 'Docker Hub Login'
-            inputs:
-              command: login
-              containerRegistry: ${{ parameters.dockerServiceConnection }}
+      - task: Docker@2
+        displayName: 'Docker Hub Login'
+        inputs:
+          command: login
+          containerRegistry: ${{ parameters.dockerServiceConnection }}
 
+      # The shared build script publishes with buildx --push using this login.
       - bash: |
           set -euo pipefail
-          bash "$SCRIPT_FILE" "${SEM_VER}-${RUN_ID}" "$PUSH_IMAGE"
-        displayName: 'Docker Build'
+          bash "$SCRIPT_FILE" "${SEM_VER}-${RUN_ID}"
+        displayName: 'Docker Build and Push'
         env:
           SCRIPT_FILE: ${{ parameters.scriptFile }}
           SEM_VER: $(version_step.SemVer)
           RUN_ID: $(Build.BuildId)
-          PUSH_IMAGE: ${{ lower(parameters.pushImage) }}
 
-      - ${{ if eq(parameters.pushImage, true) }}:
-          - bash: |
-              set -euo pipefail
-              DIGEST=$(docker buildx imagetools inspect "$IMAGE:$TAG" --format '{{json .Manifest}}' | jq -er '.digest | select(startswith("sha256:"))')
-              mkdir -p "$(dirname "$OUTPUT_FILE")"
-              jq -n --arg image "$IMAGE" --arg tag "${SEM_VER}-${RUN_ID}" \
-                --arg digest "$DIGEST" --arg commit "$COMMIT" \
-                '{image:$image, tag:$tag, digest:$digest, reference:($image+"@"+$digest), commit:$commit}' \
-                > "$OUTPUT_FILE"
-              echo "Published $IMAGE@$DIGEST"
-            displayName: 'Record image version and digest'
-            env:
-              IMAGE: ${{ parameters.registryUrl }}/${{ parameters.imageRepository }}
-              SEM_VER: $(version_step.SemVer)
-              RUN_ID: $(Build.BuildId)
-              COMMIT: $(Build.SourceVersion)
-              TAG: $(version_step.SemVer)-$(Build.BuildId)
-              OUTPUT_FILE: $(Build.ArtifactStagingDirectory)/image/published-image.json
+      - bash: |
+          set -euo pipefail
+          DIGEST=$(docker buildx imagetools inspect "$IMAGE:$TAG" --format '{{json .Manifest}}' | jq -er '.digest | select(startswith("sha256:"))')
+          mkdir -p "$(dirname "$OUTPUT_FILE")"
+          jq -n --arg image "$IMAGE" --arg tag "$TAG" \
+            --arg digest "$DIGEST" --arg commit "$COMMIT" \
+            '{image:$image, tag:$tag, digest:$digest, reference:($image+"@"+$digest), commit:$commit}' \
+            > "$OUTPUT_FILE"
+          echo "Published $IMAGE@$DIGEST"
+        displayName: 'Record image version and digest'
+        env:
+          IMAGE: ${{ parameters.registryUrl }}/${{ parameters.imageRepository }}
+          COMMIT: $(Build.SourceVersion)
+          TAG: $(version_step.SemVer)-$(Build.BuildId)
+          OUTPUT_FILE: $(Build.ArtifactStagingDirectory)/image/published-image.json
 
-          - task: PublishPipelineArtifact@1
-            displayName: 'Publish image metadata'
-            inputs:
-              targetPath: $(Build.ArtifactStagingDirectory)/image
-              artifact: image-${{ parameters.jobName }}
+      - task: PublishPipelineArtifact@1
+        displayName: 'Publish image metadata'
+        inputs:
+          targetPath: $(Build.ArtifactStagingDirectory)/image
+          artifact: image-${{ parameters.jobName }}
 
-          - task: Docker@2
-            displayName: 'Docker Hub Logout'
-            condition: always()
-            inputs:
-              command: logout
-              containerRegistry: ${{ parameters.dockerServiceConnection }}
+      - task: Docker@2
+        displayName: 'Docker Hub Logout'
+        condition: always()
+        inputs:
+          command: logout
+          containerRegistry: ${{ parameters.dockerServiceConnection }}

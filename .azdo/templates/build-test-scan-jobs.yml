@@ -76,12 +76,14 @@ jobs:
         displayName: Determine Version
         condition: succeeded()
 
-      - bash: echo $Action$BuildVersion
+      - bash: |
+          set -euo pipefail
+          echo "##vso[build.updatebuildnumber]${SEM_VER}-${RUN_ID}"
         displayName: 'Set Build Version'
         condition: succeeded()
         env:
-          Action: '##vso[build.updatebuildnumber]'
-          BuildVersion: $(version_step.semVer)
+          SEM_VER: $(version_step.SemVer)
+          RUN_ID: $(Build.BuildId)
 
       - bash: |
           echo "Version: $SEM_VER"

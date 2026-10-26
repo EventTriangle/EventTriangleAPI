@@ -54,8 +54,24 @@ pool:
   vmImage: "ubuntu-latest"
 
 stages:
+  - stage: 'Build_Test_Scan_${{ variables.appName }}'
+    displayName: 'Build_Test_Scan_${{ variables.appName }}'
+    jobs:
+      - template: ../templates/build-test-scan-jobs.yml
+        parameters:
+          jobName: 'Build_Test_Scan_${{ variables.appName }}'
+          solution: '$(System.DefaultWorkingDirectory)/EventTriangleAPI.sln'
+          buildConfiguration: 'Release'
+          backendProjectPath: '$(System.DefaultWorkingDirectory)/src/consumer/EventTriangleAPI.Consumer.Presentation'
+          unitTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/consumer/EventTriangleAPI.Consumer.UnitTests/EventTriangleAPI.Consumer.UnitTests.csproj'
+          shouldRunUnitTests: true
+          shouldRunIntegrationTests: true
+          integrationTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/consumer/EventTriangleAPI.Consumer.IntegrationTests/EventTriangleAPI.Consumer.IntegrationTests.csproj'
+          sonarCloudEnabled: false
+
   - stage: "PR_Validation_${{ variables.appName }}"
     displayName: "PR_Validation_${{ variables.appName }}"
+    dependsOn: 'Build_Test_Scan_${{ variables.appName }}'
     jobs:
       - template: "../templates/docker-build-push-jobs.yml"
         parameters:
@@ -63,4 +79,4 @@ stages:
           imageRepository: "petrokolosov/consumer-service"
           registryUrl: "docker.io"
           scriptFile: "$(System.DefaultWorkingDirectory)/scripts/dockerhub/build-consumer.sh"
-          pushImage: false
+          dockerServiceConnection: "Docker_Hub_Connection"

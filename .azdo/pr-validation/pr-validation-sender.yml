@@ -54,8 +54,24 @@ pool:
   vmImage: "ubuntu-latest"
 
 stages:
+  - stage: 'Build_Test_Scan_${{ variables.appName }}'
+    displayName: 'Build_Test_Scan_${{ variables.appName }}'
+    jobs:
+      - template: ../templates/build-test-scan-jobs.yml
+        parameters:
+          jobName: 'Build_Test_Scan_${{ variables.appName }}'
+          solution: '$(System.DefaultWorkingDirectory)/EventTriangleAPI.sln'
+          buildConfiguration: 'Release'
+          backendProjectPath: '$(System.DefaultWorkingDirectory)/src/sender/EventTriangleAPI.Sender.Presentation'
+          unitTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/sender/EventTriangleAPI.Sender.UnitTests/EventTriangleAPI.Sender.UnitTests.csproj'
+          shouldRunIntegrationTests: true
+          shouldRunUnitTests: true
+          integrationTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/sender/EventTriangleAPI.Sender.IntegrationTests/EventTriangleAPI.Sender.IntegrationTests.csproj'
+          sonarCloudEnabled: false
+
   - stage: "PR_Validation_${{ variables.appName }}"
     displayName: "PR_Validation_${{ variables.appName }}"
+    dependsOn: 'Build_Test_Scan_${{ variables.appName }}'
     jobs:
       - template: "../templates/docker-build-push-jobs.yml"
         parameters:
@@ -63,4 +79,4 @@ stages:
           imageRepository: "petrokolosov/sender-service"
           registryUrl: "docker.io"
           scriptFile: "$(System.DefaultWorkingDirectory)/scripts/dockerhub/build-sender.sh"
-          pushImage: false
+          dockerServiceConnection: "Docker_Hub_Connection"
