@@ -1,6 +1,9 @@
 # Azure DevOps service-connection inventory
 
-Inventory date: 2026-09-25.
+Historical inventory date: 2026-09-25. IDs and authentication schemes below
+describe the original objects, not fixed creation inputs. The current code
+creates connections from credentials; recreated IDs will differ and GitHub
+uses PAT (`Token`) authentication instead of the original GitHub App.
 
 Command used:
 
@@ -41,7 +44,7 @@ managed by `azuredevops_build_definition.pipeline` in `pipelines.tf`:
 - Terraform Create and Destroy;
 - Cloudflare DNS.
 
-The imported Terraform resource now supplies the connection ID to the pipeline
+The Terraform resource supplies the created connection ID to the pipeline
 definitions. The existing per-pipeline endpoint authorizations are managed by
 `azuredevops_pipeline_authorization.github_repository`.
 
@@ -59,16 +62,18 @@ The connection is passed as `dockerServiceConnection` to the shared
 
 ### `SonarCloud_Service_Connection`
 
-The active consumer is `.azdo/build/build-auth.yml`, which enables SonarCloud
-and passes the connection name to
+The consumer is `.azdo/build/build-auth.yml`, which can enable SonarCloud
+and pass the connection name to
 `.azdo/templates/build-test-scan-jobs.yml`. Sender and Consumer builds disable
 SonarCloud, and the PR-validation entry points do not use this connection.
+Analysis currently defaults to disabled, and `manage_sonarcloud=false` defers
+creation until a working token is available.
 
 ### `Azure_Connection`
 
 No current YAML entry point references this connection. Terraform Create and
 Terraform Destroy still receive `ARM_*` credentials from the
-`Terraform_Azure_Credentials` variable group. TASK-08 can retain and import
+`Terraform_Azure_Credentials` variable group. TASK-08 creates
 this connection before deciding whether those two pipelines should be migrated
 to service-connection authentication. Cloudflare DNS does not consume Azure
 credentials.
@@ -77,15 +82,15 @@ credentials.
 
 No current YAML entry point references this connection. It is retained for the
 Docker Hub publication work explicitly assigned to TASK-09; TASK-08 should
-import it without wiring it into the current ACR pipelines.
+create it without wiring it into the current ACR pipelines.
 
-## Import boundary
+## Creation boundary
 
-This document does not export or recover endpoint secrets. Import reads and
-associates the existing objects without updating them, but a subsequent plan
-and apply require the real credential inputs from their owners. Confirm that
-each resource preserves its authentication scheme and endpoint ID before
-applying any changes.
+This document does not export or recover endpoint secrets. Creation and later
+updates require real credential inputs from their owners. Names are preserved,
+but recreated IDs differ. GitHub intentionally switches from GitHub App to PAT
+authentication to support Terraform creation; review the transition procedure
+and required token permissions in `DEVELOPER_ACCESS.md` before applying.
 
 ## Protected inputs
 
@@ -93,19 +98,21 @@ Supply credentials only as environment variables or through an equivalent
 protected CI secret source. Do not commit them to `.tfvars` files:
 
 ```bash
+export TF_VAR_github_pat='<GitHub PAT; not the Azure DevOps PAT>'
 export TF_VAR_docker_hub_token='<Docker Hub token>'
 export TF_VAR_azure_acr_password='<ACR password>'
-export TF_VAR_sonarcloud_token='<SonarCloud token>'
 export TF_VAR_azure_client_secret='<Azure service-principal secret>'
 ```
+
+Only supply `TF_VAR_sonarcloud_token` when enabling `manage_sonarcloud`.
 
 The existing backend, Cloudflare, and Azure DevOps provider inputs are still
 required by this Terraform root. Azure DevOps does not return stored endpoint
 passwords or tokens through the inventory API, so their current values must be
 obtained from the credential owners before a full plan or apply.
 
-`imports.tf` declares the connections using the
-`PROJECT_ID/SERVICE_ENDPOINT_ID` format. GitHub, Docker Hub, ACR, and Azure were
+The former `imports.tf` used the `PROJECT_ID/SERVICE_ENDPOINT_ID` format and
+has now been removed. GitHub, Docker Hub, ACR, and Azure were originally
 imported into the shared remote state on 2026-10-13 without replacing or deleting
 them. SonarCloud remains outside state while `manage_sonarcloud=false`.
 Until TASK-08 is merged, apply only this branch's configuration against the
@@ -122,7 +129,8 @@ Terraform declares narrowly scoped endpoint permissions:
 consumer. `Azure_Connection` receives no grant to a maintained pipeline while
 Terraform Create and Destroy use the `Terraform_Azure_Credentials` variable
 group rather than an Azure task that accepts a service connection. Its legacy
-`Configure Platform` permission is retained until that pipeline is retired.
+`Configure Platform` permission is not managed here and will not survive
+connection recreation automatically.
 
 ## Existing permission cleanup
 
@@ -138,10 +146,20 @@ consumer map:
 Terraform grants ACR only to the six image pipelines and SonarCloud only to
 Build Auth. Existing all-pipeline access and stale SonarCloud grants require
 the one-time portal cleanup documented in `DEVELOPER_ACCESS.md`. The legacy
-Azure permission is retained until `Configure Platform` is retired so TASK-08
-does not silently break an unmanaged definition.
+Azure permission is not declared in Terraform. Recreating `Azure_Connection`
+drops that grant; check whether `Configure Platform` is still needed before
+recreation and coordinate any required authorization with its owner.
 
 ## Validation status
+
+On 2026-10-26, after confirming manual deletion in Azure DevOps, stale endpoint
+and associated grant entries were removed from the shared Azure state with a
+protected backup. A targeted Terraform apply recreated Docker Hub, ACR and Azure
+connections: three additions, no changes or deletions. GitHub PAT-based creation
+and dependent pipeline permissions remain pending a least-scope token and the
+token owner's webhook access. This partial recovery does not establish full
+convergence or live credential/consumer acceptance for the recreated endpoints.
+Historical results below validate the old import-based configuration only.
 
 As of 2026-10-13:
 

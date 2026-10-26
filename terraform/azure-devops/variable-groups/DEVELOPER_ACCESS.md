@@ -10,55 +10,70 @@ connections, variable groups, environments, and pipeline permissions in the
 The operator needs:
 
 - an Azure DevOps PAT exposed as `AZDO_PERSONAL_ACCESS_TOKEN`;
+- a separate GitHub PAT exposed as `TF_VAR_github_pat`;
 - read/write access to the existing Azure Storage backend;
 - current credentials from the owners of Docker Hub, ACR, SonarCloud, and the
   Azure service principal;
-- access to the existing GitHub App connection in Azure DevOps.
+- authority to create service connections and authorize the maintained pipelines
+  in the existing Azure DevOps project.
 
 Do not put credentials in Terraform source, committed `.tfvars`, command-line
 arguments, pipeline logs, or documentation. Use protected environment
 variables locally and secret variables in CI.
 
-The GitHub App connection is a bootstrap dependency. Create or repair it in
-Azure DevOps before running Terraform; its installation token cannot be
-exported through the provider. Terraform imports the existing connection and
-manages which pipelines may use it.
+Terraform creates the four enabled connections from these inputs. No existing
+connection ID or manually bootstrapped GitHub App connection is required. The
+project, backend and credentials themselves remain external prerequisites.
 
 ### GitHub authentication and permissions
 
-The existing `EventTriangle` connection uses the Azure Pipelines GitHub App
-(`InstallationToken`), not a personal access token. Do not add `auth_personal`
-to the imported resource: that selects PAT authentication rather than preserving
-the current connection.
+`EventTriangle` is configured with `auth_personal` and `var.github_pat`, so
+Terraform can create it from scratch. This is a GitHub token, not the Azure
+DevOps PAT used by the provider. The previously imported connection used the
+Azure Pipelines GitHub App (`InstallationToken`); its authentication cannot be
+automatically recovered or recreated by provider 1.16.0.
 
-In GitHub organization settings, configure the installed Azure Pipelines App
-with `Only select repositories` and select `EventTriangle/EventTriangleAPI`.
-An organization administrator must verify this installation scope. GitHub App
-permissions are defined by the application; limit repository access through the
-installation settings instead of creating an additional user PAT. In Azure
-DevOps, authorize the connection only for the nine maintained pipelines.
+Use a **fine-grained GitHub PAT** restricted to resource owner `EventTriangle`
+and only repository `EventTriangle/EventTriangleAPI`. The authoritative setup
+and repository permission list are in
+[README: Fine-grained GitHub PAT permissions](README.md#fine-grained-github-pat-permissions).
+Do not use the former unrestricted classic token or translate classic scopes
+into extra fine-grained permissions. The selected API-based permission set
+still requires end-to-end Azure Pipelines acceptance with the new token.
+Token-owner webhook access and any required organization approval are separate
+prerequisites; selecting token permissions cannot elevate the owner's access.
 
-Provider 1.16.0 requires `description = ""` for GitHub App connections and cannot
-create or update their App authentication. The other service connections have
-descriptions; the GitHub description intentionally remains empty.
+Supply the value only as the protected `TF_VAR_github_pat` input; do not paste it
+into Terraform code. `sensitive = true` hides it in normal CLI output but does
+not remove it from state or saved plans. Protect backend and plan-file access.
+The token must stay valid for ongoing checkout, triggers and status reporting;
+it is not a one-time bootstrap token. In Azure DevOps, Terraform authorizes the
+connection only for the nine maintained pipelines.
+
+PAT authentication does not provide GitHub App Checks. Validate commit status
+reporting and adjust required status-check rules with the repository owner if
+they currently depend on the App's checks. Do not remove the GitHub App
+installation globally: other projects may still use it.
 
 References:
 
-- [Microsoft: secure GitHub repository access](https://learn.microsoft.com/en-us/azure/devops/pipelines/security/secure-access-to-repos?view=azure-devops)
+- [Microsoft: repository-scoped fine-grained PAT authentication](https://learn.microsoft.com/en-us/azure/devops/pipelines/security/secure-access-to-repos?view=azure-devops#authentication-to-github-repositories)
 - [Provider 1.16.0: GitHub connection limitations](https://github.com/microsoft/terraform-provider-azuredevops/blob/v1.16.0/website/docs/r/serviceendpoint_github.html.markdown)
 
-## Import and apply
+## Create and apply
 
-Import service connections into the shared state only after the TASK-08
-configuration is merged. Otherwise a plan from `main`, which does not yet
-declare those state addresses, can propose deleting the imported connections.
+Use this configuration consistently with the shared state. A plan from an older
+branch that lacks these resources can propose their deletion. The old fixed-ID
+`imports.tf` is removed: existing state entries remain managed, but a fresh
+installation or a refresh after deletion can create connections with new IDs.
 
 Before applying:
 
 1. Export all protected inputs listed in `README.md`.
 2. Run `terraform plan -out=azure-devops.tfplan`.
-3. Confirm four in-place imports (five when `manage_sonarcloud=true`) and no service-connection replacement or
-   deletion. Supply `azure_client_secret` for the target project client
+3. For a fresh installation, confirm four connection creations (five when
+   `manage_sonarcloud=true`), plus required pipeline definitions and permissions,
+   without unrelated deletion. Supply `azure_client_secret` for the target project client
    `ab0a5dc1-ee52-4574-96e0-469f237928a6`; both Azure_Connection and the pipeline
    variable group use this pair. Review the transition from the temporary test
    identity in the variable group to the project identity.
@@ -73,6 +88,82 @@ Before applying:
 Docker Hub and `Azure_Connection` currently have no active pipeline consumer;
 validate their credentials with the owner or provider-specific tooling without
 granting broad pipeline access.
+
+### Transition and recreation acceptance
+
+The 2026-10-13 import/apply validated management of existing connections, not
+creation of their authentication. The PAT-based creation path still needs live
+acceptance with a newly supplied GitHub PAT.
+
+1. Agree a maintenance window and stop new runs; record unmanaged consumers,
+   pipeline permissions and sharing before deleting or replacing anything.
+   Inventory files contain historical IDs, not desired creation inputs.
+2. Supply every credential, including `TF_VAR_github_pat`, and use the existing
+   backend. Do not use `terraform state rm` to force recreation of resources
+   that still exist, or switch to an empty state: this root also owns existing
+   pipelines and variable groups. For already deleted endpoints that fail
+   refresh, use the narrowly scoped recovery procedure below.
+3. To replace the currently imported GitHub App connection, explicitly request
+   replacement rather than an in-place authentication update:
+
+   ```bash
+   terraform plan -replace=azuredevops_serviceendpoint_github.github -out=azure-devops.tfplan
+   ```
+
+   Review the replacement, downstream build-definition connection updates and
+   permissions before applying. Keep the original connection name; do not use
+   `create_before_destroy` to create a same-name duplicate. Azure DevOps may
+   block deletion while dependencies exist; resolve those only within the
+   approved maintenance procedure, not by force-deleting unrelated pipelines.
+4. For the reviewer's delete/recreate test, explicitly approve deletion of the
+   four enabled endpoints, not unrelated connections or the deferred SonarCloud
+   endpoint. After deletion, a normal refreshing plan should propose creations
+   and dependent ID/permission updates; inspect and apply that saved plan. No
+   old-ID imports should be attempted. If Azure DevOps reports a referenced
+   endpoint/dependency error, stop and resolve it before applying further.
+5. Confirm GitHub checkout, PR and CI triggers and commit statuses, ACR login
+   and publication, Docker Hub authentication and Azure sign-in. Check endpoint
+   grants remain limited to the declared consumers. Recreated connections do
+   not retain undeclared grants, including legacy `Configure Platform` access
+   to `Azure_Connection`; coordinate with its owner if it is still needed.
+6. Run a second plan with the same inputs and require `No changes`. SonarCloud
+   creation and its consuming run are separate acceptance once a valid token
+   is available and both management and analysis are enabled.
+
+Deleting a service connection does not delete the remote registry or Azure
+resources, but can break pipeline authentication. Reverting Git cannot restore
+deleted connection IDs or credentials; recovery requires the inputs and apply.
+
+### Recovery after manual endpoint deletion
+
+Provider 1.16.0 can fail with `unexpected nil service endpoint` when Azure DevOps
+returns HTTP 200 without an endpoint ID for an already deleted connection.
+This is not a backend storage failure. A normal refresh cannot clear those
+stale entries in this case.
+
+Before changing state, save a protected `terraform state pull` backup outside
+Git and compare its endpoint IDs with the Azure DevOps API inventory. Preserve
+the credential inputs securely: the backup can contain secrets which the
+service does not return. Only after confirming the four managed endpoints are
+absent, remove their stale state entries and the grants referencing them:
+
+```bash
+terraform state rm -lock-timeout=30s \
+  'azuredevops_serviceendpoint_github.github' \
+  'azuredevops_serviceendpoint_dockerregistry.docker_hub' \
+  'azuredevops_serviceendpoint_dockerregistry.azure_acr' \
+  'azuredevops_serviceendpoint_azurerm.azure' \
+  'azuredevops_pipeline_authorization.github_repository' \
+  'azuredevops_pipeline_authorization.azure_acr'
+```
+
+This command forgets only the confirmed deleted endpoints and their grants;
+it does not delete pipelines, variable groups, the deployment environment or
+Azure infrastructure. Use a shorter explicit address list if only some objects
+were deleted. Do not remove SonarCloud or other objects without verifying them.
+Run a new normal plan against the same Azure backend, inspect creations and
+dependent ID updates, then apply the reviewed plan and repeat the plan to check
+convergence. Do not apply a diagnostic plan made against a local state copy.
 
 ## Credential rotation
 
