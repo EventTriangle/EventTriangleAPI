@@ -55,6 +55,8 @@ EventTriangleAPI offers realtime communication using SignalR.
 
 ## Infrastructure diagram
 
+Platform deployment: [TASK-10 migration and dev connection contract](sprint-planning/platform-migration.md).
+
 ![./img/infrastructure_diagram.png](./img/infrastructure_diagram.png)
 
 ## Technology stack

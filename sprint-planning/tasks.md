@@ -168,13 +168,21 @@ Real build/push/anonymous-pull checks passed for all three Linux AMD64 images;
 
 **Dependencies:** TASK-15
 
-- [ ] Inventory installers, manifests, configuration, and helper scripts in `.deprecated/platform/` and map each required responsibility to its destination in the FluxCD repository.
-- [ ] Inspect the target FluxCD repository and reuse existing platform resources before adding missing releases or environment values.
-- [ ] Convert required PostgreSQL, RabbitMQ, Redis, and cert-manager installations into Flux-managed HELM releases with pinned versions and supporting manifests.
-- [ ] Define dev namespaces, chart sources, reconciliation dependencies, persistent storage, and external secret references without copying plaintext credentials from archived files.
-- [ ] Record a migration or retirement decision for remaining platform assets, including monitoring configuration and bootstrap helpers; coordinate Flux operator bootstrap with TASK-03.
-- [ ] Document persistence/data migration and release ownership to avoid two controllers managing the same resources.
-- [ ] Define platform readiness checks and document the mapping from archived assets to maintained FluxCD resources. Handle ingress replacement in TASK-11.
+**Status:** Implementation prepared locally for review in both repositories;
+deployment and runtime acceptance remain pending. See
+[platform migration](platform-migration.md). The current kubeconfig API endpoint
+did not resolve on 2026-10-23; no cluster changes were made.
+The existing `clusters/aks` and `overlays/aks` are extended in place; bootstrap
+paths and existing cert-manager/RabbitMQ operator reconciliation names are retained.
+
+- [x] Inventory installers, manifests, configuration, and helper scripts in `.deprecated/platform/` and map each required responsibility to its destination in the FluxCD repository.
+- [x] Inspect the target FluxCD repository and reuse existing platform resources before adding missing releases or environment values.
+- [x] Convert required PostgreSQL, RabbitMQ, Redis, and cert-manager installations into Flux-managed HELM releases with pinned versions and supporting manifests.
+- [x] Define dev namespaces, chart sources, reconciliation dependencies, persistent storage, and external secret references without copying plaintext credentials from archived files.
+- [x] Record a migration or retirement decision for remaining platform assets, including monitoring configuration and bootstrap helpers; coordinate Flux operator bootstrap with TASK-03.
+- [x] Document persistence/data migration and release ownership to avoid two controllers managing the same resources.
+- [x] Define platform readiness checks and document the mapping from archived assets to maintained FluxCD resources. Handle ingress replacement in TASK-11.
+- [ ] Complete dev runtime acceptance after review: reconcile Flux, verify application connectivity and AMQP publish/consume, verify restart persistence, and repeat reconciliation.
 
 ## TASK-11 — Implement Traefik ingress through HELM
 
