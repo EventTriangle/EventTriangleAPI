@@ -1,87 +1,55 @@
 # Cloudflare DNS Terraform
 
-The development root in `environments/dev` manages the public application DNS
-record that points to the Traefik LoadBalancer. The zone itself remains outside
-this Terraform state and is referenced by its Cloudflare zone ID.
+The dev root `environments/dev` manages the `A` record
+`auth-eventtriangle.razumovsky.me`. The existing zone ID and temporary
+`traefik_public_ip` default are in `variables.tf`; the zone is not managed here.
+Set a real public ingress IP before applying DNS changes.
 
-The current application endpoint is:
+## Run locally
 
-- `auth-eventtriangle.razumovsky.me`
+Use a Cloudflare API token restricted to the `razumovsky.me` zone with DNS
+read/edit access. Zone read access is only needed if discovering the zone ID.
 
-The root manages one `A` record whose content is the Traefik public IPv4 address.
-For now that address uses the default from `environments/dev/variables.tf`.
-
-## Authentication and permissions
-
-Never put the Cloudflare token in a `.tf`, `.tfvars`, backend file, command-line
-argument, or committed pipeline variable. Export it through the provider's
-standard environment variable:
-
-```bash
-export CLOUDFLARE_API_TOKEN="<protected token>"
-```
-
-Use a scoped API token with these permissions for the `razumovsky.me` zone:
-
-- Zone / Zone / Read, so Terraform can discover the zone ID.
-- Zone / DNS / Read, so Terraform can refresh and plan records.
-- Zone / DNS / Edit, so Terraform can create and update records.
-
-## Separate state
-
-Cloudflare development state uses the existing Azure Blob backend but a
-different key from the Azure infrastructure state:
-
-- storage account: `tfstatestorage011`
-- container: `tfstatecontainer01`
-- key: `cloudflare-dev.tfstate`
-
-Create the ignored `environments/dev/backend.hcl` locally with the storage
-account, container, state key, and SAS token, then initialize with:
+From the repository root:
 
 ```bash
 cd terraform/cloudflare/environments/dev
+export CLOUDFLARE_API_TOKEN="<Cloudflare token>"
+```
+
+Create the ignored `backend.hcl` locally:
+
+```hcl
+storage_account_name = "tfstatestorage011"
+container_name       = "tfstatecontainer01"
+key                  = "cloudflare-dev.tfstate"
+sas_token            = "<backend SAS token>"
+```
+
+Keep this state separate from Azure infrastructure's `azure.tfstate`.
+
+```bash
 terraform init -backend-config=backend.hcl
-```
-
-For automation, pass the same backend values as protected pipeline variables.
-The Cloudflare state key must stay different from `azure.tfstate`.
-
-## Import the existing record
-
-The record existed before this root was introduced, so it must be imported
-instead of recreated. Inspect it first through the Cloudflare dashboard or API,
-then import it with the zone ID and record ID:
-
-```bash
-terraform import \
-  cloudflare_dns_record.application \
-  '<zone-id>/<dns-record-id>'
-```
-
-The development record was inspected and imported when this root was created.
-Do not repeat the import unless the state has been deliberately replaced.
-
-## Local plan and apply
-
-```bash
 terraform fmt -check -recursive ../..
 terraform validate
 terraform plan -out=cloudflare.tfplan
+```
+
+Review the record/IP change, then apply:
+
+```bash
 terraform apply cloudflare.tfplan
 ```
 
-Review the plan before applying it. Changing the Traefik LoadBalancer address is
-expected to update the existing DNS record in place; it must not create a second
-record with the same name.
+If an existing record is not yet in state, inspect its ID and import it once
+before planning; do not create a duplicate:
+
+```bash
+terraform import cloudflare_dns_record.application '<zone-id>/<dns-record-id>'
+```
 
 ## Pipeline
 
-`.azdo/cloudflare/terraform-dns.yml` reuses the shared Terraform plan and apply
-templates and points them at the Cloudflare Terraform base path. It does not
-connect to AKS or override `traefik_public_ip`; Terraform uses the current
-default value. The pipeline passes the Cloudflare token only as
-`CLOUDFLARE_API_TOKEN` from the protected `Cloudflare_API_Key` variable group.
-
-TASK-03 will connect this root to the complete deployment-stage output. TASK-11
-will define the final Traefik service name and readiness command.
+`.azdo/cloudflare/terraform-dns.yml` reuses the Terraform templates: PRs run
+plan, pushes to `main` can run apply. The token comes from `Cloudflare_API_Key`.
+The pipeline uses the Terraform IP default; it does not query AKS for an address.

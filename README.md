@@ -55,6 +55,10 @@ EventTriangleAPI offers realtime communication using SignalR.
 
 ## Infrastructure diagram
 
+Setup: [Azure infrastructure](terraform/infrastructure/README.md),
+[Azure DevOps](terraform/azure-devops/variable-groups/README.md),
+[Cloudflare DNS](terraform/cloudflare/README.md).
+
 ![./img/infrastructure_diagram.png](./img/infrastructure_diagram.png)
 
 ## Technology stack
