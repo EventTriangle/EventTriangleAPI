@@ -45,6 +45,8 @@ pr:
       - LICENSE
 
 variables:
+  - name: DOCKER_BUILDKIT
+    value: '1'
   - name: appName
     value: "Auth"
   - name: System.Debug
