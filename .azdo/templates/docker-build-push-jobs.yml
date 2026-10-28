@@ -1,16 +1,50 @@
 parameters:
   - name: jobName
+    displayName: 'Job Name'
     type: string
+
+  - name: solution
+    displayName: 'Solution file path'
+    type: string
+
+  - name: buildConfiguration
+    displayName: 'Build Configuration'
+    default: 'Release'
+    type: string
+
+  - name: unitTestsProjectPath
+    displayName: 'Unit tests project path'
+    default: ''
+    type: string
+
+  - name: shouldRunUnitTests
+    displayName: 'Flag should run unit tests'
+    default: true
+    type: boolean
+
+  - name: shouldRunIntegrationTests
+    displayName: 'Flag should run integration tests'
+    type: boolean
+    default: true
+
+  - name: integrationTestsProjectPath
+    displayName: 'Integration tests project path'
+    type: string
+    default: ''
+
   - name: gitVersionVersion
-    type: string
+    displayName: 'GitVersion version'
     default: '6.x'
-  - name: registryUrl
-    displayName: 'Registry host (docker.io for Docker Hub)'
     type: string
-    default: 'docker.io'
-  - name: imageRepository
-    displayName: 'Repository including namespace, e.g. petrokolosov/auth-service'
+
+  - name: sonarCloudEnabled
+    type: boolean
+    default: false
+
+  - name: sonarCloudServiceConnection
     type: string
+    default: SonarCloud_Service_Connection
+
   - name: dockerServiceConnection
     displayName: 'Publishing service connection'
     type: string
@@ -28,20 +62,91 @@ jobs:
 
       - task: gitversion-setup@4.5.0
         displayName: 'GitVersion Setup'
+        condition: succeeded()
         inputs:
           versionSpec: ${{ parameters.gitVersionVersion }}
 
       - task: gitversion-execute@4.5.0
-        name: version_step
-        displayName: 'Determine Version'
+        name: version_step # step id used as a reference for output values
+        displayName: Determine Version
+        condition: succeeded()
 
       - bash: |
           set -euo pipefail
           echo "##vso[build.updatebuildnumber]${SEM_VER}-${RUN_ID}"
         displayName: 'Set Build Version'
+        condition: succeeded()
         env:
           SEM_VER: $(version_step.SemVer)
           RUN_ID: $(Build.BuildId)
+
+      - bash: |
+          echo "Version: $SEM_VER"
+          echo "Commit: $COMMIT"
+          echo "Branch: $SOURCE_BRANCH"
+        displayName: 'Build information'
+        condition: succeeded()
+        env:
+          SEM_VER: $(version_step.SemVer)
+          COMMIT: $(Build.SourceVersion)
+          SOURCE_BRANCH: $(Build.SourceBranch)
+
+      - task: DotNetCoreCLI@2
+        displayName: 'Dotnet restore'
+        condition: succeeded()
+        inputs:
+          command: 'restore'
+          projects: '${{ parameters.solution }}'
+          arguments: '--verbosity minimal'
+          nugetConfigPath: 'nuget.config'
+
+      - ${{ if eq(parameters.sonarCloudEnabled, true) }}:
+          - task: SonarCloudPrepare@4
+            condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'main'))
+            inputs:
+              SonarCloud: ${{ parameters.sonarCloudServiceConnection }}
+              organization: event-triangle
+              scannerMode: dotnet
+              projectKey: event-triangle-api
+              projectName: eventtriangleapi
+              extraProperties: |
+                sonar.cs.vstest.reportsPaths=$(Agent.TempDirectory)/**/*.trx
+                sonar.cs.opencover.reportsPaths=$(Agent.TempDirectory)/**/*opencover.xml
+                sonar.exclusions=**/Properties/**, **/bin/**, **/obj/**, **/Migrations/**
+
+      - task: DotNetCoreCLI@2
+        displayName: 'Build solution'
+        condition: succeeded()
+        inputs:
+          command: 'build'
+          projects: '${{ parameters.solution }}'
+          arguments: '-c ${{ parameters.buildConfiguration }} -p:Version=$(version_step.semVer) --no-restore'
+
+      - ${{ if eq(parameters.shouldRunUnitTests, true) }}:
+          - task: DotNetCoreCLI@2
+            displayName: 'Run unit tests'
+            inputs:
+              command: 'test'
+              projects: '${{ parameters.unitTestsProjectPath }}'
+              arguments: '--no-build --configuration ${{ parameters.buildConfiguration }} --collect "Code Coverage"'
+
+      - ${{ if eq(parameters.shouldRunIntegrationTests, true) }}:
+          - task: DotNetCoreCLI@2
+            displayName: 'Run integration tests'
+            inputs:
+              command: 'test'
+              projects: '${{ parameters.integrationTestsProjectPath }}'
+              arguments: '--no-build --configuration ${{ parameters.buildConfiguration }} --collect "Code Coverage"'
+
+      - ${{ if eq(parameters.sonarCloudEnabled, true) }}:
+          - task: SonarCloudAnalyze@4
+            condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'main'))
+            inputs: {}
+
+          - task: SonarCloudPublish@4
+            condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'main'))
+            inputs:
+              pollingTimeoutSec: "300"
 
       - task: Docker@2
         displayName: 'Docker Hub Login'
@@ -58,32 +163,3 @@ jobs:
           SCRIPT_FILE: ${{ parameters.scriptFile }}
           SEM_VER: $(version_step.SemVer)
           RUN_ID: $(Build.BuildId)
-
-      - bash: |
-          set -euo pipefail
-          DIGEST=$(docker buildx imagetools inspect "$IMAGE:$TAG" --format '{{json .Manifest}}' | jq -er '.digest | select(startswith("sha256:"))')
-          mkdir -p "$(dirname "$OUTPUT_FILE")"
-          jq -n --arg image "$IMAGE" --arg tag "$TAG" \
-            --arg digest "$DIGEST" --arg commit "$COMMIT" \
-            '{image:$image, tag:$tag, digest:$digest, reference:($image+"@"+$digest), commit:$commit}' \
-            > "$OUTPUT_FILE"
-          echo "Published $IMAGE@$DIGEST"
-        displayName: 'Record image version and digest'
-        env:
-          IMAGE: ${{ parameters.registryUrl }}/${{ parameters.imageRepository }}
-          COMMIT: $(Build.SourceVersion)
-          TAG: $(version_step.SemVer)-$(Build.BuildId)
-          OUTPUT_FILE: $(Build.ArtifactStagingDirectory)/image/published-image.json
-
-      - task: PublishPipelineArtifact@1
-        displayName: 'Publish image metadata'
-        inputs:
-          targetPath: $(Build.ArtifactStagingDirectory)/image
-          artifact: image-${{ parameters.jobName }}
-
-      - task: Docker@2
-        displayName: 'Docker Hub Logout'
-        condition: always()
-        inputs:
-          command: logout
-          containerRegistry: ${{ parameters.dockerServiceConnection }}

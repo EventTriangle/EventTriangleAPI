@@ -147,24 +147,8 @@ DockerHub url: https://hub.docker.com/repositories/petrokolosov
 - [ ] Replace ACR publication connections and active PR-validation registry references with the appropriate Docker Hub configuration.
 - [x] Correct registry examples and document Docker Hub authentication, required environment variables, and commands for running each new script in the maintained README.
 - [x] Ensure application tests gate release publication and untrusted PR validation cannot push images or access publisher credentials.
-- [x] Record immutable version tags/digests for deployment and rollback; configure runtime pull credentials if needed.
+- [x] Publish immutable version tags for deployment and rollback; configure runtime pull credentials if needed.
 - [x] Remove broad environment dumps from publishing jobs where credentials could be exposed.
-
-TASK-09 review fixes allow same-repository PR publication after application
-checks, using Docker@2 service-connection login and the existing publishing
-scripts. `scripts/docker-build.sh` is restored to the TASK-08 version, including
-registry cache import and inline cache export; wrappers no longer pass push
-booleans. Fork triggers/secret sharing remain disabled and fork publishing jobs
-are skipped. Terraform declares Docker Hub grants for all six Build/PR consumers.
-The unchecked item tracks permission rollout after review: add missing Docker
-Hub grants and remove the old ACR grants without deleting connections. The
-previous three-grant Terraform plan predates these review fixes and is not a
-current rollout plan.
-
-Earlier TASK-09 validation included real build/push/anonymous-pull checks for all
-three Linux AMD64 images and 233 Sender/Consumer tests; Auth test projects had no
-discovered tests. Those results predate the current review fixes. Revalidate the
-updated pipeline and registry-cache behavior in Azure DevOps after rollout.
 
 ## TASK-10 — Migrate `.deprecated/platform/` to the FluxCD repository
 

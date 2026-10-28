@@ -25,29 +25,19 @@ pool:
   vmImage: 'ubuntu-latest'
 
 stages:
-  - stage: 'Build_Test_Scan_${{ variables.appName }}'
-    displayName: 'Build_Test_Scan_${{ variables.appName }}'
+  - stage: 'Build_Test_Push_${{ variables.appName }}'
+    displayName: 'Build_Test_Push_${{ variables.appName }}'
     jobs:
-      - template: ../templates/build-test-scan-jobs.yml
+      - template: ../templates/docker-build-push-jobs.yml
         parameters:
-          jobName: 'Build_${{ variables.appName }}'
+          jobName: 'Build_Test_Push_${{ variables.appName }}'
           solution: '$(System.DefaultWorkingDirectory)/EventTriangleAPI.sln'
           buildConfiguration: 'Release'
-          backendProjectPath: '$(System.DefaultWorkingDirectory)/src/authorization/EventTriangleAPI.Authorization.Presentation'
+          # Auth currently has no unit test cases.
           shouldRunUnitTests: false
           shouldRunIntegrationTests: true
           integrationTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/authorization/EventTriangleAPI.Authorization.IntegrationTests/EventTriangleAPI.Authorization.IntegrationTests.csproj'
           sonarCloudEnabled: ${{ parameters.sonarCloudEnabled }}
           sonarCloudServiceConnection: 'SonarCloud_Service_Connection'
-
-  - stage: 'Docker_Push_${{ variables.appName }}'
-    displayName: 'Docker_Push_${{ variables.appName }}'
-    dependsOn: 'Build_Test_Scan_${{ variables.appName }}'
-    jobs:
-      - template: ../templates/docker-build-push-jobs.yml
-        parameters:
-          jobName: 'Docker_Push_${{ variables.appName }}'
-          imageRepository: 'petrokolosov/auth-service'
-          registryUrl: 'docker.io'
           dockerServiceConnection: 'Docker_Hub_Connection'
           scriptFile: '$(System.DefaultWorkingDirectory)/scripts/dockerhub/build-auth.sh'

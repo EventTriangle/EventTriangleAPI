@@ -12,11 +12,6 @@ For setup, secret inputs and GitHub PAT permissions, see the [README](README.md)
   the access declared in `pipelines.tf`; remove stale broad grants in the portal.
 - Protect state and saved plans: `sensitive = true` hides CLI output, not storage.
 
-TASK-09 grants `Docker_Hub_Connection` only to the three Build and three PR
-Validation pipelines. Same-repository PR publication is intentional; keep fork
-triggers and fork secret sharing disabled. Deployments must select immutable
-version tags/digests rather than the mutable latest/cache tags.
-
 ## Rotate a credential
 
 1. Create a replacement at its owning service and update the matching `TF_VAR_*`.

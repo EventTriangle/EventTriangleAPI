@@ -17,13 +17,13 @@ EventTriangleAPI offers realtime communication using SignalR.
 
 ## Required Software
 
-- **.NET SDK 8.0.301 or later:** https://dotnet.microsoft.com/en-us/download
+- **.NET SDK 10:** https://dotnet.microsoft.com/en-us/download
 - **NVM for windows:** https://github.com/coreybutler/nvm-windows
 - **Angular CLI:** `15.2.6`
 - **NodeJS:** `18.15.0`
 - **NPM:** `9.5.0`
 - **Docker:** https://docs.docker.com/get-docker/
-- **IDE**: Visual Studio 2022 or JetBrains Rider
+- **IDE**: Visual Studio or JetBrains Rider
 
 ## How to run in Debug mode
 
@@ -63,7 +63,7 @@ Setup: [Azure infrastructure](terraform/infrastructure/README.md),
 
 ## Technology stack
 
-- **SDK:** `.NET 8`
+- **SDK:** `.NET 10`
 - **Frameworks:** `ASP .NET Core`, `Angular 15`
 - **Persistence:**
     - Database: `PostgreSQL 15`
@@ -107,27 +107,11 @@ Setup: [Azure infrastructure](terraform/infrastructure/README.md),
 - `export EVENT_TRIANGLE_AD_CLIENT_SECRET=<YOUR_AD_SECRET>`
 - `docker compose up`
 
-## How to build and publish docker images
+## Build and publish Docker images
 
-Run from the repository root. Docker Desktop or another Docker daemon must be
-running, with Buildx available. The scripts supply the shared source context
-required by the Dockerfiles; no Dockerfile changes are needed. The shared
-`scripts/docker-build.sh` builds and publishes with `docker buildx build --push`.
-There is no boolean push argument or build-only mode. Supply a unique version
-and authenticate to the registry before running a wrapper. Docker selects the
-build platform; the Ubuntu CI agents build Linux AMD64 images.
-
-The public Docker Hub repositories are `petrokolosov/auth-service`,
-`petrokolosov/sender-service`, and `petrokolosov/consumer-service`. Public pull
-access does not need a Kubernetes image pull secret. Private repositories would
-require a read-only pull credential delivered through the GitOps secret
-mechanism when deploying them.
-
-### Publish to Docker Hub
-
-Use a Docker Hub PAT belonging to `petrokolosov` with image write permission.
-Keep it in a protected environment variable or password manager, never in
-source code. For local publication, log in through standard input:
+Requires Docker with Buildx and a Docker Hub token with write access to
+`petrokolosov`. Set `DOCKERHUB_TOKEN` in your environment and run from the
+repository root, using a unique version tag:
 
 ```bash
 printf '%s' "$DOCKERHUB_TOKEN" | docker login docker.io --username petrokolosov --password-stdin
@@ -137,40 +121,31 @@ bash scripts/dockerhub/build-consumer.sh 1.0.0-example
 docker logout docker.io
 ```
 
-Run application tests first; these local shell commands do not run tests
-themselves. Every wrapper publishes the version tag, `latest`, and `buildcache`.
-The shared script imports registry cache from `buildcache` and exports inline
-cache metadata with the published images. The original `scripts/build-*.sh`
-remain available for ACR rollback and also publish using the same shared script.
+The scripts publish `auth-service`, `sender-service` and `consumer-service`
+under `docker.io/petrokolosov` using the shared `scripts/docker-build.sh`. Each publishes
+its version tag, `latest` and `buildcache`; subsequent builds reuse the registry
+cache. Run application tests before publishing locally. The original
+`scripts/build-*.sh` scripts publish to ACR.
 
-### Pipeline behavior and deployment references
+### Azure Pipelines
 
-- Build and PR Validation pipelines run application checks before publication.
-  Same-repository PRs may publish, including mutable latest/cache tags. The
-  Docker publishing job skips fork PRs; managed definitions also disable fork
-  triggers and secret sharing. Build CI triggers remain `main` and `v*` tags,
-  while successful manual branch builds are allowed to publish.
-- The shared template logs in with `Docker@2` and the registry service connection,
-  then runs the maintained build script; its `buildx --push` performs publication.
-- Terraform authorizes `Docker_Hub_Connection` for the three Build and three PR
-  Validation pipelines. Apply the reviewed permission changes after the YAML
-  rollout; retain the existing ACR permissions until that transition.
-- CI tags include GitVersion SemVer and the unique Azure DevOps run ID, for
-  example `1.0.1-104-1666`. Publication also produces a pipeline artifact with
-  `published-image.json` containing the commit, version tag,
-  digest, and immutable reference `docker.io/petrokolosov/auth-service@sha256:...`.
-- Use the digest reference for deployment and rollback. `latest` and
-  `buildcache` are mutable convenience tags, not deployment identifiers.
+Build and PR Validation use `.azdo/templates/docker-build-push-jobs.yml`: one
+job restores/builds the solution, runs enabled checks, then logs in through
+`Docker_Hub_Connection` and publishes the image. The hosted Ubuntu agent supplies
+the .NET SDK.
 
-Docker Hub has immutable version tags enabled for all three repositories using
-`^[0-9]+[.][0-9]+[.][0-9]+.*$`. A published version cannot be overwritten;
-retry publication with a new pipeline run ID or a new local version tag.
-`latest` and `buildcache` do not match this rule and remain mutable.
+- `shouldRunUnitTests` and `shouldRunIntegrationTests` control test execution.
+  Auth unit tests are disabled because that project has no test cases.
+- `sonarCloudEnabled` enables SonarCloud analysis on `main`; it defaults to `false`.
+- Build CI runs for `main` and `v*` tags. Same-repository PRs and manual branch
+  runs can also publish; fork PR publishing is disabled.
 
-The pipeline reads the digest from Docker Hub after publishing and stores the
-image reference in its artifact staging directory. Local build scripts do not
-create metadata files. Terraform expects the same Docker Hub PAT through
-`TF_VAR_docker_hub_token` when managing the service connection.
+CI image tags combine GitVersion SemVer and the run ID, for example
+`1.0.1-104-1666`. Find the version in the build number or Docker log and use it
+for deployment or rollback. Version tags are immutable; `latest` and
+`buildcache` are mutable.
+
+Pipeline credentials and permissions: [Azure DevOps setup](terraform/azure-devops/variable-groups/README.md).
 
 ## Screenshots
 
