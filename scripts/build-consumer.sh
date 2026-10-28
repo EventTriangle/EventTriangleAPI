@@ -18,7 +18,7 @@ VERSION_TAG="acrsharedd01.azurecr.io/consumer-service:$SEM_VER"
 LATEST_TAG="acrsharedd01.azurecr.io/consumer-service:latest"
 CACHE_IMAGE_TAG="acrsharedd01.azurecr.io/consumer-service:buildcache"
 
-$SCRIPT_DIR/docker-build.sh \
+bash "$SCRIPT_DIR/docker-build.sh" \
     --working-directory "$WORKING_DIRECTORY" \
     --docker-file "$DOCKER_FILE" \
     --version-tag "$VERSION_TAG" \

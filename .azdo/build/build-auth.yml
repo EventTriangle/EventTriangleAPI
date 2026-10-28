@@ -9,13 +9,9 @@ trigger:
 
 pr: none
 
-parameters:
-  - name: sonarCloudEnabled
-    displayName: 'Run SonarCloud analysis'
-    type: boolean
-    default: false
-
 variables:
+  - name: DOCKER_BUILDKIT
+    value: '1'
   - name: appName
     value: 'Auth'
   - name: System.Debug
@@ -25,29 +21,19 @@ pool:
   vmImage: 'ubuntu-latest'
 
 stages:
-  - stage: 'Docker_Push_${{ variables.appName }}'
-    displayName: 'Docker_Push_${{ variables.appName }}'
+  - stage: 'Build_Test_Push_${{ variables.appName }}'
+    displayName: 'Build_Test_Push_${{ variables.appName }}'
     jobs:
       - template: ../templates/docker-build-push-jobs.yml
         parameters:
-          jobName: 'Docker_Push_${{ variables.appName }}'
-          imageRepository: 'auth-service'
-          dockerfilePath: '$(System.DefaultWorkingDirectory)/src/authorization/Dockerfile'
-          registryUrl: 'acrsharedd01.azurecr.io'
-          dockerServiceConnection: 'Azure_ACR_Connection'
-          scriptFile: '$(System.DefaultWorkingDirectory)/scripts/build-auth.sh'
-
-  - stage: 'Build_Test_Scan_${{ variables.appName }}'
-    displayName: 'Build_Test_Scan_${{ variables.appName }}'
-    jobs:
-      - template: ../templates/build-test-scan-jobs.yml
-        parameters:
-          jobName: 'Build_${{ variables.appName }}'
+          jobName: 'Build_Test_Push_${{ variables.appName }}'
           solution: '$(System.DefaultWorkingDirectory)/EventTriangleAPI.sln'
           buildConfiguration: 'Release'
-          backendProjectPath: '$(System.DefaultWorkingDirectory)/src/authorization/EventTriangleAPI.Authorization.Presentation'
+          # Auth currently has no unit test cases.
           shouldRunUnitTests: false
           shouldRunIntegrationTests: true
           integrationTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/authorization/EventTriangleAPI.Authorization.IntegrationTests/EventTriangleAPI.Authorization.IntegrationTests.csproj'
-          sonarCloudEnabled: ${{ parameters.sonarCloudEnabled }}
+          sonarCloudEnabled: true
           sonarCloudServiceConnection: 'SonarCloud_Service_Connection'
+          dockerServiceConnection: 'Docker_Hub_Connection'
+          scriptFile: '$(System.DefaultWorkingDirectory)/scripts/dockerhub/build-auth.sh'

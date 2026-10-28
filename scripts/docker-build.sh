@@ -125,6 +125,7 @@ echo "Version tag       : $VERSION_TAG"
 echo "Latest tag        : $LATEST_TAG"
 echo "Cache image tag   : $CACHE_IMAGE_TAG"
 echo "Shared context    : $SHARED_CONTEXT"
+echo "DOCKER_BUILDKIT   : ${DOCKER_BUILDKIT:-<not set>}"
 echo "============================================================"
 
 # ==============================================================================

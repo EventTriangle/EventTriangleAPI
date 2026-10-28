@@ -17,6 +17,8 @@ pr:
 
       # Pipeline itself (so changes validate)
       - .azdo/**
+      - scripts/docker-build.sh
+      - scripts/dockerhub/build-consumer.sh
 
     exclude:
       # Docs
@@ -43,6 +45,8 @@ pr:
       - LICENSE
 
 variables:
+  - name: DOCKER_BUILDKIT
+    value: '1'
   - name: appName
     value: "Consumer"
   - name: System.Debug
@@ -52,14 +56,18 @@ pool:
   vmImage: "ubuntu-latest"
 
 stages:
-  - stage: "PR_Validation_${{ variables.appName }}"
-    displayName: "PR_Validation_${{ variables.appName }}"
+  - stage: 'PR_Validation_${{ variables.appName }}'
+    displayName: 'PR_Validation_${{ variables.appName }}'
     jobs:
-      - template: "../templates/docker-build-push-jobs.yml"
+      - template: ../templates/docker-build-push-jobs.yml
         parameters:
-          jobName: "Docker_Build_${{ variables.appName }}"
-          imageRepository: "consumer-service"
-          dockerfilePath: "$(System.DefaultWorkingDirectory)/src/consumer/Dockerfile"
-          registryUrl: "acrsharedd01.azurecr.io"
-          dockerServiceConnection: "Azure_ACR_Connection"
-          scriptFile: "$(System.DefaultWorkingDirectory)/scripts/build-consumer.sh"
+          jobName: 'PR_Validation_${{ variables.appName }}'
+          solution: '$(System.DefaultWorkingDirectory)/EventTriangleAPI.sln'
+          buildConfiguration: 'Release'
+          unitTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/consumer/EventTriangleAPI.Consumer.UnitTests/EventTriangleAPI.Consumer.UnitTests.csproj'
+          shouldRunUnitTests: true
+          shouldRunIntegrationTests: true
+          integrationTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/consumer/EventTriangleAPI.Consumer.IntegrationTests/EventTriangleAPI.Consumer.IntegrationTests.csproj'
+          sonarCloudEnabled: false
+          scriptFile: "$(System.DefaultWorkingDirectory)/scripts/dockerhub/build-consumer.sh"
+          dockerServiceConnection: "Docker_Hub_Connection"

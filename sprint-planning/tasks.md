@@ -134,19 +134,21 @@ Azure infrastructure provisioning/RBAC validation is outside this task's scope.
 
 **Dependencies:** TASK-02
 
-Application build scripts still tag images for `acrsharedd01.azurecr.io`. The three `.azdo/build/` entry points reference `docker-build-push-acr-jobs.yml`, extend it for dockerhub repositories too.
+Migrate image publication from `acrsharedd01.azurecr.io` to Docker Hub using the
+existing `.azdo/templates/docker-build-push-jobs.yml` template. Preserve the
+original ACR scripts for rollback.
 
 DockerHub url: https://hub.docker.com/repositories/petrokolosov
 
-- [ ] Define Docker Hub repositories under `petrokolosov` for authorization, sender, and consumer and confirm repository visibility/access.
-- [ ] Add dedicated `scripts/dockerhub/build-auth.sh`, `scripts/dockerhub/build-sender.sh`, and `scripts/dockerhub/build-consumer.sh` scripts using Docker Hub for version, latest, and cache references. Preserve the existing ACR build scripts.
-- [ ] Reuse `scripts/docker-build.sh` from the new scripts, resolving Dockerfile and shared-context paths correctly from `scripts/dockerhub/` and accepting the application version as an argument.
-- [ ] Wire all three build entry points to the maintained `.azdo/templates/docker-build-push-jobs.yml` template with matching parameter names and the new Docker Hub script paths.
+- [x] Define Docker Hub repositories under `petrokolosov` for authorization, sender, and consumer and confirm repository visibility/access.
+- [x] Add dedicated `scripts/dockerhub/build-auth.sh`, `scripts/dockerhub/build-sender.sh`, and `scripts/dockerhub/build-consumer.sh` scripts using Docker Hub for version, latest, and cache references. Preserve the existing ACR build scripts.
+- [x] Reuse `scripts/docker-build.sh` from the new scripts, resolving Dockerfile and shared-context paths correctly from `scripts/dockerhub/` and accepting the application version as an argument.
+- [x] Wire all three build entry points to the maintained `.azdo/templates/docker-build-push-jobs.yml` template with matching parameter names and the new Docker Hub script paths.
 - [ ] Replace ACR publication connections and active PR-validation registry references with the appropriate Docker Hub configuration.
-- [ ] Correct registry examples and document Docker Hub authentication, required environment variables, and commands for running each new script in the maintained README.
-- [ ] Ensure application tests gate release publication and untrusted PR validation cannot push images or access publisher credentials.
-- [ ] Record immutable version tags/digests for deployment and rollback; configure runtime pull credentials if needed.
-- [ ] Remove broad environment dumps from publishing jobs where credentials could be exposed.
+- [x] Correct registry examples and document Docker Hub authentication, required environment variables, and commands for running each new script in the maintained README.
+- [x] Ensure application tests gate release publication and untrusted PR validation cannot push images or access publisher credentials.
+- [x] Publish immutable version tags for deployment and rollback; configure runtime pull credentials if needed.
+- [x] Remove broad environment dumps from publishing jobs where credentials could be exposed.
 
 ## TASK-10 — Migrate `.deprecated/platform/` to the FluxCD repository
 

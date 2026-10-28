@@ -21,5 +21,9 @@ Terraform also creates the `dev` environment and grants access to the three
 infrastructure pipelines. `terraform output pipeline_definitions` shows actual
 pipeline IDs and paths.
 
+Build and PR Validation publish through `Docker_Hub_Connection` after application
+checks. Terraform authorizes only these six publishing pipelines. Same-repository
+PRs may publish; fork PR triggers and secret sharing are disabled.
+
 Legacy `Configure Platform` is not managed here. Keep it disabled; there is no
 maintained all-in-one deployment entry point yet.

@@ -4,9 +4,10 @@
 from Terraform resources, not hard-coded imports.
 
 - `EventTriangle`: GitHub PAT authentication, used by all nine managed pipelines.
-- `Azure_ACR_Connection`: registry credentials, used by the three Build and
-  three PR Validation pipelines.
-- `Docker_Hub_Connection`: Docker Hub username/token; no active pipeline consumer.
+- `Azure_ACR_Connection`: registry credentials for the original ACR build scripts.
+  Maintained pipelines publish to Docker Hub.
+- `Docker_Hub_Connection`: Docker Hub username/token, authorized for the three
+  Build and three PR Validation pipelines.
 - `Azure_Connection`: Azure service-principal credentials. Maintained infrastructure
   pipelines currently use the Azure credential variable group instead.
 - `SonarCloud_Service_Connection`: optional token authentication, used only by

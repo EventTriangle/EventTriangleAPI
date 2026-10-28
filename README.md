@@ -17,13 +17,13 @@ EventTriangleAPI offers realtime communication using SignalR.
 
 ## Required Software
 
-- **.NET SDK 8.0.301 or later:** https://dotnet.microsoft.com/en-us/download
+- **.NET SDK 10:** https://dotnet.microsoft.com/en-us/download
 - **NVM for windows:** https://github.com/coreybutler/nvm-windows
 - **Angular CLI:** `15.2.6`
 - **NodeJS:** `18.15.0`
 - **NPM:** `9.5.0`
 - **Docker:** https://docs.docker.com/get-docker/
-- **IDE**: Visual Studio 2022 or JetBrains Rider
+- **IDE**: Visual Studio or JetBrains Rider
 
 ## How to run in Debug mode
 
@@ -63,7 +63,7 @@ Setup: [Azure infrastructure](terraform/infrastructure/README.md),
 
 ## Technology stack
 
-- **SDK:** `.NET 8`
+- **SDK:** `.NET 10`
 - **Frameworks:** `ASP .NET Core`, `Angular 15`
 - **Persistence:**
     - Database: `PostgreSQL 15`
@@ -90,7 +90,7 @@ Setup: [Azure infrastructure](terraform/infrastructure/README.md),
 
 ### Management
 
-- Docker: https://hub.docker.com/u/kaminome
+- Docker: https://hub.docker.com/u/petrokolosov
 - Azure DevOps: https://dev.azure.com/EventTriangle/EventTriangleAPI
 - Renovate: https://developer.mend.io/github/EventTriangle/EventTriangleAPI
 - SonarCloud: https://sonarcloud.io/organizations/event-triangle/projects
@@ -107,13 +107,45 @@ Setup: [Azure infrastructure](terraform/infrastructure/README.md),
 - `export EVENT_TRIANGLE_AD_CLIENT_SECRET=<YOUR_AD_SECRET>`
 - `docker compose up`
 
-## How to build docker images
+## Build and publish Docker images
 
-From `src` folder run:
+Requires Docker with Buildx and a Docker Hub token with write access to
+`petrokolosov`. Set `DOCKERHUB_TOKEN` in your environment and run from the
+repository root, using a unique version tag:
 
-- `docker build --build-arg FRONT_API_URL="http://localhost:7000/" -t eventtriangle/auth:1.0 -f ./authorization/Dockerfile .`
-- `docker build -t eventtriangle/consumer:1.0 -f ./consumer/Dockerfile . `
-- `docker build -t eventtriangle/sender:1.0 -f ./sender/Dockerfile .`
+```bash
+printf '%s' "$DOCKERHUB_TOKEN" | docker login docker.io --username petrokolosov --password-stdin
+bash scripts/dockerhub/build-auth.sh 1.0.0-example
+bash scripts/dockerhub/build-sender.sh 1.0.0-example
+bash scripts/dockerhub/build-consumer.sh 1.0.0-example
+docker logout docker.io
+```
+
+The scripts publish `auth-service`, `sender-service` and `consumer-service`
+under `docker.io/petrokolosov` using the shared `scripts/docker-build.sh`. Each publishes
+its version tag, `latest` and `buildcache`; subsequent builds reuse the registry
+cache. Run application tests before publishing locally. The original
+`scripts/build-*.sh` scripts publish to ACR.
+
+### Azure Pipelines
+
+Build and PR Validation use `.azdo/templates/docker-build-push-jobs.yml`: one
+job restores/builds the solution, runs enabled checks, then logs in through
+`Docker_Hub_Connection` and publishes the image. The hosted Ubuntu agent supplies
+the .NET SDK.
+
+- `shouldRunUnitTests` and `shouldRunIntegrationTests` control test execution.
+  Auth unit tests are disabled because that project has no test cases.
+- `sonarCloudEnabled` enables SonarCloud analysis on `main`; it defaults to `false`.
+- Build CI runs for `main` and `v*` tags. Same-repository PRs and manual branch
+  runs can also publish; fork PR publishing is disabled.
+
+CI image tags combine GitVersion SemVer and the run ID, for example
+`1.0.1-104-1666`. Find the version in the build number or Docker log and use it
+for deployment or rollback. Version tags are immutable; `latest` and
+`buildcache` are mutable.
+
+Pipeline credentials and permissions: [Azure DevOps setup](terraform/azure-devops/variable-groups/README.md).
 
 ## Screenshots
 

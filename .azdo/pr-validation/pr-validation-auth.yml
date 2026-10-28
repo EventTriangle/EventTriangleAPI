@@ -17,6 +17,8 @@ pr:
 
       # Pipeline itself (so changes validate)
       - .azdo/**
+      - scripts/docker-build.sh
+      - scripts/dockerhub/build-auth.sh
 
     exclude:
       # Docs
@@ -43,6 +45,8 @@ pr:
       - LICENSE
 
 variables:
+  - name: DOCKER_BUILDKIT
+    value: '1'
   - name: appName
     value: "Auth"
   - name: System.Debug
@@ -52,14 +56,19 @@ pool:
   vmImage: "ubuntu-latest"
 
 stages:
-  - stage: "PR_Validation_${{ variables.appName }}"
-    displayName: "PR_Validation_${{ variables.appName }}"
+  - stage: 'PR_Validation_${{ variables.appName }}'
+    displayName: 'PR_Validation_${{ variables.appName }}'
     jobs:
-      - template: "../templates/docker-build-push-jobs.yml"
+      - template: ../templates/docker-build-push-jobs.yml
         parameters:
-          jobName: "Docker_Build_${{ variables.appName }}"
-          imageRepository: "auth-service"
-          dockerfilePath: "$(System.DefaultWorkingDirectory)/src/authorization/Dockerfile"
-          registryUrl: "acrsharedd01.azurecr.io"
-          dockerServiceConnection: "Azure_ACR_Connection"
-          scriptFile: "$(System.DefaultWorkingDirectory)/scripts/build-auth.sh"
+          jobName: 'PR_Validation_${{ variables.appName }}'
+          solution: '$(System.DefaultWorkingDirectory)/EventTriangleAPI.sln'
+          buildConfiguration: 'Release'
+          # Auth currently has no unit test cases.
+          shouldRunUnitTests: false
+          shouldRunIntegrationTests: true
+          integrationTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/authorization/EventTriangleAPI.Authorization.IntegrationTests/EventTriangleAPI.Authorization.IntegrationTests.csproj'
+          sonarCloudEnabled: true
+          sonarCloudServiceConnection: 'SonarCloud_Service_Connection'
+          scriptFile: "$(System.DefaultWorkingDirectory)/scripts/dockerhub/build-auth.sh"
+          dockerServiceConnection: "Docker_Hub_Connection"

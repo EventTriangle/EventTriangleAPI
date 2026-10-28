@@ -80,9 +80,8 @@ repository access must also allow webhook management; token permissions cannot
 elevate it. Fine-grained tokens have restrictions for outside collaborators.
 
 `AZDO_PERSONAL_ACCESS_TOKEN` creates Azure DevOps resources;
-`TF_VAR_github_pat` authenticates their GitHub connection. The fine-grained setup
-still needs end-to-end verification of checkout, triggers and commit statuses.
-PAT reporting uses commit statuses, not GitHub App Checks.
+`TF_VAR_github_pat` authenticates their GitHub connection. PAT reporting uses
+commit statuses, not GitHub App Checks.
 
 References: [Microsoft: GitHub authentication](https://learn.microsoft.com/en-us/azure/devops/pipelines/security/secure-access-to-repos?view=azure-devops#authentication-to-github-repositories),
 [GitHub: fine-grained tokens](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens).

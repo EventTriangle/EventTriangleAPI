@@ -3,40 +3,62 @@ parameters:
     displayName: 'Job Name'
     type: string
 
+  - name: solution
+    displayName: 'Solution file path'
+    type: string
+
+  - name: buildConfiguration
+    displayName: 'Build Configuration'
+    default: 'Release'
+    type: string
+
+  - name: unitTestsProjectPath
+    displayName: 'Unit tests project path'
+    default: ''
+    type: string
+
+  - name: shouldRunUnitTests
+    displayName: 'Flag should run unit tests'
+    default: true
+    type: boolean
+
+  - name: shouldRunIntegrationTests
+    displayName: 'Flag should run integration tests'
+    type: boolean
+    default: true
+
+  - name: integrationTestsProjectPath
+    displayName: 'Integration tests project path'
+    type: string
+    default: ''
+
   - name: gitVersionVersion
     displayName: 'GitVersion version'
     default: '6.x'
     type: string
 
-  - name: registryUrl
-    type: string
-    displayName: >
-      ACR Registry URL.
-      For ACR it is FQDN URL of container registry: azuredevopsacrd01.azurecr.io.
-      For Docker Hub it is: docker.io/petrkolosov.
+  - name: sonarCloudEnabled
+    type: boolean
+    default: false
 
-  - name: imageRepository
-    displayName: 'Image Repository name'
+  - name: sonarCloudServiceConnection
     type: string
-
-  - name: dockerfilePath
-    displayName: 'Dockerfile path'
-    type: string
+    default: SonarCloud_Service_Connection
 
   - name: dockerServiceConnection
-    displayName: 'Azure container registry service connection in Azure DevOps.'
+    displayName: 'Publishing service connection'
     type: string
-
   - name: scriptFile
-    displayName: Docker build script path
     type: string
 
 jobs:
   - job: ${{ parameters.jobName }}
     displayName: ${{ parameters.jobName }}
+    condition: and(succeeded(), ne(variables['System.PullRequest.IsFork'], 'True'))
     steps:
       - checkout: self
         fetchDepth: 0
+        persistCredentials: false
 
       - task: gitversion-setup@4.5.0
         displayName: 'GitVersion Setup'
@@ -49,42 +71,95 @@ jobs:
         displayName: Determine Version
         condition: succeeded()
 
-      - bash: echo $Action$BuildVersion
+      - bash: |
+          set -euo pipefail
+          echo "##vso[build.updatebuildnumber]${SEM_VER}-${RUN_ID}"
         displayName: 'Set Build Version'
         condition: succeeded()
         env:
-          Action: '##vso[build.updatebuildnumber]'
-          BuildVersion: $(version_step.semVer)
+          SEM_VER: $(version_step.SemVer)
+          RUN_ID: $(Build.BuildId)
 
       - bash: |
-          echo "=== ENV VARIABLES ==="
-          printenv
-
-          echo "=== PIPELINE VARIABLES ==="
-          echo "FullSemVer: $(version_step.FullSemVer)"
-          echo "SemVer: $(version_step.SemVer)"
-          echo "ShortSha: $(version_step.ShortSha)"
-          echo "Build Source branch: $BUILD_SOURCEBRANCHNAME"
-        displayName: Debug Environment
+          echo "Version: $SEM_VER"
+          echo "Commit: $COMMIT"
+          echo "Branch: $SOURCE_BRANCH"
+        displayName: 'Build information'
         condition: succeeded()
+        env:
+          SEM_VER: $(version_step.SemVer)
+          COMMIT: $(Build.SourceVersion)
+          SOURCE_BRANCH: $(Build.SourceBranch)
 
-      - bash: |
-          cd ./scripts
-          chmod +x docker-inspect.sh
-          ./docker-inspect.sh
-        displayName: Docker Inspect
+      - task: DotNetCoreCLI@2
+        displayName: 'Dotnet restore'
         condition: succeeded()
+        inputs:
+          command: 'restore'
+          projects: '${{ parameters.solution }}'
+          arguments: '--verbosity minimal'
+          nugetConfigPath: 'nuget.config'
+
+      - ${{ if eq(parameters.sonarCloudEnabled, true) }}:
+          - task: SonarCloudPrepare@4
+            condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'main'))
+            inputs:
+              SonarCloud: ${{ parameters.sonarCloudServiceConnection }}
+              organization: event-triangle
+              scannerMode: dotnet
+              projectKey: event-triangle-api
+              projectName: eventtriangleapi
+              extraProperties: |
+                sonar.cs.vstest.reportsPaths=$(Agent.TempDirectory)/**/*.trx
+                sonar.cs.opencover.reportsPaths=$(Agent.TempDirectory)/**/*opencover.xml
+                sonar.exclusions=**/Properties/**, **/bin/**, **/obj/**, **/Migrations/**
+
+      - task: DotNetCoreCLI@2
+        displayName: 'Build solution'
+        condition: succeeded()
+        inputs:
+          command: 'build'
+          projects: '${{ parameters.solution }}'
+          arguments: '-c ${{ parameters.buildConfiguration }} -p:Version=$(version_step.semVer) --no-restore'
+
+      - ${{ if eq(parameters.shouldRunUnitTests, true) }}:
+          - task: DotNetCoreCLI@2
+            displayName: 'Run unit tests'
+            inputs:
+              command: 'test'
+              projects: '${{ parameters.unitTestsProjectPath }}'
+              arguments: '--no-build --configuration ${{ parameters.buildConfiguration }} --collect "Code Coverage"'
+
+      - ${{ if eq(parameters.shouldRunIntegrationTests, true) }}:
+          - task: DotNetCoreCLI@2
+            displayName: 'Run integration tests'
+            inputs:
+              command: 'test'
+              projects: '${{ parameters.integrationTestsProjectPath }}'
+              arguments: '--no-build --configuration ${{ parameters.buildConfiguration }} --collect "Code Coverage"'
+
+      - ${{ if eq(parameters.sonarCloudEnabled, true) }}:
+          - task: SonarCloudAnalyze@4
+            condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'main'))
+            inputs: {}
+
+          - task: SonarCloudPublish@4
+            condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'main'))
+            inputs:
+              pollingTimeoutSec: "300"
 
       - task: Docker@2
-        displayName: "Docker Login"
+        displayName: 'Docker Hub Login'
         inputs:
           command: login
           containerRegistry: ${{ parameters.dockerServiceConnection }}
 
+      # The shared build script publishes with buildx --push using this login.
       - bash: |
           set -euo pipefail
-          SCRIPT_FILE="${{ parameters.scriptFile }}"
-          echo "Script file: ${SCRIPT_FILE}"
-          chmod +x "${SCRIPT_FILE}"
-          "${SCRIPT_FILE}" $(version_step.SemVer)
-        displayName: "Docker Build"
+          bash "$SCRIPT_FILE" "${SEM_VER}-${RUN_ID}"
+        displayName: 'Docker Build and Push'
+        env:
+          SCRIPT_FILE: ${{ parameters.scriptFile }}
+          SEM_VER: $(version_step.SemVer)
+          RUN_ID: $(Build.BuildId)
