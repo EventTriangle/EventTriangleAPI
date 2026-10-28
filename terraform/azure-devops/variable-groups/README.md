@@ -1,106 +1,105 @@
 # Azure DevOps Terraform
 
-This Terraform root manages the retained variable groups, maintained YAML
-pipeline definitions, the `dev` deployment environment, and pipeline-specific
-resource authorizations. Service-connection resources remain in TASK-08.
+Creates variable groups, nine YAML pipelines, service connections and the `dev`
+environment in the existing EventTriangle Azure DevOps project.
 
-The root remains in `terraform/azure-devops/variable-groups/` to preserve the
-working TASK-06 layout. Its existing variable-group resource addresses and
-remote backend are unchanged:
+## Run locally
 
-- storage account: `tfstatestorage011`
-- container: `tfstatecontainer01`
-- key: `event.triangle.azdo.libraries.tfstate`
+Requires Terraform 1.16+, an Azure DevOps PAT with access to manage these
+resources, backend storage access and the service credentials below.
 
-Always initialize this exact state before planning. See
-`PIPELINE_INVENTORY.md` before the first pipeline apply because eight existing
-definitions must be imported rather than recreated.
+From the repository root:
 
-## Bootstrap order
+```bash
+cd terraform/azure-devops/variable-groups
+```
 
-1. Create or identify the Azure Storage backend outside this root.
-2. Authenticate the Azure DevOps provider and initialize the existing state.
-3. Plan the declarative imports from `imports.tf` and confirm the eight existing
-   definitions are imported and updated in place.
-4. Confirm that no still-required legacy variable groups or secrets are being
-   destroyed.
-5. Apply the retained variable groups, pipeline definitions, `dev` environment,
-   and their permissions.
-6. Run the infrastructure and Cloudflare pipelines only after reviewing their
-   own Terraform plans.
+Create the ignored `backend.hcl` locally:
 
-This root cannot create its own backend, provider PAT, or initial GitHub service
-connection. The applying identity needs permission to administer build
-definitions, variable groups, environments, and pipeline resource
-authorizations in the Azure DevOps project.
+```hcl
+storage_account_name = "tfstatestorage011"
+container_name       = "tfstatecontainer01"
+key                  = "event.triangle.azdo.libraries.tfstate"
+sas_token            = "<backend SAS token>"
+```
 
-## Authentication and initialization
-
-Do not commit an Azure DevOps PAT or backend SAS token. Export them locally:
+Supply secrets through protected environment variables:
 
 ```bash
 export AZDO_ORG_SERVICE_URL="https://dev.azure.com/EventTriangle"
-export AZDO_PERSONAL_ACCESS_TOKEN="<scoped Azure DevOps PAT>"
-```
-
-Create the ignored `backend.hcl` locally with the storage account, container,
-state key, and protected SAS token, then initialize:
-
-```bash
-terraform init -reconfigure -backend-config=backend.hcl
-```
-
-Supply variable-group secrets through protected environment variables:
-
-```bash
+export AZDO_PERSONAL_ACCESS_TOKEN="<Azure DevOps PAT>"
+export TF_VAR_github_pat="<fine-grained GitHub PAT>"
 export TF_VAR_backend_sas_token="<backend SAS token>"
 export TF_VAR_azure_client_secret="<Azure service-principal secret>"
 export TF_VAR_cloudflare_api_key="<Cloudflare API key>"
+export TF_VAR_docker_hub_token="<Docker Hub token>"
+export TF_VAR_azure_acr_password="<ACR password>"
 ```
 
-Then run:
+Defaults and optional overrides are in `variables.tf`. `azure_client_id` and
+`azure_client_secret` must belong to the same service principal; both the Azure
+connection and Azure credential variable group use this pair.
 
 ```bash
+terraform init -reconfigure -backend-config=backend.hcl
 terraform fmt -check
 terraform validate
 terraform plan -out=azure-devops.tfplan
-terraform apply azure-devops.tfplan
 ```
 
-Review every plan. This root owns real Azure DevOps configuration, so removing
-a managed resource can delete or deauthorize the corresponding object.
+Review the plan for unintended changes or deletions, then apply:
 
-## Pipeline ownership
+```bash
+terraform apply azure-devops.tfplan
+terraform plan
+```
 
-Terraform owns each pipeline's name, folder, GitHub repository connection,
-default branch, YAML path, and queue status. The `.azdo/` entry points own their
-CI and PR trigger rules; Terraform uses the YAML trigger configuration instead
-of duplicating those rules.
+The second plan should report `No changes`. Secrets, backend configuration,
+state backups and saved plans must stay out of Git and have restricted access.
 
-The variable groups are not open to every pipeline. Terraform grants access
-only where the active YAML consumes a group:
+## Fine-grained GitHub PAT permissions
 
-- backend settings: `Terraform Create`, `Terraform Destroy`, `Cloudflare DNS`;
-- Azure credentials: `Terraform Create`, `Terraform Destroy`;
-- Cloudflare API key: `Cloudflare DNS`.
+In GitHub, open `Settings > Developer settings > Personal access tokens >
+Fine-grained tokens > Generate new token` and select:
 
-The Cloudflare pipeline deliberately receives no Azure service-principal
-credentials.
+- Resource owner: `EventTriangle`.
+- Repository access: `Only select repositories` → `EventTriangle/EventTriangleAPI`.
+- An explicit expiration; obtain organization approval if required.
 
-## External service connections
+Under **Repository permissions**, enable only:
 
-The existing GitHub connection is required to create or import the YAML
-definitions. ACR/Docker Hub and SonarCloud connections remain external until
-TASK-08. Until then, authorize those external connections manually only for the
-pipelines that consume them.
+- **Contents — Read-only:** checkout code and read existing pipeline YAML.
+- **Pull requests — Read-only:** read PR metadata and changed files.
+- **Commit statuses — Read and write:** publish build results on commits.
+- **Webhooks — Read and write:** configure CI and PR triggers.
+- **Metadata — Read-only:** included automatically by GitHub.
 
-## Migration notes
+Leave other permissions unselected, including Actions, Workflows, Checks,
+Administration, Packages and organization/account permissions. The token owner's
+repository access must also allow webhook management; token permissions cannot
+elevate it. Fine-grained tokens have restrictions for outside collaborators.
 
-- `library-state-file` points directly to `azure.tfstate`; it no longer depends
-  on `Prefix_Library` expansion.
-- The Cloudflare zone identifier is the `cloudflare_zone_id` default in the
-  Cloudflare Terraform environment.
-- Azure service-principal credentials remain until TASK-08 migrates the active
-  infrastructure pipelines to a maintained service connection.
-- PostgreSQL, Redis, and Entra ID secrets must be migrated to their selected
-  GitOps secret mechanism before their legacy variable groups are deleted.
+`AZDO_PERSONAL_ACCESS_TOKEN` creates Azure DevOps resources;
+`TF_VAR_github_pat` authenticates their GitHub connection. The fine-grained setup
+still needs end-to-end verification of checkout, triggers and commit statuses.
+PAT reporting uses commit statuses, not GitHub App Checks.
+
+References: [Microsoft: GitHub authentication](https://learn.microsoft.com/en-us/azure/devops/pipelines/security/secure-access-to-repos?view=azure-devops#authentication-to-github-repositories),
+[GitHub: fine-grained tokens](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens).
+
+## SonarCloud (optional)
+
+Disabled by default. To create its connection, set `TF_VAR_manage_sonarcloud=true`
+and `TF_VAR_sonarcloud_token`, then plan/apply. Keep management enabled once the
+connection is managed: `prevent_destroy` protects it from accidental removal.
+An unmanaged same-name connection must be explicitly adopted or removed first.
+
+Build Auth analysis is controlled separately by `sonarCloudEnabled`, default
+`false`. Enable it for a manual run, or change its YAML default for automatic runs.
+
+## Reference
+
+- [Service connections](SERVICE_CONNECTION_INVENTORY.md)
+- [Pipelines](PIPELINE_INVENTORY.md)
+- [Variable groups](VARIABLE_GROUP_CONSUMERS.md)
+- [Access and maintenance](DEVELOPER_ACCESS.md)

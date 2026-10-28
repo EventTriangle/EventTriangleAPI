@@ -34,3 +34,29 @@ output "deployment_environment" {
     name = azuredevops_environment.dev.name
   }
 }
+
+output "service_connections" {
+  description = "Service connections created and managed by Terraform."
+  value = {
+    github = {
+      id   = azuredevops_serviceendpoint_github.github.id
+      name = azuredevops_serviceendpoint_github.github.service_endpoint_name
+    }
+    docker_hub = {
+      id   = azuredevops_serviceendpoint_dockerregistry.docker_hub.id
+      name = azuredevops_serviceendpoint_dockerregistry.docker_hub.service_endpoint_name
+    }
+    azure_acr = {
+      id   = azuredevops_serviceendpoint_dockerregistry.azure_acr.id
+      name = azuredevops_serviceendpoint_dockerregistry.azure_acr.service_endpoint_name
+    }
+    sonarcloud = var.manage_sonarcloud ? {
+      id   = azuredevops_serviceendpoint_sonarcloud.sonarcloud[0].id
+      name = azuredevops_serviceendpoint_sonarcloud.sonarcloud[0].service_endpoint_name
+    } : null
+    azure = {
+      id   = azuredevops_serviceendpoint_azurerm.azure.id
+      name = azuredevops_serviceendpoint_azurerm.azure.service_endpoint_name
+    }
+  }
+}

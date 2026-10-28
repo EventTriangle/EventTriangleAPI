@@ -73,6 +73,7 @@ locals {
       pipeline_key      = "cloudflare_dns"
     }
   }
+
 }
 
 resource "azuredevops_build_definition" "pipeline" {
@@ -102,7 +103,7 @@ resource "azuredevops_build_definition" "pipeline" {
     repo_id               = var.github_repository_id
     branch_name           = var.pipeline_default_branch
     yml_path              = each.value.yaml_path
-    service_connection_id = var.github_service_connection_id
+    service_connection_id = azuredevops_serviceendpoint_github.github.id
     report_build_status   = true
   }
 
@@ -121,9 +122,34 @@ resource "azuredevops_pipeline_authorization" "github_repository" {
   for_each = azuredevops_build_definition.pipeline
 
   project_id  = var.project_id
-  resource_id = var.github_service_connection_id
+  resource_id = azuredevops_serviceendpoint_github.github.id
   type        = "endpoint"
   pipeline_id = each.value.id
+}
+
+resource "azuredevops_pipeline_authorization" "azure_acr" {
+  for_each = toset([
+    "pr_validation_auth",
+    "pr_validation_sender",
+    "pr_validation_consumer",
+    "build_auth",
+    "build_sender",
+    "build_consumer",
+  ])
+
+  project_id  = var.project_id
+  resource_id = azuredevops_serviceendpoint_dockerregistry.azure_acr.id
+  type        = "endpoint"
+  pipeline_id = azuredevops_build_definition.pipeline[each.value].id
+}
+
+resource "azuredevops_pipeline_authorization" "sonarcloud" {
+  count = var.manage_sonarcloud ? 1 : 0
+
+  project_id  = var.project_id
+  resource_id = azuredevops_serviceendpoint_sonarcloud.sonarcloud[0].id
+  type        = "endpoint"
+  pipeline_id = azuredevops_build_definition.pipeline["build_auth"].id
 }
 
 resource "azuredevops_pipeline_authorization" "variable_group" {
