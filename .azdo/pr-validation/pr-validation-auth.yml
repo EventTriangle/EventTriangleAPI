@@ -68,7 +68,7 @@ stages:
           shouldRunUnitTests: false
           shouldRunIntegrationTests: true
           integrationTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/authorization/EventTriangleAPI.Authorization.IntegrationTests/EventTriangleAPI.Authorization.IntegrationTests.csproj'
-          sonarCloudEnabled: false
+          sonarCloudEnabled: true
           sonarCloudServiceConnection: 'SonarCloud_Service_Connection'
           scriptFile: "$(System.DefaultWorkingDirectory)/scripts/dockerhub/build-auth.sh"
           dockerServiceConnection: "Docker_Hub_Connection"

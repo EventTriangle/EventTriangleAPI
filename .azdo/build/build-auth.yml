@@ -9,12 +9,6 @@ trigger:
 
 pr: none
 
-parameters:
-  - name: sonarCloudEnabled
-    displayName: 'Run SonarCloud analysis'
-    type: boolean
-    default: false
-
 variables:
   - name: DOCKER_BUILDKIT
     value: '1'
@@ -39,7 +33,7 @@ stages:
           shouldRunUnitTests: false
           shouldRunIntegrationTests: true
           integrationTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/authorization/EventTriangleAPI.Authorization.IntegrationTests/EventTriangleAPI.Authorization.IntegrationTests.csproj'
-          sonarCloudEnabled: ${{ parameters.sonarCloudEnabled }}
+          sonarCloudEnabled: true
           sonarCloudServiceConnection: 'SonarCloud_Service_Connection'
           dockerServiceConnection: 'Docker_Hub_Connection'
           scriptFile: '$(System.DefaultWorkingDirectory)/scripts/dockerhub/build-auth.sh'
