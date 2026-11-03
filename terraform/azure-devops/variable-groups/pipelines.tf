@@ -129,6 +129,9 @@ resource "azuredevops_pipeline_authorization" "github_repository" {
 
 resource "azuredevops_pipeline_authorization" "docker_hub" {
   for_each = toset([
+    "pr_validation_auth",
+    "pr_validation_sender",
+    "pr_validation_consumer",
     "build_auth",
     "build_sender",
     "build_consumer",

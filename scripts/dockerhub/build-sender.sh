@@ -3,8 +3,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPOSITORY_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-VERSION="${1:-1.0.0-local}"
-PUSH_IMAGE="${2:-false}"
+VERSION="${1:?Usage: $0 <version> (publishes to Docker Hub)}"
 IMAGE="docker.io/petrokolosov/sender-service"
 
 bash "$SCRIPT_DIR/../docker-build.sh" \
@@ -13,5 +12,4 @@ bash "$SCRIPT_DIR/../docker-build.sh" \
     --version-tag "$IMAGE:$VERSION" \
     --latest-tag "$IMAGE:latest" \
     --cache-image-tag "$IMAGE:buildcache" \
-    --shared-context "$REPOSITORY_ROOT/src/shared" \
-    --push "$PUSH_IMAGE"
+    --shared-context "$REPOSITORY_ROOT/src/shared"

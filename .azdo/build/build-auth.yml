@@ -9,13 +9,9 @@ trigger:
 
 pr: none
 
-parameters:
-  - name: sonarCloudEnabled
-    displayName: 'Run SonarCloud analysis'
-    type: boolean
-    default: false
-
 variables:
+  - name: DOCKER_BUILDKIT
+    value: '1'
   - name: appName
     value: 'Auth'
   - name: System.Debug
@@ -25,31 +21,19 @@ pool:
   vmImage: 'ubuntu-latest'
 
 stages:
-  - stage: 'Build_Test_Scan_${{ variables.appName }}'
-    displayName: 'Build_Test_Scan_${{ variables.appName }}'
-    jobs:
-      - template: ../templates/build-test-scan-jobs.yml
-        parameters:
-          jobName: 'Build_${{ variables.appName }}'
-          solution: '$(System.DefaultWorkingDirectory)/EventTriangleAPI.sln'
-          buildConfiguration: 'Release'
-          backendProjectPath: '$(System.DefaultWorkingDirectory)/src/authorization/EventTriangleAPI.Authorization.Presentation'
-          shouldRunUnitTests: false
-          shouldRunIntegrationTests: true
-          integrationTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/authorization/EventTriangleAPI.Authorization.IntegrationTests/EventTriangleAPI.Authorization.IntegrationTests.csproj'
-          sonarCloudEnabled: ${{ parameters.sonarCloudEnabled }}
-          sonarCloudServiceConnection: 'SonarCloud_Service_Connection'
-
-  - stage: 'Docker_Push_${{ variables.appName }}'
-    displayName: 'Docker_Push_${{ variables.appName }}'
-    dependsOn: 'Build_Test_Scan_${{ variables.appName }}'
-    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'), or(eq(variables['Build.SourceBranch'], 'refs/heads/main'), startsWith(variables['Build.SourceBranch'], 'refs/tags/v')))
+  - stage: 'Build_Test_Push_${{ variables.appName }}'
+    displayName: 'Build_Test_Push_${{ variables.appName }}'
     jobs:
       - template: ../templates/docker-build-push-jobs.yml
         parameters:
-          jobName: 'Docker_Push_${{ variables.appName }}'
-          imageRepository: 'petrokolosov/auth-service'
-          registryUrl: 'docker.io'
+          jobName: 'Build_Test_Push_${{ variables.appName }}'
+          solution: '$(System.DefaultWorkingDirectory)/EventTriangleAPI.sln'
+          buildConfiguration: 'Release'
+          # Auth currently has no unit test cases.
+          shouldRunUnitTests: false
+          shouldRunIntegrationTests: true
+          integrationTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/authorization/EventTriangleAPI.Authorization.IntegrationTests/EventTriangleAPI.Authorization.IntegrationTests.csproj'
+          sonarCloudEnabled: true
+          sonarCloudServiceConnection: 'SonarCloud_Service_Connection'
           dockerServiceConnection: 'Docker_Hub_Connection'
           scriptFile: '$(System.DefaultWorkingDirectory)/scripts/dockerhub/build-auth.sh'
-          pushImage: true

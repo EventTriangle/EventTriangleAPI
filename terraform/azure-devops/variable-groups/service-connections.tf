@@ -1,11 +1,12 @@
 resource "azuredevops_serviceendpoint_github" "github" {
-  # Uses the existing Azure Pipelines GitHub App (InstallationToken), so no PAT
-  # is needed. Limit the App installation to EventTriangle/EventTriangleAPI;
-  # pipelines.tf grants access only to the maintained pipelines.
   project_id            = var.project_id
   service_endpoint_name = "EventTriangle"
+  description           = "GitHub repository access for the maintained EventTriangle pipelines."
 
-  description = ""
+  # Restrictions are documented in DEVELOPER_ACCESS.md.
+  auth_personal {
+    personal_access_token = var.github_pat
+  }
 }
 
 resource "azuredevops_serviceendpoint_dockerregistry" "docker_hub" {

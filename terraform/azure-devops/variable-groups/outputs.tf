@@ -36,7 +36,7 @@ output "deployment_environment" {
 }
 
 output "service_connections" {
-  description = "Service connections retained and managed by Terraform."
+  description = "Service connections created and managed by Terraform."
   value = {
     github = {
       id   = azuredevops_serviceendpoint_github.github.id

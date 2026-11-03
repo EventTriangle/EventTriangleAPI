@@ -16,6 +16,18 @@ variable "github_repository_id" {
   default     = "EventTriangle/EventTriangleAPI"
 }
 
+variable "github_pat" {
+  description = "GitHub PAT used to create the repository service connection; see DEVELOPER_ACCESS.md for required permissions."
+  type        = string
+  sensitive   = true
+  nullable    = false
+
+  validation {
+    condition     = length(trimspace(var.github_pat)) > 0
+    error_message = "github_pat must be a non-empty GitHub PAT."
+  }
+}
+
 variable "pipeline_default_branch" {
   description = "Fully qualified default branch stored on Azure DevOps pipeline definitions."
   type        = string
@@ -118,7 +130,7 @@ variable "azure_acr_password" {
 }
 
 variable "manage_sonarcloud" {
-  description = "Import and manage SonarCloud once a working token is available."
+  description = "Create and manage SonarCloud once a working token is available."
   type        = bool
   default     = false
 }

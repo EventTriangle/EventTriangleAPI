@@ -112,29 +112,23 @@ No Cloudflare Terraform root exists in the current repository.
 
 **Dependencies:** TASK-02
 
-**Status:** Completed for the four enabled connections. SonarCloud migration
-and analysis are deferred until a working token is available. Azure resource
-provisioning and its RBAC validation are outside this task's accepted scope.
+**Status:** Docker Hub, ACR and Azure connections were recreated through Terraform.
+GitHub creation and full pipeline validation await a repository-scoped fine-grained
+PAT with webhook access. SonarCloud is deferred until a working token is available.
 
 - [x] Run `bash scripts/list-service-connections.sh PROJECT_ID [ORGANIZATION_URL]` to inventory existing connection IDs, names, types, authentication schemes, and sharing status.
 - [x] Map each retained connection to its pipeline consumers and the appropriate Azure DevOps Terraform provider resource under `terraform/azure-devops/`; document unsupported types and their handling.
 - [x] Define connection configuration using environment inputs and protected credential sources. Obtain any required credentials from their owners; the inventory does not export secrets.
-- [x] Import existing connections using their IDs and the resource-specific import format, preserving names and shared-project references to avoid breaking consumers.
+- [x] Initially import existing connections and validate management without breaking consumers (historical validation on 2026-10-13; fixed-ID import blocks are now removed).
 - [x] Manage required pipeline authorizations and usage permissions, coordinating ownership with TASK-07 and avoiding unrestricted access where unnecessary.
 - [x] Review plans for unexpected replacement/deletion, validate each retained connection through its consuming pipeline, and verify a second plan has no unintended changes.
 - [x] Document imports, authentication setup, credential rotation, and any bootstrap requirements in the Azure DevOps Terraform README and developer access guide.
+- [x] Configure Terraform to create enabled service connections from supplied credentials, including GitHub PAT authentication, without fixed-ID imports; document PAT permissions and the transition from GitHub App authentication.
+- [x] Recover the shared Azure state after confirmed manual deletion, preserving a protected backup, and recreate Docker Hub, ACR and Azure service connections through Terraform (2026-10-26: three creations, no changes or deletions).
+- [ ] Supply a GitHub PAT, recreate the four enabled service connections in an approved test window, verify repository checkout, CI/PR triggers and status reporting, registry authentication, Azure authentication and pipeline authorizations, then confirm a second plan reports no changes. Test SonarCloud separately when enabled with a working token.
 
-Validation on 2026-10-13 applies to the four enabled connections; SonarCloud is
-explicitly deferred with `manage_sonarcloud=false`. Apply completed with four
-imports, six additions, twelve updates, and no deletions. A full second plan
-reported `No changes` using the test Azure client `f4b7fe16-77ee-4dcc-9bf6-cfd3b8614843`.
-Docker Hub and ACR authentication succeeded. Azure authentication succeeded,
-but subscription resource-group access returned `403 AuthorizationFailed`;
-the subscription owner must grant the test application the required Azure RBAC
-role before infrastructure access can be considered validated. Build pipeline
-validation succeeded in Azure DevOps runs 1663 (Auth), 1664 (Consumer), and
-1665 (Sender), including ACR image publication, compilation, and integration
-tests. Auth ran with SonarCloud disabled.
+Setup and permissions: [Azure DevOps README](../terraform/azure-devops/variable-groups/README.md).
+Azure infrastructure provisioning/RBAC validation is outside this task's scope.
 
 ## TASK-09 — Complete Docker Hub image migration
 
@@ -153,16 +147,8 @@ DockerHub url: https://hub.docker.com/repositories/petrokolosov
 - [ ] Replace ACR publication connections and active PR-validation registry references with the appropriate Docker Hub configuration.
 - [x] Correct registry examples and document Docker Hub authentication, required environment variables, and commands for running each new script in the maintained README.
 - [x] Ensure application tests gate release publication and untrusted PR validation cannot push images or access publisher credentials.
-- [x] Record immutable version tags/digests for deployment and rollback; configure runtime pull credentials if needed.
+- [x] Publish immutable version tags for deployment and rollback; configure runtime pull credentials if needed.
 - [x] Remove broad environment dumps from publishing jobs where credentials could be exposed.
-
-Implementation and local validation are complete on TASK-09. Pipeline YAML
-references have been migrated locally and the three Build pipelines have Docker
-Hub access; the remaining unchecked item tracks removal of six deployed ACR
-grants after review, push, and YAML rollout. Terraform plan: three additions,
-zero updates, six authorization removals; no service connections are deleted.
-Real build/push/anonymous-pull checks passed for all three Linux AMD64 images;
-233 Sender/Consumer tests passed. Auth test projects have no discovered tests.
 
 ## TASK-10 — Migrate `.deprecated/platform/` to the FluxCD repository
 

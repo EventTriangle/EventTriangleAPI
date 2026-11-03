@@ -7,23 +7,23 @@
 </div>
 
 Event Triangle is a project that leverages the power of event sourcing using
-.NET and Angular frameworks to manage and track currency transactions. 
-This project employs a cutting-edge approach to data storage and retrieval, capturing each state-changing event 
-in the system to create a comprehensive and reliable transaction history. 
-With a focus on real-time updates and seamless integration between the backend and frontend, 
+.NET and Angular frameworks to manage and track currency transactions.
+This project employs a cutting-edge approach to data storage and retrieval, capturing each state-changing event
+in the system to create a comprehensive and reliable transaction history.
+With a focus on real-time updates and seamless integration between the backend and frontend,
 EventTriangleAPI offers realtime communication using SignalR.
 
 - **Video**: https://www.youtube.com/watch?v=9Deyui0g1RY
 
 ## Required Software
 
-- **.NET SDK 8.0.301 or later:** https://dotnet.microsoft.com/en-us/download
+- **.NET SDK 10:** https://dotnet.microsoft.com/en-us/download
 - **NVM for windows:** https://github.com/coreybutler/nvm-windows
 - **Angular CLI:** `15.2.6`
 - **NodeJS:** `18.15.0`
 - **NPM:** `9.5.0`
 - **Docker:** https://docs.docker.com/get-docker/
-- **IDE**: Visual Studio 2022 or JetBrains Rider
+- **IDE**: Visual Studio or JetBrains Rider
 
 ## How to run in Debug mode
 
@@ -55,13 +55,17 @@ EventTriangleAPI offers realtime communication using SignalR.
 
 ## Infrastructure diagram
 
+Setup: [Azure infrastructure](terraform/infrastructure/README.md),
+[Azure DevOps](terraform/azure-devops/variable-groups/README.md),
+[Cloudflare DNS](terraform/cloudflare/README.md).
+
 Platform deployment: [TASK-10 migration and dev connection contract](sprint-planning/platform-migration.md).
 
 ![./img/infrastructure_diagram.png](./img/infrastructure_diagram.png)
 
 ## Technology stack
 
-- **SDK:** `.NET 8`
+- **SDK:** `.NET 10`
 - **Frameworks:** `ASP .NET Core`, `Angular 15`
 - **Persistence:**
     - Database: `PostgreSQL 15`
@@ -105,73 +109,45 @@ Platform deployment: [TASK-10 migration and dev connection contract](sprint-plan
 - `export EVENT_TRIANGLE_AD_CLIENT_SECRET=<YOUR_AD_SECRET>`
 - `docker compose up`
 
-## How to build docker images
+## Build and publish Docker images
 
-Run from the repository root. Docker Desktop or another Docker daemon must be
-running, with Buildx available. The scripts supply the shared source context
-required by the Dockerfiles; no Dockerfile changes are needed.
-
-```bash
-bash scripts/dockerhub/build-auth.sh 1.0.0-local
-bash scripts/dockerhub/build-sender.sh 1.0.0-local
-bash scripts/dockerhub/build-consumer.sh 1.0.0-local
-```
-
-These commands build and load an image locally without logging in, pushing, or
-reading registry caches. Docker selects the build platform; the Ubuntu CI
-agents build Linux AMD64 images.
-
-The public Docker Hub repositories are `petrokolosov/auth-service`,
-`petrokolosov/sender-service`, and `petrokolosov/consumer-service`. Public pull
-access does not need a Kubernetes image pull secret. Private repositories would
-require a read-only pull credential delivered through the GitOps secret
-mechanism when deploying them.
-
-### Publish to Docker Hub
-
-Use a Docker Hub PAT belonging to `petrokolosov` with image write permission.
-Keep it in a protected environment variable or password manager, never in
-source code. For local publication, log in through standard input:
+Requires Docker with Buildx and a Docker Hub token with write access to
+`petrokolosov`. Set `DOCKERHUB_TOKEN` in your environment and run from the
+repository root, using a unique version tag:
 
 ```bash
 printf '%s' "$DOCKERHUB_TOKEN" | docker login docker.io --username petrokolosov --password-stdin
-bash scripts/dockerhub/build-auth.sh 1.0.0-example true
-bash scripts/dockerhub/build-sender.sh 1.0.0-example true
-bash scripts/dockerhub/build-consumer.sh 1.0.0-example true
+bash scripts/dockerhub/build-auth.sh 1.0.0-example
+bash scripts/dockerhub/build-sender.sh 1.0.0-example
+bash scripts/dockerhub/build-consumer.sh 1.0.0-example
 docker logout docker.io
 ```
 
-The second argument explicitly enables publication. Run application tests first;
-these local shell commands do not run tests themselves. Publishing writes the
-version tag, `latest`, and `buildcache`. The original `scripts/build-*.sh` remain
-available for ACR and preserve their publishing default; use `false` as their
-second argument to build locally instead.
+The scripts publish `auth-service`, `sender-service` and `consumer-service`
+under `docker.io/petrokolosov` using the shared `scripts/docker-build.sh`. Each publishes
+its version tag, `latest` and `buildcache`; subsequent builds reuse the registry
+cache. Run application tests before publishing locally. The original
+`scripts/build-*.sh` scripts publish to ACR.
 
-### Pipeline behavior and deployment references
+### Azure Pipelines
 
-- Build pipelines run application tests before the publishing stage. Only a
-  successful run on `main` or a `v*` tag may publish.
-- PR Validation uses the same Docker template with `pushImage: false`. Registry
-  login, push, cache publication, and publisher credentials are excluded.
-- `Docker_Hub_Connection` is authorized only for the three Build pipelines.
-  After this change is merged, apply the Azure DevOps Terraform root to migrate
-  permissions; keep the current ACR permissions until then.
-- CI tags include GitVersion SemVer and the unique Azure DevOps run ID, for
-  example `1.0.1-104-1666`. Publication also produces a pipeline artifact with
-  `published-image.json` containing the commit, version tag,
-  digest, and immutable reference `docker.io/petrokolosov/auth-service@sha256:...`.
-- Use the digest reference for deployment and rollback. `latest` and
-  `buildcache` are mutable convenience tags, not deployment identifiers.
+Build and PR Validation use `.azdo/templates/docker-build-push-jobs.yml`: one
+job restores/builds the solution, runs enabled checks, then logs in through
+`Docker_Hub_Connection` and publishes the image. The hosted Ubuntu agent supplies
+the .NET SDK.
 
-Docker Hub has immutable version tags enabled for all three repositories using
-`^[0-9]+[.][0-9]+[.][0-9]+.*$`. A published version cannot be overwritten;
-retry publication with a new pipeline run ID or a new local version tag.
-`latest` and `buildcache` do not match this rule and remain mutable.
+- `shouldRunUnitTests` and `shouldRunIntegrationTests` control test execution.
+  Auth unit tests are disabled because that project has no test cases.
+- `sonarCloudEnabled` enables SonarCloud analysis on `main`; it defaults to `false`.
+- Build CI runs for `main` and `v*` tags. Same-repository PRs and manual branch
+  runs can also publish; fork PR publishing is disabled.
 
-The pipeline reads the digest from Docker Hub after publishing and stores the
-image reference in its artifact staging directory. Local build scripts do not
-create metadata files. Terraform expects the same Docker Hub PAT through
-`TF_VAR_docker_hub_token` when managing the service connection.
+CI image tags combine GitVersion SemVer and the run ID, for example
+`1.0.1-104-1666`. Find the version in the build number or Docker log and use it
+for deployment or rollback. Version tags are immutable; `latest` and
+`buildcache` are mutable.
+
+Pipeline credentials and permissions: [Azure DevOps setup](terraform/azure-devops/variable-groups/README.md).
 
 ## Screenshots
 
