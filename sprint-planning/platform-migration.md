@@ -4,7 +4,7 @@ Implementation is prepared for local review in two repositories. This document
 records the archive inventory and the interface to the maintained GitOps
 configuration. It does not authorize deployment or demonstrate runtime readiness.
 
-Target: [kolosovpetro/fluxcd-repository](https://github.com/kolosovpetro/fluxcd-repository).
+Target: [EventTriangle/fluxcd-repository](https://github.com/EventTriangle/fluxcd-repository).
 Base branch: `master` (this repository has no `main`). Existing entry point:
 `clusters/aks`, extended in place with settings under `overlays/aks`.
 Full operations guide in the target repository:
