@@ -31,7 +31,7 @@ variable "kubernetes_version" {
 variable "default_node_pool_vm_size" {
   type        = string
   description = "Virtual machine size for the AKS system node pool."
-  default     = "Standard_DS2_v2"
+  default     = "Standard_D4s_v5"
 }
 
 variable "default_node_pool_type" {
