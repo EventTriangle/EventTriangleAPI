@@ -7,10 +7,10 @@
 </div>
 
 Event Triangle is a project that leverages the power of event sourcing using
-.NET and Angular frameworks to manage and track currency transactions. 
-This project employs a cutting-edge approach to data storage and retrieval, capturing each state-changing event 
-in the system to create a comprehensive and reliable transaction history. 
-With a focus on real-time updates and seamless integration between the backend and frontend, 
+.NET and Angular frameworks to manage and track currency transactions.
+This project employs a cutting-edge approach to data storage and retrieval, capturing each state-changing event
+in the system to create a comprehensive and reliable transaction history.
+With a focus on real-time updates and seamless integration between the backend and frontend,
 EventTriangleAPI offers realtime communication using SignalR.
 
 - **Video**: https://www.youtube.com/watch?v=9Deyui0g1RY
@@ -58,6 +58,8 @@ EventTriangleAPI offers realtime communication using SignalR.
 Setup: [Azure infrastructure](terraform/infrastructure/README.md),
 [Azure DevOps](terraform/azure-devops/variable-groups/README.md),
 [Cloudflare DNS](terraform/cloudflare/README.md).
+
+Platform deployment: [Platform migration and dev connection settings](sprint-planning/platform-migration.md).
 
 ![./img/infrastructure_diagram.png](./img/infrastructure_diagram.png)
 
