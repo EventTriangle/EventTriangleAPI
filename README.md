@@ -59,7 +59,7 @@ Setup: [Azure infrastructure](terraform/infrastructure/README.md),
 [Azure DevOps](terraform/azure-devops/variable-groups/README.md),
 [Cloudflare DNS](terraform/cloudflare/README.md).
 
-Platform deployment: [TASK-10 migration and dev connection contract](sprint-planning/platform-migration.md).
+Platform deployment: [Platform migration and dev connection settings](sprint-planning/platform-migration.md).
 
 ![./img/infrastructure_diagram.png](./img/infrastructure_diagram.png)
 

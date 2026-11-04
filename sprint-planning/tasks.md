@@ -154,16 +154,15 @@ DockerHub url: https://hub.docker.com/repositories/petrokolosov
 
 **Dependencies:** TASK-15
 
-**Status:** Implementation prepared locally for review in both repositories;
+**Status:** Implementation prepared for review in both repositories;
 deployment and runtime acceptance remain pending. See
-[platform migration](platform-migration.md). The current kubeconfig API endpoint
-did not resolve on 2026-10-23; no cluster changes were made.
+[platform migration](platform-migration.md). No cluster changes were made.
 The existing `clusters/aks` and `overlays/aks` are extended in place; bootstrap
 paths and existing cert-manager/RabbitMQ operator reconciliation names are retained.
 
 - [x] Inventory installers, manifests, configuration, and helper scripts in `.deprecated/platform/` and map each required responsibility to its destination in the FluxCD repository.
 - [x] Inspect the target FluxCD repository and reuse existing platform resources before adding missing releases or environment values.
-- [x] Convert required PostgreSQL, RabbitMQ, Redis, and cert-manager installations into Flux-managed HELM releases with pinned versions and supporting manifests.
+- [x] Use vendor-maintained Helm charts/operators for PostgreSQL, RabbitMQ, Redis and cert-manager; declare platform clusters/databases as Flux-managed custom resources with pinned versions. Maintain custom Helm charts only for application services.
 - [x] Define dev namespaces, chart sources, reconciliation dependencies, persistent storage, and external secret references without copying plaintext credentials from archived files.
 - [x] Record a migration or retirement decision for remaining platform assets, including monitoring configuration and bootstrap helpers; coordinate Flux operator bootstrap with TASK-03.
 - [x] Document persistence/data migration and release ownership to avoid two controllers managing the same resources.
@@ -216,7 +215,7 @@ paths and existing cert-manager/RabbitMQ operator reconciliation names are retai
 
 **Dependencies:** TASK-02
 
-See example: https://github.com/kolosovpetro/fluxcd-repository
+GitOps repository: https://github.com/EventTriangle/fluxcd-repository
 
 - [ ] Establish the repository foundation first: create the private repository, configure access, define the dev environment path and namespace/secret conventions, and add a minimal root reconciliation structure usable by TASK-16.
 - [ ] Inspect existing Flux application configuration and add only missing OCI sources, HELM releases, and dev values.
@@ -227,8 +226,6 @@ See example: https://github.com/kolosovpetro/fluxcd-repository
 ## TASK-16 — Create a private Ansible role repository for FluxCD operator bootstrap
 
 **Dependencies:** TASK-02
-
-See example: https://github.com/kolosovpetro/fluxcd-operator-install-ansible
 
 - [ ] Create a private Git repository for the Ansible role and configure developer and Azure DevOps pipeline access through the credentials documented in TASK-01.
 - [ ] Add a reusable role structure with defaults, tasks, templates, metadata, pinned dependencies, and an example playbook for configuring the target AKS cluster.

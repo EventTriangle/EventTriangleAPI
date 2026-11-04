@@ -2,7 +2,7 @@
 
 These files are historical references. The maintained dev platform configuration
 is in the FluxCD repository. See the complete
-[TASK-10 migration map](../../sprint-planning/platform-migration.md) before
+[platform migration map](../../sprint-planning/platform-migration.md) before
 installing, upgrading or removing anything from this archive.
 
 Do not run archived installers alongside Flux management. In particular,
