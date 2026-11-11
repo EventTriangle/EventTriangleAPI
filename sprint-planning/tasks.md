@@ -154,9 +154,11 @@ DockerHub url: https://hub.docker.com/repositories/petrokolosov
 
 **Dependencies:** TASK-15
 
-**Status:** Implementation prepared for review in both repositories;
-deployment and runtime acceptance remain pending. See
-[platform migration](platform-migration.md). No cluster changes were made.
+**Status:** Dev runtime acceptance completed across two AKS test runs.
+Checks covered application HTTPS access, authenticated PostgreSQL and Redis
+operations, RabbitMQ publish/consume, data retention after pod recreation,
+and repeat Flux reconciliation. See [platform migration](platform-migration.md)
+for the migration design.
 The existing `clusters/aks` and `overlays/aks` are extended in place; bootstrap
 paths and existing cert-manager/RabbitMQ operator reconciliation names are retained.
 
@@ -167,7 +169,7 @@ paths and existing cert-manager/RabbitMQ operator reconciliation names are retai
 - [x] Record a migration or retirement decision for remaining platform assets, including monitoring configuration and bootstrap helpers; coordinate Flux operator bootstrap with TASK-03.
 - [x] Document persistence/data migration and release ownership to avoid two controllers managing the same resources.
 - [x] Define platform readiness checks and document the mapping from archived assets to maintained FluxCD resources. Handle ingress replacement in TASK-11.
-- [ ] Complete dev runtime acceptance after review: reconcile Flux, verify application connectivity and AMQP publish/consume, verify restart persistence, and repeat reconciliation.
+- [x] Complete dev runtime acceptance after review: reconcile Flux, verify application connectivity and AMQP publish/consume, verify restart persistence, and repeat reconciliation.
 
 ## TASK-11 — Implement Traefik ingress through HELM
 
