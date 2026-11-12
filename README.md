@@ -7,10 +7,10 @@
 </div>
 
 Event Triangle is a project that leverages the power of event sourcing using
-.NET and Angular frameworks to manage and track currency transactions. 
-This project employs a cutting-edge approach to data storage and retrieval, capturing each state-changing event 
-in the system to create a comprehensive and reliable transaction history. 
-With a focus on real-time updates and seamless integration between the backend and frontend, 
+.NET and Angular frameworks to manage and track currency transactions.
+This project employs a cutting-edge approach to data storage and retrieval, capturing each state-changing event
+in the system to create a comprehensive and reliable transaction history.
+With a focus on real-time updates and seamless integration between the backend and frontend,
 EventTriangleAPI offers realtime communication using SignalR.
 
 - **Video**: https://www.youtube.com/watch?v=9Deyui0g1RY
@@ -60,6 +60,21 @@ Setup: [Azure infrastructure](terraform/infrastructure/README.md),
 [Cloudflare DNS](terraform/cloudflare/README.md).
 
 ![./img/infrastructure_diagram.png](./img/infrastructure_diagram.png)
+
+## Kubernetes deployment
+
+Ansible bootstraps Flux Operator on AKS. Flux reads `clusters/aks` from the
+`master` branch of the [GitOps repository](https://github.com/EventTriangle/fluxcd-repository).
+
+The platform installs CloudNativePG, the Redis Enterprise Operator, cert-manager,
+and ingress-nginx from their official Helm charts. RabbitMQ Cluster Operator
+uses upstream Kubernetes manifests. The database and broker instances are
+declared as resources managed by their respective operators.
+
+The EventTriangle Helm chart deploys Authorization, Sender, and Consumer.
+The AKS overlays supply environment settings and SOPS-encrypted secrets.
+See the [platform setup](https://github.com/EventTriangle/fluxcd-repository/blob/master/docs/aks-platform.md)
+and [application deployment guide](https://github.com/EventTriangle/fluxcd-repository/blob/master/docs/applications.md).
 
 ## Technology stack
 
