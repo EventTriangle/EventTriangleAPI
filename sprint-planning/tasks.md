@@ -176,7 +176,7 @@ See [platform migration validation](platform-migration.md#validation).
 - [x] Define TLS issuance, certificate ownership, and redirects where required, including whether DNS must exist before certificates can become ready.
 - [x] Document how the deployment pipeline discovers and validates the Traefik LoadBalancer's public IPv4 address for the Cloudflare Terraform A record.
 - [x] Add bounded readiness checks for Traefik and the application release.
-- [ ] Verify DNS, TLS, and application routing on dev AKS after the cutover, including Authorization, Sender, Consumer, and SignalR.
+- [x] Verify DNS, TLS, and application routing on dev AKS after the cutover, including Authorization, Sender, Consumer, and SignalR.
 
 ## TASK-12 — Implement microservice HELM charts
 
