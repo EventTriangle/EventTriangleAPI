@@ -75,6 +75,8 @@ The EventTriangle Helm chart deploys Authorization, Sender, and Consumer.
 The AKS overlays supply environment settings and SOPS-encrypted secrets.
 See the [platform setup](https://github.com/EventTriangle/fluxcd-repository/blob/master/docs/aks-platform.md)
 and [application deployment guide](https://github.com/EventTriangle/fluxcd-repository/blob/master/docs/applications.md).
+The [platform migration guide](sprint-planning/platform-migration.md) lists the
+archived assets and the dev acceptance checks.
 
 ## Technology stack
 

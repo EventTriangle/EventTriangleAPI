@@ -154,13 +154,8 @@ DockerHub url: https://hub.docker.com/repositories/petrokolosov
 
 **Dependencies:** TASK-15
 
-**Status:** Dev runtime acceptance completed across two AKS test runs.
-Checks covered application HTTPS access, authenticated PostgreSQL and Redis
-operations, RabbitMQ publish/consume, data retention after pod recreation,
-and repeat Flux reconciliation. See [platform migration](platform-migration.md)
-for the migration design.
-The existing `clusters/aks` and `overlays/aks` are extended in place; bootstrap
-paths and existing cert-manager/RabbitMQ operator reconciliation names are retained.
+**Status:** Complete. Dev runtime acceptance passed across two AKS test runs.
+See [platform migration validation](platform-migration.md#validation).
 
 - [x] Inventory installers, manifests, configuration, and helper scripts in `.deprecated/platform/` and map each required responsibility to its destination in the FluxCD repository.
 - [x] Inspect the target FluxCD repository and reuse existing platform resources before adding missing releases or environment values.
@@ -175,12 +170,13 @@ paths and existing cert-manager/RabbitMQ operator reconciliation names are retai
 
 **Dependencies:** TASK-10
 
-- [ ] Add a pinned Traefik HELM release and chart source to the FluxCD repository with dev environment values.
-- [ ] Configure its namespace, ingress class, entry points, and external LoadBalancer service.
-- [ ] Replace required NGINX routing behavior with Traefik-compatible configuration, preserving application host/path routing and coordinating chart ingress values with TASK-12.
-- [ ] Define TLS issuance, certificate ownership, and redirects where required, including whether DNS must exist before certificates can become ready.
-- [ ] Define how the deployment pipeline discovers and validates the Traefik external IP or hostname for Cloudflare Terraform.
-- [ ] Add bounded ingress readiness checks and verify application routing after application releases are available.
+- [x] Add a pinned Traefik HELM release and chart source to the FluxCD repository with dev environment values.
+- [x] Configure its namespace, ingress class, entry points, and external LoadBalancer service.
+- [x] Replace required NGINX routing behavior with Traefik-compatible configuration, preserving application host/path routing and coordinating chart ingress values with TASK-12.
+- [x] Define TLS issuance, certificate ownership, and redirects where required, including whether DNS must exist before certificates can become ready.
+- [x] Document how the deployment pipeline discovers and validates the Traefik LoadBalancer's public IPv4 address for the Cloudflare Terraform A record.
+- [x] Add bounded readiness checks for Traefik and the application release.
+- [ ] Verify DNS, TLS, and application routing on dev AKS after the cutover, including Authorization, Sender, Consumer, and SignalR.
 
 ## TASK-12 — Implement microservice HELM charts
 
