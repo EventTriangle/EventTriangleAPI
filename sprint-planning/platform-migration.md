@@ -1,31 +1,23 @@
-# TASK-10: archived platform migration
+# AKS platform migration
 
-Implementation is prepared for review in the API and GitOps repositories. This document
-records the archive inventory and the interface to the maintained GitOps
-configuration. It does not authorize deployment or demonstrate runtime readiness.
+This guide maps the archived installers and manifests to the maintained GitOps
+configuration and describes how to migrate existing workloads and data.
 
-Target: [EventTriangle/fluxcd-repository](https://github.com/EventTriangle/fluxcd-repository).
-Base branch: `master` (this repository has no `main`). Existing entry point:
-`clusters/aks`, extended in place with settings under `overlays/aks`.
-Full operations guide in the target repository:
-`docs/aks-platform.md`.
+Flux reads `clusters/aks` from the GitOps repository's `master` branch and applies
+the environment settings under `overlays/aks`. See the
+[AKS operations guide](https://github.com/EventTriangle/fluxcd-repository/blob/master/docs/aks-platform.md)
+for the maintained configuration and deployment checks.
 
-Review branches are `task-10-platform-fluxcd-migration` in both repositories.
-Runtime acceptance remains a separate step; published manifests do not establish
-cluster readiness.
+## Platform configuration
 
-## What changes
+Flux reconciles the platform from Git. Dev deployments use pinned chart and image
+versions, explicit dependencies, external Secrets and CSI-backed storage. The
+archived PowerShell installers and manifests serve as a migration reference.
 
-The PowerShell installers are replaced with Flux configuration, not rewritten
-as another sequence of imperative installers. Dev deployments use fixed
-chart/image versions, explicit dependencies, external Secrets and CSI-backed
-storage. The archive is retained as a reference; it is not a deployment entry point.
-
-The existing cert-manager, RabbitMQ Cluster Operator, Redis Enterprise Operator
-and ingress definitions are reused. PostgreSQL uses the official CloudNativePG
-operator Helm chart. Platform workloads are declared as operator resources:
-`Cluster`, `RabbitmqCluster`, `RedisEnterpriseCluster` and `RedisEnterpriseDatabase`.
-No custom platform Helm charts are maintained. Application charts belong to TASK-12.
+The platform uses cert-manager, RabbitMQ Cluster Operator and Redis Enterprise
+Operator. PostgreSQL uses the official CloudNativePG operator Helm chart. Flux
+declares platform workloads as operator resources: `Cluster`, `RabbitmqCluster`,
+`RedisEnterpriseCluster` and `RedisEnterpriseDatabase`.
 
 ## Complete archive inventory
 
@@ -87,50 +79,43 @@ not adopted automatically.
 - `cert-manager/Install-Cert-Manager.ps1` → reuse `base/cert-manager-crds`, with
   the AKS overlay pinning the v1.21.1 chart digest and bounded Helm actions.
   The chart owns CRDs; the separate archived `latest` CRD installation is retired.
-  Public issuer/TLS routing belongs to TASK-11.
+  The [application deployment guide](https://github.com/EventTriangle/fluxcd-repository/blob/master/docs/applications.md)
+  describes the public issuer and TLS configuration.
 
 ### Namespaces, secrets and bootstrap
 
 - `namespace/Create-Namespace.ps1` →
-  `clusters/aks/01_namespaces.yml`: preserve `cert-manager`, `rabbit-mq-operator`,
-  `ingress-nginx`, `redis-operator`; add `pgsql-dev`, `rabbitmq-dev`,
-  `event-triangle-dev` and `cnpg-system`. The root is the sole Namespace owner.
+  `clusters/aks/01_namespaces.yml` declares namespaces for the controllers and
+  workloads. The root Kustomization owns these namespaces.
 - `secrets/connection-secrets.yaml` → externally provisioned platform Secrets
-  and the protected application Secret delivery contract for TASK-12. Provide
+  and SOPS-encrypted application Secrets in the dev overlay. Provide
   credentials before service reconciliation; each service checks its required
   Secret during readiness. Names and keys are documented in the GitOps operations
   guide. Do not copy archived values.
-- `fluxcd/flux-install.yaml` → retire archived controller installation;
-  Flux Operator bootstrap belongs to TASK-03/TASK-16. Installing a second Flux
-  distribution from this archive is not part of TASK-10.
+- `fluxcd/flux-install.yaml` → Ansible bootstraps Flux Operator and its managed
+  Flux instance.
 - `fluxcd/git-repository.yaml` → bootstrap contract: `GitRepository/flux-system`
   in `flux-system`, private/read credential as required, selected repository
   ref and root path `./clusters/aks`.
   Matching root `Kustomization/flux-system` is supplied by bootstrap.
 
-TASK-15's minimum foundation uses the existing root, extended dependency graph,
-namespace and secret conventions. Repository visibility, access provisioning
-and full application release configuration remain TASK-15 responsibilities.
-Having local Git read access is not proof that Flux has repository access.
+For a private GitOps repository, provision a read credential for the Flux
+GitRepository and verify that the source becomes Ready.
 
 ### Ingress, monitoring and helpers
 
-- `nginx-ingress/Install-Nginx-Ingress.ps1` → inventory retained, replacement
-  deferred to TASK-11. The existing AKS NGINX release remains unchanged;
-  no second ingress is installed.
-  TASK-11 must preserve the required host/path routing and supply a Traefik
-  LoadBalancer address to the Cloudflare pipeline.
-- `prometheus-grafana/Example.ps1` → archived; do not restore monitoring in
-  TASK-10. This is consistent with TASK-04 removing the Azure monitoring stack.
-  A future requirement needs its own explicit installation/ownership decision.
+- `nginx-ingress/Install-Nginx-Ingress.ps1` → Flux manages the ingress controller.
+  See the [application deployment guide](https://github.com/EventTriangle/fluxcd-repository/blob/master/docs/applications.md)
+  for routing, TLS and DNS.
+- `prometheus-grafana/Example.ps1` → archived. The current platform configuration
+  omits the standalone Prometheus and Grafana installation.
 - `prometheus-grafana/monitoring-http-nginx-ingress.yaml` → retired from the
-  active platform: it depends on the old NGINX/monitoring setup. Revisit only
-  with a future monitoring requirement and the ingress selected in TASK-11.
+  active platform because it depends on the archived monitoring setup.
 - `scripts/wait-deployments.ps1` → Flux readiness dependencies and
   bounded `kubectl wait` checks of actual resource conditions instead of testing
   whether names appear in command output.
-- `scripts/print-ip.ps1` → retire public database/queue IP discovery; the
-  platform services are internal. Traefik IP discovery remains TASK-11/TASK-03.
+- `scripts/print-ip.ps1` → retired. Applications reach the databases and broker
+  through internal Kubernetes Services.
 
 ## Connection contract for application charts
 
@@ -141,10 +126,8 @@ Having local Git read access is not proof that Flux has repository access.
 - Redis endpoint: `event-redis.redis-operator.svc.cluster.local:6379`;
   Authorization uses `RedisUrl` and `RedisPassword`.
 
-Deliver application Secrets into each application's namespace separately.
-Kubernetes Secret references cannot cross namespaces. TASK-12 must override the
-archived/current application defaults with these endpoints; this task does not
-change application source or create application charts.
+Configure these endpoints in the application deployment and deliver Secrets
+into the same namespace as the workloads that reference them.
 
 ## Migration, data and ownership gates
 
@@ -164,9 +147,7 @@ Retain the actual Helm release/storage namespace when adopting a compatible rele
 CloudNativePG/Redis Enterprise layout changes need a supported import or restore
 and application cutover. Do not force resource takeover or delete PVCs to resolve conflicts.
 
-Existing NGINX and Redis Enterprise Operator installations stay in their original
-namespaces. The Redis cluster and database use the existing operator in
-`redis-operator`; no second operator is installed. NGINX replacement remains TASK-11.
+The Redis cluster and database use the existing operator in `redis-operator`.
 Suspend obsolete custom HelmReleases before changing a live Git ref, then retire
 them explicitly after data migration; pruning protection can leave them running.
 Transfer any existing Helm-owned RabbitmqCluster to direct Flux management only
@@ -177,14 +158,18 @@ Rollback may require a tested backup and compatible image. Explicit deletion
 protection and orphaning prevent routine Git pruning from becoming data cleanup,
 but they do not replace backups or a reviewed teardown.
 
-## Validation and status
+## Validation
 
-From the Flux repository:
+Dev runtime acceptance passed across two AKS test runs. The recorded checks
+covered HTTPS access to the application through ingress-nginx, authenticated
+PostgreSQL and Redis operations, RabbitMQ publish/consume, data retention after
+pod recreation, and repeat Flux reconciliation.
+
+For local validation of future changes, run from the Flux repository:
 
 ```bash
-kubectl kustomize clusters/aks
-for overlay in overlays/aks/*; do
-    kubectl kustomize "$overlay" > /dev/null || exit 1
+for manifest in overlays/aks/*/kustomization.yml; do
+    kubectl kustomize "${manifest%/*}" > /dev/null || exit 1
 done
 ```
 
@@ -193,11 +178,5 @@ against the matching operator CRDs. The root build does not render child
 reconciliations or Helm charts. Check namespace ownership, dependencies,
 credential references and actual readiness conditions.
 
-Runtime acceptance requires valid cluster access, bootstrap and Secrets, then
-Flux reconciliation, authenticated PostgreSQL/Redis operations, cross-namespace
-application connectivity, AMQP publish/consume, restart persistence and a second
-reconciliation. Redis acceptance also includes a failover/reconnection check.
-
-No cluster apply or data migration was performed while preparing these changes.
-Runtime acceptance remains pending. The inventory covers all 22 tracked archive
-files; the GitOps operations guide describes migration, retention and validation.
+Use the [AKS operations guide](https://github.com/EventTriangle/fluxcd-repository/blob/master/docs/aks-platform.md#validation)
+to repeat runtime checks, including Redis failover and client reconnection.
