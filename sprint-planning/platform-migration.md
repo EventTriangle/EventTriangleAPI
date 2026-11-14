@@ -168,7 +168,6 @@ pod recreation, and repeat Flux reconciliation.
 For local validation of future changes, run from the Flux repository:
 
 ```bash
-kubectl kustomize clusters/aks
 for manifest in overlays/aks/*/kustomization.yml; do
     kubectl kustomize "${manifest%/*}" > /dev/null || exit 1
 done
