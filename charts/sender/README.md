@@ -1,0 +1,45 @@
+# Sender Helm chart
+
+Run the install commands from the EventTriangleAPI repository root with a
+sibling checkout of `fluxcd-repository`. Use a namespace that contains the
+Secrets referenced by `secretEnv`. Set `imagePullSecrets` to names of existing
+registry Secrets when the image requires authentication. Keep credentials in
+Secrets and public application settings in `env`.
+
+Sender requires its PostgreSQL database and RabbitMQ. Set the broker hostname
+and username with `env.RabbitMqHost` and `env.RabbitMqUsername`. The database
+connection string and broker password come from `secretEnv`. Public Entra token
+validation settings can be overridden with `env.AzureAd__TenantId`,
+`env.AzureAd__ClientId` and `env.AzureAd__Scopes`.
+
+The current image binds HTTP to 8080 and gRPC to 8081 in code. Keep the
+container ports aligned with the selected image. The Service ports are
+independently configurable. The gRPC port uses cleartext HTTP/2 (`h2c`).
+The dev example leaves ingress disabled because Authorization proxies Sender
+over the internal HTTP Service and calls gRPC over the internal gRPC port.
+
+## Install and upgrade
+
+Use the dev example in an environment where its resource names are available.
+
+```sh
+helm upgrade --install sender charts/sender \
+  --namespace event-triangle-dev \
+  -f ../fluxcd-repository/overlays/aks/eventtriangle/values-sender.yaml
+```
+
+Choose the namespace with `--namespace` and use the same release name and
+namespace for upgrades. Set `fullnameOverride` and `service.name` to override
+the names derived from the release. Keep the Deployment name stable because
+it is also the selector identity. Set `image.tag`, `image.digest`,
+or both. To deploy by tag alone, clear the digest in the environment values.
+To deploy by digest alone, clear the tag. Set a probe to `null` to disable it.
+When changing its handler type, set the default handler to `null` and supply
+the new handler. CPU autoscaling requires a metrics API and a CPU request.
+Configure HTTP paths under `ingress.routes`. Each route can reference an
+existing TLS Secret in the release namespace with `tlsSecretName`.
+
+To restore a previous release revision, find it with
+`helm history sender -n event-triangle-dev` and run
+`helm rollback sender REVISION -n event-triangle-dev`. Helm rollback does not
+restore external Secret contents or revert database changes.

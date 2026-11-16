@@ -1,0 +1,14 @@
+{{- $name := default .Release.Name .Values.fullnameOverride }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ default $name .Values.service.name | quote }}
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: {{ $name | quote }}
+  ports:
+    - name: http
+      port: {{ .Values.ports.http.servicePort }}
+      targetPort: http

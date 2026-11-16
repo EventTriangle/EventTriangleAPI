@@ -24,10 +24,19 @@ on:
 
   workflow_dispatch:
 
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
 jobs:
   build-and-test-dotnet:
     name: Auth Build
     runs-on: ubuntu-latest
+    if: github.event_name != 'release' || github.event.release.prerelease == false
+    outputs:
+      chart-version: ${{ steps.charts.outputs.version }}
 
     env:
       NUGET_PACKAGES: ${{ github.workspace }}/.github/nuget-packages
@@ -38,6 +47,10 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Check chart release branch
+        if: github.event_name == 'release'
+        run: git merge-base --is-ancestor HEAD origin/main
+
       - name: Auth Build
         uses: ./.github/actions/build-and-test
         with:
@@ -46,3 +59,62 @@ jobs:
           serviceName: "auth-api"
           unitTestsProjectPath: "src/authorization/EventTriangleAPI.Authorization.UnitTests"
           creatingDatabase: 'true'
+
+      - name: Package Helm charts
+        id: charts
+        if: github.event_name == 'release'
+        run: |
+          mkdir -p "$RUNNER_TEMP/charts"
+          for chart in authorization sender consumer; do
+            helm lint "charts/$chart"
+            helm package "charts/$chart" --version "$GitVersion_SemVer" --destination "$RUNNER_TEMP/charts"
+          done
+          echo "version=$GitVersion_SemVer" >> "$GITHUB_OUTPUT"
+
+      - name: Upload chart archives
+        if: github.event_name == 'release'
+        uses: actions/upload-artifact@v4
+        with:
+          name: helm-charts
+          path: ${{ runner.temp }}/charts/*.tgz
+          if-no-files-found: error
+
+  publish-charts:
+    name: Publish Helm charts
+    if: github.event_name == 'release'
+    needs: build-and-test-dotnet
+    runs-on: ubuntu-latest
+    concurrency: publish-helm-charts
+    permissions:
+      packages: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: helm-charts
+          path: ${{ runner.temp }}/charts
+
+      - name: Publish to GHCR
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ needs.build-and-test-dotnet.outputs.chart-version }}
+        run: |
+          for chart in authorization sender consumer; do
+            endpoint="orgs/$GITHUB_REPOSITORY_OWNER/packages/container/charts%2F$chart/versions"
+            if tags=$(gh api "$endpoint" --paginate --jq '.[].metadata.container.tags[]?' 2>&1); then
+              if grep -Fxq "$VERSION" <<< "$tags"; then
+                echo "GHCR already contains $chart:$VERSION." >&2
+                exit 1
+              fi
+            elif [[ "$tags" != *"(HTTP 404)" ]]; then
+              printf '%s\n' "$tags" >&2
+              exit 1
+            fi
+          done
+
+          printf '%s' "$GH_TOKEN" | helm registry login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
+          echo "Source commit: $GITHUB_SHA" >> "$GITHUB_STEP_SUMMARY"
+          echo "Chart version: $VERSION" >> "$GITHUB_STEP_SUMMARY"
+          for archive in "$RUNNER_TEMP"/charts/*.tgz; do
+            helm push "$archive" "oci://ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/charts" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          done

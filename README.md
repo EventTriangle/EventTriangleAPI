@@ -67,12 +67,14 @@ Ansible bootstraps Flux Operator on AKS. Flux reads `clusters/aks` from the
 `master` branch of the [GitOps repository](https://github.com/EventTriangle/fluxcd-repository).
 
 The platform installs CloudNativePG, the Redis Enterprise Operator, cert-manager,
-and ingress-nginx from their official Helm charts. RabbitMQ Cluster Operator
+and Traefik from their official Helm charts. RabbitMQ Cluster Operator
 uses upstream Kubernetes manifests. The database and broker instances are
 declared as resources managed by their respective operators.
 
-The EventTriangle Helm chart deploys Authorization, Sender, and Consumer.
-The AKS overlays supply environment settings and SOPS-encrypted secrets.
+The AKS overlay defines separate Helm releases for Authorization, Sender, and
+Consumer. The [application charts](charts/) are packaged by the Authorization
+CI workflow on stable releases and published to GHCR. The GitOps repository
+pins the chart versions and supplies dev values and SOPS-encrypted secrets.
 See the [platform setup](https://github.com/EventTriangle/fluxcd-repository/blob/master/docs/aks-platform.md)
 and [application deployment guide](https://github.com/EventTriangle/fluxcd-repository/blob/master/docs/applications.md).
 The [platform migration guide](sprint-planning/platform-migration.md) lists the

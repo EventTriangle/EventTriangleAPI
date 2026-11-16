@@ -1,0 +1,5 @@
+apiVersion: v2
+name: sender
+description: Sender HTTP API and gRPC server
+type: application
+version: 0.1.0

@@ -1,0 +1,8 @@
+{{- $name := default .Release.Name .Values.fullnameOverride }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ printf "%s-frontend" $name | quote }}
+  namespace: {{ .Release.Namespace | quote }}
+data:
+  config.json: {{ dict "baseUrl" .Values.frontend.baseUrl | toJson | quote }}
