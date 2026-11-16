@@ -202,16 +202,17 @@ the frontend responded over HTTPS.
 
 **Dependencies:** TASK-12
 
-**Status:** Two [publication attempts](https://github.com/EventTriangle/EventTriangleAPI/actions/runs/43939053678)
-produced distinct OCI references and digests for all three charts. Flux
-[reconciled both attempts](https://github.com/EventTriangle/EventTriangleAPI/actions/runs/43939468477)
-in a disposable cluster. The new GHCR packages currently allow anonymous
-pulls, so dev still points to the existing private charts.
+**Status:** Two [publication attempts](https://github.com/EventTriangle/EventTriangleAPI/actions/runs/43948690184)
+published distinct tags and digests under the private `charts/*` packages.
+Ansible confirmed the dev AKS GitOps branch. After the
+[OCI tag update](https://github.com/EventTriangle/fluxcd-repository/commit/d1ad141),
+Flux picked up the commit automatically and upgraded all three releases to
+Helm revision 3. The three Swagger endpoints responded over HTTPS.
 
 - [x] Define chart versioning and a trusted release trigger; add a GitHub Actions workflow to validate, package, and publish charts to GHCR OCI.
 - [x] Automate semantic versioning using GitVersion setup and execute tasks in the publication workflow. Fetch full Git history and tags, use the repository's `GitVersion.yml` configuration, and apply the calculated semantic version to each packaged chart's `version` without manual version edits.
 - [x] Configure minimum required workflow permissions and verify the free-publication requirement against the target account settings.
-- [ ] Confirm that new chart packages require authentication before promoting them through Flux.
+- [x] Confirm that the chart packages require authentication before promoting them through Flux.
 - [x] Prevent accidental replacement of a released version and record source revision, chart version, and artifact digest.
 - [x] Document chart pull and install examples in the GitOps repository.
 - [x] Verify on dev AKS that Flux can pull private preview charts with a read-only credential.
