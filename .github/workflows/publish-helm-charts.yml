@@ -1,0 +1,73 @@
+name: Publish Helm charts
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v4.5.0
+        with:
+          versionSpec: '6.x'
+
+      - name: Calculate SemVer
+        id: gitversion
+        uses: gittools/actions/gitversion/execute@v4.5.0
+
+      - name: Package and push charts
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TARGET: ${{ github.event.release.target_commitish }}
+          BASE_SEMVER: ${{ steps.gitversion.outputs.semVer }}
+        run: |
+          semver=${BASE_SEMVER:?GitVersion did not set SemVer}
+          commit=${GITHUB_SHA:0:7}
+          branch=$(printf '%s' "${RELEASE_TARGET#refs/heads/}" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g; s/^-//; s/-$//')
+          branch=${branch:-unknown}
+          branch=${branch:0:32}
+          build_id="$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT"
+          version="$semver+$commit.$branch.$build_id"
+          registry="oci://ghcr.io/${GITHUB_REPOSITORY_OWNER,,}"
+
+          printf '%s' "$GH_TOKEN" | helm registry login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
+          printf 'Source commit: %s\nChart version: %s\n\n' "$GITHUB_SHA" "$version" >> "$GITHUB_STEP_SUMMARY"
+
+          for chart in authorization sender consumer; do
+            service=$chart
+            if [[ "$chart" == authorization ]]; then
+              service=auth
+            fi
+            name="chart-$commit-${semver,,}-$branch-$build_id"
+            chart_dir="charts/$chart"
+            package_dir="$RUNNER_TEMP/$service"
+
+            python3 - "$chart_dir/Chart.yaml" "$name" "$version" <<'PY'
+          import re
+          import sys
+          from pathlib import Path
+
+          chart_file = Path(sys.argv[1])
+          metadata = chart_file.read_text()
+          for field, value in zip(("name", "version"), sys.argv[2:]):
+              metadata, count = re.subn(rf"(?m)^{field}:.*$", f"{field}: {value}", metadata)
+              if count != 1:
+                  raise SystemExit(f"Expected one {field} field in {chart_file}")
+          chart_file.write_text(metadata)
+          PY
+
+            helm lint "$chart_dir"
+            helm package "$chart_dir" --destination "$package_dir"
+            helm push "$package_dir/$name-$version.tgz" "$registry/$service" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          done

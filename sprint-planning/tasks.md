@@ -196,18 +196,17 @@ the frontend responded over HTTPS.
 - [x] Map each service's database, RabbitMQ, Redis, Entra ID, and interservice configuration as applicable.
 - [x] Reference externally supplied Secrets and image-pull secrets; keep credentials out of chart defaults and rendered examples.
 - [x] Support Traefik ingress class, host/path routing, and configurable TLS references.
-- [x] Add dev example values and useful values-schema constraints; document dependencies and upgrade/rollback behavior.
+- [x] Add dev example values and document dependencies and upgrade/rollback behavior.
 
 ## TASK-13 — Publish HELM charts to GHCR OCI
 
 **Dependencies:** TASK-12
 
 **Status:** A [branch prerelease](https://github.com/EventTriangle/EventTriangleAPI/actions/runs/43932709822)
-published all three charts to the private release packages and verified pulls
-from CI. Dev Flux previously deployed the private preview charts with a
-read-only registry credential. The dev overlay now references a registry Secret
-for the release packages. Each publication attempt generates a distinct chart
-version and records the source commit, OCI tag, and digest.
+verified private GHCR publishing and pulls. Dev Flux previously deployed
+private preview charts with a read-only registry credential. The dedicated
+publication workflow gives each attempt a distinct chart name and version and
+records the source commit, OCI reference, and digest.
 
 - [x] Define chart versioning and a trusted release trigger; add a GitHub Actions workflow to validate, package, and publish charts to GHCR OCI.
 - [x] Automate semantic versioning using GitVersion setup and execute tasks in the publication workflow. Fetch full Git history and tags, use the repository's `GitVersion.yml` configuration, and apply the calculated semantic version to each packaged chart's `version` without manual version edits.

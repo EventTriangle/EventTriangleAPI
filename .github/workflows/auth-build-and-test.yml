@@ -24,21 +24,10 @@ on:
 
   workflow_dispatch:
 
-  release:
-    types: [published]
-
-permissions:
-  contents: read
-
-env:
-  PREVIEW: ${{ github.event_name == 'release' && github.event.release.prerelease }}
-
 jobs:
   build-and-test-dotnet:
     name: Auth Build
     runs-on: ubuntu-latest
-    outputs:
-      chart-base-version: ${{ steps.chart-version.outputs.base-version }}
 
     env:
       NUGET_PACKAGES: ${{ github.workspace }}/.github/nuget-packages
@@ -49,12 +38,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Check chart release branch
-        if: github.event_name == 'release' && env.PREVIEW != 'true'
-        run: git merge-base --is-ancestor HEAD origin/main
-
       - name: Auth Build
-        if: env.PREVIEW != 'true'
         uses: ./.github/actions/build-and-test
         with:
           backendCsprojPath: "src/authorization/EventTriangleAPI.Authorization.Presentation/EventTriangleAPI.Authorization.Presentation.csproj"
@@ -62,66 +46,3 @@ jobs:
           serviceName: "auth-api"
           unitTestsProjectPath: "src/authorization/EventTriangleAPI.Authorization.UnitTests"
           creatingDatabase: 'true'
-
-      - name: Read release chart version
-        id: chart-version
-        if: github.event_name == 'release' && env.PREVIEW != 'true'
-        run: echo "base-version=${GitVersion_SemVer:?GitVersion did not set SemVer}" >> "$GITHUB_OUTPUT"
-
-      - name: Upload chart sources
-        if: github.event_name == 'release'
-        uses: actions/upload-artifact@v4
-        with:
-          name: helm-chart-sources
-          path: charts/
-          if-no-files-found: error
-          overwrite: true
-
-  publish-charts:
-    name: Publish Helm charts
-    if: github.event_name == 'release'
-    needs: build-and-test-dotnet
-    runs-on: ubuntu-latest
-    permissions:
-      packages: write
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: helm-chart-sources
-          path: ${{ runner.temp }}/chart-sources
-
-      - name: Package and publish Helm charts
-        shell: bash
-        env:
-          GH_TOKEN: ${{ github.token }}
-          RELEASE_SEMVER: ${{ needs.build-and-test-dotnet.outputs.chart-base-version }}
-          RELEASE_TARGET: ${{ github.event.release.target_commitish }}
-        run: |
-          registry="oci://ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/charts"
-          base_version=$RELEASE_SEMVER
-          branch=main
-          if [[ "$PREVIEW" == true ]]; then
-            registry="oci://ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/chart-previews"
-            base_version=0.0.0-preview
-            branch=$(printf '%s' "$RELEASE_TARGET" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g; s/^-//; s/-$//')
-          fi
-          version="$base_version+branch-${branch:0:40}.$GITHUB_RUN_ID.$GITHUB_RUN_ATTEMPT"
-          mkdir -p "$RUNNER_TEMP/helm-packages"
-          for chart in authorization sender consumer; do
-            chart_dir="$RUNNER_TEMP/chart-sources/$chart"
-            helm lint "$chart_dir"
-            helm package "$chart_dir" --version "$version" --destination "$RUNNER_TEMP/helm-packages"
-          done
-
-          printf '%s' "$GH_TOKEN" | helm registry login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
-          echo "Source commit: $GITHUB_SHA" >> "$GITHUB_STEP_SUMMARY"
-          echo "Chart version: $version" >> "$GITHUB_STEP_SUMMARY"
-          for archive in "$RUNNER_TEMP"/helm-packages/*.tgz; do
-            helm push "$archive" "$registry" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
-            if [[ "$PREVIEW" == true ]]; then
-              package=${archive##*/}
-              chart=${package%-"$version".tgz}
-              helm pull "$registry/$chart" --version "$version" --destination "$RUNNER_TEMP"
-              helm template preview "$RUNNER_TEMP/$package" >/dev/null
-            fi
-          done
