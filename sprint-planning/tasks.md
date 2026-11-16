@@ -202,16 +202,16 @@ the frontend responded over HTTPS.
 
 **Dependencies:** TASK-12
 
-**Status:** A [branch prerelease](https://github.com/EventTriangle/EventTriangleAPI/actions/runs/43932709822)
-verified private GHCR publishing and pulls. Dev Flux previously deployed
-private preview charts with a read-only registry credential. The dedicated
-publication workflow gives each attempt a distinct chart name and version and
-records the source commit, OCI reference, and digest.
+**Status:** Two [publication attempts](https://github.com/EventTriangle/EventTriangleAPI/actions/runs/43939053678)
+produced distinct OCI references and digests for all three charts. Flux
+[reconciled both attempts](https://github.com/EventTriangle/EventTriangleAPI/actions/runs/43939468477)
+in a disposable cluster. The new GHCR packages currently allow anonymous
+pulls, so dev still points to the existing private charts.
 
 - [x] Define chart versioning and a trusted release trigger; add a GitHub Actions workflow to validate, package, and publish charts to GHCR OCI.
 - [x] Automate semantic versioning using GitVersion setup and execute tasks in the publication workflow. Fetch full Git history and tags, use the repository's `GitVersion.yml` configuration, and apply the calculated semantic version to each packaged chart's `version` without manual version edits.
 - [x] Configure minimum required workflow permissions and verify the free-publication requirement against the target account settings.
-- [x] Keep the release chart packages private and configure Flux to use a registry Secret.
+- [ ] Confirm that new chart packages require authentication before promoting them through Flux.
 - [x] Prevent accidental replacement of a released version and record source revision, chart version, and artifact digest.
 - [x] Document chart pull and install examples in the GitOps repository.
 - [x] Verify on dev AKS that Flux can pull private preview charts with a read-only credential.
