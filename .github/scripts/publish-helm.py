@@ -20,7 +20,6 @@ def main():
     branch = re.sub(r"[^a-z0-9]+", "-", release_target.lower()).strip("-")
     branch = (branch or "unknown")[:32]
     build_id = f"{os.environ['GITHUB_RUN_ID']}-{os.environ['GITHUB_RUN_ATTEMPT']}"
-    name = f"chart-{short_commit}-{semver.lower()}-{branch}-{build_id}"
     version = f"{semver}+{short_commit}.{branch}.{build_id}"
     registry = f"oci://ghcr.io/{os.environ['GITHUB_REPOSITORY_OWNER'].lower()}"
 
@@ -38,14 +37,13 @@ def main():
             chart_dir = Path("charts") / chart
             chart_file = chart_dir / "Chart.yaml"
             metadata = chart_file.read_text(encoding="utf-8")
-            for field, value in (("name", name), ("version", version)):
-                metadata, count = re.subn(rf"(?m)^{field}:.*$", f"{field}: {value}", metadata)
-                if count != 1:
-                    raise SystemExit(f"Expected one {field} field in {chart_file}")
+            metadata, count = re.subn(r"(?m)^version:.*$", f"version: {version}", metadata)
+            if count != 1:
+                raise SystemExit(f"Expected one version field in {chart_file}")
             chart_file.write_text(metadata, encoding="utf-8")
 
             package_dir = Path(os.environ["RUNNER_TEMP"]) / service
-            archive = package_dir / f"{name}-{version}.tgz"
+            archive = package_dir / f"chart-{version}.tgz"
             subprocess.run(["helm", "lint", chart_dir], check=True)
             subprocess.run(["helm", "package", chart_dir, "--destination", package_dir], check=True)
             push = subprocess.run(
