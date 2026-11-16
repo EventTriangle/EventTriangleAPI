@@ -202,19 +202,20 @@ the frontend responded over HTTPS.
 
 **Dependencies:** TASK-12
 
-**Status:** [The branch prerelease](https://github.com/EventTriangle/EventTriangleAPI/actions/runs/43926362586)
-published all three preview charts to GHCR. Authenticated pulls passed in
-CI and in dev Flux using a temporary read-only registry credential. Each
-publication attempt generates a distinct chart version and records the source
-commit, OCI tag, and digest.
+**Status:** A [branch prerelease](https://github.com/EventTriangle/EventTriangleAPI/actions/runs/43932709822)
+published all three charts to the private release packages and verified pulls
+from CI. Dev Flux previously deployed the private preview charts with a
+read-only registry credential. The dev overlay now references a registry Secret
+for the release packages. Each publication attempt generates a distinct chart
+version and records the source commit, OCI tag, and digest.
 
 - [x] Define chart versioning and a trusted release trigger; add a GitHub Actions workflow to validate, package, and publish charts to GHCR OCI.
 - [x] Automate semantic versioning using GitVersion setup and execute tasks in the publication workflow. Fetch full Git history and tags, use the repository's `GitVersion.yml` configuration, and apply the calculated semantic version to each packaged chart's `version` without manual version edits.
 - [x] Configure minimum required workflow permissions and verify the free-publication requirement against the target account settings.
-- [ ] Configure public visibility for the release chart packages.
+- [x] Keep the release chart packages private and configure Flux to use a registry Secret.
 - [x] Prevent accidental replacement of a released version and record source revision, chart version, and artifact digest.
 - [x] Document chart pull and install examples in the GitOps repository.
-- [ ] Confirm the release chart packages can be pulled without publisher credentials.
+- [x] Verify on dev AKS that Flux can pull private preview charts with a read-only credential.
 
 ## TASK-14 — Add HELM chart validation in GitHub Actions
 
