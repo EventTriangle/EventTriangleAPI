@@ -204,9 +204,9 @@ the frontend responded over HTTPS.
 
 **Status:** [The branch prerelease](https://github.com/EventTriangle/EventTriangleAPI/actions/runs/43926362586)
 published all three preview charts to GHCR. Authenticated pulls passed in
-CI and in dev Flux using a temporary read-only registry credential. The
-workflow rejects existing release versions and records the commit, chart
-version, and OCI digest.
+CI and in dev Flux using a temporary read-only registry credential. Each
+publication attempt generates a distinct chart version and records the source
+commit, OCI tag, and digest.
 
 - [x] Define chart versioning and a trusted release trigger; add a GitHub Actions workflow to validate, package, and publish charts to GHCR OCI.
 - [x] Automate semantic versioning using GitVersion setup and execute tasks in the publication workflow. Fetch full Git history and tags, use the repository's `GitVersion.yml` configuration, and apply the calculated semantic version to each packaged chart's `version` without manual version edits.
