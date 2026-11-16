@@ -185,8 +185,10 @@ See [platform migration validation](platform-migration.md#validation).
 **Status:** Verified the separate Authorization, Sender, and Consumer releases
 on dev AKS. HTTPS routing, frontend assets, the Entra sign-in redirect, SignalR
 WebSocket negotiation and invocation, and repeat Flux reconciliation passed.
-The charts now live in EventTriangleAPI. The OCI-based deployment is pending
-the first published charts.
+The charts now live in EventTriangleAPI. From a GitOps preview branch, Flux
+pulled all three private GHCR charts, deployed the three Helm releases, and
+reported the OCI digests published by CI. All three Swagger endpoints and
+the frontend responded over HTTPS.
 
 - [x] Create `charts/authorization/`, `charts/sender/`, and `charts/consumer/`, each with chart metadata, values, templates, and usage documentation.
 - [x] Translate required application behavior into Deployments, Services, configurable ingress, and optional autoscaling, using archived manifests only as reference.
@@ -200,17 +202,19 @@ the first published charts.
 
 **Dependencies:** TASK-12
 
-**Status:** The Authorization CI workflow packages and publishes the charts.
-Pull and install instructions are available in the GitOps repository.
-Package visibility and anonymous pulls remain to be confirmed after the first release.
-The workflow rejects existing chart versions and records the commit, version,
-and OCI digest.
+**Status:** [The branch prerelease](https://github.com/EventTriangle/EventTriangleAPI/actions/runs/43926362586)
+published all three preview charts to GHCR. Authenticated pulls passed in
+CI and in dev Flux using a temporary read-only registry credential. The
+workflow rejects existing release versions and records the commit, chart
+version, and OCI digest.
 
 - [x] Define chart versioning and a trusted release trigger; add a GitHub Actions workflow to validate, package, and publish charts to GHCR OCI.
 - [x] Automate semantic versioning using GitVersion setup and execute tasks in the publication workflow. Fetch full Git history and tags, use the repository's `GitVersion.yml` configuration, and apply the calculated semantic version to each packaged chart's `version` without manual version edits.
-- [ ] Configure minimum required workflow permissions and intended public package visibility; verify the free-publication requirement against the target account settings.
+- [x] Configure minimum required workflow permissions and verify the free-publication requirement against the target account settings.
+- [ ] Configure public visibility for the release chart packages.
 - [x] Prevent accidental replacement of a released version and record source revision, chart version, and artifact digest.
-- [ ] Document chart pull/install examples and confirm published public artifacts can be pulled without publisher credentials.
+- [x] Document chart pull and install examples in the GitOps repository.
+- [ ] Confirm the release chart packages can be pulled without publisher credentials.
 
 ## TASK-14 — Add HELM chart validation in GitHub Actions
 
