@@ -104,7 +104,7 @@ GitRepository and verify that the source becomes Ready.
 
 ### Ingress, monitoring and helpers
 
-- `nginx-ingress/Install-Nginx-Ingress.ps1` → Flux manages the ingress controller.
+- `nginx-ingress/Install-Nginx-Ingress.ps1` → Flux manages Traefik.
   See the [application deployment guide](https://github.com/EventTriangle/fluxcd-repository/blob/master/docs/applications.md)
   for routing, TLS and DNS.
 - `prometheus-grafana/Example.ps1` → archived. The current platform configuration

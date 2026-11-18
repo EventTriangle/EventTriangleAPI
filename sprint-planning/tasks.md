@@ -182,23 +182,40 @@ See [platform migration validation](platform-migration.md#validation).
 
 **Dependencies:** TASK-02
 
-- [ ] Create `charts/authorization/`, `charts/sender/`, and `charts/consumer/`, each with chart metadata, values, templates, and usage documentation.
-- [ ] Translate required application behavior into Deployments, Services, configurable ingress, and optional autoscaling, using archived manifests only as reference.
-- [ ] Parameterize names/namespaces, replicas, image tags/digests, ports, requests/limits, scheduling, and startup/readiness/liveness probes.
-- [ ] Map each service's database, RabbitMQ, Redis, Entra ID, and interservice configuration as applicable.
-- [ ] Reference externally supplied Secrets and image-pull secrets; keep credentials out of chart defaults and rendered examples.
-- [ ] Support Traefik ingress class, host/path routing, and configurable TLS references.
-- [ ] Add dev example values and useful values-schema constraints; document dependencies and upgrade/rollback behavior.
+**Status:** Verified the separate Authorization, Sender, and Consumer releases
+on dev AKS. HTTPS routing, frontend assets, the Entra sign-in redirect, SignalR
+WebSocket negotiation and invocation, and repeat Flux reconciliation passed.
+The charts now live in EventTriangleAPI. From a GitOps preview branch, Flux
+pulled all three private GHCR charts, deployed the three Helm releases, and
+reported the OCI digests published by CI. All three Swagger endpoints and
+the frontend responded over HTTPS.
+
+- [x] Create `charts/authorization/`, `charts/sender/`, and `charts/consumer/`, each with chart metadata, values, templates, and usage documentation.
+- [x] Translate required application behavior into Deployments, Services, configurable ingress, and optional autoscaling, using archived manifests only as reference.
+- [x] Parameterize names/namespaces, replicas, image tags/digests, ports, requests/limits, scheduling, and startup/readiness/liveness probes.
+- [x] Map each service's database, RabbitMQ, Redis, Entra ID, and interservice configuration as applicable.
+- [x] Reference externally supplied Secrets and image-pull secrets; keep credentials out of chart defaults and rendered examples.
+- [x] Support Traefik ingress class, host/path routing, and configurable TLS references.
+- [x] Add dev example values and document dependencies and upgrade/rollback behavior.
 
 ## TASK-13 — Publish HELM charts to GHCR OCI
 
 **Dependencies:** TASK-12
 
-- [ ] Define chart versioning and a trusted release trigger; add a GitHub Actions workflow to validate, package, and publish charts to GHCR OCI.
-- [ ] Automate semantic versioning using GitVersion setup and execute tasks in the publication workflow. Fetch full Git history and tags, use the repository's `GitVersion.yml` configuration, and apply the calculated semantic version to each packaged chart's `version` without manual version edits.
-- [ ] Configure minimum required workflow permissions and intended public package visibility; verify the free-publication requirement against the target account settings.
-- [ ] Prevent accidental replacement of a released version and record source revision, chart version, and artifact digest.
-- [ ] Document chart pull/install examples and confirm published public artifacts can be pulled without publisher credentials.
+**Status:** Two [publication attempts](https://github.com/EventTriangle/EventTriangleAPI/actions/runs/43948690184)
+published distinct tags and digests under the private `charts/*` packages.
+Ansible confirmed the dev AKS GitOps branch. After the
+[OCI tag update](https://github.com/EventTriangle/fluxcd-repository/commit/d1ad141),
+Flux picked up the commit automatically and upgraded all three releases to
+Helm revision 3. The three Swagger endpoints responded over HTTPS.
+
+- [x] Define chart versioning and a trusted release trigger; add a GitHub Actions workflow to validate, package, and publish charts to GHCR OCI.
+- [x] Automate semantic versioning using GitVersion setup and execute tasks in the publication workflow. Fetch full Git history and tags, use the repository's `GitVersion.yml` configuration, and apply the calculated semantic version to each packaged chart's `version` without manual version edits.
+- [x] Configure minimum required workflow permissions and verify the free-publication requirement against the target account settings.
+- [x] Confirm that the chart packages require authentication before promoting them through Flux.
+- [x] Prevent accidental replacement of a released version and record source revision, chart version, and artifact digest.
+- [x] Document chart pull and install examples in the GitOps repository.
+- [x] Verify on dev AKS that Flux can pull private preview charts with a read-only credential.
 
 ## TASK-14 — Add HELM chart validation in GitHub Actions
 
