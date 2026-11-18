@@ -1,7 +1,7 @@
 # Azure DevOps Terraform
 
 Creates variable groups, nine YAML pipelines, service connections and the `dev`
-environment in the existing EventTriangle Azure DevOps project.
+environment in the existing FluxPay Azure DevOps project.
 
 ## Run locally
 
@@ -23,10 +23,12 @@ key                  = "event.triangle.azdo.libraries.tfstate"
 sas_token            = "<backend SAS token>"
 ```
 
+The backend key points to the existing state blob and must match its name.
+
 Supply secrets through protected environment variables:
 
 ```bash
-export AZDO_ORG_SERVICE_URL="https://dev.azure.com/EventTriangle"
+export AZDO_ORG_SERVICE_URL="https://dev.azure.com/FluxPay"
 export AZDO_PERSONAL_ACCESS_TOKEN="<Azure DevOps PAT>"
 export TF_VAR_github_pat="<fine-grained GitHub PAT>"
 export TF_VAR_backend_sas_token="<backend SAS token>"
@@ -62,8 +64,8 @@ state backups and saved plans must stay out of Git and have restricted access.
 In GitHub, open `Settings > Developer settings > Personal access tokens >
 Fine-grained tokens > Generate new token` and select:
 
-- Resource owner: `EventTriangle`.
-- Repository access: `Only select repositories` → `EventTriangle/EventTriangleAPI`.
+- Resource owner: `FluxPay`.
+- Repository access: `Only select repositories` → `FluxPay/FluxPayAPI`.
 - An explicit expiration; obtain organization approval if required.
 
 Under **Repository permissions**, enable only:

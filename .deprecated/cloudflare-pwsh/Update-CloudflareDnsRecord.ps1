@@ -52,7 +52,7 @@ else
 }
 
 #.\Update-CloudflareDnsRecord.ps1 -ApiToken $env:CLOUDFLARE_API_KEY `
-#	-DnsName "auth-eventtriangle.razumovsky.me" `
+#	-DnsName "fluxpay.razumovsky.me" `
 #	-ZoneId $zoneId `
 #	-RecordId "98b014141c8d4bae0db9800617c04076" `
 #	-IpAddress "172.205.36.169"

@@ -7,10 +7,10 @@ trigger:
   paths:
     include:
       - build
-      - src/authorization/EventTriangleAPI.Authorization.BusinessLogic
-      - src/authorization/EventTriangleAPI.Authorization.Presentation
-      - src/shared/EventTriangleAPI.Shared.Application
-      - src/shared/EventTriangleAPI.Shared.DTO
+      - src/authorization/FluxPayAPI.Authorization.BusinessLogic
+      - src/authorization/FluxPayAPI.Authorization.Presentation
+      - src/shared/FluxPayAPI.Shared.Application
+      - src/shared/FluxPayAPI.Shared.DTO
 
 pr:
   branches:
@@ -20,10 +20,10 @@ pr:
   paths:
     include:
       - build
-      - src/authorization/EventTriangleAPI.Authorization.BusinessLogic
-      - src/authorization/EventTriangleAPI.Authorization.Presentation
-      - src/shared/EventTriangleAPI.Shared.Application
-      - src/shared/EventTriangleAPI.Shared.DTO
+      - src/authorization/FluxPayAPI.Authorization.BusinessLogic
+      - src/authorization/FluxPayAPI.Authorization.Presentation
+      - src/shared/FluxPayAPI.Shared.Application
+      - src/shared/FluxPayAPI.Shared.DTO
 
 variables:
   - name: appName
@@ -43,13 +43,13 @@ stages:
       - template: templates/docker-build-push-acr-jobs.yml
         parameters:
           JobName: 'Build_${{ variables.appName }}'
-          solution: '$(System.DefaultWorkingDirectory)/EventTriangleAPI.sln'
+          solution: '$(System.DefaultWorkingDirectory)/FluxPayAPI.sln'
           buildConfiguration: 'Release'
-          backendProjectPath: '$(System.DefaultWorkingDirectory)/src/consumer/EventTriangleAPI.Consumer.Presentation'
-          unitTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/consumer/EventTriangleAPI.Consumer.UnitTests/EventTriangleAPI.Consumer.UnitTests.csproj'
+          backendProjectPath: '$(System.DefaultWorkingDirectory)/src/consumer/FluxPayAPI.Consumer.Presentation'
+          unitTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/consumer/FluxPayAPI.Consumer.UnitTests/FluxPayAPI.Consumer.UnitTests.csproj'
           shouldRunIntegrationTests: 'true'
           shouldRunUnitTests: 'true'
-          integrationTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/consumer/EventTriangleAPI.Consumer.IntegrationTests/EventTriangleAPI.Consumer.IntegrationTests.csproj'
+          integrationTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/consumer/FluxPayAPI.Consumer.IntegrationTests/FluxPayAPI.Consumer.IntegrationTests.csproj'
           dockerRegistryUrl: 'azuredevopsacrd01.azurecr.io'
           imageRepository: 'consumer-service'
           dockerfilePath: '$(System.DefaultWorkingDirectory)/src/consumer/Dockerfile'

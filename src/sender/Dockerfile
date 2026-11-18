@@ -17,30 +17,30 @@ WORKDIR /src
 
 # Copy only project files first.
 # This keeps the restore layer cached while source files change.
-COPY EventTriangleAPI.Sender.Application/*.csproj \
-     sender/EventTriangleAPI.Sender.Application/
+COPY FluxPayAPI.Sender.Application/*.csproj \
+     sender/FluxPayAPI.Sender.Application/
 
-COPY EventTriangleAPI.Sender.BusinessLogic/*.csproj \
-     sender/EventTriangleAPI.Sender.BusinessLogic/
+COPY FluxPayAPI.Sender.BusinessLogic/*.csproj \
+     sender/FluxPayAPI.Sender.BusinessLogic/
 
-COPY EventTriangleAPI.Sender.Domain/*.csproj \
-     sender/EventTriangleAPI.Sender.Domain/
+COPY FluxPayAPI.Sender.Domain/*.csproj \
+     sender/FluxPayAPI.Sender.Domain/
 
-COPY EventTriangleAPI.Sender.Persistence/*.csproj \
-     sender/EventTriangleAPI.Sender.Persistence/
+COPY FluxPayAPI.Sender.Persistence/*.csproj \
+     sender/FluxPayAPI.Sender.Persistence/
 
-COPY EventTriangleAPI.Sender.Presentation/*.csproj \
-     sender/EventTriangleAPI.Sender.Presentation/
+COPY FluxPayAPI.Sender.Presentation/*.csproj \
+     sender/FluxPayAPI.Sender.Presentation/
 
 # Shared projects come from the named BuildKit context "shared".
-COPY --from=shared EventTriangleAPI.Shared.Application/*.csproj \
-     shared/EventTriangleAPI.Shared.Application/
+COPY --from=shared FluxPayAPI.Shared.Application/*.csproj \
+     shared/FluxPayAPI.Shared.Application/
 
-COPY --from=shared EventTriangleAPI.Shared.DTO/*.csproj \
-     shared/EventTriangleAPI.Shared.DTO/
+COPY --from=shared FluxPayAPI.Shared.DTO/*.csproj \
+     shared/FluxPayAPI.Shared.DTO/
 
 RUN dotnet restore \
-    sender/EventTriangleAPI.Sender.Presentation/EventTriangleAPI.Sender.Presentation.csproj
+    sender/FluxPayAPI.Sender.Presentation/FluxPayAPI.Sender.Presentation.csproj
 
 #######################################################################################################
 # DOTNET BUILD + PUBLISH
@@ -53,12 +53,12 @@ COPY . sender/
 # Shared source comes from the separate BuildKit context.
 COPY --from=shared . shared/
 
-WORKDIR /src/sender/EventTriangleAPI.Sender.Presentation
+WORKDIR /src/sender/FluxPayAPI.Sender.Presentation
 
 ARG VERSION
 
 RUN dotnet publish \
-    EventTriangleAPI.Sender.Presentation.csproj \
+    FluxPayAPI.Sender.Presentation.csproj \
     -c Release \
     -o /app/publish \
     /p:UseAppHost=false
@@ -72,4 +72,4 @@ WORKDIR /app
 
 COPY --from=publish /app/publish ./
 
-ENTRYPOINT ["dotnet", "EventTriangleAPI.Sender.Presentation.dll"]
+ENTRYPOINT ["dotnet", "FluxPayAPI.Sender.Presentation.dll"]

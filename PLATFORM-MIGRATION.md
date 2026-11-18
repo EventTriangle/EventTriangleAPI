@@ -5,7 +5,7 @@ configuration and describes how to migrate existing workloads and data.
 
 Flux reads `clusters/aks` from the GitOps repository's `master` branch and applies
 the environment settings under `overlays/aks`. See the
-[AKS operations guide](https://github.com/EventTriangle/fluxcd-repository/blob/master/docs/aks-platform.md)
+[AKS operations guide](https://github.com/FluxPay/fluxcd-repository/blob/master/docs/aks-platform.md)
 for the maintained configuration and deployment checks.
 
 ## Platform configuration
@@ -43,7 +43,7 @@ relative to the Flux repository unless explicitly stated otherwise.
 - `postgres/pgsql-helm/templates/pv-claim.yaml` → `Cluster.spec.storage`,
   8Gi `managed-csi`; PVC lifecycle belongs to CloudNativePG.
 - `postgres/pgsql-helm/templates/secrets.yaml` → external basic-auth Secret
-  with username `eventtriangle`; optionally SOPS-encrypted manifests.
+  with username `fluxpay`; optionally SOPS-encrypted manifests.
 - `postgres/pgsql-helm/.helmignore` → archive-only packaging helper; no local
   PostgreSQL chart is packaged.
 
@@ -79,7 +79,7 @@ not adopted automatically.
 - `cert-manager/Install-Cert-Manager.ps1` → reuse `base/cert-manager-crds`, with
   the AKS overlay pinning the v1.21.1 chart digest and bounded Helm actions.
   The chart owns CRDs; the separate archived `latest` CRD installation is retired.
-  The [application deployment guide](https://github.com/EventTriangle/fluxcd-repository/blob/master/docs/applications.md)
+  The [application deployment guide](https://github.com/FluxPay/fluxcd-repository/blob/master/docs/applications.md)
   describes the public issuer and TLS configuration.
 
 ### Namespaces, secrets and bootstrap
@@ -105,7 +105,7 @@ GitRepository and verify that the source becomes Ready.
 ### Ingress, monitoring and helpers
 
 - `nginx-ingress/Install-Nginx-Ingress.ps1` → Flux manages Traefik.
-  See the [application deployment guide](https://github.com/EventTriangle/fluxcd-repository/blob/master/docs/applications.md)
+  See the [application deployment guide](https://github.com/FluxPay/fluxcd-repository/blob/master/docs/applications.md)
   for routing, TLS and DNS.
 - `prometheus-grafana/Example.ps1` → archived. The current platform configuration
   omits the standalone Prometheus and Grafana installation.
@@ -178,5 +178,5 @@ against the matching operator CRDs. The root build does not render child
 reconciliations or Helm charts. Check namespace ownership, dependencies,
 credential references and actual readiness conditions.
 
-Use the [AKS operations guide](https://github.com/EventTriangle/fluxcd-repository/blob/master/docs/aks-platform.md#validation)
+Use the [AKS operations guide](https://github.com/FluxPay/fluxcd-repository/blob/master/docs/aks-platform.md#validation)
 to repeat runtime checks, including Redis failover and client reconnection.

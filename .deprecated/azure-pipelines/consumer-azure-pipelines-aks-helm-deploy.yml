@@ -6,14 +6,14 @@ trigger:
   paths:
     include:
       - build
-      - src/consumer/EventTriangleAPI.Consumer.Application
-      - src/consumer/EventTriangleAPI.Consumer.BusinessLogic
-      - src/consumer/EventTriangleAPI.Consumer.Domain
-      - src/consumer/EventTriangleAPI.Consumer.Presentation
-      - src/consumer/EventTriangleAPI.Consumer.IntegrationTests
-      - src/consumer/EventTriangleAPI.Consumer.UnitTests
-      - src/shared/EventTriangleAPI.Shared.Application
-      - src/shared/EventTriangleAPI.Shared.DTO
+      - src/consumer/FluxPayAPI.Consumer.Application
+      - src/consumer/FluxPayAPI.Consumer.BusinessLogic
+      - src/consumer/FluxPayAPI.Consumer.Domain
+      - src/consumer/FluxPayAPI.Consumer.Presentation
+      - src/consumer/FluxPayAPI.Consumer.IntegrationTests
+      - src/consumer/FluxPayAPI.Consumer.UnitTests
+      - src/shared/FluxPayAPI.Shared.Application
+      - src/shared/FluxPayAPI.Shared.DTO
 
 pr: none
 
@@ -35,13 +35,13 @@ stages:
       - template: templates/docker-build-push-jobs.yml
         parameters:
           JobName: 'Build_${{ variables.appName }}'
-          solution: '$(System.DefaultWorkingDirectory)/EventTriangleAPI.sln'
+          solution: '$(System.DefaultWorkingDirectory)/FluxPayAPI.sln'
           buildConfiguration: 'Release'
-          backendProjectPath: '$(System.DefaultWorkingDirectory)/src/consumer/EventTriangleAPI.Consumer.Presentation'
-          unitTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/consumer/EventTriangleAPI.Consumer.UnitTests/EventTriangleAPI.Consumer.UnitTests.csproj'
+          backendProjectPath: '$(System.DefaultWorkingDirectory)/src/consumer/FluxPayAPI.Consumer.Presentation'
+          unitTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/consumer/FluxPayAPI.Consumer.UnitTests/FluxPayAPI.Consumer.UnitTests.csproj'
           shouldRunUnitTests: 'true'
           shouldRunIntegrationTests: 'true'
-          integrationTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/consumer/EventTriangleAPI.Consumer.IntegrationTests/EventTriangleAPI.Consumer.IntegrationTests.csproj'
+          integrationTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/consumer/FluxPayAPI.Consumer.IntegrationTests/FluxPayAPI.Consumer.IntegrationTests.csproj'
           dockerRegistryUrl: 'docker.io/kaminome'
           imageRepository: 'consumer-service'
           dockerfilePath: '$(System.DefaultWorkingDirectory)/src/consumer/Dockerfile'
@@ -64,5 +64,5 @@ stages:
           serviceConnection: 'Azure_Connection'
           azureResourceGroup: '$(library-aks-resource-group)'
           kubernetesCluster: '$(library-aks-cluster-name)'
-          namespace: 'event-triangle'
+          namespace: 'fluxpay'
           helmChartsFolder: '$(Pipeline.Workspace)/helm'

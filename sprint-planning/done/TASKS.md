@@ -208,7 +208,7 @@ DockerHub url: https://hub.docker.com/repositories/petrokolosov
 
 **Dependencies:** TASK-02
 
-GitOps repository: https://github.com/EventTriangle/fluxcd-repository
+GitOps repository: https://github.com/FluxPay/fluxcd-repository
 
 - [x] Establish the repository foundation first: create the private repository, configure access, define the dev environment path and namespace/secret conventions, and add a minimal root reconciliation structure usable by TASK-16.
 - [x] Inspect existing Flux application configuration and add only missing OCI sources, HELM releases, and dev values.

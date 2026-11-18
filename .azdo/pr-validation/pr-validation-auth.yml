@@ -62,12 +62,12 @@ stages:
       - template: ../templates/docker-build-push-jobs.yml
         parameters:
           jobName: 'PR_Validation_${{ variables.appName }}'
-          solution: '$(System.DefaultWorkingDirectory)/EventTriangleAPI.sln'
+          solution: '$(System.DefaultWorkingDirectory)/FluxPayAPI.sln'
           buildConfiguration: 'Release'
           # Auth currently has no unit test cases.
           shouldRunUnitTests: false
           shouldRunIntegrationTests: true
-          integrationTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/authorization/EventTriangleAPI.Authorization.IntegrationTests/EventTriangleAPI.Authorization.IntegrationTests.csproj'
+          integrationTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/authorization/FluxPayAPI.Authorization.IntegrationTests/FluxPayAPI.Authorization.IntegrationTests.csproj'
           sonarCloudEnabled: true
           sonarCloudServiceConnection: 'SonarCloud_Service_Connection'
           scriptFile: "$(System.DefaultWorkingDirectory)/scripts/dockerhub/build-auth.sh"

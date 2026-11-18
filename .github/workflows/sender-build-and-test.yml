@@ -5,12 +5,12 @@ on:
       - develop
       - main
     paths:
-      - src/sender/EventTriangleAPI.Sender.Application/**
-      - src/sender/EventTriangleAPI.Sender.BusinessLogic/**
-      - src/sender/EventTriangleAPI.Sender.Domain/**
-      - src/sender/EventTriangleAPI.Sender.IntegrationTests/**
-      - src/sender/EventTriangleAPI.Sender.Presentation/**
-      - src/sender/EventTriangleAPI.Sender.UnitTests/**
+      - src/sender/FluxPayAPI.Sender.Application/**
+      - src/sender/FluxPayAPI.Sender.BusinessLogic/**
+      - src/sender/FluxPayAPI.Sender.Domain/**
+      - src/sender/FluxPayAPI.Sender.IntegrationTests/**
+      - src/sender/FluxPayAPI.Sender.Presentation/**
+      - src/sender/FluxPayAPI.Sender.UnitTests/**
       - .github/**
 
   pull_request:
@@ -18,14 +18,14 @@ on:
       - develop
       - main
     paths:
-      - src/sender/EventTriangleAPI.Sender.Application/**
-      - src/sender/EventTriangleAPI.Sender.BusinessLogic/**
-      - src/sender/EventTriangleAPI.Sender.Domain/**
-      - src/sender/EventTriangleAPI.Sender.IntegrationTests/**
-      - src/sender/EventTriangleAPI.Sender.Presentation/**
-      - src/sender/EventTriangleAPI.Sender.UnitTests/**
-      - src/shared/EventTriangleAPI.Shared.DTO/**
-      - src/shared/EventTriangleAPI.Shared.Application/**
+      - src/sender/FluxPayAPI.Sender.Application/**
+      - src/sender/FluxPayAPI.Sender.BusinessLogic/**
+      - src/sender/FluxPayAPI.Sender.Domain/**
+      - src/sender/FluxPayAPI.Sender.IntegrationTests/**
+      - src/sender/FluxPayAPI.Sender.Presentation/**
+      - src/sender/FluxPayAPI.Sender.UnitTests/**
+      - src/shared/FluxPayAPI.Shared.DTO/**
+      - src/shared/FluxPayAPI.Shared.Application/**
       - .github/**
 
   workflow_dispatch:
@@ -47,9 +47,9 @@ jobs:
       - name: Sender Build
         uses: ./.github/actions/build-and-test
         with:
-          backendCsprojPath: "src/sender/EventTriangleAPI.Sender.Presentation/EventTriangleAPI.Sender.Presentation.csproj"
-          unitTestsProjectPath: "src/sender/EventTriangleAPI.Sender.UnitTests"
-          integrationTestsProjectPath: "src/sender/EventTriangleAPI.Sender.IntegrationTests"
+          backendCsprojPath: "src/sender/FluxPayAPI.Sender.Presentation/FluxPayAPI.Sender.Presentation.csproj"
+          unitTestsProjectPath: "src/sender/FluxPayAPI.Sender.UnitTests"
+          integrationTestsProjectPath: "src/sender/FluxPayAPI.Sender.IntegrationTests"
           buildConfiguration: "Release"
           serviceName: "sender-api"
           creatingDatabase: "true"

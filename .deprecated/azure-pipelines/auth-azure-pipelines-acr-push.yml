@@ -7,10 +7,10 @@ trigger:
   paths:
     include:
       - build
-      - src/authorization/EventTriangleAPI.Authorization.BusinessLogic
-      - src/authorization/EventTriangleAPI.Authorization.Presentation
-      - src/shared/EventTriangleAPI.Shared.Application
-      - src/shared/EventTriangleAPI.Shared.DTO
+      - src/authorization/FluxPayAPI.Authorization.BusinessLogic
+      - src/authorization/FluxPayAPI.Authorization.Presentation
+      - src/shared/FluxPayAPI.Shared.Application
+      - src/shared/FluxPayAPI.Shared.DTO
 
 pr:
   branches:
@@ -20,10 +20,10 @@ pr:
   paths:
     include:
       - build
-      - src/authorization/EventTriangleAPI.Authorization.BusinessLogic
-      - src/authorization/EventTriangleAPI.Authorization.Presentation
-      - src/shared/EventTriangleAPI.Shared.Application
-      - src/shared/EventTriangleAPI.Shared.DTO
+      - src/authorization/FluxPayAPI.Authorization.BusinessLogic
+      - src/authorization/FluxPayAPI.Authorization.Presentation
+      - src/shared/FluxPayAPI.Shared.Application
+      - src/shared/FluxPayAPI.Shared.DTO
 
 variables:
   - name: appName
@@ -43,15 +43,15 @@ stages:
       - template: templates/docker-build-push-acr-jobs.yml
         parameters:
           JobName: 'Build_${{ variables.appName }}'
-          solution: '$(System.DefaultWorkingDirectory)/EventTriangleAPI.sln'
+          solution: '$(System.DefaultWorkingDirectory)/FluxPayAPI.sln'
           buildConfiguration: 'Release'
-          backendProjectPath: '$(System.DefaultWorkingDirectory)/src/authorization/EventTriangleAPI.Authorization.Presentation'
-          unitTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/authorization/EventTriangleAPI.Authorization.UnitTests/EventTriangleAPI.Authorization.UnitTests.csproj'
+          backendProjectPath: '$(System.DefaultWorkingDirectory)/src/authorization/FluxPayAPI.Authorization.Presentation'
+          unitTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/authorization/FluxPayAPI.Authorization.UnitTests/FluxPayAPI.Authorization.UnitTests.csproj'
           shouldRunUnitTests: 'true'
           shouldRunIntegrationTests: 'true'
           integrationTestsProjectPath: ''
           dockerRegistryUrl: 'azuredevopsacrd01.azurecr.io'
-          dockerBuildParameterUrl: 'https://auth-eventtriangle.razumovsky.me/'
+          dockerBuildParameterUrl: 'https://fluxpay.razumovsky.me/'
           imageRepository: 'auth-service'
           dockerfilePath: '$(System.DefaultWorkingDirectory)/src/authorization/Dockerfile'
           dockerServiceConnection: 'Azure_ACR_Connection'

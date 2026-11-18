@@ -5,7 +5,7 @@ metadata:
   namespace: flux-system
 spec:
   interval: 1m
-  url: https://github.com/EventTriangle/fluxcd
+  url: https://github.com/FluxPay/fluxcd
   ref:
     branch: main
   # secretRef:

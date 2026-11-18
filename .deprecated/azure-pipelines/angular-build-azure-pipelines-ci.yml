@@ -7,7 +7,7 @@ trigger:
   paths:
     include:
       - build
-      - src/authorization/EventTriangle.Client
+      - src/authorization/FluxPay.Client
 
 pr:
   branches:
@@ -17,7 +17,7 @@ pr:
   paths:
     include:
       - build
-      - src/authorization/EventTriangle.Client
+      - src/authorization/FluxPay.Client
   
 stages:
   - stage: 'Build_Angular'
@@ -44,9 +44,9 @@ stages:
           - task: Npm@1
             inputs: 
               command: 'ci'
-              workingDir: './src/authorization/EventTriangle.Client'
+              workingDir: './src/authorization/FluxPay.Client'
               
           - script: |
               npm run build
             displayName: "Build Angular Project"
-            workingDirectory: './src/authorization/EventTriangle.Client'
+            workingDirectory: './src/authorization/FluxPay.Client'

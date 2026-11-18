@@ -6,10 +6,10 @@ trigger:
   paths:
     include:
       - build
-      - src/authorization/EventTriangleAPI.Authorization.BusinessLogic
-      - src/authorization/EventTriangleAPI.Authorization.Presentation
-      - src/shared/EventTriangleAPI.Shared.Application
-      - src/shared/EventTriangleAPI.Shared.DTO
+      - src/authorization/FluxPayAPI.Authorization.BusinessLogic
+      - src/authorization/FluxPayAPI.Authorization.Presentation
+      - src/shared/FluxPayAPI.Shared.Application
+      - src/shared/FluxPayAPI.Shared.DTO
 
 pr: none
 
@@ -31,15 +31,15 @@ stages:
       - template: templates/docker-build-push-jobs.yml
         parameters:
           JobName: 'Build_${{ variables.appName }}'
-          solution: '$(System.DefaultWorkingDirectory)/EventTriangleAPI.sln'
+          solution: '$(System.DefaultWorkingDirectory)/FluxPayAPI.sln'
           buildConfiguration: 'Release'
-          backendProjectPath: '$(System.DefaultWorkingDirectory)/src/authorization/EventTriangleAPI.Authorization.Presentation'
-          unitTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/authorization/EventTriangleAPI.Authorization.UnitTests/EventTriangleAPI.Authorization.UnitTests.csproj'
+          backendProjectPath: '$(System.DefaultWorkingDirectory)/src/authorization/FluxPayAPI.Authorization.Presentation'
+          unitTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/authorization/FluxPayAPI.Authorization.UnitTests/FluxPayAPI.Authorization.UnitTests.csproj'
           shouldRunUnitTests: 'true'
           shouldRunIntegrationTests: 'true'
-          integrationTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/authorization/EventTriangleAPI.Authorization.IntegrationTests/EventTriangleAPI.Authorization.IntegrationTests.csproj'
+          integrationTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/authorization/FluxPayAPI.Authorization.IntegrationTests/FluxPayAPI.Authorization.IntegrationTests.csproj'
           dockerRegistryUrl: 'docker.io/kaminome'
-          dockerBuildParameterUrl: 'https://auth-eventtriangle.razumovsky.me/'
+          dockerBuildParameterUrl: 'https://fluxpay.razumovsky.me/'
           imageRepository: 'auth-service'
           dockerfilePath: '$(System.DefaultWorkingDirectory)/src/authorization/Dockerfile'
           dockerServiceConnection: 'Docker_Hub_Connection'
@@ -61,5 +61,5 @@ stages:
           serviceConnection: 'Azure_Connection'
           azureResourceGroup: '$(library-aks-resource-group)'
           kubernetesCluster: '$(library-aks-cluster-name)'
-          namespace: 'event-triangle'
+          namespace: 'fluxpay'
           helmChartsFolder: '$(Pipeline.Workspace)/helm'

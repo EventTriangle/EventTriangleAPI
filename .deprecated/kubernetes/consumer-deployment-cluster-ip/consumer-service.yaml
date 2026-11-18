@@ -2,11 +2,11 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: event-triangle-consumer-service
-  namespace: event-triangle
+  name: fluxpay-consumer-service
+  namespace: fluxpay
 spec:
   selector:
-    app: event-triangle-consumer-api
+    app: fluxpay-consumer-api
   ports:
     - protocol: TCP
       port: 80
