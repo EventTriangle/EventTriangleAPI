@@ -49,3 +49,21 @@ To restore a previous release revision, find it with
 `helm history authorization -n event-triangle-dev` and run
 `helm rollback authorization REVISION -n event-triangle-dev`. Helm rollback does not
 restore external Secret contents or revert database changes.
+
+## Dry runs
+
+Preview the install or upgrade against your current Kubernetes context:
+
+```sh
+helm upgrade --install authorization charts/authorization \
+  --namespace event-triangle-dev --dry-run=server \
+  -f ../fluxcd-repository/overlays/aks/eventtriangle/values-authorization.yaml
+```
+
+Print the rendered YAML locally:
+
+```sh
+helm template authorization charts/authorization \
+  --namespace event-triangle-dev \
+  -f ../fluxcd-repository/overlays/aks/eventtriangle/values-authorization.yaml
+```
