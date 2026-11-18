@@ -19,7 +19,7 @@ Automate infrastructure and platform so that microservices are deployed autimati
 - [ ] Include credentials required by retained pipeline steps, such as SonarCloud where enabled, after auditing active consumers.
 - [ ] Distinguish required credentials, conditional credentials, and non-secret identifiers; document authentication choices that avoid static tokens.
 
-## TASK-02 — Configure WSL with Ubuntu 26.04 and install development tools
+## TASK-02 — Configure WSL with Ubuntu 26.04 and install development tools (done)
 
 **Dependencies:** None.
 
@@ -59,7 +59,7 @@ One click on pipeline should fully deploy infrastructure and microservices.
 - [ ] Add concurrency control, bounded waits, secret-safe diagnostics, and safe retries after partial failure.
 - [ ] Document initial account/state/service-connection bootstrapping separately from the normal single-run deployment, plus controlled teardown and persistent-data handling.
 
-## TASK-04 — Restructure and simplify infrastructure Terraform
+## TASK-04 — Restructure and simplify infrastructure Terraform (done)
 
 **Dependencies:** TASK-02
 
@@ -73,7 +73,7 @@ One click on pipeline should fully deploy infrastructure and microservices.
 - [x] Update `.azdo/infrastructure/` and Terraform templates to use the new root and variable defaults; remove the obsolete `terraform/terraform.auto.tfvars.json` transformation step and its unused inputs.
 - [x] Preserve existing backend/state associations; document any required state migration and review the plan for unintended cluster replacement.
 
-## TASK-05 — Implement Cloudflare DNS Terraform
+## TASK-05 — Implement Cloudflare DNS Terraform (done)
 
 **Dependencies:** TASK-02
 
@@ -97,7 +97,7 @@ No Cloudflare Terraform root exists in the current repository.
 - [x] Replace the provider's local token-file dependency with documented secure authentication suitable for local use and automation.
 - [x] Document bootstrap ordering for state storage, provider access, libraries, and the pipelines that consume them to avoid a circular dependency.
 
-## TASK-07 — Manage Azure DevOps pipelines through Terraform
+## TASK-07 — Manage Azure DevOps pipelines through Terraform (done)
 
 **Dependencies:** TASK-02
 
@@ -111,10 +111,6 @@ No Cloudflare Terraform root exists in the current repository.
 ## TASK-08 — Migrate Azure DevOps service connections to Terraform
 
 **Dependencies:** TASK-02
-
-**Status:** Docker Hub, ACR and Azure connections were recreated through Terraform.
-GitHub creation and full pipeline validation await a repository-scoped fine-grained
-PAT with webhook access. SonarCloud is deferred until a working token is available.
 
 - [x] Run `bash scripts/list-service-connections.sh PROJECT_ID [ORGANIZATION_URL]` to inventory existing connection IDs, names, types, authentication schemes, and sharing status.
 - [x] Map each retained connection to its pipeline consumers and the appropriate Azure DevOps Terraform provider resource under `terraform/azure-devops/`; document unsupported types and their handling.
@@ -130,7 +126,7 @@ PAT with webhook access. SonarCloud is deferred until a working token is availab
 Setup and permissions: [Azure DevOps README](../terraform/azure-devops/variable-groups/README.md).
 Azure infrastructure provisioning/RBAC validation is outside this task's scope.
 
-## TASK-09 — Complete Docker Hub image migration
+## TASK-09 — Complete Docker Hub image migration (done)
 
 **Dependencies:** TASK-02
 
@@ -144,18 +140,15 @@ DockerHub url: https://hub.docker.com/repositories/petrokolosov
 - [x] Add dedicated `scripts/dockerhub/build-auth.sh`, `scripts/dockerhub/build-sender.sh`, and `scripts/dockerhub/build-consumer.sh` scripts using Docker Hub for version, latest, and cache references. Preserve the existing ACR build scripts.
 - [x] Reuse `scripts/docker-build.sh` from the new scripts, resolving Dockerfile and shared-context paths correctly from `scripts/dockerhub/` and accepting the application version as an argument.
 - [x] Wire all three build entry points to the maintained `.azdo/templates/docker-build-push-jobs.yml` template with matching parameter names and the new Docker Hub script paths.
-- [ ] Replace ACR publication connections and active PR-validation registry references with the appropriate Docker Hub configuration.
+- [x] Replace ACR publication connections and active PR-validation registry references with the appropriate Docker Hub configuration.
 - [x] Correct registry examples and document Docker Hub authentication, required environment variables, and commands for running each new script in the maintained README.
 - [x] Ensure application tests gate release publication and untrusted PR validation cannot push images or access publisher credentials.
 - [x] Publish immutable version tags for deployment and rollback; configure runtime pull credentials if needed.
 - [x] Remove broad environment dumps from publishing jobs where credentials could be exposed.
 
-## TASK-10 — Migrate `.deprecated/platform/` to the FluxCD repository
+## TASK-10 — Migrate `.deprecated/platform/` to the FluxCD repository (done)
 
 **Dependencies:** TASK-15
-
-**Status:** Complete. Dev runtime acceptance passed across two AKS test runs.
-See [platform migration validation](platform-migration.md#validation).
 
 - [x] Inventory installers, manifests, configuration, and helper scripts in `.deprecated/platform/` and map each required responsibility to its destination in the FluxCD repository.
 - [x] Inspect the target FluxCD repository and reuse existing platform resources before adding missing releases or environment values.
@@ -166,7 +159,7 @@ See [platform migration validation](platform-migration.md#validation).
 - [x] Define platform readiness checks and document the mapping from archived assets to maintained FluxCD resources. Handle ingress replacement in TASK-11.
 - [x] Complete dev runtime acceptance after review: reconcile Flux, verify application connectivity and AMQP publish/consume, verify restart persistence, and repeat reconciliation.
 
-## TASK-11 — Implement Traefik ingress through HELM
+## TASK-11 — Implement Traefik ingress through HELM (done)
 
 **Dependencies:** TASK-10
 
@@ -178,17 +171,9 @@ See [platform migration validation](platform-migration.md#validation).
 - [x] Add bounded readiness checks for Traefik and the application release.
 - [x] Verify DNS, TLS, and application routing on dev AKS after the cutover, including Authorization, Sender, Consumer, and SignalR.
 
-## TASK-12 — Implement microservice HELM charts
+## TASK-12 — Implement microservice HELM charts (done)
 
 **Dependencies:** TASK-02
-
-**Status:** Verified the separate Authorization, Sender, and Consumer releases
-on dev AKS. HTTPS routing, frontend assets, the Entra sign-in redirect, SignalR
-WebSocket negotiation and invocation, and repeat Flux reconciliation passed.
-The charts now live in EventTriangleAPI. From a GitOps preview branch, Flux
-pulled all three private GHCR charts, deployed the three Helm releases, and
-reported the OCI digests published by CI. All three Swagger endpoints and
-the frontend responded over HTTPS.
 
 - [x] Create `charts/authorization/`, `charts/sender/`, and `charts/consumer/`, each with chart metadata, values, templates, and usage documentation.
 - [x] Translate required application behavior into Deployments, Services, configurable ingress, and optional autoscaling, using archived manifests only as reference.
@@ -198,16 +183,9 @@ the frontend responded over HTTPS.
 - [x] Support Traefik ingress class, host/path routing, and configurable TLS references.
 - [x] Add dev example values and document dependencies and upgrade/rollback behavior.
 
-## TASK-13 — Publish HELM charts to GHCR OCI
+## TASK-13 — Publish HELM charts to GHCR OCI (done)
 
 **Dependencies:** TASK-12
-
-**Status:** Two [publication attempts](https://github.com/EventTriangle/EventTriangleAPI/actions/runs/43948690184)
-published distinct tags and digests under the private `charts/*` packages.
-Ansible confirmed the dev AKS GitOps branch. After the
-[OCI tag update](https://github.com/EventTriangle/fluxcd-repository/commit/d1ad141),
-Flux picked up the commit automatically and upgraded all three releases to
-Helm revision 3. The three Swagger endpoints responded over HTTPS.
 
 - [x] Define chart versioning and a trusted release trigger; add a GitHub Actions workflow to validate, package, and publish charts to GHCR OCI.
 - [x] Automate semantic versioning using GitVersion setup and execute tasks in the publication workflow. Fetch full Git history and tags, use the repository's `GitVersion.yml` configuration, and apply the calculated semantic version to each packaged chart's `version` without manual version edits.
@@ -217,26 +195,26 @@ Helm revision 3. The three Swagger endpoints responded over HTTPS.
 - [x] Document chart pull and install examples in the GitOps repository.
 - [x] Verify on dev AKS that Flux can pull private preview charts with a read-only credential.
 
-## TASK-14 — Add HELM chart validation in GitHub Actions
+## TASK-14 — Add HELM chart validation in GitHub Actions (done)
 
 **Dependencies:** TASK-12
 
-- [ ] Add a GitHub Actions workflow triggered by chart/workflow changes on PRs and relevant pushes.
-- [ ] Run HELM lint, template rendering for supported values, and Kubernetes schema validation for all affected charts.
-- [ ] Explicitly validate required custom resources or document narrowly scoped schema exceptions.
-- [ ] Ensure PR validation requires no publication secrets and produces actionable failures.
+- [x] Add a GitHub Actions workflow triggered by chart/workflow changes on PRs and relevant pushes.
+- [x] Run HELM lint, template rendering for supported values, and Kubernetes schema validation for all affected charts.
+- [x] Explicitly validate required custom resources or document narrowly scoped schema exceptions.
+- [x] Ensure PR validation requires no publication secrets and produces actionable failures.
 
-## TASK-15 — Create a private GitOps FluxCD manifest repository
+## TASK-15 — Create a private GitOps FluxCD manifest repository (done)
 
 **Dependencies:** TASK-02
 
 GitOps repository: https://github.com/EventTriangle/fluxcd-repository
 
-- [ ] Establish the repository foundation first: create the private repository, configure access, define the dev environment path and namespace/secret conventions, and add a minimal root reconciliation structure usable by TASK-16.
-- [ ] Inspect existing Flux application configuration and add only missing OCI sources, HELM releases, and dev values.
-- [ ] Pin application image versions/digests and chart versions; configure dependency ordering and reconciliation timeouts.
-- [ ] Implement secret delivery and bootstrap requirements for application and repository credentials without plaintext secrets in Git.
-- [ ] Define how the selected release revision reaches Flux and how upgrades/rollbacks are performed through Git.
+- [x] Establish the repository foundation first: create the private repository, configure access, define the dev environment path and namespace/secret conventions, and add a minimal root reconciliation structure usable by TASK-16.
+- [x] Inspect existing Flux application configuration and add only missing OCI sources, HELM releases, and dev values.
+- [x] Pin application image versions/digests and chart versions; configure dependency ordering and reconciliation timeouts.
+- [x] Implement secret delivery and bootstrap requirements for application and repository credentials without plaintext secrets in Git.
+- [x] Define how the selected release revision reaches Flux and how upgrades/rollbacks are performed through Git.
 
 ## TASK-16 — Create a private Ansible role repository for FluxCD operator bootstrap
 
@@ -244,9 +222,9 @@ GitOps repository: https://github.com/EventTriangle/fluxcd-repository
 
 - [ ] Create a private Git repository for the Ansible role and configure developer and Azure DevOps pipeline access through the credentials documented in TASK-01.
 - [ ] Add a reusable role structure with defaults, tasks, templates, metadata, pinned dependencies, and an example playbook for configuring the target AKS cluster.
-- [ ] Implement installation and configuration of the FluxCD operator and its managed Flux instance, with configurable namespace and pinned operator/controller versions.
+- [x] Implement installation and configuration of the FluxCD operator and its managed Flux instance, with configurable namespace and pinned operator/controller versions.
 - [ ] Parameterize Kubernetes authentication, Flux manifest repository URL, branch/tag/commit reference, environment path, reconciliation interval, and readiness timeouts.
-- [ ] Configure the managed Flux instance to synchronize with the manifest repository from TASK-15, including the Git source and root reconciliation needed to apply its manifests.
+- [x] Configure the managed Flux instance to synchronize with the manifest repository from TASK-15, including the Git source and root reconciliation needed to apply its manifests.
 - [ ] Provision repository authentication from protected inputs or existing Kubernetes Secrets. Keep credentials out of Git and Ansible logs, and document separate access for fetching the private role repository and reading the manifest repository.
 - [ ] Make bootstrap idempotent and wait for operator, controllers, source synchronization, and root reconciliation readiness with bounded timeouts and useful failure diagnostics.
 - [ ] Add Ansible lint/syntax checks and verify bootstrap against a test cluster, including a second run and a repository authentication failure.
