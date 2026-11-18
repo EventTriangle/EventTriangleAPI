@@ -4,20 +4,20 @@
 
 Automate infrastructure and platform so that microservices are deployed autimatically in a single pipeline run in Azure DevOps. This pipeline run should configure Azure infrastructure, Cloudflare records, FluxCD instance in AKS, Microservices deployment as fluxCD manifests.
 
-## TASK-01 — Document required developer access and credentials
+## TASK-01 — Document required developer access and credentials (done)
 
 **Dependencies:** None.
 
-- [ ] Create `developer-access.md` and link it and the deployment design from the root README.
-- [ ] For each access requirement, document purpose, required scope, owner, provisioning steps, secure storage location, consumers, and rotation/revocation procedure. Include no actual secret values.
-- [ ] Cover Azure subscription/resource permissions, ACR role-assignment rights, AKS access, and Terraform backend data access.
-- [ ] Cover Azure DevOps project/pipeline administration, repository connections, service connections, variable groups, and Terraform provider authentication.
-- [ ] Cover scoped Cloudflare DNS access and any zone-discovery permission.
-- [ ] Cover Docker Hub publisher access and conditional private-image pull credentials.
-- [ ] Cover GitHub repository access, Actions/GHCR publishing, Flux read access, optional automation write access, and conditional private-chart pull credentials.
-- [ ] Cover application-specific PostgreSQL, RabbitMQ, Redis, and Entra ID credentials and the selected secret/TLS mechanism.
-- [ ] Include credentials required by retained pipeline steps, such as SonarCloud where enabled, after auditing active consumers.
-- [ ] Distinguish required credentials, conditional credentials, and non-secret identifiers; document authentication choices that avoid static tokens.
+- [x] Create `developer-access.md` and link it and the deployment design from the root README.
+- [x] For each access requirement, document purpose, required scope, owner, provisioning steps, secure storage location, consumers, and rotation/revocation procedure. Include no actual secret values.
+- [x] Cover Azure subscription/resource permissions, ACR role-assignment rights, AKS access, and Terraform backend data access.
+- [x] Cover Azure DevOps project/pipeline administration, repository connections, service connections, variable groups, and Terraform provider authentication.
+- [x] Cover scoped Cloudflare DNS access and any zone-discovery permission.
+- [x] Cover Docker Hub publisher access and conditional private-image pull credentials.
+- [x] Cover GitHub repository access, Actions/GHCR publishing, Flux read access, optional automation write access, and conditional private-chart pull credentials.
+- [x] Cover application-specific PostgreSQL, RabbitMQ, Redis, and Entra ID credentials and the selected secret/TLS mechanism.
+- [x] Include credentials required by retained pipeline steps, such as SonarCloud where enabled, after auditing active consumers.
+- [x] Distinguish required credentials, conditional credentials, and non-secret identifiers; document authentication choices that avoid static tokens.
 
 ## TASK-02 — Configure WSL with Ubuntu 26.04 and install development tools (done)
 
@@ -86,14 +86,14 @@ No Cloudflare Terraform root exists in the current repository.
 - [x] Inspect existing DNS records and import those that Terraform should own before applying changes.
 - [x] Document standalone plan/apply instructions and how the deployment pipeline supplies ingress outputs.
 
-## TASK-06 — Cleanup Azure DevOps Variable Groups Terraform
+## TASK-06 — Cleanup Azure DevOps Variable Groups Terraform (done)
 
 **Dependencies:** TASK-02
 
 - [x] Move the folder `terraform-azdo-libraries` under `terraform/azure-devops/`, preserving resource/state associations and updating its README.
 - [x] Keep the Terraform backend configuration library as the initial minimal library and parameterize account/container/state settings.
 - [x] Map every remaining variable-group consumer in active `.azdo/` pipelines before removing unused Cloudflare, PostgreSQL, Redis, AKS, prefix, Entra ID, and transformation settings.
-- [ ] Migrate still-required configuration and credentials to their chosen destination before deleting old groups.
+- [x] Migrate still-required configuration and credentials to their chosen destination before deleting old groups.
 - [x] Replace the provider's local token-file dependency with documented secure authentication suitable for local use and automation.
 - [x] Document bootstrap ordering for state storage, provider access, libraries, and the pipelines that consume them to avoid a circular dependency.
 
@@ -108,7 +108,7 @@ No Cloudflare Terraform root exists in the current repository.
 - [x] Configure required variable-group, service-connection, and environment permissions where supported; document any external bootstrap requirements.
 - [x] Update stale PR path filters from `azure-pipelines/**` to `.azdo/**` and ensure referenced templates exist.
 
-## TASK-08 — Migrate Azure DevOps service connections to Terraform
+## TASK-08 — Migrate Azure DevOps service connections to Terraform (done)
 
 **Dependencies:** TASK-02
 
@@ -121,7 +121,7 @@ No Cloudflare Terraform root exists in the current repository.
 - [x] Document imports, authentication setup, credential rotation, and any bootstrap requirements in the Azure DevOps Terraform README and developer access guide.
 - [x] Configure Terraform to create enabled service connections from supplied credentials, including GitHub PAT authentication, without fixed-ID imports; document PAT permissions and the transition from GitHub App authentication.
 - [x] Recover the shared Azure state after confirmed manual deletion, preserving a protected backup, and recreate Docker Hub, ACR and Azure service connections through Terraform (2026-10-26: three creations, no changes or deletions).
-- [ ] Supply a GitHub PAT, recreate the four enabled service connections in an approved test window, verify repository checkout, CI/PR triggers and status reporting, registry authentication, Azure authentication and pipeline authorizations, then confirm a second plan reports no changes. Test SonarCloud separately when enabled with a working token.
+- [x] Supply a GitHub PAT, recreate the four enabled service connections in an approved test window, verify repository checkout, CI/PR triggers and status reporting, registry authentication, Azure authentication and pipeline authorizations, then confirm a second plan reports no changes. Test SonarCloud separately when enabled with a working token.
 
 Setup and permissions: [Azure DevOps README](../terraform/azure-devops/variable-groups/README.md).
 Azure infrastructure provisioning/RBAC validation is outside this task's scope.
@@ -216,16 +216,16 @@ GitOps repository: https://github.com/EventTriangle/fluxcd-repository
 - [x] Implement secret delivery and bootstrap requirements for application and repository credentials without plaintext secrets in Git.
 - [x] Define how the selected release revision reaches Flux and how upgrades/rollbacks are performed through Git.
 
-## TASK-16 — Create a private Ansible role repository for FluxCD operator bootstrap
+## TASK-16 — Create a private Ansible role repository for FluxCD operator bootstrap (done)
 
 **Dependencies:** TASK-02
 
-- [ ] Create a private Git repository for the Ansible role and configure developer and Azure DevOps pipeline access through the credentials documented in TASK-01.
-- [ ] Add a reusable role structure with defaults, tasks, templates, metadata, pinned dependencies, and an example playbook for configuring the target AKS cluster.
+- [x] Create a private Git repository for the Ansible role and configure developer and Azure DevOps pipeline access through the credentials documented in TASK-01.
+- [x] Add a reusable role structure with defaults, tasks, templates, metadata, pinned dependencies, and an example playbook for configuring the target AKS cluster.
 - [x] Implement installation and configuration of the FluxCD operator and its managed Flux instance, with configurable namespace and pinned operator/controller versions.
-- [ ] Parameterize Kubernetes authentication, Flux manifest repository URL, branch/tag/commit reference, environment path, reconciliation interval, and readiness timeouts.
+- [x] Parameterize Kubernetes authentication, Flux manifest repository URL, branch/tag/commit reference, environment path, reconciliation interval, and readiness timeouts.
 - [x] Configure the managed Flux instance to synchronize with the manifest repository from TASK-15, including the Git source and root reconciliation needed to apply its manifests.
-- [ ] Provision repository authentication from protected inputs or existing Kubernetes Secrets. Keep credentials out of Git and Ansible logs, and document separate access for fetching the private role repository and reading the manifest repository.
-- [ ] Make bootstrap idempotent and wait for operator, controllers, source synchronization, and root reconciliation readiness with bounded timeouts and useful failure diagnostics.
-- [ ] Add Ansible lint/syntax checks and verify bootstrap against a test cluster, including a second run and a repository authentication failure.
-- [ ] Document local and Azure DevOps invocation, required permissions, variable examples, credential rotation, and upgrade/rollback steps. Define the pipeline integration in TASK-03 using a pinned role repository revision.
+- [x] Provision repository authentication from protected inputs or existing Kubernetes Secrets. Keep credentials out of Git and Ansible logs, and document separate access for fetching the private role repository and reading the manifest repository.
+- [x] Make bootstrap idempotent and wait for operator, controllers, source synchronization, and root reconciliation readiness with bounded timeouts and useful failure diagnostics.
+- [x] Add Ansible lint/syntax checks and verify bootstrap against a test cluster, including a second run and a repository authentication failure.
+- [x] Document local and Azure DevOps invocation, required permissions, variable examples, credential rotation, and upgrade/rollback steps. Define the pipeline integration in TASK-03 using a pinned role repository revision.

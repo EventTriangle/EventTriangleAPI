@@ -11,5 +11,8 @@
   "editor.lineHeight": 1.6,
   "editor.letterSpacing": 0.2,
   "files.autoSave": "afterDelay",
-  "files.autoSaveDelay": 1000
+  "files.autoSaveDelay": 1000,
+  "cSpell.words": [
+    "fluxpay"
+  ]
 }
