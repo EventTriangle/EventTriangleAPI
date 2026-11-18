@@ -18,7 +18,6 @@ pr:
       # Pipeline itself (so changes validate)
       - .azdo/**
       - charts/sender/**
-      - charts/validation-values.yaml
       - scripts/gitops/**
       - scripts/docker-build.sh
       - scripts/dockerhub/build-sender.sh
