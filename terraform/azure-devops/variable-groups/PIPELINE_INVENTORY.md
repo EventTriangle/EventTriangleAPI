@@ -33,7 +33,7 @@ commit. Concurrent service runs reapply their changes on top of the latest
 GitOps commit if a push races with another run.
 
 - Build publishes the image and chart on `main`, `develop`, and `v*` tags.
-  Build Auth runs SonarCloud on `main` and `develop`. Only builds from
+  Build Auth runs SonarCloud on `main` and `develop`, with Quality Gate status published on `main`. Only builds from
   `develop` update `fluxcd-repository/master`.
 - PR Validation runs on same-repository PRs targeting `main` or `develop`.
   Its CI credentials allow publication, so only use it for trusted
