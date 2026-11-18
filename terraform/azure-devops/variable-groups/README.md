@@ -95,7 +95,7 @@ and `TF_VAR_sonarcloud_token`, then plan/apply. Keep management enabled once the
 connection is managed: `prevent_destroy` protects it from accidental removal.
 An unmanaged same-name connection must be explicitly adopted or removed first.
 
-Build Auth runs SonarCloud analysis on `main` and `develop`. Build Consumer,
+Build Auth runs SonarCloud analysis on `main`. Build Consumer,
 Build Sender, and PR Validation have SonarCloud analysis disabled.
 
 ## Reference
