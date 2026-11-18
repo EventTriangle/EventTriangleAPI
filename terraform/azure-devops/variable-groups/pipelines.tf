@@ -59,13 +59,15 @@ locals {
     gitops = azuredevops_variable_group.fluxpay_gitops_writer.id
   }
 
-  variable_group_pipeline_authorizations = merge({
+  release_pipeline_groups = {
     for pair in setproduct(local.release_pipelines, keys(local.release_variable_groups)) :
     "${pair[0]}_${pair[1]}" => {
       variable_group_id = local.release_variable_groups[pair[1]]
       pipeline_key      = pair[0]
     }
-    }, {
+  }
+
+  variable_group_pipeline_authorizations = {
     backend_create = {
       variable_group_id = azuredevops_variable_group.terraform_backend_settings.id
       pipeline_key      = "terraform_create"
@@ -90,7 +92,7 @@ locals {
       variable_group_id = azuredevops_variable_group.cloudflare_api_key.id
       pipeline_key      = "cloudflare_dns"
     }
-  })
+  }
 }
 
 resource "azuredevops_build_definition" "pipeline" {
@@ -164,6 +166,15 @@ resource "azuredevops_pipeline_authorization" "sonarcloud" {
 
 resource "azuredevops_pipeline_authorization" "variable_group" {
   for_each = local.variable_group_pipeline_authorizations
+
+  project_id  = var.project_id
+  resource_id = each.value.variable_group_id
+  type        = "variablegroup"
+  pipeline_id = azuredevops_build_definition.pipeline[each.value.pipeline_key].id
+}
+
+resource "azuredevops_pipeline_authorization" "release_variable_group" {
+  for_each = local.release_pipeline_groups
 
   project_id  = var.project_id
   resource_id = each.value.variable_group_id
