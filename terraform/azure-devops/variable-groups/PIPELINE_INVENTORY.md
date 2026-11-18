@@ -1,7 +1,7 @@
 # Managed pipelines
 
-`pipelines.tf` creates nine pipelines using the `EventTriangle` GitHub connection,
-repository `EventTriangle/EventTriangleAPI` and hosted `Azure Pipelines` pool.
+`pipelines.tf` creates nine pipelines using the `FluxPay` GitHub connection,
+repository `FluxPay/FluxPayAPI` and hosted `Azure Pipelines` pool.
 
 - PR Validation Auth: `.azdo/pr-validation/pr-validation-auth.yml`
 - PR Validation Sender: `.azdo/pr-validation/pr-validation-sender.yml`

@@ -27,12 +27,12 @@ stages:
       - template: ../templates/docker-build-push-jobs.yml
         parameters:
           jobName: 'Build_Test_Push_${{ variables.appName }}'
-          solution: '$(System.DefaultWorkingDirectory)/EventTriangleAPI.sln'
+          solution: '$(System.DefaultWorkingDirectory)/FluxPayAPI.sln'
           buildConfiguration: 'Release'
-          unitTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/consumer/EventTriangleAPI.Consumer.UnitTests/EventTriangleAPI.Consumer.UnitTests.csproj'
+          unitTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/consumer/FluxPayAPI.Consumer.UnitTests/FluxPayAPI.Consumer.UnitTests.csproj'
           shouldRunUnitTests: true
           shouldRunIntegrationTests: true
-          integrationTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/consumer/EventTriangleAPI.Consumer.IntegrationTests/EventTriangleAPI.Consumer.IntegrationTests.csproj'
+          integrationTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/consumer/FluxPayAPI.Consumer.IntegrationTests/FluxPayAPI.Consumer.IntegrationTests.csproj'
           sonarCloudEnabled: false
           dockerServiceConnection: 'Docker_Hub_Connection'
           scriptFile: '$(System.DefaultWorkingDirectory)/scripts/dockerhub/build-consumer.sh'

@@ -6,12 +6,12 @@ on:
       - develop
       - main
     paths:
-      - src/consumer/EventTriangleAPI.Consumer.Application/**
-      - src/consumer/EventTriangleAPI.Consumer.BusinessLogic/**
-      - src/consumer/EventTriangleAPI.Consumer.Domain/**
-      - src/consumer/EventTriangleAPI.Consumer.IntegrationTests/**
-      - src/consumer/EventTriangleAPI.Consumer.Presentation/**
-      - src/consumer/EventTriangleAPI.Consumer.UnitTests/**
+      - src/consumer/FluxPayAPI.Consumer.Application/**
+      - src/consumer/FluxPayAPI.Consumer.BusinessLogic/**
+      - src/consumer/FluxPayAPI.Consumer.Domain/**
+      - src/consumer/FluxPayAPI.Consumer.IntegrationTests/**
+      - src/consumer/FluxPayAPI.Consumer.Presentation/**
+      - src/consumer/FluxPayAPI.Consumer.UnitTests/**
       - .github/**
 
   pull_request:
@@ -19,14 +19,14 @@ on:
       - develop
       - main
     paths:
-      - src/consumer/EventTriangleAPI.Consumer.Application/**
-      - src/consumer/EventTriangleAPI.Consumer.BusinessLogic/**
-      - src/consumer/EventTriangleAPI.Consumer.Domain/**
-      - src/consumer/EventTriangleAPI.Consumer.IntegrationTests/**
-      - src/consumer/EventTriangleAPI.Consumer.Presentation/**
-      - src/consumer/EventTriangleAPI.Consumer.UnitTests/**
-      - src/shared/EventTriangleAPI.Shared.DTO/**
-      - src/shared/EventTriangleAPI.Shared.Application/**
+      - src/consumer/FluxPayAPI.Consumer.Application/**
+      - src/consumer/FluxPayAPI.Consumer.BusinessLogic/**
+      - src/consumer/FluxPayAPI.Consumer.Domain/**
+      - src/consumer/FluxPayAPI.Consumer.IntegrationTests/**
+      - src/consumer/FluxPayAPI.Consumer.Presentation/**
+      - src/consumer/FluxPayAPI.Consumer.UnitTests/**
+      - src/shared/FluxPayAPI.Shared.DTO/**
+      - src/shared/FluxPayAPI.Shared.Application/**
       - .github/**
 
   workflow_dispatch:
@@ -48,9 +48,9 @@ jobs:
       - name: Consumer Build
         uses: ./.github/actions/build-and-test
         with:
-          backendCsprojPath: "src/consumer/EventTriangleAPI.Consumer.Presentation/EventTriangleAPI.Consumer.Presentation.csproj"
-          unitTestsProjectPath: "src/consumer/EventTriangleAPI.Consumer.UnitTests"
-          integrationTestsProjectPath: "src/consumer/EventTriangleAPI.Consumer.IntegrationTests"
+          backendCsprojPath: "src/consumer/FluxPayAPI.Consumer.Presentation/FluxPayAPI.Consumer.Presentation.csproj"
+          unitTestsProjectPath: "src/consumer/FluxPayAPI.Consumer.UnitTests"
+          integrationTestsProjectPath: "src/consumer/FluxPayAPI.Consumer.IntegrationTests"
           buildConfiguration: "Release"
           serviceName: "consumer-api"
           creatingDatabase: "true"

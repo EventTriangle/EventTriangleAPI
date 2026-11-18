@@ -24,7 +24,7 @@ parameters:
 
   - name: namespace
     type: string
-    default: 'event-triangle'
+    default: 'fluxpay'
 
   - name: helmChartsFolder
     type: string

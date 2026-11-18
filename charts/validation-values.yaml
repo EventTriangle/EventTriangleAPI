@@ -3,7 +3,7 @@ autoscaling:
 
 ingress:
   enabled: true
-  host: eventtriangle.example.com
+  host: fluxpay.example.com
   routes:
     - name: validation-ingress
       path: /

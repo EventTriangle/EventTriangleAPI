@@ -1,11 +1,12 @@
 moved {
+  # Match the address stored in state before the DNS record rename.
   from = cloudflare_dns_record.application["auth-eventtriangle"]
   to   = cloudflare_dns_record.application
 }
 
 resource "cloudflare_dns_record" "application" {
   zone_id = var.cloudflare_zone_id
-  name    = "auth-eventtriangle.razumovsky.me"
+  name    = "fluxpay.razumovsky.me"
   type    = "A"
   content = var.traefik_public_ip
   ttl     = 1

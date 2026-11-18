@@ -5,10 +5,10 @@ on:
       - develop
       - main
     paths:
-      - src/sender/EventTriangleAPI.Authorization.BusinessLogic/**
-      - src/sender/EventTriangleAPI.Authorization.Presentation/**
-      - src/shared/EventTriangleAPI.Shared.DTO/**
-      - src/shared/EventTriangleAPI.Shared.Application/**
+      - src/sender/FluxPayAPI.Authorization.BusinessLogic/**
+      - src/sender/FluxPayAPI.Authorization.Presentation/**
+      - src/shared/FluxPayAPI.Shared.DTO/**
+      - src/shared/FluxPayAPI.Shared.Application/**
       - .github/**
 
   pull_request:
@@ -16,10 +16,10 @@ on:
       - develop
       - main
     paths:
-      - src/sender/EventTriangleAPI.Authorization.BusinessLogic/**
-      - src/sender/EventTriangleAPI.Authorization.Presentation/**
-      - src/shared/EventTriangleAPI.Shared.DTO/**
-      - src/shared/EventTriangleAPI.Shared.Application/**
+      - src/sender/FluxPayAPI.Authorization.BusinessLogic/**
+      - src/sender/FluxPayAPI.Authorization.Presentation/**
+      - src/shared/FluxPayAPI.Shared.DTO/**
+      - src/shared/FluxPayAPI.Shared.Application/**
       - .github/**
 
   workflow_dispatch:
@@ -41,8 +41,8 @@ jobs:
       - name: Auth Build
         uses: ./.github/actions/build-and-test
         with:
-          backendCsprojPath: "src/authorization/EventTriangleAPI.Authorization.Presentation/EventTriangleAPI.Authorization.Presentation.csproj"
+          backendCsprojPath: "src/authorization/FluxPayAPI.Authorization.Presentation/FluxPayAPI.Authorization.Presentation.csproj"
           buildConfiguration: "Release"
           serviceName: "auth-api"
-          unitTestsProjectPath: "src/authorization/EventTriangleAPI.Authorization.UnitTests"
+          unitTestsProjectPath: "src/authorization/FluxPayAPI.Authorization.UnitTests"
           creatingDatabase: 'true'

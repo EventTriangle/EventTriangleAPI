@@ -171,7 +171,7 @@ stages:
                     --values .\sender-secrets\values.yaml `
                     --set rabbitmq_username="$username" `
                     --set rabbitmq_password="$password" `
-                    --namespace "event-triangle-dev" `
+                    --namespace "fluxpay-dev" `
                     --create-namespace
                   workingDirectory: $(System.DefaultWorkingDirectory)/helm
                   displayName: Deploy Sender Secrets

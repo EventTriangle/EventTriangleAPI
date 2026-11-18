@@ -16,7 +16,7 @@ jobs:
     name: Docker compose build
     runs-on: ubuntu-latest
     env:
-      EVENT_TRIANGLE_AD_CLIENT_SECRET: 'TEST_SECRET'
+      FLUXPAY_AD_CLIENT_SECRET: 'TEST_SECRET'
     steps:
       - name: Checkout
         uses: actions/checkout@v6

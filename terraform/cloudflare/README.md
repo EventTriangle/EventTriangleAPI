@@ -1,7 +1,7 @@
 # Cloudflare DNS Terraform
 
 The dev root `environments/dev` manages the `A` record
-`auth-eventtriangle.razumovsky.me`. The existing zone ID and temporary
+`fluxpay.razumovsky.me`. The existing zone ID and temporary
 `traefik_public_ip` default are in `variables.tf`; the zone is not managed here.
 Set a real public ingress IP before applying DNS changes.
 

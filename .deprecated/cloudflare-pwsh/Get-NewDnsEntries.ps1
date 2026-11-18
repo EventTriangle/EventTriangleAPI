@@ -4,6 +4,6 @@ $ingressPublicIp = $ingressService.status.loadBalancer.ingress[0].ip
 
 $dnsRecords = @{}
 
-$dnsRecords["auth-eventtriangle.razumovsky.me"] = $ingressPublicIp
+$dnsRecords["fluxpay.razumovsky.me"] = $ingressPublicIp
 
 return $dnsRecords

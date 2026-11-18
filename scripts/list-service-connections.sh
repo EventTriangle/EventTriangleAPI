@@ -6,7 +6,7 @@ usage() {
 Usage: bash scripts/list-service-connections.sh PROJECT_ID [ORGANIZATION_URL]
 
 List service-connection inventory as JSON for an Azure DevOps project UUID.
-Organization defaults to https://dev.azure.com/EventTriangle.
+Organization defaults to https://dev.azure.com/FluxPay.
 
 Prerequisites:
   Azure CLI with the azure-devops extension:
@@ -15,7 +15,7 @@ Prerequisites:
   Your identity needs permission to read the project's service connections.
   For PAT authentication, use a token for the target organization with
   Service Connections (Read) scope, owned by a user with project access:
-    az devops login --organization https://dev.azure.com/EventTriangle
+    az devops login --organization https://dev.azure.com/FluxPay
 
 Example:
   bash scripts/list-service-connections.sh 29327428-805a-440b-9d16-fcf0ac20edb2
@@ -35,7 +35,7 @@ if (( $# < 1 || $# > 2 )); then
 fi
 
 project_id="$1"
-organization_url="${2:-https://dev.azure.com/EventTriangle}"
+organization_url="${2:-https://dev.azure.com/FluxPay}"
 if [[ ! "$project_id" =~ ^[[:xdigit:]]{8}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{12}$ ]]; then
     echo 'Error: PROJECT_ID must be a UUID.' >&2
     exit 2
@@ -80,7 +80,7 @@ Azure subscription access alone does not grant Azure DevOps project access.
 Use:
 
 unset AZURE_DEVOPS_EXT_PAT
-az devops login --organization https://dev.azure.com/EventTriangle
+az devops login --organization https://dev.azure.com/FluxPay
 # Enter the PAT when prompted.
 
 ./list-service-connections.sh "29327428-805a-440b-9d16-fcf0ac20edb2"

@@ -25,4 +25,4 @@ Write-Output "Not all deployments are ready... Sleeping for 60 seconds..."
 sleep 60
 
 # example call:
-# ./wait-deployments.ps1 -Namespace "event-triangle" -RabbitRelease "event-rabbitmq" -PostgresDeployment "postgresdb"
+# ./wait-deployments.ps1 -Namespace "fluxpay" -RabbitRelease "event-rabbitmq" -PostgresDeployment "postgresdb"

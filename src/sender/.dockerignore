@@ -13,8 +13,8 @@
 .idea/
 
 # Tests - if they aren't required by the image build
-EventTriangleAPI.Sender.UnitTests/
-EventTriangleAPI.Sender.IntegrationTests/
+FluxPayAPI.Sender.UnitTests/
+FluxPayAPI.Sender.IntegrationTests/
 
 # Git
 .git/

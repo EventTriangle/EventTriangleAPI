@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <LangVersion>12</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\FluxPayAPI.Sender.Application\FluxPayAPI.Sender.Application.csproj" />
+      <ProjectReference Include="..\FluxPayAPI.Sender.Persistence\FluxPayAPI.Sender.Persistence.csproj" />
+    </ItemGroup>
+
+</Project>

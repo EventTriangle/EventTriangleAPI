@@ -1,0 +1,66 @@
+using FluxPayAPI.Consumer.Application.Services;
+using FluxPayAPI.Consumer.BusinessLogic.Models;
+using FluxPayAPI.Consumer.BusinessLogic.QueryHandlers;
+using FluxPayAPI.Shared.Application.Extensions;
+using FluxPayAPI.Shared.DTO.Responses.Errors;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace FluxPayAPI.Consumer.Presentation.Controllers;
+
+[Authorize(Roles = "Admin")]
+[ApiController]
+[Route("[controller]")]
+public class UsersController : ControllerBase
+{
+    private readonly GetUsersQueryHandler _getUsersQueryHandler;
+    private readonly GetUsersBySearchQueryHandler _getUsersBySearchQueryHandler;
+    private readonly UserClaimsService _userClaimsService;
+
+    public UsersController(
+        UserClaimsService userClaimsService,
+        GetUsersQueryHandler getUsersQueryHandler,
+        GetUsersBySearchQueryHandler getUsersBySearchQueryHandler)
+    {
+        _userClaimsService = userClaimsService;
+        _getUsersQueryHandler = getUsersQueryHandler;
+        _getUsersBySearchQueryHandler = getUsersBySearchQueryHandler;
+    }
+
+    /// <summary>
+    /// Returns users for admin.
+    /// </summary>
+    [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(List<UserDto>), StatusCodes.Status200OK)]
+    [HttpGet]
+    public async Task<IActionResult> GetUsers(
+        [FromQuery] int limit = 25,
+        [FromQuery] int page = 1)
+    {
+        var requesterId = _userClaimsService.GetUserId();
+        
+        var query = new GetUsersQuery(requesterId, limit, page);
+        var result = await _getUsersQueryHandler.HandleAsync(query);
+
+        return result.ToActionResult();
+    }
+    
+    /// <summary>
+    /// Returns users by search for admin.
+    /// </summary>
+    [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(List<UserDto>), StatusCodes.Status200OK)]
+    [HttpGet("search/{searchText}")]
+    public async Task<IActionResult> GetUsers(
+        string searchText,
+        [FromQuery] int limit = 25,
+        [FromQuery] int page = 1)
+    {
+        var requesterId = _userClaimsService.GetUserId();
+        
+        var query = new GetUsersBySearchQuery(requesterId, searchText, limit, page);
+        var result = await _getUsersBySearchQueryHandler.HandleAsync(query);
+
+        return result.ToActionResult();
+    }
+}

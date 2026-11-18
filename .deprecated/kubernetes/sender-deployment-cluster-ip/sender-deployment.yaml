@@ -2,12 +2,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: event-triangle-sender-deployment
-  namespace: event-triangle
+  name: fluxpay-sender-deployment
+  namespace: fluxpay
 spec:
   selector:
     matchLabels:
-      app: event-triangle-sender-api
+      app: fluxpay-sender-api
   replicas: 3
   strategy:
     type: RollingUpdate
@@ -17,10 +17,10 @@ spec:
   template:
     metadata:
       labels:
-        app: event-triangle-sender-api
+        app: fluxpay-sender-api
     spec:
       containers:
-        - name: event-triangle-sender-api
+        - name: fluxpay-sender-api
           image: kaminome/sender-service:latest
           imagePullPolicy: Always
           resources:

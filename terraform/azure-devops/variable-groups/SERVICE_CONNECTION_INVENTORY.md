@@ -3,7 +3,7 @@
 `service-connections.tf` creates connections from protected inputs; IDs come
 from Terraform resources, not hard-coded imports.
 
-- `EventTriangle`: GitHub PAT authentication, used by all nine managed pipelines.
+- `FluxPay`: GitHub PAT authentication, used by all nine managed pipelines.
 - `Azure_ACR_Connection`: registry credentials for the original ACR build scripts.
   Maintained pipelines publish to Docker Hub.
 - `Docker_Hub_Connection`: Docker Hub username/token, authorized for the three
@@ -18,7 +18,7 @@ List actual connections from the repository root without exporting secrets:
 ```bash
 bash scripts/list-service-connections.sh \
   29327428-805a-440b-9d16-fcf0ac20edb2 \
-  https://dev.azure.com/EventTriangle
+  https://dev.azure.com/FluxPay
 ```
 
 After apply, `terraform output service_connections` shows managed IDs and names.

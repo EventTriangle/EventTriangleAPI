@@ -1,17 +1,17 @@
 <p align="center">
-  <img src="./img/logo.png" width="150" height="150"  alt="Mango Messenger Logo"/>
+  <img src="./img/logo.png" width="150" height="150" alt="FluxPay logo"/>
 </p>
 
 <div align="center">
-  <h1>EventTriangleAPI</h1>
+  <h1>FluxPayAPI</h1>
 </div>
 
-Event Triangle is a project that leverages the power of event sourcing using
+FluxPay is a project that leverages the power of event sourcing using
 .NET and Angular frameworks to manage and track currency transactions.
 This project employs a cutting-edge approach to data storage and retrieval, capturing each state-changing event
 in the system to create a comprehensive and reliable transaction history.
 With a focus on real-time updates and seamless integration between the backend and frontend,
-EventTriangleAPI offers realtime communication using SignalR.
+FluxPayAPI offers realtime communication using SignalR.
 
 - **Video**: https://www.youtube.com/watch?v=9Deyui0g1RY
 
@@ -34,7 +34,7 @@ EventTriangleAPI offers realtime communication using SignalR.
 - Use NodeJS `18.15.0` using NVM via PowerShell as Administrator: `nvm use 18.15.0`
 - Check NodeJS installed properly (should be `18.15.0`): `node -v`
 - Check NPM installed properly (should be `9.5.0`): `npm -v`
-- Go to the project folder: `cd src/authorization/EventTriangle.Client`
+- Go to the project folder: `cd src/authorization/FluxPay.Client`
 - Restore node modules: `npm ci`
 - Install Angular CLI globally: `npm install -g @angular/cli@15.2.6`
 - Open PowerShell as Administrator and type: `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned`
@@ -64,7 +64,7 @@ Setup: [Azure infrastructure](terraform/infrastructure/README.md),
 ## Kubernetes deployment
 
 Ansible bootstraps Flux Operator on AKS. Flux reads `clusters/aks` from the
-`master` branch of the [GitOps repository](https://github.com/EventTriangle/fluxcd-repository).
+`master` branch of the [GitOps repository](https://github.com/FluxPay/fluxcd-repository).
 
 The platform installs CloudNativePG, the Redis Enterprise Operator, cert-manager,
 and Traefik from their official Helm charts. RabbitMQ Cluster Operator
@@ -75,8 +75,8 @@ The AKS overlay defines separate Helm releases for Authorization, Sender, and
 Consumer. The [application charts](charts/) are packaged by the Authorization
 CI workflow on stable releases and published to GHCR. The GitOps repository
 pins the chart versions and supplies dev values and SOPS-encrypted secrets.
-See the [platform setup](https://github.com/EventTriangle/fluxcd-repository/blob/master/docs/aks-platform.md)
-and [application deployment guide](https://github.com/EventTriangle/fluxcd-repository/blob/master/docs/applications.md).
+See the [platform setup](https://github.com/FluxPay/fluxcd-repository/blob/master/docs/aks-platform.md)
+and [application deployment guide](https://github.com/FluxPay/fluxcd-repository/blob/master/docs/applications.md).
 The [platform migration guide](sprint-planning/platform-migration.md) lists the
 archived assets and the dev acceptance checks.
 
@@ -104,26 +104,26 @@ archived assets and the dev acceptance checks.
 
 ### Deployments
 
-- https://auth-eventtriangle.razumovsky.me/app/transactions
-- https://auth-eventtriangle.razumovsky.me/swagger/index.html
+- https://fluxpay.razumovsky.me/app/transactions
+- https://fluxpay.razumovsky.me/swagger/index.html
 
 ### Management
 
 - Docker: https://hub.docker.com/u/petrokolosov
-- Azure DevOps: https://dev.azure.com/EventTriangle/EventTriangleAPI
-- Renovate: https://developer.mend.io/github/EventTriangle/EventTriangleAPI
-- SonarCloud: https://sonarcloud.io/organizations/event-triangle/projects
+- Azure DevOps: https://dev.azure.com/FluxPay/FluxPayAPI
+- Renovate: https://developer.mend.io/github/FluxPay/FluxPayAPI
+- SonarCloud: https://sonarcloud.io/organizations/fluxpay/projects
 
 ## How to run Docker compose
 
 ### Windows
 
-- `setx EVENT_TRIANGLE_AD_CLIENT_SECRET <YOUR_AD_SECRET>`
+- `setx FLUXPAY_AD_CLIENT_SECRET <YOUR_AD_SECRET>`
 - `docker-compose up`
 
 ### Linux
 
-- `export EVENT_TRIANGLE_AD_CLIENT_SECRET=<YOUR_AD_SECRET>`
+- `export FLUXPAY_AD_CLIENT_SECRET=<YOUR_AD_SECRET>`
 - `docker compose up`
 
 ## Build and publish Docker images

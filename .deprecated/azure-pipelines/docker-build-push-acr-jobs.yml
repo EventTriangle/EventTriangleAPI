@@ -62,7 +62,7 @@ parameters:
 
   - name: dockerBuildParameterUrl
     displayName: 'Build parameter for Docker: Base URL'
-    default: 'https://eventtriangleauth.devtest.team/'
+    default: 'https://fluxpayauth.devtest.team/'
     type: string
 
 jobs:

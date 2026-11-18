@@ -1,13 +1,13 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: event-triangle-sender-hpa
-  namespace: event-triangle
+  name: fluxpay-sender-hpa
+  namespace: fluxpay
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: event-triangle-sender-deployment
+    name: fluxpay-sender-deployment
   minReplicas: 1
   maxReplicas: 5
   metrics:

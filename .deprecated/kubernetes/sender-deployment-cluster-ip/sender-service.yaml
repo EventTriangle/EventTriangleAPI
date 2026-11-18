@@ -2,11 +2,11 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: event-triangle-sender-service
-  namespace: event-triangle
+  name: fluxpay-sender-service
+  namespace: fluxpay
 spec:
   selector:
-    app: event-triangle-sender-api
+    app: fluxpay-sender-api
   ports:
     - name: http
       protocol: TCP

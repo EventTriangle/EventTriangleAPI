@@ -2,12 +2,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: event-triangle-auth-deployment
-  namespace: event-triangle
+  name: fluxpay-auth-deployment
+  namespace: fluxpay
 spec:
   selector:
     matchLabels:
-      app: event-triangle-auth-api
+      app: fluxpay-auth-api
   replicas: 3
   strategy:
     type: RollingUpdate
@@ -17,10 +17,10 @@ spec:
   template:
     metadata:
       labels:
-        app: event-triangle-auth-api
+        app: fluxpay-auth-api
     spec:
       containers:
-        - name: event-triangle-auth-api
+        - name: fluxpay-auth-api
           image: kaminome/auth-service:latest
           imagePullPolicy: Always
           resources:
@@ -34,11 +34,11 @@ spec:
             - containerPort: 80
             - containerPort: 81
           env:
-            - name: EVENT_TRIANGLE_AD_CLIENT_SECRET
+            - name: FLUXPAY_AD_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
                   name: connection-creds
-                  key: EVENT_TRIANGLE_AD_CLIENT_SECRET
+                  key: FLUXPAY_AD_CLIENT_SECRET
 
             - name: DatabaseConnectionString
               valueFrom:

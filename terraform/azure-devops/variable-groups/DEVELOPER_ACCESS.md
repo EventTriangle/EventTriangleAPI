@@ -5,7 +5,7 @@ For setup, secret inputs and GitHub PAT permissions, see the [README](README.md)
 ## Access
 
 - The applying identity must manage service connections, pipelines, variable
-  groups, environments and pipeline authorizations in the EventTriangle project.
+  groups, environments and pipeline authorizations in the FluxPay project.
 - Backend access must allow reading/writing state and acquiring its lock.
 - Obtain service credentials from their owners; Azure DevOps cannot export them.
 - Keep `Grant access permission to all pipelines` disabled. Terraform grants only

@@ -105,10 +105,10 @@ jobs:
             condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'main'))
             inputs:
               SonarCloud: ${{ parameters.sonarCloudServiceConnection }}
-              organization: event-triangle
+              organization: fluxpay
               scannerMode: dotnet
-              projectKey: event-triangle-api
-              projectName: eventtriangleapi
+              projectKey: fluxpay-api
+              projectName: fluxpayapi
               extraProperties: |
                 sonar.cs.vstest.reportsPaths=$(Agent.TempDirectory)/**/*.trx
                 sonar.cs.opencover.reportsPaths=$(Agent.TempDirectory)/**/*opencover.xml

@@ -1,7 +1,7 @@
 resource "azuredevops_serviceendpoint_github" "github" {
   project_id            = var.project_id
-  service_endpoint_name = "EventTriangle"
-  description           = "GitHub repository access for the maintained EventTriangle pipelines."
+  service_endpoint_name = "FluxPay"
+  description           = "GitHub repository access for the maintained FluxPay pipelines."
 
   # Restrictions are documented in DEVELOPER_ACCESS.md.
   auth_personal {
@@ -35,7 +35,7 @@ resource "azuredevops_serviceendpoint_sonarcloud" "sonarcloud" {
 
   project_id            = var.project_id
   service_endpoint_name = "SonarCloud_Service_Connection"
-  description           = "SonarCloud analysis for the EventTriangle API Auth build."
+  description           = "SonarCloud analysis for the FluxPay API Auth build."
   token                 = var.sonarcloud_token
 
   lifecycle {
@@ -51,7 +51,7 @@ resource "azuredevops_serviceendpoint_sonarcloud" "sonarcloud" {
 resource "azuredevops_serviceendpoint_azurerm" "azure" {
   project_id                             = var.project_id
   service_endpoint_name                  = "Azure_Connection"
-  description                            = "Azure Resource Manager authentication for EventTriangle infrastructure."
+  description                            = "Azure Resource Manager authentication for FluxPay infrastructure."
   service_endpoint_authentication_scheme = "ServicePrincipal"
   azurerm_spn_tenantid                   = var.azure_tenant_id
   azurerm_subscription_id                = var.azure_subscription_id

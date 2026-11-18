@@ -63,9 +63,9 @@ secretEnv:
   DatabaseConnectionString:
     name: connection-creds
     key: AuthDatabaseConnectionString
-  EVENT_TRIANGLE_AD_CLIENT_SECRET:
+  FLUXPAY_AD_CLIENT_SECRET:
     name: azure-ad-auth
-    key: EVENT_TRIANGLE_AD_CLIENT_SECRET
+    key: FLUXPAY_AD_CLIENT_SECRET
   RedisPassword:
     name: connection-creds
     key: RedisPassword
