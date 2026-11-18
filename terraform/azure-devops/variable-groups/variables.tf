@@ -1,7 +1,7 @@
 variable "organization_url" {
   description = "Azure DevOps organization URL used by the provider."
   type        = string
-  default     = "https://dev.azure.com/FluxPay"
+  default     = "https://dev.azure.com/FluxPayProject"
 }
 
 variable "project_id" {
@@ -13,7 +13,7 @@ variable "project_id" {
 variable "github_repository_id" {
   description = "GitHub repository in OWNER/REPOSITORY form used by all YAML pipelines."
   type        = string
-  default     = "FluxPay/FluxPayAPI"
+  default     = "FluxPayProject/FluxPayAPI"
 }
 
 variable "github_pat" {

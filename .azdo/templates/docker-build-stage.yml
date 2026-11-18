@@ -1,0 +1,14 @@
+parameters:
+  - name: stageName
+    type: string
+  - name: docker
+    type: object
+
+stages:
+  - stage: ${{ parameters.stageName }}
+    displayName: ${{ parameters.stageName }}
+    condition: and(succeeded(), ne(variables['System.PullRequest.IsFork'], 'True'))
+    jobs:
+      - template: docker-build-push-jobs.yml
+        parameters:
+          ${{ insert }}: ${{ parameters.docker }}

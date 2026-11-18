@@ -28,7 +28,7 @@ The backend key points to the existing state blob and must match its name.
 Supply secrets through protected environment variables:
 
 ```bash
-export AZDO_ORG_SERVICE_URL="https://dev.azure.com/FluxPay"
+export AZDO_ORG_SERVICE_URL="https://dev.azure.com/FluxPayProject"
 export AZDO_PERSONAL_ACCESS_TOKEN="<Azure DevOps PAT>"
 export TF_VAR_github_pat="<fine-grained GitHub PAT>"
 export TF_VAR_backend_sas_token="<backend SAS token>"
@@ -65,7 +65,7 @@ In GitHub, open `Settings > Developer settings > Personal access tokens >
 Fine-grained tokens > Generate new token` and select:
 
 - Resource owner: `FluxPay`.
-- Repository access: `Only select repositories` → `FluxPay/FluxPayAPI`.
+- Repository access: `Only select repositories` → `FluxPayProject/FluxPayAPI`.
 - An explicit expiration; obtain organization approval if required.
 
 Under **Repository permissions**, enable only:
@@ -88,15 +88,15 @@ commit statuses, not GitHub App Checks.
 References: [Microsoft: GitHub authentication](https://learn.microsoft.com/en-us/azure/devops/pipelines/security/secure-access-to-repos?view=azure-devops#authentication-to-github-repositories),
 [GitHub: fine-grained tokens](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens).
 
-## SonarCloud (optional)
+## SonarCloud
 
-Disabled by default. To create its connection, set `TF_VAR_manage_sonarcloud=true`
+For Build Auth, set `TF_VAR_manage_sonarcloud=true`
 and `TF_VAR_sonarcloud_token`, then plan/apply. Keep management enabled once the
 connection is managed: `prevent_destroy` protects it from accidental removal.
 An unmanaged same-name connection must be explicitly adopted or removed first.
 
-Build Auth analysis is controlled separately by `sonarCloudEnabled`, default
-`false`. Enable it for a manual run, or change its YAML default for automatic runs.
+Build Auth runs SonarCloud analysis on `main` and `develop`. Build Consumer,
+Build Sender, and PR Validation have SonarCloud analysis disabled.
 
 ## Reference
 

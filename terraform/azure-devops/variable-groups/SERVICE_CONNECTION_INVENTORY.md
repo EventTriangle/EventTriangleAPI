@@ -11,14 +11,14 @@ from Terraform resources, not hard-coded imports.
 - `Azure_Connection`: Azure service-principal credentials. Maintained infrastructure
   pipelines currently use the Azure credential variable group instead.
 - `SonarCloud_Service_Connection`: optional token authentication, used only by
-  Build Auth when analysis is enabled; disabled by default.
+  Build Auth on `main` and `develop`. Terraform can manage this connection.
 
 List actual connections from the repository root without exporting secrets:
 
 ```bash
 bash scripts/list-service-connections.sh \
   29327428-805a-440b-9d16-fcf0ac20edb2 \
-  https://dev.azure.com/FluxPay
+  https://dev.azure.com/FluxPayProject
 ```
 
 After apply, `terraform output service_connections` shows managed IDs and names.

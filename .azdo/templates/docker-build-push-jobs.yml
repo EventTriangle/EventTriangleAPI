@@ -73,12 +73,16 @@ jobs:
 
       - bash: |
           set -euo pipefail
-          echo "##vso[build.updatebuildnumber]${SEM_VER}-${RUN_ID}"
+          version="${SEM_VER}-run.${RUN_ID}"
+          mkdir -p "$RELEASE_DIR"
+          printf '%s\n' "$version" > "$RELEASE_DIR/version.txt"
+          echo "##vso[build.updatebuildnumber]$version"
         displayName: 'Set Build Version'
         condition: succeeded()
         env:
           SEM_VER: $(version_step.SemVer)
           RUN_ID: $(Build.BuildId)
+          RELEASE_DIR: $(Pipeline.Workspace)/release
 
       - bash: |
           echo "Version: $SEM_VER"
@@ -102,7 +106,7 @@ jobs:
 
       - ${{ if eq(parameters.sonarCloudEnabled, true) }}:
           - task: SonarCloudPrepare@4
-            condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'main'))
+            condition: and(succeeded(), in(variables['Build.SourceBranch'], 'refs/heads/main', 'refs/heads/develop'))
             inputs:
               SonarCloud: ${{ parameters.sonarCloudServiceConnection }}
               organization: fluxpay
@@ -140,11 +144,11 @@ jobs:
 
       - ${{ if eq(parameters.sonarCloudEnabled, true) }}:
           - task: SonarCloudAnalyze@4
-            condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'main'))
+            condition: and(succeeded(), in(variables['Build.SourceBranch'], 'refs/heads/main', 'refs/heads/develop'))
             inputs: {}
 
           - task: SonarCloudPublish@4
-            condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'main'))
+            condition: and(succeeded(), in(variables['Build.SourceBranch'], 'refs/heads/main', 'refs/heads/develop'))
             inputs:
               pollingTimeoutSec: "300"
 
@@ -157,9 +161,23 @@ jobs:
       # The shared build script publishes with buildx --push using this login.
       - bash: |
           set -euo pipefail
-          bash "$SCRIPT_FILE" "${SEM_VER}-${RUN_ID}"
+          case "$SOURCE_BRANCH" in
+            refs/heads/main|refs/tags/v*) export DOCKER_PUBLISH_LATEST=true ;;
+            *) export DOCKER_PUBLISH_LATEST=false ;;
+          esac
+          if [[ "$BUILD_REASON" == PullRequest ]]; then
+            export DOCKER_PUBLISH_LATEST=false DOCKER_CACHE_TAG=buildcache-pr
+          fi
+          bash "$SCRIPT_FILE" "$(cat "$RELEASE_DIR/version.txt")"
+          jq -er '."containerimage.digest" | select(test("^sha256:[0-9a-f]{64}$"))' "$DOCKER_METADATA_FILE" > "$RELEASE_DIR/image.digest"
         displayName: 'Docker Build and Push'
         env:
           SCRIPT_FILE: ${{ parameters.scriptFile }}
-          SEM_VER: $(version_step.SemVer)
-          RUN_ID: $(Build.BuildId)
+          RELEASE_DIR: $(Pipeline.Workspace)/release
+          SOURCE_BRANCH: $(Build.SourceBranch)
+          BUILD_REASON: $(Build.Reason)
+          DOCKER_METADATA_FILE: $(Agent.TempDirectory)/fluxpay-image-metadata.json
+
+      - publish: $(Pipeline.Workspace)/release
+        artifact: release
+        displayName: Publish release metadata

@@ -1,0 +1,50 @@
+parameters:
+  - name: service
+    type: string
+    values: [authorization, consumer, sender]
+  - name: preview
+    type: boolean
+    default: false
+stages:
+  - stage: GitOps
+    dependsOn: Helm
+    ${{ if eq(parameters.preview, true) }}:
+      condition: and(succeeded(), eq(variables['Build.Reason'], 'PullRequest'), ne(variables['System.PullRequest.IsFork'], 'True'))
+    ${{ else }}:
+      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
+    displayName: Commit release versions to FluxCD
+    variables:
+      - group: FluxPay_GitOps_Writer
+    jobs:
+      - job: UpdateFlux
+        steps:
+          - checkout: self
+            persistCredentials: false
+          - download: current
+            artifact: release
+          - task: KubectlInstaller@0
+            inputs:
+              kubectlVersion: '1.35.1'
+          - bash: |
+              set -euo pipefail
+              python3 -m venv "$VENV"
+              "$VENV/bin/pip" install 'ruamel.yaml==0.18.16'
+              version="$(cat "$RELEASE_DIR/version.txt")"
+              args=()
+              if [[ "$PREVIEW" == [Tt]rue ]]; then
+                [[ "$PR_NUMBER" =~ ^[0-9]+$ ]]
+                args=(--pull-request "$PR_NUMBER")
+              fi
+              "$VENV/bin/python" scripts/gitops/publish-release.py \
+                --repository "$GITOPS_REPOSITORY" --version "$version" \
+                --service "$SERVICE" --source-commit "$SOURCE_COMMIT" --release-dir "$RELEASE_DIR" "${args[@]}"
+            displayName: Validate and push the GitOps commit
+            env:
+              RELEASE_DIR: $(Pipeline.Workspace)/release
+              VENV: $(Agent.TempDirectory)/fluxpay-gitops-venv
+              GITOPS_REPOSITORY: $(gitops-repository)
+              GITOPS_TOKEN: $(gitops-token)
+              SERVICE: ${{ parameters.service }}
+              SOURCE_COMMIT: $(Build.SourceVersion)
+              PR_NUMBER: $(System.PullRequest.PullRequestNumber)
+              PREVIEW: ${{ parameters.preview }}

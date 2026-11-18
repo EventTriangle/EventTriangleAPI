@@ -17,6 +17,9 @@ pr:
 
       # Pipeline itself (so changes validate)
       - .azdo/**
+      - charts/authorization/**
+      - charts/validation-values.yaml
+      - scripts/gitops/**
       - scripts/docker-build.sh
       - scripts/dockerhub/build-auth.sh
 
@@ -56,19 +59,26 @@ pool:
   vmImage: "ubuntu-latest"
 
 stages:
-  - stage: 'PR_Validation_${{ variables.appName }}'
-    displayName: 'PR_Validation_${{ variables.appName }}'
-    jobs:
-      - template: ../templates/docker-build-push-jobs.yml
-        parameters:
-          jobName: 'PR_Validation_${{ variables.appName }}'
-          solution: '$(System.DefaultWorkingDirectory)/FluxPayAPI.sln'
-          buildConfiguration: 'Release'
-          # Auth currently has no unit test cases.
-          shouldRunUnitTests: false
-          shouldRunIntegrationTests: true
-          integrationTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/authorization/FluxPayAPI.Authorization.IntegrationTests/FluxPayAPI.Authorization.IntegrationTests.csproj'
-          sonarCloudEnabled: true
-          sonarCloudServiceConnection: 'SonarCloud_Service_Connection'
-          scriptFile: "$(System.DefaultWorkingDirectory)/scripts/dockerhub/build-auth.sh"
-          dockerServiceConnection: "Docker_Hub_Connection"
+  - template: ../templates/docker-build-stage.yml
+    parameters:
+      stageName: 'PR_Validation_${{ variables.appName }}'
+      docker:
+        jobName: 'PR_Validation_${{ variables.appName }}'
+        solution: '$(System.DefaultWorkingDirectory)/FluxPayAPI.sln'
+        buildConfiguration: 'Release'
+        # Auth currently has no unit test cases.
+        shouldRunUnitTests: false
+        shouldRunIntegrationTests: true
+        integrationTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/authorization/FluxPayAPI.Authorization.IntegrationTests/FluxPayAPI.Authorization.IntegrationTests.csproj'
+        sonarCloudEnabled: false
+        sonarCloudServiceConnection: 'SonarCloud_Service_Connection'
+        scriptFile: "$(System.DefaultWorkingDirectory)/scripts/dockerhub/build-auth.sh"
+        dockerServiceConnection: "Docker_Hub_Connection"
+  - template: ../templates/helm-publish-stage.yml
+    parameters:
+      service: authorization
+      dockerStage: 'PR_Validation_${{ variables.appName }}'
+  - template: ../templates/gitops-update-stage.yml
+    parameters:
+      service: authorization
+      preview: true

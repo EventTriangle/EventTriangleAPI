@@ -47,7 +47,25 @@ locals {
     }
   }
 
-  variable_group_pipeline_authorizations = {
+  build_pipelines = toset(["build_auth", "build_consumer", "build_sender"])
+  release_pipelines = setunion(local.build_pipelines, toset([
+    "pr_validation_auth",
+    "pr_validation_consumer",
+    "pr_validation_sender",
+  ]))
+
+  release_variable_groups = {
+    ghcr   = azuredevops_variable_group.fluxpay_ghcr_publisher.id
+    gitops = azuredevops_variable_group.fluxpay_gitops_writer.id
+  }
+
+  variable_group_pipeline_authorizations = merge({
+    for pair in setproduct(local.release_pipelines, keys(local.release_variable_groups)) :
+    "${pair[0]}_${pair[1]}" => {
+      variable_group_id = local.release_variable_groups[pair[1]]
+      pipeline_key      = pair[0]
+    }
+    }, {
     backend_create = {
       variable_group_id = azuredevops_variable_group.terraform_backend_settings.id
       pipeline_key      = "terraform_create"
@@ -72,8 +90,7 @@ locals {
       variable_group_id = azuredevops_variable_group.cloudflare_api_key.id
       pipeline_key      = "cloudflare_dns"
     }
-  }
-
+  })
 }
 
 resource "azuredevops_build_definition" "pipeline" {
@@ -128,14 +145,7 @@ resource "azuredevops_pipeline_authorization" "github_repository" {
 }
 
 resource "azuredevops_pipeline_authorization" "docker_hub" {
-  for_each = toset([
-    "pr_validation_auth",
-    "pr_validation_sender",
-    "pr_validation_consumer",
-    "build_auth",
-    "build_sender",
-    "build_consumer",
-  ])
+  for_each = local.release_pipelines
 
   project_id  = var.project_id
   resource_id = azuredevops_serviceendpoint_dockerregistry.docker_hub.id

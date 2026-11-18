@@ -116,6 +116,10 @@ fi
 # Configuration
 # ==============================================================================
 
+if [[ -n "${DOCKER_CACHE_TAG:-}" ]]; then
+    CACHE_IMAGE_TAG="${CACHE_IMAGE_TAG%:*}:$DOCKER_CACHE_TAG"
+fi
+
 echo "============================================================"
 echo "Docker Build Configuration"
 echo "============================================================"
@@ -134,14 +138,20 @@ echo "============================================================"
 
 echo "Building image: $VERSION_TAG"
 
+build_args=(--tag "$VERSION_TAG" --tag "$CACHE_IMAGE_TAG")
+if [[ "${DOCKER_PUBLISH_LATEST:-true}" == true ]]; then
+    build_args+=(--tag "$LATEST_TAG")
+fi
+if [[ -n "${DOCKER_METADATA_FILE:-}" ]]; then
+    build_args+=(--metadata-file "$DOCKER_METADATA_FILE")
+fi
+
 docker buildx build \
     --progress=plain \
     --cache-to type=inline \
     --cache-from type=registry,ref="${CACHE_IMAGE_TAG}" \
     --build-context shared="${SHARED_CONTEXT}" \
-    --tag "${VERSION_TAG}" \
-    --tag "${CACHE_IMAGE_TAG}" \
-    --tag "${LATEST_TAG}" \
+    "${build_args[@]}" \
     --file "${DOCKER_FILE}" \
     --push \
     "${WORKING_DIRECTORY}"

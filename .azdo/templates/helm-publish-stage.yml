@@ -1,0 +1,54 @@
+parameters:
+  - name: service
+    type: string
+    values: [authorization, consumer, sender]
+  - name: dockerStage
+    type: string
+stages:
+  - stage: Helm
+    dependsOn: ${{ parameters.dockerStage }}
+    displayName: Validate and publish Helm chart
+    variables:
+      - group: FluxPay_GHCR_Publisher
+    jobs:
+      - job: PublishChart
+        steps:
+          - checkout: self
+            persistCredentials: false
+          - download: current
+            artifact: release
+          - task: HelmInstaller@1
+            inputs:
+              helmVersionToInstall: '3.20.0'
+          - bash: |
+              set -euo pipefail
+              export GOBIN="$TOOLS_DIR"
+              go install github.com/yannh/kubeconform/cmd/kubeconform@v0.8.0
+              for values in default validation; do
+                args=()
+                if [[ "$values" == validation ]]; then
+                  args=(-f charts/validation-values.yaml)
+                fi
+                helm lint "charts/$CHART" "${args[@]}"
+                helm template "$CHART" "charts/$CHART" "${args[@]}" |
+                  "$TOOLS_DIR/kubeconform" -strict -summary -kubernetes-version 1.35.1
+              done
+            displayName: Lint and validate the chart
+            env:
+              CHART: ${{ parameters.service }}
+              TOOLS_DIR: $(Agent.TempDirectory)/fluxpay-tools
+          - bash: |
+              set -euo pipefail
+              version="$(cat "$RELEASE_DIR/version.txt")"
+              package_dir="$(mktemp -d)"
+              trap 'rm -r "$package_dir"' EXIT
+              export HELM_REGISTRY_CONFIG="$package_dir/registry.json"
+              printf '%s' "$GHCR_TOKEN" | helm registry login ghcr.io --username "$GHCR_USER" --password-stdin
+              helm package "charts/$CHART" --version "$version" --app-version "$version" --destination "$package_dir"
+              helm push "$package_dir/$CHART-$version.tgz" oci://ghcr.io/fluxpayproject/charts
+            displayName: Publish versioned chart to GHCR
+            env:
+              CHART: ${{ parameters.service }}
+              RELEASE_DIR: $(Pipeline.Workspace)/release
+              GHCR_USER: $(ghcr-user)
+              GHCR_TOKEN: $(ghcr-token)
