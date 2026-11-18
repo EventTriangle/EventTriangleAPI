@@ -39,6 +39,12 @@ stages:
               TOOLS_DIR: $(Agent.TempDirectory)/fluxpay-tools
           - bash: |
               set -euo pipefail
+              helm template "$CHART" "charts/$CHART" --dry-run=client -f charts/validation-values.yaml
+            displayName: Print Helm dry-run manifests
+            env:
+              CHART: ${{ parameters.service }}
+          - bash: |
+              set -euo pipefail
               version="$(cat "$RELEASE_DIR/version.txt")"
               package_dir="$(mktemp -d)"
               trap 'rm -r "$package_dir"' EXIT
