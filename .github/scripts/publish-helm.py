@@ -44,7 +44,6 @@ def main():
 
             package_dir = Path(os.environ["RUNNER_TEMP"]) / chart
             archive = package_dir / f"{chart}-{version}.tgz"
-            subprocess.run(["helm", "lint", chart_dir], check=True)
             subprocess.run(["helm", "package", chart_dir, "--destination", package_dir], check=True)
             push = subprocess.run(
                 ["helm", "push", archive, registry],

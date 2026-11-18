@@ -1,0 +1,11 @@
+autoscaling:
+  enabled: true
+
+ingress:
+  enabled: true
+  host: eventtriangle.example.com
+  routes:
+    - name: validation-ingress
+      path: /
+      pathType: Prefix
+      tlsSecretName: validation-tls
