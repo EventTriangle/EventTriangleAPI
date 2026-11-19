@@ -42,6 +42,10 @@ parameters:
     type: boolean
     default: false
 
+  - name: sonarCoverageProjects
+    type: string
+    default: ''
+
   - name: sonarCloudServiceConnection
     type: string
     default: SonarCloud_Service_Connection
@@ -154,6 +158,18 @@ jobs:
                 --verbosity minimal
                 -p:Version=$(version_step.SemVer)
                 --collect "Code Coverage"
+
+      - ${{ if and(eq(parameters.sonarCloudEnabled, true), ne(parameters.sonarCoverageProjects, '')) }}:
+          - task: DotNetCoreCLI@2
+            displayName: 'Collect unit test coverage for SonarCloud'
+            condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
+            inputs:
+              command: 'test'
+              projects: ${{ parameters.sonarCoverageProjects }}
+              arguments: >-
+                --configuration ${{ parameters.buildConfiguration }}
+                --no-build
+                --collect "XPlat Code Coverage;Format=opencover"
 
       - ${{ if eq(parameters.sonarCloudEnabled, true) }}:
           - task: SonarCloudAnalyze@4

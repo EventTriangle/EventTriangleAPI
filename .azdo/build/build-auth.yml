@@ -34,6 +34,9 @@ stages:
         shouldRunIntegrationTests: true
         integrationTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/authorization/FluxPayAPI.Authorization.IntegrationTests/FluxPayAPI.Authorization.IntegrationTests.csproj'
         sonarCloudEnabled: true
+        sonarCoverageProjects: |
+          src/consumer/FluxPayAPI.Consumer.UnitTests/FluxPayAPI.Consumer.UnitTests.csproj
+          src/sender/FluxPayAPI.Sender.UnitTests/FluxPayAPI.Sender.UnitTests.csproj
         sonarCloudServiceConnection: 'SonarCloud_Service_Connection'
         dockerServiceConnection: 'Docker_Hub_Connection'
         scriptFile: '$(System.DefaultWorkingDirectory)/scripts/dockerhub/build-auth.sh'
