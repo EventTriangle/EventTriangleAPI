@@ -2,7 +2,7 @@ using System.Text.RegularExpressions;
 
 namespace FluxPayAPI.Consumer.Presentation.Routing;
 
-public class CustomParameterTransformer : IOutboundParameterTransformer
+public partial class CustomParameterTransformer : IOutboundParameterTransformer
 {
     public string TransformOutbound(object value)
     {
@@ -11,6 +11,9 @@ public class CustomParameterTransformer : IOutboundParameterTransformer
             return null;
         }
         
-        return Regex.Replace(value.ToString() ?? string.Empty, "([a-z])([A-Z])", "$1-$2").ToLower();
+        return WordBoundary().Replace(value.ToString() ?? string.Empty, "$1-$2").ToLower();
     }
+
+    [GeneratedRegex("([a-z])([A-Z])", RegexOptions.None, 1000)]
+    private static partial Regex WordBoundary();
 }

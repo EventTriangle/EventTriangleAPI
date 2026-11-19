@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using FluxPayAPI.Consumer.Domain.Constants;
 using FluxPayAPI.Consumer.Domain.Entities;
 using FluxPayAPI.Consumer.Persistence;
@@ -43,11 +44,10 @@ public static class SeedInitializer
         // transaction seeds
         var transactionList = new List<TransactionEntity>();
 
-        var random = new Random();
         
         for (var i = 0; i < 45; i++)
         {
-            var num = random.Next(1, 3);
+            var num = RandomNumberGenerator.GetInt32(1, 3);
 
             var transaction = num == 1 
                 ? new TransactionEntity(dima.Id, bob.Id, 10000, TransactionType.FromUserToUser, DateTime.UtcNow) 
@@ -58,7 +58,7 @@ public static class SeedInitializer
         
         for (int i = 0; i < 20; i++)
         {
-            var num = random.Next(1, 3);
+            var num = RandomNumberGenerator.GetInt32(1, 3);
 
             var transaction = num == 1 
                 ? new TransactionEntity(alex.Id, alice.Id, 1000, TransactionType.FromUserToUser, DateTime.UtcNow)
@@ -69,7 +69,7 @@ public static class SeedInitializer
         
         for (int i = 0; i < 20; i++)
         {
-            var num = random.Next(1, 3);
+            var num = RandomNumberGenerator.GetInt32(1, 3);
 
             var transaction = num == 1 
                 ? new TransactionEntity(dima.Id, sasha.Id, 700, TransactionType.FromUserToUser, DateTime.UtcNow)
@@ -80,7 +80,7 @@ public static class SeedInitializer
         
         for (int i = 0; i < 10; i++)
         {
-            var num = random.Next(1, 3);
+            var num = RandomNumberGenerator.GetInt32(1, 3);
 
             var transaction = num == 1 
                 ? new TransactionEntity(dima.Id, bob.Id, 8000, TransactionType.FromUserToUser, DateTime.UtcNow)
@@ -91,7 +91,7 @@ public static class SeedInitializer
         
         for (int i = 0; i < 15; i++)
         {
-            var num = random.Next(1, 3);
+            var num = RandomNumberGenerator.GetInt32(1, 3);
 
             var transaction = num == 1 
                 ? new TransactionEntity(bob.Id, sasha.Id, 1000, TransactionType.FromUserToUser, DateTime.UtcNow)
@@ -102,7 +102,7 @@ public static class SeedInitializer
         
         for (int i = 0; i < 15; i++)
         {
-            var num = random.Next(1, 3);
+            var num = RandomNumberGenerator.GetInt32(1, 3);
 
             var transaction = num == 1 
                 ? new TransactionEntity(dima.Id, alex.Id, 7775, TransactionType.FromUserToUser, DateTime.UtcNow)

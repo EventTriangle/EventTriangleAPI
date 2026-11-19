@@ -80,4 +80,4 @@ app.MapGrpcService<UserGrpcService>();
 
 app.MigrateDatabase();
 
-app.Run();
+await app.RunAsync();

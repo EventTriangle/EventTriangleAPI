@@ -4,6 +4,7 @@ using FluxPayAPI.Consumer.BusinessLogic.Models.Notifications;
 using FluxPayAPI.Consumer.Domain.Constants;
 using FluxPayAPI.Shared.DTO.Enums;
 using FluxPayAPI.Shared.DTO.Messages;
+using FluxPayAPI.Shared.DTO.Responses.Errors;
 using MassTransit;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
@@ -93,7 +94,7 @@ public class EventConsumer :
 
             if (!result.IsSuccess)
             {
-                _logger.LogError("{ErrorMessage}", result.Error.Message);
+                LogError(result.Error);
                 
                 var notification = new ContactCreatingCanceledNotification(message.ContactId, result.Error.Message);
 
@@ -102,7 +103,7 @@ public class EventConsumer :
         }
         catch(Exception e)
         {
-            _logger.LogError(e, "{ErrorMessage}", e.Message);
+            LogError(e);
             
             var notification = new ContactCreatingCanceledNotification(message.ContactId, ResponseMessages.InternalError);
 
@@ -123,7 +124,7 @@ public class EventConsumer :
 
             if (!result.IsSuccess)
             {
-                _logger.LogError("{ErrorMessage}", result.Error.Message);
+                LogError(result.Error);
                 
                 var notification = new ContactDeletingCanceledNotification(message.ContactId, result.Error.Message);
 
@@ -132,7 +133,7 @@ public class EventConsumer :
         }
         catch(Exception e)
         {
-            _logger.LogError(e, "{ErrorMessage}", e.Message);
+            LogError(e);
             
             var notification = new ContactDeletingCanceledNotification(message.ContactId, ResponseMessages.InternalError);
 
@@ -159,7 +160,7 @@ public class EventConsumer :
 
             if (!result.IsSuccess)
             {
-                _logger.LogError("{ErrorMessage}", result.Error.Message);
+                LogError(result.Error);
                 
                 var notification = new CreditCardAddingCanceledNotification(
                     message.HolderName,
@@ -177,7 +178,7 @@ public class EventConsumer :
         }
         catch(Exception e)
         {
-            _logger.LogError(e, "{ErrorMessage}", e.Message);
+            LogError(e);
             
             var notification = new CreditCardAddingCanceledNotification(
                 message.HolderName,
@@ -211,7 +212,7 @@ public class EventConsumer :
 
             if (!result.IsSuccess)
             {
-                _logger.LogError("{ErrorMessage}", result.Error.Message);
+                LogError(result.Error);
                 
                 var notification = new CreditCardChangingCanceledNotification(
                     message.HolderName,
@@ -226,7 +227,7 @@ public class EventConsumer :
         }
         catch(Exception e)
         {
-            _logger.LogError(e, "{ErrorMessage}", e.Message);
+            LogError(e);
             
             var notification = new CreditCardChangingCanceledNotification(
                 message.HolderName,
@@ -253,7 +254,7 @@ public class EventConsumer :
 
             if (!result.IsSuccess)
             {
-                _logger.LogError("{ErrorMessage}", result.Error.Message);
+                LogError(result.Error);
                 
                 var notification = new CreditCardDeletingCanceledNotification(message.CardId, result.Error.Message);
 
@@ -262,7 +263,7 @@ public class EventConsumer :
         }
         catch(Exception e)
         {
-            _logger.LogError(e, "{ErrorMessage}", e.Message);
+            LogError(e);
             
             var notification = new CreditCardDeletingCanceledNotification(message.CardId, ResponseMessages.InternalError);
 
@@ -288,7 +289,7 @@ public class EventConsumer :
 
             if (!result.IsSuccess)
             {
-                _logger.LogError("{ErrorMessage}", result.Error.Message);
+                LogError(result.Error);
                 
                 var notification = new SupportTicketOpeningCanceledNotification(
                     message.WalletId,
@@ -304,7 +305,7 @@ public class EventConsumer :
         }
         catch(Exception e)
         {
-            _logger.LogError(e, "{ErrorMessage}", e.Message);
+            LogError(e);
             
             var notification = new SupportTicketOpeningCanceledNotification(
                 message.WalletId,
@@ -329,7 +330,7 @@ public class EventConsumer :
 
             if (!result.IsSuccess)
             {
-                _logger.LogError("{ErrorMessage}", result.Error.Message);
+                LogError(result.Error);
                 
                 var notification = new SupportTicketResolvingCanceledNotification(
                     message.TicketId,
@@ -341,7 +342,7 @@ public class EventConsumer :
         }
         catch(Exception e)
         {
-            _logger.LogError(e, "{ErrorMessage}", e.Message);
+            LogError(e);
             
             var notification = new SupportTicketResolvingCanceledNotification(
                 message.TicketId,
@@ -369,7 +370,7 @@ public class EventConsumer :
 
             if (!result.IsSuccess)
             {
-                _logger.LogError("{ErrorMessage}", result.Error.Message);
+                LogError(result.Error);
                 
                 var notification = new TransactionCanceledNotification(
                     message.RequesterId, 
@@ -387,7 +388,7 @@ public class EventConsumer :
         }
         catch(Exception e)
         {
-            _logger.LogError(e, "{ErrorMessage}", e.Message);
+            LogError(e);
             
             var notification = new TransactionCanceledNotification(
                 message.RequesterId, 
@@ -418,7 +419,7 @@ public class EventConsumer :
 
             if (!result.IsSuccess)
             {
-                _logger.LogError("{ErrorMessage}", result.Error.Message);
+                LogError(result.Error);
                 
                 var notification = new TransactionCanceledNotification(
                     message.RequesterId, 
@@ -437,7 +438,7 @@ public class EventConsumer :
         }
         catch(Exception e)
         {
-            _logger.LogError(e, "{ErrorMessage}", e.Message);
+            LogError(e);
             
             var notification = new TransactionCanceledNotification(
                 message.RequesterId, 
@@ -464,7 +465,7 @@ public class EventConsumer :
 
             if (!result.IsSuccess)
             {
-                _logger.LogError("{ErrorMessage}", result.Error.Message);
+                LogError(result.Error);
                 
                 var notification = new TransactionRollBackCanceledNotification(message.TransactionId, result.Error.Message);
             
@@ -473,7 +474,7 @@ public class EventConsumer :
         }
         catch(Exception e)
         {
-            _logger.LogError(e, "{ErrorMessage}", e.Message);
+            LogError(e);
             
             var notification = new TransactionRollBackCanceledNotification(message.TransactionId, ResponseMessages.InternalError);
             
@@ -502,7 +503,7 @@ public class EventConsumer :
 
             if (!result.IsSuccess)
             {
-                _logger.LogError("{ErrorMessage}", result.Error.Message);
+                LogError(result.Error);
                 
                 var notification = new UserNotSuspendingCanceledNotification(message.UserId, result.Error.Message);
             
@@ -511,7 +512,7 @@ public class EventConsumer :
         }
         catch(Exception e)
         {
-            _logger.LogError(e, "{ErrorMessage}", e.Message);
+            LogError(e);
             
             var notification = new UserNotSuspendingCanceledNotification(message.UserId, ResponseMessages.InternalError);
             
@@ -532,7 +533,7 @@ public class EventConsumer :
 
             if (!result.IsSuccess)
             {
-                _logger.LogError("{ErrorMessage}", result.Error.Message);
+                LogError(result.Error);
                 
                 var notification = new UserRoleUpdatingCanceledNotification(
                     message.UserId,
@@ -544,7 +545,7 @@ public class EventConsumer :
         }
         catch(Exception e)
         {
-            _logger.LogError(e, "{ErrorMessage}", e.Message);
+            LogError(e);
             
             var notification = new UserRoleUpdatingCanceledNotification(
                 message.UserId,
@@ -568,7 +569,7 @@ public class EventConsumer :
 
             if (!result.IsSuccess)
             {
-                _logger.LogError("{ErrorMessage}", result.Error.Message);
+                LogError(result.Error);
                 
                 var notification = new UserSuspendingCanceledNotification(message.UserId, result.Error.Message);
             
@@ -577,12 +578,28 @@ public class EventConsumer :
         }
         catch(Exception e)
         {
-            _logger.LogError(e, "{ErrorMessage}", e.Message);
+            LogError(e);
             
             var notification = new UserSuspendingCanceledNotification(message.UserId, ResponseMessages.InternalError);
             
             await _hubContext.Clients.User(context.Message.RequesterId).UserSuspendingCanceledAsync(notification);
             throw;
+        }
+    }
+
+    private void LogError(Error error)
+    {
+        if (_logger.IsEnabled(LogLevel.Error))
+        {
+            _logger.LogError("{ErrorMessage}", error.Message);
+        }
+    }
+
+    private void LogError(Exception exception)
+    {
+        if (_logger.IsEnabled(LogLevel.Error))
+        {
+            _logger.LogError(exception, "{ErrorMessage}", exception.Message);
         }
     }
 }

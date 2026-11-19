@@ -32,7 +32,7 @@ builder.Services.AddDbContext<DatabaseContext>(options => { options.UseNpgsql(da
 
 if (string.IsNullOrEmpty(adClientSecret))
 {
-    throw new ArgumentNullException(nameof(adClientSecret));
+    throw new InvalidOperationException($"Missing required setting: {AppSettingsConstants.AdSecretKey}.");
 }
 
 builder.Services.AddAppAuthentication(
@@ -68,17 +68,17 @@ var redisUrl = builder.Configuration[AppSettingsConstants.RedisUrl];
 
 if (string.IsNullOrEmpty(redisUrl))
 {
-    throw new ArgumentNullException(nameof(redisUrl));
+    throw new InvalidOperationException($"Missing required setting: {AppSettingsConstants.RedisUrl}.");
 }
 
 var redisPassword = builder.Configuration[AppSettingsConstants.RedisPassword];
 
 if (string.IsNullOrEmpty(redisPassword))
 {
-    throw new ArgumentNullException(nameof(redisPassword));
+    throw new InvalidOperationException($"Missing required setting: {AppSettingsConstants.RedisPassword}.");
 }
 
-var redis = ConnectionMultiplexer.Connect(new ConfigurationOptions
+var redis = await ConnectionMultiplexer.ConnectAsync(new ConfigurationOptions
 {
     EndPoints = { redisUrl },
     Password = redisPassword,
@@ -127,4 +127,4 @@ app.Map(SpaRouting.Support, config => config.UseSpa(spa => spa.Options.SourcePat
 app.Map(SpaRouting.Tickets, config => config.UseSpa(spa => spa.Options.SourcePath = "/wwwroot"));
 app.Map(SpaRouting.Users, config => config.UseSpa(spa => spa.Options.SourcePath = "/wwwroot"));
 
-app.Run();
+await app.RunAsync();

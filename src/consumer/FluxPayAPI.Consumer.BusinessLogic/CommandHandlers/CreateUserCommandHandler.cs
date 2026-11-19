@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using FluxPayAPI.Consumer.BusinessLogic.Models;
 using FluxPayAPI.Consumer.Domain.Constants;
 using FluxPayAPI.Consumer.Domain.Entities;
@@ -67,11 +68,10 @@ public class CreateUserCommandHandler : ICommandHandler<CreateUserCommand, UserD
 
         var transactionList = new List<TransactionEntity>();
 
-        var random = new Random();
         
         for (var i = 0; i < 30; i++)
         {
-            var num = random.Next(1, 3);
+            var num = RandomNumberGenerator.GetInt32(1, 3);
 
             var transaction = num == 1 
                 ? new TransactionEntity(userId, alice.Id, 5000, TransactionType.FromUserToUser, DateTime.UtcNow) 
@@ -82,7 +82,7 @@ public class CreateUserCommandHandler : ICommandHandler<CreateUserCommand, UserD
         
         for (var i = 0; i < 30; i++)
         {
-            var num = random.Next(1, 3);
+            var num = RandomNumberGenerator.GetInt32(1, 3);
 
             var transaction = num == 1 
                 ? new TransactionEntity(userId, bob.Id, 10000, TransactionType.FromUserToUser, DateTime.UtcNow) 
@@ -108,8 +108,8 @@ public class CreateUserCommandHandler : ICommandHandler<CreateUserCommand, UserD
         {
             var name = user.Email.Split('@')[0];
             
-            var randomCardNumber = string.Concat(random.Next(1000, 9999), random.Next(1000, 9999), random.Next(1000, 9999), random.Next(1000, 9999));
-            var randomCvv = random.Next(100, 999).ToString();
+            var randomCardNumber = string.Concat(RandomNumberGenerator.GetInt32(1000, 9999), RandomNumberGenerator.GetInt32(1000, 9999), RandomNumberGenerator.GetInt32(1000, 9999), RandomNumberGenerator.GetInt32(1000, 9999));
+            var randomCvv = RandomNumberGenerator.GetInt32(100, 999).ToString();
             var creditCard = new CreditCardEntity(userId, name, randomCardNumber, randomCvv, "01/11", PaymentNetwork.MasterCard);
             creditCardList.Add(creditCard);
         }

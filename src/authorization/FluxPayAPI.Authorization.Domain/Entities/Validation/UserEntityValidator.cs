@@ -1,4 +1,4 @@
-using System.Text.RegularExpressions;
+using FluxPayAPI.Shared.Application.PredicateValidators;
 using FluentValidation;
 
 namespace FluxPayAPI.Authorization.Domain.Entities.Validation;
@@ -8,18 +8,6 @@ public class UserEntityValidator : AbstractValidator<UserEntity>
     public UserEntityValidator()
     {
         RuleFor(x => x.Id).NotEmpty();
-        RuleFor(x => x.Email).Must(ValidateEmail);
-    }
-    
-    private bool ValidateEmail(string email)
-    {
-        if (email == null)
-        {
-            return false;
-        }
-
-        Console.WriteLine($"UserEntityValidator -> ValidateEmail -> Received: {email}.");
-
-        return Regex.IsMatch(email, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
+        RuleFor(x => x.Email).Must(UserPredicates.ValidateEmail);
     }
 }

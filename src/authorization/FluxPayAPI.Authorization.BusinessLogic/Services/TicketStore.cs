@@ -128,7 +128,7 @@ public class TicketStore : ITicketStore
             if (user == null)
             {
                 var email = decodeAccessToken.Claims.First(x => x.Type == ClaimsConstants.UniqueName).Value;
-                var userRole = role == null ? UserRole.User : (UserRole)Enum.Parse(typeof(UserRole), role);
+                var userRole = role == null ? UserRole.User : Enum.Parse<UserRole>(role);
 
                 var newUser = new UserEntity(sub, email);
 

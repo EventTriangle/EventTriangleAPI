@@ -87,8 +87,10 @@ stages:
           - bash: |
               terraform init -backend=false
               terraform validate
-              terraform fmt -check -recursive "${{ parameters.terraformBasePath }}"
+              terraform fmt -check -recursive "$TF_BASE_PATH"
             displayName: "Run tf validate"
+            env:
+              TF_BASE_PATH: ${{ parameters.terraformBasePath }}
             workingDirectory: '${{ parameters.workingDirectory }}'
 
           - bash: |

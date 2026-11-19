@@ -106,4 +106,4 @@ if (shouldCreateSeeds)
     await app.InitializeSeeds();
 }
 
-app.Run();
+await app.RunAsync();
