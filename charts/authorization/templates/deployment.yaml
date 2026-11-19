@@ -18,6 +18,7 @@ spec:
       annotations:
         checksum/frontend: {{ .Values.frontend.baseUrl | sha256sum | quote }}
     spec:
+      automountServiceAccountToken: false
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}

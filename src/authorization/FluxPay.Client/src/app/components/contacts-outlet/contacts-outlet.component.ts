@@ -1,3 +1,7 @@
+import { SkeletonModule } from 'primeng/skeleton';
+import { AngularSvgIconModule } from 'angular-svg-icon';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 import {ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
 import {animate, animateChild, query, stagger, style, transition, trigger} from "@angular/animations";
 import {ContactsStateService} from "../../services/state/contacts-state.service";
@@ -11,6 +15,8 @@ import {IContactDto} from "../../types/interfaces/consumer/IContactDto";
 import {NavigationStart, Router} from "@angular/router";
 
 @Component({
+  standalone: true,
+  imports: [CommonModule, FormsModule, AngularSvgIconModule, SkeletonModule],
   selector: 'app-contacts-outlet',
   templateUrl: './contacts-outlet.component.html',
   styleUrls: ['./contacts-outlet.component.scss'],

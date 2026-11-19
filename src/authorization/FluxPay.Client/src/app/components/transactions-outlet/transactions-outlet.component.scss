@@ -1,4 +1,4 @@
-@import "../../../app/app.component.scss";
+@use "../../../app/app.component.scss" as *;
 
 :host {
   display: grid;
@@ -424,7 +424,7 @@
 
 ::ng-deep {
   .createNewTransactionToInput {
-    &.p-dropdown {
+    &.p-select {
       width: 100%;
       height: 60px;
       outline: none;
@@ -547,7 +547,7 @@
 
   ::ng-deep {
     .createNewTransactionToInput {
-      &.p-dropdown {
+      &.p-select {
         width: 100%;
         height: 50px;
         margin-bottom: 20px;
@@ -704,7 +704,7 @@
 
   ::ng-deep {
     .createNewTransactionToInput {
-      &.p-dropdown {
+      &.p-select {
         height: 45px;
         margin-bottom: 10px;
         padding: 0 10px;

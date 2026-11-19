@@ -3,6 +3,7 @@ import {AuthorizationApiService} from "../../services/api/authorization-api.serv
 import {animate, style, transition, trigger} from "@angular/animations";
 
 @Component({
+  standalone: false,
   selector: 'app-login-window',
   templateUrl: './login-window.component.html',
   styleUrls: ['./login-window.component.scss'],

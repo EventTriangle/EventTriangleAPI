@@ -12,7 +12,6 @@ namespace FluxPayAPI.Consumer.IntegrationTests;
 
 public class TestFixture
 {
-    private readonly ConsumerStartup _consumerStartup = new();
     internal readonly DatabaseContext DatabaseContextFixture;
     internal readonly AddCreditCardCommandHandler AddCreditCardCommandHandler;
     internal readonly ChangeCreditCardCommandHandler ChangeCreditCardCommandHandler;
@@ -60,7 +59,7 @@ public class TestFixture
         jsonConfigProvider.Set(AppSettingsConstants.ShouldCreateSeeds, "false");
         jsonConfigProvider.Set(AppSettingsConstants.ShouldCreateSeedsForAdmin, "false");
 
-        var serviceProvider = _consumerStartup.Initialize(databaseConnectionString, configuration);
+        var serviceProvider = ConsumerStartup.Initialize(databaseConnectionString, configuration);
 
         DatabaseContextFixture = serviceProvider.GetRequiredService<DatabaseContext>();
 

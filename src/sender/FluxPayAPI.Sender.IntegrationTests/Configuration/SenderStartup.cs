@@ -6,9 +6,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace FluxPayAPI.Sender.IntegrationTests.Configuration;
 
-public class SenderStartup
+internal static class SenderStartup
 {
-    public ServiceProvider Initialize(string connectionString)
+    public static ServiceProvider Initialize(string connectionString)
     {
         var serviceCollection = new ServiceCollection();
 

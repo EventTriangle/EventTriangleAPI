@@ -1,14 +1,22 @@
+import { NgxMaskDirective } from 'ngx-mask';
+import { ContextMenuModule } from 'primeng/contextmenu';
+import { SkeletonModule } from 'primeng/skeleton';
+import { AngularSvgIconModule } from 'angular-svg-icon';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 import {Component, OnInit} from '@angular/core';
 import {animate, query, stagger, style, transition, trigger} from "@angular/animations";
 import {PaymentNetwork} from "../../types/enums/PaymentNetwork";
 import {CreditCardsStateService} from "../../services/state/credit-cards-state.service";
-import { ProfileStateService } from 'src/app/services/state/profile-state.service';
+import { ProfileStateService } from '../../services/state/profile-state.service';
 import {ICreditCardDto} from "../../types/interfaces/consumer/ICreditCardDto";
 import {MenuItem} from "primeng/api";
 import {ErrorMessageConstants} from "../../constants/ErrorMessageConstants";
 import {TextService} from "../../services/common/text.service";
 
 @Component({
+  standalone: true,
+  imports: [CommonModule, FormsModule, AngularSvgIconModule, SkeletonModule, ContextMenuModule, NgxMaskDirective],
   selector: 'app-cards-outlet',
   templateUrl: './cards-outlet.component.html',
   styleUrls: ['./cards-outlet.component.scss'],

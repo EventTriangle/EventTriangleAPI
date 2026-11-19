@@ -13,7 +13,7 @@
             €{{user.wallet.balance}}
           </ng-container>
           <ng-template #userIsNull>
-            <p-skeleton styleClass="skeletonDefault" />
+            <p-skeleton class="skeletonDefault" />
           </ng-template>
         </p>
         <div class="logo">
@@ -29,7 +29,7 @@
               {{_textService.pullUsernameFromMail(user.email)}}
             </ng-container>
             <ng-template #userIsNull>
-              <p-skeleton styleClass="skeletonDefault" />
+              <p-skeleton class="skeletonDefault" />
             </ng-template>
           </p>
           <span>
@@ -37,7 +37,7 @@
               <p class="userInfoId" appCopyText="{{user.id}}" pTooltip="{{user.id}}">ID: {{user.id}}</p>
             </ng-container>
             <ng-template #userIsNull>
-              <p-skeleton styleClass="skeletonDefault" />
+              <p-skeleton class="skeletonDefault" />
             </ng-template>
           </span>
         </div>
@@ -110,11 +110,11 @@
       </div>
     </ng-container>
     <div class="transactionList" *ngIf="!_transactionsStateService.wasRequested">
-      <p-skeleton styleClass="skeletonTransactionItem" />
-      <p-skeleton styleClass="skeletonTransactionItem" />
-      <p-skeleton styleClass="skeletonTransactionItem" />
-      <p-skeleton styleClass="skeletonTransactionItem" />
-      <p-skeleton styleClass="skeletonTransactionItem" />
+      <p-skeleton class="skeletonTransactionItem" />
+      <p-skeleton class="skeletonTransactionItem" />
+      <p-skeleton class="skeletonTransactionItem" />
+      <p-skeleton class="skeletonTransactionItem" />
+      <p-skeleton class="skeletonTransactionItem" />
     </div>
   </div>
 </div>
@@ -124,7 +124,7 @@
       <p class="createNewTransactionTitle">
         Create New Transaction
       </p>
-      <p-dropdown styleClass="createNewTransactionToInput" [options]="contacts" [(ngModel)]="toUserId" (onChange)="onChangeDropDownHandler($event)"
+      <p-select class="createNewTransactionToInput" [options]="contacts" [(ngModel)]="toUserId" (onChange)="onChangeDropDownHandler($event)"
                   placeholder="To: Receiver" [editable]="true" />
       <input aria-label="Transaction amount" type="text" class="createNewTransactionAmountInput" (keydown.enter)="$event.preventDefault()" mask="0000000000000"
              placeholder="Amount: €0" [(ngModel)]="amount" (keyup.enter)="sendMoneyToUser()"/>

@@ -12,15 +12,15 @@
           <p class="cardItemNumbers">{{_textService.reformatCardNumbers(card.cardNumber)}}</p>
           <p class="cardItemExpiryDate">{{card.expiration}}</p>
           <p class="cardItemFullName">{{card.holderName}}</p>
-          <p-contextMenu [target]="cardItem" [autoZIndex]="true" [model]="contextMenuItems" appendTo="body" (onShow)="setSelectedCardForContextMenu(card)">
-          </p-contextMenu>
+          <p-contextmenu [target]="cardItem" [autoZIndex]="true" [model]="contextMenuItems" appendTo="body" (onShow)="setSelectedCardForContextMenu(card)">
+          </p-contextmenu>
         </div>
       </div>
     </ng-container>
     <div class="cardList" *ngIf="!_creditCardsStateService.wereCardsRequested">
-      <p-skeleton styleClass="skeletonCardItem" />
-      <p-skeleton styleClass="skeletonCardItem" />
-      <p-skeleton styleClass="skeletonCardItem" />
+      <p-skeleton class="skeletonCardItem" />
+      <p-skeleton class="skeletonCardItem" />
+      <p-skeleton class="skeletonCardItem" />
     </div>
   </div>
 </div>

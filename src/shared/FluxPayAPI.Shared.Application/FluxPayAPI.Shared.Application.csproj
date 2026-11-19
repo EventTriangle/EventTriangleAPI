@@ -20,10 +20,13 @@
         <PackageReference Include="MassTransit.RabbitMQ" Version="8.5.9" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.6" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="10.0.6" />
-        <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="10.0.7" />
+        <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="10.0.15" />
         <PackageReference Include="Microsoft.Identity.Web" Version="4.7.0" />
         <PackageReference Include="Microsoft.Identity.Web.UI" Version="4.7.0" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.1" />
+        <PackageReference Include="Microsoft.OpenApi" Version="2.7.5" />
+        <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.15" />
+        <PackageReference Include="System.Security.Cryptography.Xml" Version="10.0.15" />
         <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="10.1.7" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="10.1.7" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.6">

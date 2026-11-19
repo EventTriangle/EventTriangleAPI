@@ -3,8 +3,8 @@
   <p class="logoName">FluxPay</p>
 </a>
 <div class="search">
-  <p-autoComplete class="searchInput" placeholder="Search" [(ngModel)]="selectedItem"
-                  [suggestions]="suggestions" (completeMethod)="search($event)" (onSelect)="onSelectAutocompletedItemHandler($event)"></p-autoComplete>
+  <p-autocomplete class="searchInput" placeholder="Search" [(ngModel)]="selectedItem"
+                  [suggestions]="suggestions" (completeMethod)="search($event)" (onSelect)="onSelectAutocompletedItemHandler($event.value)"></p-autocomplete>
   <svg-icon src="../../../assets/svg/search.svg" class="searchSvg" />
 </div>
 <div class="profile">
@@ -12,7 +12,7 @@
     <div class="fullName">
       <span *ngIf="user; else userIsNull">{{_textService.pullUsernameFromMail(user.email)}}</span>
       <ng-template #userIsNull>
-        <p-skeleton styleClass="skeletonDefault" />
+        <p-skeleton class="skeletonDefault" />
       </ng-template>
     </div>
   </ng-container>

@@ -12,14 +12,15 @@ ENV ASPNETCORE_FORWARDEDHEADERS_ENABLED=true
 #######################################################################################################
 # ANGULAR BUILD
 #######################################################################################################
-FROM node:18.15.0-alpine AS angular
+FROM node:24.16.0-alpine AS angular
 
 WORKDIR /app/client
 
 # Install dependencies before copying Angular configuration and source.
 COPY FluxPay.Client/package.json ./
 COPY FluxPay.Client/package-lock.json ./
-RUN npm ci
+RUN npm install --global --ignore-scripts npm@11.16.0 \
+    && npm ci --ignore-scripts
 
 COPY FluxPay.Client/angular.json ./
 COPY FluxPay.Client/tsconfig*.json ./
@@ -90,6 +91,8 @@ FROM base AS final
 WORKDIR /app
 
 COPY --from=build /app/publish ./
-COPY --from=angular /app/client/dist/client ./wwwroot
+COPY --from=angular /app/client/dist/client/browser ./wwwroot
+
+USER $APP_UID
 
 ENTRYPOINT ["dotnet", "FluxPayAPI.Authorization.Presentation.dll"]

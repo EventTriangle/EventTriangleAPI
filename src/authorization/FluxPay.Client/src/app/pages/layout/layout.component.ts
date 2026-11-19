@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { ProfileStateService } from 'src/app/services/state/profile-state.service';
+import { ProfileStateService } from '../../services/state/profile-state.service';
 import * as signalR from '@microsoft/signalr';
 import {SignalrService} from "../../services/common/signalr.service";
 
 @Component({
+  standalone: false,
   selector: 'app-layout',
   templateUrl: './layout.component.html',
   styleUrls: ['./layout.component.scss']

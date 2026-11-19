@@ -29,18 +29,10 @@ FluxPayAPI offers realtime communication using SignalR.
 
 ### Build Angular client
 
-- Install NVM: `choco install nvm -y`
-- Install NodeJS `18.15.0` using NVM & PowerShell as Administrator: `nvm install 18.15.0`
-- Use NodeJS `18.15.0` using NVM via PowerShell as Administrator: `nvm use 18.15.0`
-- Check NodeJS installed properly (should be `18.15.0`): `node -v`
-- Check NPM installed properly (should be `9.5.0`): `npm -v`
-- Go to the project folder: `cd src/authorization/FluxPay.Client`
-- Restore node modules: `npm ci`
-- Install Angular CLI globally: `npm install -g @angular/cli@15.2.6`
-- Open PowerShell as Administrator and type: `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned`
-- Check that Angular CLI installed properly: `ng version`
-- Build project for development using Angular CLI: `ng build`
-- Run angular client: `ng serve`
+- Install Node.js `24.16.0` with your version manager.
+- Install npm `11.16.0` with `npm install --global npm@11.16.0`.
+- From `src/authorization/FluxPay.Client`, run `npm ci`.
+- Run `npm run build` to build the client or `npm start` to start the development server.
 
 ### Run required containers
 

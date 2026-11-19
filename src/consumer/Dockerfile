@@ -69,4 +69,6 @@ WORKDIR /app
 
 COPY --from=publish /app/publish ./
 
+USER $APP_UID
+
 ENTRYPOINT ["dotnet", "FluxPayAPI.Consumer.Presentation.dll"]

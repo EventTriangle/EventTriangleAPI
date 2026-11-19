@@ -1,3 +1,10 @@
+import { CopyTextDirective } from '../../directives/copy-text.directive';
+import { TooltipModule } from 'primeng/tooltip';
+import { ContextMenuModule } from 'primeng/contextmenu';
+import { SkeletonModule } from 'primeng/skeleton';
+import { AngularSvgIconModule } from 'angular-svg-icon';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 import {Component, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {animate, query, stagger, style, transition, trigger} from "@angular/animations";
 import {UsersStateService} from "../../services/state/users-state.service";
@@ -16,6 +23,8 @@ import {ContextMenu} from "primeng/contextmenu";
 import {ErrorMessageConstants} from "../../constants/ErrorMessageConstants";
 
 @Component({
+  standalone: true,
+  imports: [CommonModule, FormsModule, AngularSvgIconModule, SkeletonModule, ContextMenuModule, TooltipModule, CopyTextDirective],
   selector: 'app-users-outlet',
   templateUrl: './users-outlet.component.html',
   styleUrls: ['./users-outlet.component.scss'],

@@ -1,4 +1,4 @@
-@import "../../../app/app.component.scss";
+@use "../../../app/app.component.scss" as *;
 
 :host {
   position: relative;

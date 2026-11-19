@@ -1,3 +1,7 @@
+import { SkeletonModule } from 'primeng/skeleton';
+import { AngularSvgIconModule } from 'angular-svg-icon';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {animate, style, transition, trigger} from "@angular/animations";
 import {TicketStateService} from "../../services/state/ticket-state.service";
@@ -6,6 +10,8 @@ import {debounceTime, firstValueFrom, fromEvent, Subscription} from "rxjs";
 import {TransactionsApiService} from "../../services/api/transactions-api.service";
 
 @Component({
+  standalone: true,
+  imports: [CommonModule, FormsModule, AngularSvgIconModule, SkeletonModule],
   selector: 'app-tickets-outlet',
   templateUrl: './tickets-outlet.component.html',
   styleUrls: ['./tickets-outlet.component.scss'],
