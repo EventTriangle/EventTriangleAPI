@@ -1,1 +1,2 @@
-mode: ContinuousDelivery
+calculation:
+  mode: ContinuousDelivery

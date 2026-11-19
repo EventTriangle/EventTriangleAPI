@@ -35,7 +35,7 @@ parameters:
 
   - name: gitVersionVersion
     displayName: 'GitVersion version'
-    default: '6.x'
+    default: '7.0.x'
     type: string
 
   - name: sonarCloudEnabled
@@ -67,13 +67,13 @@ jobs:
         fetchDepth: 0
         persistCredentials: false
 
-      - task: gitversion-setup@4.5.0
+      - task: gitversion-setup@5.0.0
         displayName: 'GitVersion Setup'
         condition: succeeded()
         inputs:
           versionSpec: ${{ parameters.gitVersionVersion }}
 
-      - task: gitversion-execute@4.5.0
+      - task: gitversion-execute@5.0.0
         name: version_step # step id used as a reference for output values
         displayName: Determine Version
         condition: succeeded()
