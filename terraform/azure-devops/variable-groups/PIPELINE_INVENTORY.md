@@ -51,7 +51,7 @@ GitOps commit if a push races with another run.
    Set `TF_VAR_manage_sonarcloud=true` and configure the SonarCloud connection.
 2. Make sure both API branches have the new YAML. Review and apply the
    Terraform plan to grant the existing pipelines the new variable groups and
-   service connection permissions. Confirm Build Auth can access the SonarCloud project `event-triangle-api`.
+   service connection permissions. Confirm Build Auth can access the SonarCloud project `FluxPayProject_FluxPayAPI`.
 3. Verify all three Build pipelines publish their respective image and chart
    and that builds from `develop` commit the matching GitOps pins.
 4. Verify Flux reconciliation and rollout once the cluster is running. If a

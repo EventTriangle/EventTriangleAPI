@@ -64,7 +64,7 @@ Setup: [Azure infrastructure](terraform/infrastructure/README.md),
 ## Kubernetes deployment
 
 Ansible bootstraps Flux Operator on AKS. Flux reads `clusters/aks` from the
-`master` branch of the [GitOps repository](https://github.com/FluxPay/fluxcd-repository).
+`master` branch of the [GitOps repository](https://github.com/FluxPayProject/fluxcd-repository).
 
 The platform installs CloudNativePG, the Redis Enterprise Operator, cert-manager,
 and Traefik from their official Helm charts. RabbitMQ Cluster Operator
@@ -75,8 +75,8 @@ The AKS overlay defines separate Helm releases for Authorization, Sender, and
 Consumer. The [application charts](charts/) are packaged by the Authorization
 CI workflow on stable releases and published to GHCR. The GitOps repository
 pins the chart versions and supplies dev values and SOPS-encrypted secrets.
-See the [platform setup](https://github.com/FluxPay/fluxcd-repository/blob/master/docs/aks-platform.md)
-and [application deployment guide](https://github.com/FluxPay/fluxcd-repository/blob/master/docs/applications.md).
+See the [platform setup](https://github.com/FluxPayProject/fluxcd-repository/blob/master/docs/aks-platform.md)
+and [application deployment guide](https://github.com/FluxPayProject/fluxcd-repository/blob/master/docs/applications.md).
 The [platform migration guide](sprint-planning/platform-migration.md) lists the
 archived assets and the dev acceptance checks.
 
@@ -110,9 +110,10 @@ archived assets and the dev acceptance checks.
 ### Management
 
 - Docker: https://hub.docker.com/u/petrokolosov
-- Azure DevOps: https://dev.azure.com/FluxPay/FluxPayAPI
-- Renovate: https://developer.mend.io/github/FluxPay/FluxPayAPI
-- SonarCloud: https://sonarcloud.io/organizations/fluxpay/projects
+- GitHub: https://github.com/FluxPayProject/FluxPayAPI
+- Azure DevOps: https://dev.azure.com/FluxPayProject/FluxPayAPI
+- Renovate: https://developer.mend.io/github/FluxPayProject/FluxPayAPI
+- SonarCloud: https://sonarcloud.io/organizations/fluxpayproject/projects
 
 ## How to run Docker compose
 
