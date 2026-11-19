@@ -49,7 +49,7 @@ jobs:
 
       - name: 'Compile TS files'
         working-directory: './src/authorization/FluxPay.Client'
-        run: npm exec -- tsc --noEmit -p tsconfig.app.json
+        run: npm run typecheck
 
       - name: 'Npm run build'
         working-directory: './src/authorization/FluxPay.Client'
