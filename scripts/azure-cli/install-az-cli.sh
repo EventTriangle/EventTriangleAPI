@@ -33,7 +33,7 @@ echo "==========================================================================
 
 sudo mkdir -p /etc/apt/keyrings
 
-curl -sLS https://packages.microsoft.com/keys/microsoft.asc \
+curl --proto '=https' --proto-redir '=https' -sLS https://packages.microsoft.com/keys/microsoft.asc \
     | gpg --dearmor \
     | sudo tee /etc/apt/keyrings/microsoft.gpg > /dev/null
 

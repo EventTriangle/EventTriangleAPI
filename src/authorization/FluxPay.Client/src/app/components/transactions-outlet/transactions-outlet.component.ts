@@ -179,7 +179,7 @@ export class TransactionsOutletComponent implements OnInit {
   }
 
   async sendMoneyToUser() : Promise<void> {
-    if (isNaN(+this.amount) || +this.amount <= 0) throw new Error(ErrorMessageConstants.AmountValueIsIncorrect);
+    if (Number.isNaN(+this.amount) || +this.amount <= 0) throw new Error(ErrorMessageConstants.AmountValueIsIncorrect);
 
     const sendMoneyToUserSub$ = this._transactionsApiService.createTransactionUserToUser(this.toUserId.trim(), +this.amount);
 

@@ -44,7 +44,7 @@
       </div>
     </div>
     <div class="searchTransactions">
-      <input type="text" class="searchTransactionsInput"
+      <input aria-label="Search transactions" type="text" class="searchTransactionsInput"
              [ngModel]="searchText$ | async" (ngModelChange)="searchText$.next($event)"
              placeholder="Search Transactions" />
       <svg-icon src="../../../assets/svg/search.svg" class="searchSvg" />
@@ -126,7 +126,7 @@
       </p>
       <p-dropdown styleClass="createNewTransactionToInput" [options]="contacts" [(ngModel)]="toUserId" (onChange)="onChangeDropDownHandler($event)"
                   placeholder="To: Receiver" [editable]="true" />
-      <input type="text" class="createNewTransactionAmountInput" (keydown.enter)="$event.preventDefault()" mask="0000000000000"
+      <input aria-label="Transaction amount" type="text" class="createNewTransactionAmountInput" (keydown.enter)="$event.preventDefault()" mask="0000000000000"
              placeholder="Amount: €0" [(ngModel)]="amount" (keyup.enter)="sendMoneyToUser()"/>
       <button class="createNewTransactionOkButton" (click)="sendMoneyToUser()">
         Ok

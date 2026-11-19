@@ -23,7 +23,7 @@
           <p class="ticketItemResponseToUser">
             Response to user
           </p>
-          <textarea class="ticketItemResponseToUserTextarea" placeholder="Write Response" (keydown.enter)="$event.preventDefault()"
+          <textarea aria-label="Ticket response" class="ticketItemResponseToUserTextarea" placeholder="Write Response" (keydown.enter)="$event.preventDefault()"
                     [(ngModel)]="ticket.ticketJustification" (keyup.enter)="onClickResolveTicketHandler(ticket.id, ticket.ticketJustification)">
           </textarea>
           <div class="ticketItemButtonContainer">

@@ -31,7 +31,7 @@ echo "==========================================================================
 
 sudo mkdir -p /etc/apt/keyrings
 
-curl -fsSL https://packages.buildkite.com/helm-linux/helm-debian/gpgkey \
+curl --proto '=https' --proto-redir '=https' -fsSL https://packages.buildkite.com/helm-linux/helm-debian/gpgkey \
     | sudo gpg --dearmor --yes \
         -o /etc/apt/keyrings/helm.gpg
 

@@ -42,8 +42,7 @@ public class TestFixture
     internal readonly GetUsersBySearchQueryHandler GetUsersBySearchQueryHandler;
     internal readonly GetUsersQueryHandler GetUsersQueryHandler;
 
-    private readonly PostgreSqlContainer _postgres = new PostgreSqlBuilder()
-        .WithImage("postgres:latest")
+    private readonly PostgreSqlContainer _postgres = new PostgreSqlBuilder("postgres:latest")
         .Build();
 
     public TestFixture()

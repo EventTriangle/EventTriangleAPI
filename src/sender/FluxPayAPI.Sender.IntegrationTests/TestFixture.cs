@@ -28,8 +28,7 @@ public class TestFixture
     internal readonly UpdateUserRoleCommandHandler UpdateUserRoleCommandHandler;
     internal readonly CreateTransactionUserToUserCommandHandler CreateTransactionUserToUserCommandHandler;
 
-    private readonly PostgreSqlContainer _postgres = new PostgreSqlBuilder()
-        .WithImage("postgres:latest")
+    private readonly PostgreSqlContainer _postgres = new PostgreSqlBuilder("postgres:latest")
         .Build();
 
     public TestFixture()

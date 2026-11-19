@@ -32,7 +32,7 @@ echo "==========================================================================
 
 sudo mkdir -p /etc/apt/keyrings
 
-curl -fsSL https://apt.releases.hashicorp.com/gpg \
+curl --proto '=https' --proto-redir '=https' -fsSL https://apt.releases.hashicorp.com/gpg \
     | sudo gpg --dearmor --yes \
         -o /etc/apt/keyrings/hashicorp-archive-keyring.gpg
 

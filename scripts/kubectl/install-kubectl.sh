@@ -35,7 +35,7 @@ echo "[INFO] Kubernetes repository: ${KUBERNETES_VERSION}"
 
 sudo mkdir -p /etc/apt/keyrings
 
-curl -fsSL \
+curl --proto '=https' --proto-redir '=https' -fsSL \
     "https://pkgs.k8s.io/core:/stable:/${KUBERNETES_VERSION}/deb/Release.key" \
     | sudo gpg --dearmor --yes \
         -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg

@@ -24,7 +24,7 @@ LATEST_TAG=""
 CACHE_IMAGE_TAG=""
 SHARED_CONTEXT=""
 
-while [ "$#" -gt 0 ]; do
+while [[ "$#" -gt 0 ]]; do
     case "$1" in
         --working-directory)
             WORKING_DIRECTORY="${2:-}"
@@ -67,47 +67,47 @@ done
 # Validation
 # ==============================================================================
 
-if [ -z "$WORKING_DIRECTORY" ]; then
+if [[ -z "$WORKING_DIRECTORY" ]]; then
     echo "[ERROR] --working-directory must not be empty."
     exit 1
 fi
 
-if [ -z "$DOCKER_FILE" ]; then
+if [[ -z "$DOCKER_FILE" ]]; then
     echo "[ERROR] --docker-file must not be empty."
     exit 1
 fi
 
-if [ -z "$VERSION_TAG" ]; then
+if [[ -z "$VERSION_TAG" ]]; then
     echo "[ERROR] --version-tag must not be empty."
     exit 1
 fi
 
-if [ -z "$LATEST_TAG" ]; then
+if [[ -z "$LATEST_TAG" ]]; then
     echo "[ERROR] --latest-tag must not be empty."
     exit 1
 fi
 
-if [ -z "$CACHE_IMAGE_TAG" ]; then
+if [[ -z "$CACHE_IMAGE_TAG" ]]; then
     echo "[ERROR] --cache-image-tag must not be empty."
     exit 1
 fi
 
-if [ ! -d "$WORKING_DIRECTORY" ]; then
+if [[ ! -d "$WORKING_DIRECTORY" ]]; then
     echo "[ERROR] Working directory does not exist: $WORKING_DIRECTORY"
     exit 1
 fi
 
-if [ ! -f "$DOCKER_FILE" ]; then
+if [[ ! -f "$DOCKER_FILE" ]]; then
     echo "[ERROR] Dockerfile does not exist: $DOCKER_FILE"
     exit 1
 fi
 
-if [ -z "$SHARED_CONTEXT" ]; then
+if [[ -z "$SHARED_CONTEXT" ]]; then
     echo "[ERROR] --shared-context must not be empty."
     exit 1
 fi
 
-if [ ! -d "$SHARED_CONTEXT" ]; then
+if [[ ! -d "$SHARED_CONTEXT" ]]; then
     echo "[ERROR] Shared context directory does not exist: $SHARED_CONTEXT"
     exit 1
 fi

@@ -30,23 +30,23 @@
       <p class="addNewCardTitle">
         Add New Card
       </p>
-      <input type="text" class="addNewCardInput"
+      <input aria-label="Cardholder name" type="text" class="addNewCardInput"
              (keydown.enter)="$event.preventDefault()" (keyup.enter)="onAttachCardOkClick()"
              placeholder="Card Holder Name" id="CardHolderName"
              [(ngModel)]="cardHolderName"/>
-      <input type="text" class="addNewCardInput"
+      <input aria-label="Card number" type="text" class="addNewCardInput"
              (keydown.enter)="$event.preventDefault()" (keyup.enter)="onAttachCardOkClick()"
              placeholder="0000 0000 0000 0000" id="CardNumber" mask="0000 0000 0000 0000"
              [(ngModel)]="cardNumber"/>
-      <input type="text" class="addNewCardInput"
+      <input aria-label="Expiration date" type="text" class="addNewCardInput"
              (keydown.enter)="$event.preventDefault()" (keyup.enter)="onAttachCardOkClick()"
              placeholder="mm/yy" id="Expiration" mask="00/00"
              [(ngModel)]="expiration"/>
-      <input type="text" class="addNewCardInput"
+      <input aria-label="Security code" type="text" class="addNewCardInput"
              (keydown.enter)="$event.preventDefault()" (keyup.enter)="onAttachCardOkClick()"
              placeholder="CVV/CVC" id="Cvv" mask="000"
              [(ngModel)]="cvv"/>
-      <select [(ngModel)]="paymentNetwork" class="addNewCardInput">
+      <select aria-label="Payment network" [(ngModel)]="paymentNetwork" class="addNewCardInput">
         <option [ngValue]="PaymentNetwork.Visa">Visa</option>
         <option [ngValue]="PaymentNetwork.MasterCard">Master Card</option>
       </select>

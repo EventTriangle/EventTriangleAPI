@@ -38,7 +38,7 @@ esac
 echo "[INFO] Getting latest k9s release..."
 
 K9S_VERSION="$(
-    curl -fsSL https://api.github.com/repos/derailed/k9s/releases/latest |
+    curl --proto '=https' --proto-redir '=https' -fsSL https://api.github.com/repos/derailed/k9s/releases/latest |
         grep '"tag_name":' |
         head -n 1 |
         cut -d '"' -f 4
@@ -63,7 +63,7 @@ echo "==========================================================================
 echo "[INFO] Downloading k9s..."
 echo "================================================================================"
 
-curl -fL "${DOWNLOAD_URL}" -o "${TEMP_FILE}"
+curl --proto '=https' --proto-redir '=https' -fL "${DOWNLOAD_URL}" -o "${TEMP_FILE}"
 
 echo "================================================================================"
 echo "[INFO] Installing k9s..."
