@@ -108,7 +108,7 @@ def publish(repository, service, version, source_commit, branch, digest):
             if remote.returncode == 2 and branch == BASE_BRANCH:
                 raise RuntimeError(f"GitOps base branch {BASE_BRANCH} does not exist")
             base_ref = target if remote.returncode == 0 else f"refs/heads/{BASE_BRANCH}"
-            git("fetch", "--quiet", "origin", base_ref)
+            git("fetch", "--quiet", "--depth=1", "origin", base_ref)
             git("checkout", "--quiet", "--detach", "--force", "FETCH_HEAD")
 
             if not update_overlay(checkout, service, version, digest, existing_branch=remote.returncode == 0):

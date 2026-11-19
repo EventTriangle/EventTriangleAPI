@@ -16,14 +16,13 @@ FROM node:18.15.0-alpine AS angular
 
 WORKDIR /app/client
 
-# Copy dependency/configuration files first.
-# npm ci is cached until one of these files changes.
+# Install dependencies before copying Angular configuration and source.
 COPY FluxPay.Client/package.json ./
 COPY FluxPay.Client/package-lock.json ./
+RUN npm ci
+
 COPY FluxPay.Client/angular.json ./
 COPY FluxPay.Client/tsconfig*.json ./
-
-RUN npm ci
 
 # Copy application source only after dependencies are installed.
 COPY FluxPay.Client/src ./src
@@ -40,16 +39,16 @@ WORKDIR /src
 # Copy only project files first.
 # This keeps the restore layer cached while only source code changes.
 COPY FluxPayAPI.Authorization.BusinessLogic/*.csproj \
-     FluxPayAPI.Authorization.BusinessLogic/
+     authorization/FluxPayAPI.Authorization.BusinessLogic/
 
 COPY FluxPayAPI.Authorization.Domain/*.csproj \
-     FluxPayAPI.Authorization.Domain/
+     authorization/FluxPayAPI.Authorization.Domain/
 
 COPY FluxPayAPI.Authorization.Persistence/*.csproj \
-     FluxPayAPI.Authorization.Persistence/
+     authorization/FluxPayAPI.Authorization.Persistence/
 
 COPY FluxPayAPI.Authorization.Presentation/*.csproj \
-     FluxPayAPI.Authorization.Presentation/
+     authorization/FluxPayAPI.Authorization.Presentation/
 
 # Shared projects come from the additional BuildKit build context named "shared".
 COPY --from=shared FluxPayAPI.Shared.Application/*.csproj \
@@ -59,25 +58,27 @@ COPY --from=shared FluxPayAPI.Shared.DTO/*.csproj \
      shared/FluxPayAPI.Shared.DTO/
 
 RUN dotnet restore \
-    FluxPayAPI.Authorization.Presentation/FluxPayAPI.Authorization.Presentation.csproj
+    authorization/FluxPayAPI.Authorization.Presentation/FluxPayAPI.Authorization.Presentation.csproj
 
 #######################################################################################################
 # DOTNET BUILD + PUBLISH
 #######################################################################################################
 FROM restore AS build
 
-# Main build context is src/authorization.
-COPY . authorization/
+# Keep Angular changes out of the .NET build cache key.
+COPY FluxPayAPI.Authorization.BusinessLogic/ authorization/FluxPayAPI.Authorization.BusinessLogic/
+COPY FluxPayAPI.Authorization.Domain/ authorization/FluxPayAPI.Authorization.Domain/
+COPY FluxPayAPI.Authorization.Persistence/ authorization/FluxPayAPI.Authorization.Persistence/
+COPY FluxPayAPI.Authorization.Presentation/ authorization/FluxPayAPI.Authorization.Presentation/
 
 # Copy shared source from the separately supplied BuildKit context.
 COPY --from=shared . shared/
 
 WORKDIR /src/authorization/FluxPayAPI.Authorization.Presentation
 
-ARG VERSION
-
 RUN dotnet publish \
     -c Release \
+    --no-restore \
     -o /app/publish \
     /p:UseAppHost=false
 

@@ -53,11 +53,10 @@ COPY --from=shared . shared/
 
 WORKDIR /src/consumer/FluxPayAPI.Consumer.Presentation
 
-ARG VERSION
-
 RUN dotnet publish \
     FluxPayAPI.Consumer.Presentation.csproj \
     -c Release \
+    --no-restore \
     -o /app/publish \
     /p:UseAppHost=false
 

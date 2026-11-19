@@ -4,7 +4,8 @@ parameters:
     type: string
 
   - name: solution
-    displayName: 'Solution file path'
+    displayName: 'Solution file path for SonarCloud'
+    default: ''
     type: string
 
   - name: buildConfiguration
@@ -55,6 +56,8 @@ jobs:
   - job: ${{ parameters.jobName }}
     displayName: ${{ parameters.jobName }}
     condition: and(succeeded(), ne(variables['System.PullRequest.IsFork'], 'True'))
+    variables:
+      NUGET_PACKAGES: $(Pipeline.Workspace)/.nuget/packages
     steps:
       - checkout: self
         fetchDepth: 0
@@ -95,14 +98,13 @@ jobs:
           COMMIT: $(Build.SourceVersion)
           SOURCE_BRANCH: $(Build.SourceBranch)
 
-      - task: DotNetCoreCLI@2
-        displayName: 'Dotnet restore'
-        condition: succeeded()
+      - task: Cache@2
+        displayName: Cache NuGet packages
         inputs:
-          command: 'restore'
-          projects: '${{ parameters.solution }}'
-          arguments: '--verbosity minimal'
-          nugetConfigPath: 'nuget.config'
+          key: 'nuget | "$(Agent.OS)" | nuget.config | **/*.csproj'
+          restoreKeys: |
+            nuget | "$(Agent.OS)" | nuget.config
+          path: $(NUGET_PACKAGES)
 
       - ${{ if eq(parameters.sonarCloudEnabled, true) }}:
           - task: SonarCloudPrepare@4
@@ -118,13 +120,16 @@ jobs:
                 sonar.cs.opencover.reportsPaths=$(Agent.TempDirectory)/**/*opencover.xml
                 sonar.exclusions=**/Properties/**, **/bin/**, **/obj/**, **/Migrations/**
 
-      - task: DotNetCoreCLI@2
-        displayName: 'Build solution'
-        condition: succeeded()
-        inputs:
-          command: 'build'
-          projects: '${{ parameters.solution }}'
-          arguments: '-c ${{ parameters.buildConfiguration }} -p:Version=$(version_step.semVer) --no-restore'
+          - task: DotNetCoreCLI@2
+            displayName: 'Build solution'
+            condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+            inputs:
+              command: 'build'
+              projects: '${{ parameters.solution }}'
+              arguments: >-
+                --configuration ${{ parameters.buildConfiguration }}
+                --verbosity minimal
+                -p:Version=$(version_step.SemVer)
 
       - ${{ if eq(parameters.shouldRunUnitTests, true) }}:
           - task: DotNetCoreCLI@2
@@ -132,7 +137,11 @@ jobs:
             inputs:
               command: 'test'
               projects: '${{ parameters.unitTestsProjectPath }}'
-              arguments: '--no-build --configuration ${{ parameters.buildConfiguration }} --collect "Code Coverage"'
+              arguments: >-
+                --configuration ${{ parameters.buildConfiguration }}
+                --verbosity minimal
+                -p:Version=$(version_step.SemVer)
+                --collect "Code Coverage"
 
       - ${{ if eq(parameters.shouldRunIntegrationTests, true) }}:
           - task: DotNetCoreCLI@2
@@ -140,7 +149,11 @@ jobs:
             inputs:
               command: 'test'
               projects: '${{ parameters.integrationTestsProjectPath }}'
-              arguments: '--no-build --configuration ${{ parameters.buildConfiguration }} --collect "Code Coverage"'
+              arguments: >-
+                --configuration ${{ parameters.buildConfiguration }}
+                --verbosity minimal
+                -p:Version=$(version_step.SemVer)
+                --collect "Code Coverage"
 
       - ${{ if eq(parameters.sonarCloudEnabled, true) }}:
           - task: SonarCloudAnalyze@4
@@ -162,11 +175,13 @@ jobs:
       - bash: |
           set -euo pipefail
           case "$SOURCE_BRANCH" in
-            refs/heads/main|refs/tags/v*) export DOCKER_PUBLISH_LATEST=true ;;
+            refs/heads/main|refs/tags/v*)
+              export DOCKER_PUBLISH_LATEST=true DOCKER_CACHE_TAG=buildcache-v2-release
+              ;;
             *) export DOCKER_PUBLISH_LATEST=false ;;
           esac
           if [[ "$BUILD_REASON" == PullRequest ]]; then
-            export DOCKER_PUBLISH_LATEST=false DOCKER_CACHE_TAG=buildcache-pr
+            export DOCKER_PUBLISH_LATEST=false DOCKER_CACHE_TAG=buildcache-v2-pr
           fi
           bash "$SCRIPT_FILE" "$(cat "$RELEASE_DIR/version.txt")"
           jq -er '."containerimage.digest" | select(test("^sha256:[0-9a-f]{64}$"))' "$DOCKER_METADATA_FILE" > "$RELEASE_DIR/image.digest"

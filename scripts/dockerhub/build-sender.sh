@@ -11,5 +11,5 @@ bash "$SCRIPT_DIR/../docker-build.sh" \
     --docker-file "$REPOSITORY_ROOT/src/sender/Dockerfile" \
     --version-tag "$IMAGE:$VERSION" \
     --latest-tag "$IMAGE:latest" \
-    --cache-image-tag "$IMAGE:buildcache" \
+    --cache-image-tag "$IMAGE:buildcache-v2" \
     --shared-context "$REPOSITORY_ROOT/src/shared"

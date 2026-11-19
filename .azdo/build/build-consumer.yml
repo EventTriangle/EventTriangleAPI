@@ -27,7 +27,6 @@ stages:
       stageName: 'Build_Test_Push_${{ variables.appName }}'
       docker:
         jobName: 'Build_Test_Push_${{ variables.appName }}'
-        solution: '$(System.DefaultWorkingDirectory)/FluxPayAPI.sln'
         buildConfiguration: 'Release'
         unitTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/consumer/FluxPayAPI.Consumer.UnitTests/FluxPayAPI.Consumer.UnitTests.csproj'
         shouldRunUnitTests: true

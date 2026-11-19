@@ -112,7 +112,7 @@ archived assets and the dev acceptance checks.
 - Docker: https://hub.docker.com/u/petrokolosov
 - GitHub: https://github.com/FluxPayProject/FluxPayAPI
 - Azure DevOps: https://dev.azure.com/FluxPayProject/FluxPayAPI
-- Renovate: https://developer.mend.io/github/FluxPayProject/FluxPayAPI
+- [Renovate](https://developer.mend.io/github/FluxPayProject)
 - SonarCloud: https://sonarcloud.io/organizations/fluxpayproject/projects
 
 ## How to run Docker compose
@@ -143,27 +143,29 @@ docker logout docker.io
 
 The scripts publish `auth-service`, `sender-service` and `consumer-service`
 under `docker.io/petrokolosov` using the shared `scripts/docker-build.sh`. Each publishes
-its version tag, `latest` and `buildcache`; subsequent builds reuse the registry
-cache. Run application tests before publishing locally. The original
-`scripts/build-*.sh` scripts publish to ACR.
+its version tag and `latest`, and exports intermediate build layers to the
+`buildcache-v2` registry cache. Run application tests before publishing locally.
+The original `scripts/build-*.sh` scripts publish to ACR.
 
 ### Azure Pipelines
 
 Build and PR Validation use `.azdo/templates/docker-build-push-jobs.yml`: one
-job restores/builds the solution, runs enabled checks, then logs in through
+job caches NuGet packages and runs the enabled test projects. Each test command
+builds its project and project references. The pipeline then logs in through
 `Docker_Hub_Connection` and publishes the image. The hosted Ubuntu agent supplies
-the .NET SDK.
+the .NET SDK, Helm and kubectl.
 
 - `shouldRunUnitTests` and `shouldRunIntegrationTests` control test execution.
   Auth unit tests are disabled because that project has no test cases.
-- `sonarCloudEnabled` enables SonarCloud analysis on `main`; it defaults to `false`.
-- Build CI runs for `main` and `v*` tags. Same-repository PRs and manual branch
-  runs can also publish; fork PR publishing is disabled.
+- The Auth pipeline builds the full solution on `main` for SonarCloud.
+- Build CI runs for `develop`, `main` and `v*` tags. Same-repository PRs and manual
+  branch runs can also publish. Fork PR publishing is disabled.
 
 CI image tags combine GitVersion SemVer and the run ID, for example
-`1.0.1-104-1666`. Find the version in the build number or Docker log and use it
-for deployment or rollback. Version tags are immutable; `latest` and
-`buildcache` are mutable.
+`1.0.1-104-run.1666`. Find the version in the build number or Docker log and use it
+for deployment or rollback. Version tags are immutable. The `latest` tag and
+registry cache tags are mutable. Release and PR builds import the default cache
+and export to `buildcache-v2-release` and `buildcache-v2-pr`, respectively.
 
 Pipeline credentials and permissions: [Azure DevOps setup](terraform/azure-devops/variable-groups/README.md).
 

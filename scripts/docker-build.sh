@@ -116,6 +116,7 @@ fi
 # Configuration
 # ==============================================================================
 
+DEFAULT_CACHE_IMAGE_TAG="$CACHE_IMAGE_TAG"
 if [[ -n "${DOCKER_CACHE_TAG:-}" ]]; then
     CACHE_IMAGE_TAG="${CACHE_IMAGE_TAG%:*}:$DOCKER_CACHE_TAG"
 fi
@@ -138,7 +139,10 @@ echo "============================================================"
 
 echo "Building image: $VERSION_TAG"
 
-build_args=(--tag "$VERSION_TAG" --tag "$CACHE_IMAGE_TAG")
+build_args=(--tag "$VERSION_TAG" --cache-from "type=registry,ref=$CACHE_IMAGE_TAG")
+if [[ "$CACHE_IMAGE_TAG" != "$DEFAULT_CACHE_IMAGE_TAG" ]]; then
+    build_args+=(--cache-from "type=registry,ref=$DEFAULT_CACHE_IMAGE_TAG")
+fi
 if [[ "${DOCKER_PUBLISH_LATEST:-true}" == true ]]; then
     build_args+=(--tag "$LATEST_TAG")
 fi
@@ -146,10 +150,18 @@ if [[ -n "${DOCKER_METADATA_FILE:-}" ]]; then
     build_args+=(--metadata-file "$DOCKER_METADATA_FILE")
 fi
 
+# Reuse the daemon's BuildKit when it supports registry cache exports.
+if [[ "$(docker info --format '{{json .DriverStatus}}')" == *io.containerd.snapshotter.v1* ]]; then
+    build_args+=(--builder "$(docker context show)")
+else
+    builder="$(docker buildx create --driver docker-container)"
+    trap 'docker buildx rm "$builder" >/dev/null' EXIT
+    build_args+=(--builder "$builder")
+fi
+
 docker buildx build \
     --progress=plain \
-    --cache-to type=inline \
-    --cache-from type=registry,ref="${CACHE_IMAGE_TAG}" \
+    --cache-to "type=registry,ref=$CACHE_IMAGE_TAG,mode=max" \
     --build-context shared="${SHARED_CONTEXT}" \
     "${build_args[@]}" \
     --file "${DOCKER_FILE}" \

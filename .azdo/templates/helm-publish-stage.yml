@@ -14,12 +14,11 @@ stages:
       - job: PublishChart
         steps:
           - checkout: self
+            fetchDepth: 1
+            fetchTags: false
             persistCredentials: false
           - download: current
             artifact: release
-          - task: HelmInstaller@1
-            inputs:
-              helmVersionToInstall: '3.20.0'
           - bash: helm lint "charts/$CHART"
             displayName: Lint Helm chart
             env:

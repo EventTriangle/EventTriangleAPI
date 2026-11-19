@@ -6,6 +6,7 @@
 **/node_modules/
 **/dist/
 **/.angular/
+FluxPayAPI.Authorization.Presentation/wwwroot/
 
 # IDE
 .vs/

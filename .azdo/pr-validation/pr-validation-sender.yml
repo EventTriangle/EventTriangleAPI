@@ -63,7 +63,6 @@ stages:
       stageName: 'PR_Validation_${{ variables.appName }}'
       docker:
         jobName: 'PR_Validation_${{ variables.appName }}'
-        solution: '$(System.DefaultWorkingDirectory)/FluxPayAPI.sln'
         buildConfiguration: 'Release'
         unitTestsProjectPath: '$(System.DefaultWorkingDirectory)/src/sender/FluxPayAPI.Sender.UnitTests/FluxPayAPI.Sender.UnitTests.csproj'
         shouldRunIntegrationTests: true
