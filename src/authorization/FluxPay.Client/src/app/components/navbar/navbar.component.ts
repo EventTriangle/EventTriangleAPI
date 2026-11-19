@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import {animate, style, transition, trigger} from "@angular/animations";
-import { AuthorizationApiService } from 'src/app/services/api/authorization-api.service';
+import { AuthorizationApiService } from '../../services/api/authorization-api.service';
 import {ProfileStateService} from "../../services/state/profile-state.service";
 import {UserRole} from "../../types/enums/UserRole";
 
 @Component({
+  standalone: false,
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss'],

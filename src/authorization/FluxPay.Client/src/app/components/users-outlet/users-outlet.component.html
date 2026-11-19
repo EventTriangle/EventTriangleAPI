@@ -21,9 +21,9 @@
         </p>
         <p class="userInfoWindowBodyTransactionAmount">€{{transaction.amount}}</p>
         <p class="userInfoWindowBodyTransactionDate">{{_dateService.getTimeAndDate(transaction.createdAt)}}</p>
-        <p-contextMenu #userInfoWindowBodyTransactionContextMenu [target]="transactionItem" (onShow)="setSelectedTransactionForContextMenu(transaction)"
+        <p-contextmenu #userInfoWindowBodyTransactionContextMenu [target]="transactionItem" (onShow)="setSelectedTransactionForContextMenu(transaction)"
                        [autoZIndex]="true" [model]="contextMenuItems" appendTo="body">
-        </p-contextMenu>
+        </p-contextmenu>
       </div>
     </div>
   </div>
@@ -89,10 +89,10 @@
       </ng-template>
     </ng-container>
     <div class="userList" *ngIf="!_usersStateService.wasRequested">
-      <p-skeleton styleClass="skeletonUserItem" />
-      <p-skeleton styleClass="skeletonUserItem" />
-      <p-skeleton styleClass="skeletonUserItem" />
-      <p-skeleton styleClass="skeletonUserItem" />
+      <p-skeleton class="skeletonUserItem" />
+      <p-skeleton class="skeletonUserItem" />
+      <p-skeleton class="skeletonUserItem" />
+      <p-skeleton class="skeletonUserItem" />
     </div>
   </div>
 </div>

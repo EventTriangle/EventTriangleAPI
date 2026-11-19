@@ -11,7 +11,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="10.0.7" />
+        <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="10.0.15" />
       <ProjectReference Include="..\..\shared\FluxPayAPI.Shared.Application\FluxPayAPI.Shared.Application.csproj" />
       <ProjectReference Include="..\FluxPayAPI.Authorization.Domain\FluxPayAPI.Authorization.Domain.csproj" />
     </ItemGroup>

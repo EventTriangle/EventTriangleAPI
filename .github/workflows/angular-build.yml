@@ -25,17 +25,17 @@ jobs:
           - windows-latest
     steps:
       - name: 'Checkout'
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
-      - name: 'Setup Node.js 18.x'
-        uses: actions/setup-node@v6
+      - name: 'Setup Node.js 24.16.0'
+        uses: actions/setup-node@v7
         with:
-          node-version: '18.x'
+          node-version: '24.16.0'
           cache: 'npm'
           cache-dependency-path: 'src/authorization/FluxPay.Client/package-lock.json'
 
-      - name: 'Setup Typescript 4.9.5'
-        run: npm install -g typescript@4.9.5
+      - name: Install npm 11.16.0
+        run: npm install --global --ignore-scripts npm@11.16.0
 
       - name: 'Print current node version'
         run: node -v
@@ -45,11 +45,11 @@ jobs:
 
       - name: "Npm ci"
         working-directory: './src/authorization/FluxPay.Client'
-        run: npm ci
+        run: npm ci --ignore-scripts
 
       - name: 'Compile TS files'
         working-directory: './src/authorization/FluxPay.Client'
-        run: tsc -p tsconfig.json
+        run: npm run typecheck
 
       - name: 'Npm run build'
         working-directory: './src/authorization/FluxPay.Client'

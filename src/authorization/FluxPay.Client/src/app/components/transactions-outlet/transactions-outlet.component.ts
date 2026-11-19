@@ -1,3 +1,11 @@
+import { CopyTextDirective } from '../../directives/copy-text.directive';
+import { NgxMaskDirective } from 'ngx-mask';
+import { TooltipModule } from 'primeng/tooltip';
+import { SelectModule } from 'primeng/select';
+import { SkeletonModule } from 'primeng/skeleton';
+import { AngularSvgIconModule } from 'angular-svg-icon';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 import {
   ChangeDetectorRef,
   Component,
@@ -20,6 +28,8 @@ import {UserStatus} from "../../types/enums/UserStatus";
 import {ErrorMessageConstants} from "../../constants/ErrorMessageConstants";
 
 @Component({
+  standalone: true,
+  imports: [CommonModule, FormsModule, AngularSvgIconModule, SkeletonModule, SelectModule, TooltipModule, NgxMaskDirective, CopyTextDirective],
   selector: 'app-transactions-outlet',
   templateUrl: './transactions-outlet.component.html',
   styleUrls: ['./transactions-outlet.component.scss'],

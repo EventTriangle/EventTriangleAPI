@@ -1,3 +1,7 @@
+import { NgxMaskDirective } from 'ngx-mask';
+import { SelectModule } from 'primeng/select';
+import { AngularSvgIconModule } from 'angular-svg-icon';
+import { FormsModule } from '@angular/forms';
 import {Component, OnInit} from '@angular/core';
 import { animate, style, transition, trigger } from "@angular/animations";
 import {TransactionsApiService} from "../../services/api/transactions-api.service";
@@ -5,6 +9,8 @@ import {firstValueFrom} from "rxjs";
 import {CreditCardsStateService} from "../../services/state/credit-cards-state.service";
 
 @Component({
+  standalone: true,
+  imports: [FormsModule, AngularSvgIconModule, SelectModule, NgxMaskDirective],
   selector: 'app-deposit-outlet',
   templateUrl: './deposit-outlet.component.html',
   styleUrls: ['./deposit-outlet.component.scss'],

@@ -10,7 +10,6 @@ namespace FluxPayAPI.Sender.IntegrationTests;
 [Collection("Sequential")]
 public class TestFixture
 {
-    private readonly SenderStartup _senderStartup = new();
     internal readonly DatabaseContext DatabaseContextFixture;
 
     internal readonly CreateUserCommandHandler CreateUserCommandHandler;
@@ -37,7 +36,7 @@ public class TestFixture
 
         var databaseConnectionString = _postgres.GetConnectionString();
 
-        var serviceProvider = _senderStartup.Initialize(databaseConnectionString);
+        var serviceProvider = SenderStartup.Initialize(databaseConnectionString);
 
         DatabaseContextFixture = serviceProvider.GetRequiredService<DatabaseContext>() ??
                                  throw new InvalidOperationException("DatabaseContext service is not registered in the DI.");

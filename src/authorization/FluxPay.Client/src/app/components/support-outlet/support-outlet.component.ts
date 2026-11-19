@@ -1,3 +1,7 @@
+import { SkeletonModule } from 'primeng/skeleton';
+import { AngularSvgIconModule } from 'angular-svg-icon';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import { animate, style, transition, trigger } from "@angular/animations";
 import {TicketsApiService} from "../../services/api/tickets-api.service";
@@ -7,6 +11,8 @@ import {ISupportTicketDto} from "../../types/interfaces/consumer/ISupportTicketD
 import {ProfileStateService} from "../../services/state/profile-state.service";
 
 @Component({
+  standalone: true,
+  imports: [CommonModule, FormsModule, AngularSvgIconModule, SkeletonModule],
   selector: 'app-support-outlet',
   templateUrl: './support-outlet.component.html',
   styleUrls: ['./support-outlet.component.scss'],

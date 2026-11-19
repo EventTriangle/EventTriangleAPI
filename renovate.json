@@ -1,0 +1,13 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "baseBranchPatterns": ["develop"],
+  "ignorePaths": ["**/node_modules/**", ".deprecated/**"],
+  "packageRules": [
+    {
+      "matchManagers": ["npm"],
+      "matchPackageNames": ["/^@angular\\//", "/^@angular-devkit\\//", "primeng", "ngx-mask", "angular-svg-icon", "typescript", "zone.js", "@primeuix/themes"],
+      "groupName": "Angular and UI dependencies"
+    }
+  ]
+}

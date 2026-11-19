@@ -1,4 +1,4 @@
-@import "../../app.component.scss";
+@use "../../app.component.scss" as *;
 
 :host {
   display: grid;
@@ -65,7 +65,7 @@
 
   ::ng-deep {
     .depositInput {
-      &.p-dropdown {
+      &.p-select {
         width: 100%;
         height: 65px;
         outline: none;
@@ -89,7 +89,7 @@
         }
       }
 
-      &.p-dropdown-trigger {
+      &.p-select-dropdown {
         position: absolute;
         right: 200px;
         top: 25px
@@ -155,7 +155,7 @@
   .depositForm {
     ::ng-deep {
       .depositInput {
-        &.p-dropdown {
+        &.p-select {
           height: 50px;
           margin-bottom: 20px;
 
@@ -206,7 +206,7 @@
   .depositForm {
     ::ng-deep {
       .depositInput {
-        &.p-dropdown {
+        &.p-select {
           height: 40px;
           border-radius: 10px;
           margin-bottom: 10px;

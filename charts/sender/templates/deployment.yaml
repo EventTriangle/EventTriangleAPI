@@ -16,6 +16,7 @@ spec:
       labels:
         app.kubernetes.io/name: {{ $name | quote }}
     spec:
+      automountServiceAccountToken: false
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}

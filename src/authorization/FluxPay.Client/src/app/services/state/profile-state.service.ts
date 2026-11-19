@@ -1,4 +1,4 @@
-import {Injectable} from "@angular/core";
+import {Injectable, signal} from "@angular/core";
 import {IUserDto} from "../../types/interfaces/consumer/IUserDto";
 import {BehaviorSubject, firstValueFrom} from "rxjs";
 import {IResult} from "../../types/interfaces/IResult";
@@ -12,8 +12,15 @@ import {ErrorMessageConstants} from "../../constants/ErrorMessageConstants";
   providedIn: 'root'
 })
 export class ProfileStateService {
-  public wasAuthenticationCheck = false;
-  public isAuthenticated = false;
+  private readonly authentication = signal<IsAuthenticatedResponse | null>(null);
+
+  public get wasAuthenticationCheck(): boolean {
+    return this.authentication() !== null;
+  }
+
+  public get isAuthenticated(): boolean {
+    return this.authentication()?.authenticated ?? false;
+  }
 
   public user$: BehaviorSubject<IUserDto | null> = new BehaviorSubject<IUserDto | null>(null);
 
@@ -45,21 +52,16 @@ export class ProfileStateService {
 
   //requests
   public async getAuthenticationAsync() {
-    const getAuthenticationSub$ = this._authorizationApiService.getIsAuthenticated();
-    const getAuthenticationResult = await firstValueFrom<IsAuthenticatedResponse>(getAuthenticationSub$)
-      .catch((e: HttpErrorResponse) => {
-        const getAuthenticationResult = e.error as IsAuthenticatedResponse;
-
-        this.wasAuthenticationCheck = true;
-        this.isAuthenticated = getAuthenticationResult.authenticated;
-
-        return getAuthenticationResult;
+    const result = await firstValueFrom(this._authorizationApiService.getIsAuthenticated())
+      .catch((error: unknown): IsAuthenticatedResponse => {
+        if (error instanceof HttpErrorResponse && error.status === 401) {
+          return {authenticated: false};
+        }
+        throw error;
       });
 
-    this.wasAuthenticationCheck = true;
-    this.isAuthenticated = getAuthenticationResult.authenticated;
-
-    return getAuthenticationResult;
+    this.authentication.set(result);
+    return result;
   }
 
   public async getProfileAsync() {

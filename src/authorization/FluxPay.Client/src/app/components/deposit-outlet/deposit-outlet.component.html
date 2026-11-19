@@ -6,7 +6,7 @@
     </span>
     <p class="overview">An overview of deposit</p>
     <div class="depositForm" [@depositFormAnimation]="">
-      <p-dropdown styleClass="depositInput" [options]="creditCardIdArray" [(ngModel)]="creditCardId" placeholder="Credit Card Id" [editable]="true" />
+      <p-select class="depositInput" [options]="creditCardIdArray" [(ngModel)]="creditCardId" placeholder="Credit Card Id" [editable]="true" />
       <input aria-label="Deposit amount" type="text" class="depositInput" [(ngModel)]="amount" placeholder="Amount" mask="0000000000000"/>
       <button class="depositOkButton" (click)="onClickTopUpAccountBalanceHandler()">
         Ok
