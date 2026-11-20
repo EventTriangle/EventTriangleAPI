@@ -57,6 +57,7 @@ export class SignalrService {
     this.connection = connectionBuilder
         .configureLogging(signalR.LogLevel.Information)
         .withUrl(`${serverUrl}consumer` + "/notify")
+        .withAutomaticReconnect()
         .build();
   }
 

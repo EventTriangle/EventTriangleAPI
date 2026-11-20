@@ -19,9 +19,9 @@ FluxPayAPI offers realtime communication using SignalR.
 
 - **.NET SDK 10:** https://dotnet.microsoft.com/en-us/download
 - **NVM for windows:** https://github.com/coreybutler/nvm-windows
-- **Angular CLI:** `15.2.6`
-- **NodeJS:** `18.15.0`
-- **NPM:** `9.5.0`
+- **Angular CLI:** `22.3.x` (installed with the client dependencies)
+- **Node.js:** `24.16.0`
+- **npm:** `11.16.0`
 - **Docker:** https://docs.docker.com/get-docker/
 - **IDE**: Visual Studio or JetBrains Rider
 
@@ -75,7 +75,7 @@ archived assets and the dev acceptance checks.
 ## Technology stack
 
 - **SDK:** `.NET 10`
-- **Frameworks:** `ASP .NET Core`, `Angular 15`
+- **Frameworks:** `ASP .NET Core`, `Angular 22`
 - **Persistence:**
     - Database: `PostgreSQL 15`
     - ORM: `Entity Framework Core`
@@ -83,7 +83,7 @@ archived assets and the dev acceptance checks.
 - **Presentation:**
     - API Documentation: `OpenAPI (Swagger)`
     - Realtime Communication: `SignalR`
-    - Frontend Development: `Angular 15`
+    - Frontend Development: `Angular 22`
     - Microservices communication: `RabbitMQ`, `GRPC`
 - **Unit and Integration Testing:** `XUnit`, `FluentAssertions`
 - **Containerization:** `Docker`, `k8s`

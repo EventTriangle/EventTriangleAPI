@@ -196,7 +196,6 @@ export class TransactionsOutletComponent implements OnInit {
     this.amount = "";
 
     await firstValueFrom<IResult<ICreateTransactionUserToUserEvent>>(sendMoneyToUserSub$);
-    await this.ngOnInit();
   }
 
   //other

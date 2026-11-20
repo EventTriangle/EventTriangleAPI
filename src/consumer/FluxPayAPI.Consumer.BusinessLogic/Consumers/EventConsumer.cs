@@ -425,7 +425,7 @@ public class EventConsumer :
                     message.RequesterId, 
                     message.ToUserId, 
                     message.Amount,
-                    TransactionType.FromCardToUser,
+                    TransactionType.FromUserToUser,
                     message.CreatedAt,
                     result.Error.Message);
             
@@ -444,7 +444,7 @@ public class EventConsumer :
                 message.RequesterId, 
                 message.ToUserId, 
                 message.Amount,
-                TransactionType.FromCardToUser,
+                TransactionType.FromUserToUser,
                 message.CreatedAt,
                 ResponseMessages.InternalError);
             
