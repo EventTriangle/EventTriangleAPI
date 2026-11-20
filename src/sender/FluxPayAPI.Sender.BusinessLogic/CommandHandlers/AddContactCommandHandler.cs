@@ -24,9 +24,8 @@ public class AddContactCommandHandler : ICommandHandler<AddContactCommand, Conta
         var contactCreatedEvent = new ContactCreatedEvent(command.RequesterId, command.ContactId);
 
         _context.ContactCreatedEvents.Add(contactCreatedEvent);
+        await _client.Publish(contactCreatedEvent.CreateEventMessage());
         await _context.SaveChangesAsync();
-        
-        var _ = _client.Publish(contactCreatedEvent.CreateEventMessage());
     
         return new Result<ContactCreatedEvent>(contactCreatedEvent);
     }

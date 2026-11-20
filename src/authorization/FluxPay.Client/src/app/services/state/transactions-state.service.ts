@@ -8,6 +8,7 @@ import {TransactionsApiService} from "../api/transactions-api.service";
 })
 export class TransactionsStateService {
   public wasRequested = false;
+  private snapshotVersion = 0;
 
   public transactions$: BehaviorSubject<ITransactionDto[]> = new BehaviorSubject<ITransactionDto[]>([]);
 
@@ -17,20 +18,27 @@ export class TransactionsStateService {
 
   //actions
   public addTransactionInTransactions(transaction: ITransactionDto) {
-    const transactions = this.transactions$.getValue();
-    transactions.unshift(transaction);
-    this.transactions$.next(transactions);
+    this.transactions$.next([transaction, ...this.transactions$.getValue().filter(item => item.id !== transaction.id)]);
   }
 
   //requests
-  public async getTransactionsAsync(fromDateTime: Date, limit: number) {
-    const getTransactions$ = this._transactionsApiService.getTransactions(fromDateTime, limit);
+  public async refreshTransactionsAsync() {
+    const version = ++this.snapshotVersion;
+    const result = await firstValueFrom(this._transactionsApiService.getTransactions(new Date(), 20));
+    if (version === this.snapshotVersion) this.transactions$.next(result.response);
+    this.wasRequested = true;
+  }
+
+  public async getTransactionsAsync(fromDateTime: Date | string, limit: number, cursorId?: string) {
+    const version = this.snapshotVersion;
+    const getTransactions$ = this._transactionsApiService.getTransactions(fromDateTime, limit, cursorId);
     const getTransactionsResult = await firstValueFrom(getTransactions$);
 
-    const transactions = this.transactions$.getValue();
-    transactions.push(...getTransactionsResult.response);
-
-    this.transactions$.next(transactions);
+    if (version === this.snapshotVersion) {
+      const transactions = this.transactions$.getValue();
+      const ids = new Set(transactions.map(item => item.id));
+      this.transactions$.next([...transactions, ...getTransactionsResult.response.filter(item => !ids.has(item.id))]);
+    }
     this.wasRequested = true;
 
     return getTransactionsResult;

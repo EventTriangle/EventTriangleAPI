@@ -41,7 +41,7 @@ public class TransactionsController : ControllerBase
     {
         var requesterId = _userClaimsService.GetUserId();
 
-        var command = new CreateTransactionUserToUserCommand(requesterId, request.ToUserId, request.Amount);
+        var command = new CreateTransactionUserToUserCommand(requesterId, request.ToUserId, request.Amount, request.OperationId);
         var result = await _createTransactionUserToUserCommandHandler.HandleAsync(command);
 
         return result.ToActionResult();
@@ -57,7 +57,7 @@ public class TransactionsController : ControllerBase
     {
         var requesterId = _userClaimsService.GetUserId();
 
-        var command = new TopUpAccountBalanceCommand(requesterId, request.CreditCardId, request.Amount);
+        var command = new TopUpAccountBalanceCommand(requesterId, request.CreditCardId, request.Amount, request.OperationId);
         var result = await _topUpAccountBalanceCommandHandler.HandleAsync(command);
 
         return result.ToActionResult();

@@ -13,10 +13,11 @@ public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<DatabaseCo
 
         var configuration = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json")
+            .AddJsonFile("appsettings.json", optional: true)
             .Build();
 
-        var databaseConnectionString = configuration[AppSettingsConstants.DatabaseConnectionString];
+        var databaseConnectionString = configuration[AppSettingsConstants.DatabaseConnectionString]
+            ?? "Host=localhost;Database=ConsumerDb;Username=postgres;Password=postgres";
         
         options.UseNpgsql(databaseConnectionString);
 

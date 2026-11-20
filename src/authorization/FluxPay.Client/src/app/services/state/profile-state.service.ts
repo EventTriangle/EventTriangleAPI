@@ -6,12 +6,12 @@ import {ProfileApiService} from "../api/profile-api.service";
 import {AuthorizationApiService} from "../api/authorization-api.service";
 import {IsAuthenticatedResponse} from "../../types/responses/IsAuthenticatedResponse";
 import {HttpErrorResponse} from "@angular/common/http";
-import {ErrorMessageConstants} from "../../constants/ErrorMessageConstants";
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProfileStateService {
+  private profileRequestVersion = 0;
   private readonly authentication = signal<IsAuthenticatedResponse | null>(null);
 
   public get wasAuthenticationCheck(): boolean {
@@ -29,27 +29,6 @@ export class ProfileStateService {
     private _authorizationApiService: AuthorizationApiService,
   ) {}
 
-  //actions
-  public plusToBalance(value: number) {
-    const user = this.user$.getValue();
-
-    if (!user) throw new Error(ErrorMessageConstants.UserNotFound);
-
-    user.wallet.balance += value;
-
-    this.user$.next(user);
-  }
-
-  public minusFromBalance(value: number) {
-    const user = this.user$.getValue();
-
-    if (!user) throw new Error(ErrorMessageConstants.UserNotFound);
-
-    user.wallet.balance -= value;
-
-    this.user$.next(user);
-  }
-
   //requests
   public async getAuthenticationAsync() {
     const result = await firstValueFrom(this._authorizationApiService.getIsAuthenticated())
@@ -65,9 +44,10 @@ export class ProfileStateService {
   }
 
   public async getProfileAsync() {
+    const version = ++this.profileRequestVersion;
     const getProfileSub$ = this._profileApiService.getProfile();
     const getProfileResult = await firstValueFrom<IResult<IUserDto>>(getProfileSub$);
-    this.user$.next(getProfileResult.response);
+    if (version === this.profileRequestVersion) this.user$.next(getProfileResult.response);
 
     return getProfileResult;
   }

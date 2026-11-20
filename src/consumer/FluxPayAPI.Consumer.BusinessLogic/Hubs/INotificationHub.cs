@@ -6,11 +6,13 @@ namespace FluxPayAPI.Consumer.BusinessLogic.Hubs;
 public interface INotificationHub
 {
     //success 
-    Task TransactionSucceededAsync(TransactionDto transaction);
+    Task TransactionSucceededAsync(TransactionDto transaction, Guid? operationId);
     
     Task CreditCardAddedAsync(CreditCardDto creditCardDto);
 
     Task SupportTicketOpenedAsync(SupportTicketDto supportTicketDto);
+
+    Task SupportTicketResolvedAsync(SupportTicketDto supportTicketDto);
     
     //fail
     Task ContactCreatingCanceledAsync(ContactCreatingCanceledNotification notification);

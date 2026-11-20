@@ -15,20 +15,22 @@ public class RollBackTransactionTestSuccess(TestFixture fixture) : TestBase(fixt
         var dima = await Fixture.CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserDimaCommand());
         var alice = await Fixture.CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserAliceCommand());
         var bob = await Fixture.CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserBobCommand());
-        var addCreditCardCommand = AddCreditCardCommandHelper.CreateCreditCardCommand(dima.Response.Id);
+        var addCreditCardCommand = AddCreditCardCommandHelper.CreateCreditCardCommand(bob.Response.Id);
         var addCreditCardResult = await Fixture.AddCreditCardCommandHandler.HandleAsync(addCreditCardCommand);
         var createTransactionCardToUserCommand = new CreateTransactionCardToUserCommand(
             addCreditCardResult.Response.Id,
             bob.Response.Id,
             Amount: 300,
             DateTime.UtcNow);
-        await Fixture.CreateTransactionCardToUserCommandHandler.HandleAsync(createTransactionCardToUserCommand);
+        var depositResult = await Fixture.CreateTransactionCardToUserCommandHandler.HandleAsync(createTransactionCardToUserCommand);
+        depositResult.IsSuccess.Should().BeTrue();
         var createTransactionUserToUserCommand = new CreateTransactionUserToUserCommand(
             bob.Response.Id,
             alice.Response.Id,
             Amount: 300,
             DateTime.UtcNow);
-        var  createTransactionUserToUserResult = await Fixture.CreateTransactionUserToUserCommandHandler.HandleAsync(createTransactionUserToUserCommand);
+        var createTransactionUserToUserResult = await Fixture.CreateTransactionUserToUserCommandHandler.HandleAsync(createTransactionUserToUserCommand);
+        createTransactionUserToUserResult.IsSuccess.Should().BeTrue();
 
         var rollbackTransactionCommand = new RollBackTransactionCommand(
             dima.Response.Id,

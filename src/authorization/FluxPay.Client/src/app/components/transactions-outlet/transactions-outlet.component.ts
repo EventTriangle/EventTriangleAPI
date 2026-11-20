@@ -1,5 +1,5 @@
+import {PaymentSubmissionService} from "../../services/state/payment-submission.service";
 import { CopyTextDirective } from '../../directives/copy-text.directive';
-import { NgxMaskDirective } from 'ngx-mask';
 import { TooltipModule } from 'primeng/tooltip';
 import { SelectModule } from 'primeng/select';
 import { SkeletonModule } from 'primeng/skeleton';
@@ -9,10 +9,11 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectorRef,
   Component,
+  OnDestroy,
   OnInit,
 } from '@angular/core';
 import {animate, query, stagger, style, transition, trigger} from "@angular/animations";
-import {BehaviorSubject, debounceTime, filter, firstValueFrom, Subject} from "rxjs";
+import {BehaviorSubject, catchError, debounceTime, EMPTY, firstValueFrom, map, Subject, switchMap, takeUntil, timer} from "rxjs";
 import {IResult} from "../../types/interfaces/IResult";
 import {TransactionsApiService} from "../../services/api/transactions-api.service";
 import {ITransactionDto} from "../../types/interfaces/consumer/ITransactionDto";
@@ -30,7 +31,7 @@ import {MessageService} from "primeng/api";
 
 @Component({
   standalone: true,
-  imports: [CommonModule, FormsModule, AngularSvgIconModule, SkeletonModule, SelectModule, TooltipModule, NgxMaskDirective, CopyTextDirective],
+  imports: [CommonModule, FormsModule, AngularSvgIconModule, SkeletonModule, SelectModule, TooltipModule, CopyTextDirective],
   selector: 'app-transactions-outlet',
   templateUrl: './transactions-outlet.component.html',
   styleUrls: ['./transactions-outlet.component.scss'],
@@ -67,7 +68,9 @@ import {MessageService} from "primeng/api";
     ])
   ]
 })
-export class TransactionsOutletComponent implements OnInit {
+export class TransactionsOutletComponent implements OnInit, OnDestroy {
+  private readonly destroyed$ = new Subject<void>();
+  private searchRevision = 0;
   // notifiers
   public transactionListScrolledToEndNotifier$ = new Subject<void>();
   public searchTransactionListScrolledToEndNotifier$ = new Subject<void>();
@@ -81,7 +84,9 @@ export class TransactionsOutletComponent implements OnInit {
   //common
   public amount: string = '';
   public toUserId: string = '';
-  public contacts: string[] = [];
+  public contacts$ = this._contactStateService.contacts$.pipe(
+    map(contacts => contacts.map(x => `${this._textService.pullUsernameFromMail(x.contact.email)} - ${x.contactId}`))
+  );
 
   //state
   public transactionListLoader = false;
@@ -99,61 +104,76 @@ export class TransactionsOutletComponent implements OnInit {
     protected _contactStateService: ContactsStateService,
     protected _textService: TextService,
     protected _dateService: DateService,
-    private _messageService: MessageService) {}
+    private _messageService: MessageService,
+    protected paymentSubmission: PaymentSubmissionService) {}
 
   async ngOnInit() {
     if (!this._profileStateService.isAuthenticated) return;
 
     await this._contactStateService.getContactsAsync();
-    this.contacts = this._contactStateService.contacts$.getValue().map(x => `${this._textService.pullUsernameFromMail(x.contact.email)} - ${x.contactId}`);
 
     const date = new Date();
     if (this.transactions$.getValue().length === 0) await this._transactionsStateService.getTransactionsAsync(date, 20);
 
     this._changeDetectorRef.detectChanges();
 
-    this.searchText$
-      .pipe(
-        filter(x => x.trim() !== ''),
-        debounceTime(400))
-      .subscribe(async x => {
-        const getTransactionsBySearch$ = await this._transactionsApiService.getTransactionsBySearch(x, new Date(Date.now()), 20)
-        const getTransactionsBySearchResult = await firstValueFrom(getTransactionsBySearch$);
-        this.searchedTransactions$ = new BehaviorSubject<ITransactionDto[]>([]);
-        setTimeout(() => {
-          this.searchedTransactions$.next(getTransactionsBySearchResult.response);
-        }, 10);
-      });
-
-    this.searchText$
-      .pipe(filter(x => x === ''))
-      .subscribe(_ => this.searchedTransactions$ = new BehaviorSubject<ITransactionDto[]>([]));
+    this.searchText$.pipe(
+      switchMap(search => {
+        this.searchRevision++;
+        this.searchedTransactions$.next([]);
+        if (!search.trim()) return EMPTY;
+        return timer(400).pipe(switchMap(() =>
+          this._transactionsApiService.getTransactionsBySearch(search, new Date(), 20).pipe(
+            catchError(() => {
+              this._messageService.add({severity: 'error', summary: 'Error', detail: 'Could not search transactions.'});
+              return EMPTY;
+            })
+          )
+        ));
+      }),
+      takeUntil(this.destroyed$)
+    ).subscribe(result => this.searchedTransactions$.next(result.response));
 
     this.transactionListScrolledToEndNotifier$
-      .pipe(debounceTime(400))
+      .pipe(debounceTime(400), takeUntil(this.destroyed$))
       .subscribe(async _ => {
+              if (this.transactionListLoader) return;
               this.transactionListLoader = true;
-              const transactions = this._transactionsStateService.transactions$.getValue();
-              const lastTransaction = transactions[transactions.length - 1];
-              const date = new Date(lastTransaction.createdAt);
-              await this._transactionsStateService.getTransactionsAsync(date, 20);
-              this.transactionListLoader = false;
+              try {
+                const transactions = this._transactionsStateService.transactions$.getValue();
+                const lastTransaction = transactions[transactions.length - 1];
+                if (lastTransaction) await this._transactionsStateService.getTransactionsAsync(lastTransaction.createdAt, 20, lastTransaction.id);
+              } catch {
+                this._messageService.add({severity: 'error', summary: 'Error', detail: 'Could not load more transactions.'});
+              } finally {
+                this.transactionListLoader = false;
+              }
       });
 
     this.searchTransactionListScrolledToEndNotifier$
-      .pipe(debounceTime(400))
+      .pipe(debounceTime(400), takeUntil(this.destroyed$))
       .subscribe(async _ => {
+        if (this.transactionListLoader) return;
         this.transactionListLoader = true;
-        const searchText = this.searchText$.getValue();
-        const searchTransactions = this.searchedTransactions$.getValue();
-        const lastSearchTransaction = searchTransactions[searchTransactions.length - 1];
-        const date = new Date(lastSearchTransaction.createdAt);
-        const getTransactionsBySearch$ = this._transactionsApiService.getTransactionsBySearch(searchText, date, 20);
-        const result = await firstValueFrom(getTransactionsBySearch$);
-        searchTransactions.push(...result.response);
-        this.searchedTransactions$.next(searchTransactions);
-        this.transactionListLoader = false;
+        try {
+          const revision = this.searchRevision;
+          const searchText = this.searchText$.getValue();
+          const searchTransactions = this.searchedTransactions$.getValue();
+          const lastSearchTransaction = searchTransactions[searchTransactions.length - 1];
+          if (!lastSearchTransaction) return;
+          const result = await firstValueFrom(this._transactionsApiService.getTransactionsBySearch(searchText, lastSearchTransaction.createdAt, 20, lastSearchTransaction.id));
+          if (revision === this.searchRevision) this.searchedTransactions$.next([...searchTransactions, ...result.response]);
+        } catch {
+          this._messageService.add({severity: 'error', summary: 'Error', detail: 'Could not load more search results.'});
+        } finally {
+          this.transactionListLoader = false;
+        }
       });
+  }
+
+  ngOnDestroy() {
+    this.destroyed$.next();
+    this.destroyed$.complete();
   }
 
   //events
@@ -195,16 +215,24 @@ export class TransactionsOutletComponent implements OnInit {
       this._messageService.add({severity: 'error', summary: 'Error', detail: 'Select a recipient.'});
       return;
     }
-    if (!Number.isFinite(+this.amount) || +this.amount <= 0) {
+    if (!/^[0-9]{1,13}$/.test(this.amount) || +this.amount <= 0) {
       this._messageService.add({severity: 'error', summary: 'Error', detail: ErrorMessageConstants.AmountValueIsIncorrect});
       return;
     }
 
-    const sendMoneyToUserSub$ = this._transactionsApiService.createTransactionUserToUser(this.toUserId.trim(), +this.amount);
+    const operationId = this.paymentSubmission.start('transfer');
+    if (!operationId) return;
 
-    this.amount = "";
+    const submittedAmount = this.amount;
+    const sendMoneyToUserSub$ = this._transactionsApiService.createTransactionUserToUser(this.toUserId.trim(), +submittedAmount, operationId);
 
-    await firstValueFrom<IResult<ICreateTransactionUserToUserEvent>>(sendMoneyToUserSub$);
+    try {
+      await firstValueFrom<IResult<ICreateTransactionUserToUserEvent>>(sendMoneyToUserSub$);
+      if (this.amount === submittedAmount) this.amount = "";
+    } catch {
+      this.paymentSubmission.finish(operationId);
+      this._messageService.add({severity: 'error', summary: 'Error', detail: 'Could not send the transfer.'});
+    }
   }
 
   //other

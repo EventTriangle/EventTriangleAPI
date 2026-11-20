@@ -77,13 +77,17 @@ export class SupportOutletComponent implements OnInit, OnDestroy {
       .subscribe(async e => {
         const event = e as Event;
         const target = event.target as Document;
-        if (target.body.scrollHeight - window.innerHeight <= window.scrollY + 15) {
+        if (!this.ticketListLoaderAnimation && target.body.scrollHeight - window.innerHeight <= window.scrollY + 15) {
           this.ticketListLoaderAnimation = true;
-          const tickets = this._supportTicketStateService.supportTickets$.getValue();
-          const lastTicket = tickets[tickets.length - 1];
-          const date = new Date(lastTicket.createdAt);
-          await this._supportTicketStateService.getSupportTicketsAsync(date, 10);
-          this.ticketListLoaderAnimation = false;
+          try {
+            const tickets = this._supportTicketStateService.supportTickets$.getValue();
+            const lastTicket = tickets[tickets.length - 1];
+            if (lastTicket) await this._supportTicketStateService.getSupportTicketsAsync(lastTicket.createdAt, 10, lastTicket.id);
+          } catch {
+            this._messageService.add({severity: 'error', summary: 'Error', detail: 'Could not load more tickets.'});
+          } finally {
+            this.ticketListLoaderAnimation = false;
+          }
         }
       });
   }
@@ -94,6 +98,11 @@ export class SupportOutletComponent implements OnInit, OnDestroy {
 
   //events
   async onClickOpenSupportTicketHandler() {
+    if (!this.transactionId.trim() || !this.ticketReason.trim()) {
+      this._messageService.add({severity: 'error', summary: 'Error', detail: 'Enter a transaction ID and a reason.'});
+      return;
+    }
+
     const walletId = this._profileStateService.user$.getValue()?.walletId ?? "";
 
     const openSupportTicket$ = this._ticketsApiService.openSupportTicket(walletId, this.transactionId, this.ticketReason);

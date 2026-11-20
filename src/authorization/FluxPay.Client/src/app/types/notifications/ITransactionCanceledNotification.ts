@@ -7,4 +7,5 @@ export interface ITransactionCanceledNotification {
     transactionType: TransactionType;
     createdAt: Date;
     reason: string;
+    operationId?: string;
 }

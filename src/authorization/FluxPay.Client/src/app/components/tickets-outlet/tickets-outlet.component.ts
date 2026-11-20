@@ -70,8 +70,8 @@ export class TicketsOutletComponent implements OnInit, OnDestroy {
           this.ticketListLoaderAnimation = true;
           const tickets = this._ticketStateService.tickets$.getValue();
           const lastTicket = tickets[tickets.length - 1];
-          const date = new Date(lastTicket.createdAt);
-          await this._ticketStateService.getTicketsAsync(date, 10);
+          if (!lastTicket) { this.ticketListLoaderAnimation = false; return; }
+          await this._ticketStateService.getTicketsAsync(lastTicket.createdAt, 10, lastTicket.id);
           this.ticketListLoaderAnimation = false;
         }
       });

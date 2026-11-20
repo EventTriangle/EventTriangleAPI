@@ -5,4 +5,4 @@ namespace FluxPayAPI.Sender.BusinessLogic.CommandHandlers;
 public record CreateTransactionUserToUserCommand(
     string RequesterId, 
     string ToUserId,
-    decimal Amount) : ICommand;
+    decimal Amount, Guid? OperationId = null) : ICommand;

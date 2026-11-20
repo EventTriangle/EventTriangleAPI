@@ -5,4 +5,5 @@ public record TransactionUserToUserCreatedEventMessage(
     string RequesterId, 
     string ToUserId,
     decimal Amount,
-    DateTime CreatedAt);
+    DateTime CreatedAt,
+    Guid? OperationId = null);

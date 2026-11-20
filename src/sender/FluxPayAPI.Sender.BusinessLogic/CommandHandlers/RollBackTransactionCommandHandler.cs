@@ -24,9 +24,8 @@ public class RollBackTransactionCommandHandler : ICommandHandler<RollBackTransac
         var transactionRollBackedEvent = new TransactionRollBackedEvent(command.RequesterId, command.TransactionId);
 
         _context.TransactionRollBackedEvents.Add(transactionRollBackedEvent);
+        await _client.Publish(transactionRollBackedEvent.CreateEventMessage());
         await _context.SaveChangesAsync();
-        
-        var _ = _client.Publish(transactionRollBackedEvent.CreateEventMessage());
 
         return new Result<TransactionRollBackedEvent>(transactionRollBackedEvent);
     }

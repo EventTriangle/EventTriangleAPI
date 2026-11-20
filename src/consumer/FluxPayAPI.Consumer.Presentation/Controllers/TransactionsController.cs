@@ -38,11 +38,12 @@ public class TransactionsController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetTransactions(
         [FromQuery] DateTime fromDateTime,
-        [FromQuery] int limit = 25)
+        [FromQuery] int limit = 25,
+        [FromQuery] Guid? cursorId = null)
     {
         var requesterId = _userClaimsService.GetUserId();
         
-        var query = new GetTransactionsQuery(requesterId, limit, fromDateTime);
+        var query = new GetTransactionsQuery(requesterId, limit, fromDateTime, cursorId);
         var result = await _getTransactionsQueryHandler.HandleAsync(query);
 
         return result.ToActionResult();
@@ -54,11 +55,12 @@ public class TransactionsController : ControllerBase
     public async Task<IActionResult> GetTransactionsByUserId(
         string userId,
         [FromQuery] DateTime fromDateTime,
-        [FromQuery] int limit = 25)
+        [FromQuery] int limit = 25,
+        [FromQuery] Guid? cursorId = null)
     {
         var requesterId = _userClaimsService.GetUserId();
         
-        var query = new GetTransactionsByUserIdQuery(requesterId, userId, limit, fromDateTime);
+        var query = new GetTransactionsByUserIdQuery(requesterId, userId, limit, fromDateTime, cursorId);
         var result = await _getTransactionsByUserIdQueryHandler.HandleAsync(query);
 
         return result.ToActionResult();
@@ -73,11 +75,12 @@ public class TransactionsController : ControllerBase
     public async Task<IActionResult> GetTransactionsBySearch(
         string searchText,
         [FromQuery] DateTime fromDateTime,
-        [FromQuery] int limit = 25)
+        [FromQuery] int limit = 25,
+        [FromQuery] Guid? cursorId = null)
     {
         var requesterId = _userClaimsService.GetUserId();
         
-        var query = new GetTransactionsBySearchQuery(requesterId, searchText, limit, fromDateTime);
+        var query = new GetTransactionsBySearchQuery(requesterId, searchText, limit, fromDateTime, cursorId);
         var result = await _getTransactionsBySearchQueryHandler.HandleAsync(query);
 
         return result.ToActionResult();

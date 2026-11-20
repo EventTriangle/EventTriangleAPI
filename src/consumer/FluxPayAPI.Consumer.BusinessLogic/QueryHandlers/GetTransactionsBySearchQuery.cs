@@ -6,4 +6,4 @@ public record GetTransactionsBySearchQuery(
     string RequesterId,
     string SearchText,
     int Limit, 
-    DateTime FromDateTime) : ICommand;
+    DateTime FromDateTime, Guid? CursorId = null) : ICommand;

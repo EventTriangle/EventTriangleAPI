@@ -31,9 +31,8 @@ public class EditCreditCardCommandHandler : ICommandHandler<EditCreditCardComman
             command.PaymentNetwork);
 
         _context.CreditCardChangedEvents.Add(creditCardChangedEvent);
+        await _client.Publish(creditCardChangedEvent.CreateEventMessage());
         await _context.SaveChangesAsync();
-        
-        var _ = _client.Publish(creditCardChangedEvent.CreateEventMessage());
 
         return new Result<CreditCardChangedEvent>(creditCardChangedEvent);
     }

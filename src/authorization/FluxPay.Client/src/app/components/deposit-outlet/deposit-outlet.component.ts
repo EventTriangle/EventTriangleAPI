@@ -1,4 +1,4 @@
-import { NgxMaskDirective } from 'ngx-mask';
+import {PaymentSubmissionService} from "../../services/state/payment-submission.service";
 import { SelectModule } from 'primeng/select';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { FormsModule } from '@angular/forms';
@@ -11,7 +11,7 @@ import {MessageService} from "primeng/api";
 
 @Component({
   standalone: true,
-  imports: [FormsModule, AngularSvgIconModule, SelectModule, NgxMaskDirective],
+  imports: [FormsModule, AngularSvgIconModule, SelectModule],
   selector: 'app-deposit-outlet',
   templateUrl: './deposit-outlet.component.html',
   styleUrls: ['./deposit-outlet.component.scss'],
@@ -33,7 +33,8 @@ export class DepositOutletComponent implements OnInit{
   constructor(
       private _transactionsApiService: TransactionsApiService,
       private _creditCardStateService: CreditCardsStateService,
-      private _messageService: MessageService
+      private _messageService: MessageService,
+    protected paymentSubmission: PaymentSubmissionService
   ) {}
 
   async ngOnInit() {
@@ -43,17 +44,21 @@ export class DepositOutletComponent implements OnInit{
 
   //events
   public async onClickTopUpAccountBalanceHandler() {
-    if (!this.creditCardId.trim() || !Number.isFinite(+this.amount) || +this.amount <= 0) {
+    if (!this.creditCardId.trim() || !/^[0-9]{1,13}$/.test(this.amount) || +this.amount <= 0) {
       this._messageService.add({severity: 'error', summary: 'Error', detail: 'Select a card and enter an amount greater than zero.'});
       return;
     }
-    const topUpAccountBalance$ = this._transactionsApiService.topUpAccountBalance(this.creditCardId, +this.amount);
+    const operationId = this.paymentSubmission.start('deposit');
+    if (!operationId) return;
+
+    const topUpAccountBalance$ = this._transactionsApiService.topUpAccountBalance(this.creditCardId, +this.amount, operationId);
 
     try {
+      // The sender acknowledges receipt before the consumer finishes processing.
+      // Keep the values available if the asynchronous result is an error.
       await firstValueFrom(topUpAccountBalance$);
-      this.creditCardId = "";
-      this.amount = "";
     } catch {
+      this.paymentSubmission.finish(operationId);
       this._messageService.add({severity: 'error', summary: 'Error', detail: 'Could not submit the deposit.'});
     }
   }

@@ -24,9 +24,8 @@ public class DeleteContactCommandHandler : ICommandHandler<DeleteContactCommand,
         var contactDeletedEvent = new ContactDeletedEvent(command.RequesterId, command.ContactId);
 
         _context.ContactDeletedEvents.Add(contactDeletedEvent);
+        await _client.Publish(contactDeletedEvent.CreateEventMessage());
         await _context.SaveChangesAsync();
-        
-        var _ = _client.Publish(contactDeletedEvent.CreateEventMessage());
         
         return new Result<ContactDeletedEvent>(contactDeletedEvent);
     }

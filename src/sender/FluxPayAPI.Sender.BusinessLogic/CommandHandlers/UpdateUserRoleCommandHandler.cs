@@ -24,9 +24,8 @@ public class UpdateUserRoleCommandHandler : ICommandHandler<UpdateUserRoleComman
         var userRoleUpdatedEvent = new UserRoleUpdatedEvent(command.RequesterId, command.UserId, command.UserRole);
 
         _context.UserRoleUpdatedEvents.Add(userRoleUpdatedEvent);
+        await _client.Publish(userRoleUpdatedEvent.CreateEventMessage());
         await _context.SaveChangesAsync();
-
-        var _ = _client.Publish(userRoleUpdatedEvent.CreateEventMessage());
         
         return new Result<UserRoleUpdatedEvent>(userRoleUpdatedEvent);
     }

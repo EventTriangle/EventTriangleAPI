@@ -5,4 +5,4 @@ namespace FluxPayAPI.Consumer.BusinessLogic.QueryHandlers;
 public record GetTransactionsQuery(
     string RequesterId, 
     int Limit, 
-    DateTime FromDateTime) : ICommand;
+    DateTime FromDateTime, Guid? CursorId = null) : ICommand;

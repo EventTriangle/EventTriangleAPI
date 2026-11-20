@@ -6,4 +6,4 @@ public record GetTransactionsByUserIdQuery(
     string RequesterId, 
     string UserId, 
     int Limit,
-    DateTime FromDateTime) : ICommand;
+    DateTime FromDateTime, Guid? CursorId = null) : ICommand;

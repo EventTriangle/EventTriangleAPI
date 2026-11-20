@@ -28,9 +28,8 @@ public class CreateUserCommandHandler : ICommandHandler<CreateUserCommand, UserC
             command.UserStatus);
             
         _context.UserCreatedEvents.Add(userCreatedEvent);
+        await _client.Publish(userCreatedEvent.CreateEventMessage());
         await _context.SaveChangesAsync();
-
-        var _ = _client.Publish(userCreatedEvent.CreateEventMessage());
         
         return new Result<UserCreatedEvent>(userCreatedEvent);
     }

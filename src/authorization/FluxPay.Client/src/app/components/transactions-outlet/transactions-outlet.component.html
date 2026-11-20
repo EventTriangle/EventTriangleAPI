@@ -105,7 +105,7 @@
           </div>
         </div>
       </ng-template>
-      <div class="emptyTransactionList" *ngIf="data.transactions.length === 0 && data.searchTransactions.length === 0 && _transactionsStateService.wasRequested">
+      <div class="emptyTransactionList" *ngIf="!data.searchText && data.transactions.length === 0 && _transactionsStateService.wasRequested">
         <p>No transactions yet</p>
       </div>
     </ng-container>
@@ -124,12 +124,12 @@
       <p class="createNewTransactionTitle">
         Create New Transaction
       </p>
-      <p-select class="createNewTransactionToInput" [options]="contacts" [(ngModel)]="toUserId" (onChange)="onChangeDropDownHandler($event)"
+      <p-select class="createNewTransactionToInput" [options]="(contacts$ | async) ?? []" [(ngModel)]="toUserId" (onChange)="onChangeDropDownHandler($event)"
                   placeholder="To: Receiver" [editable]="true" />
-      <input aria-label="Transaction amount" type="text" class="createNewTransactionAmountInput" (keydown.enter)="$event.preventDefault()" mask="0000000000000"
+      <input aria-label="Transaction amount" type="text" class="createNewTransactionAmountInput" (keydown.enter)="$event.preventDefault()" inputmode="numeric"
              placeholder="Amount: €0" [(ngModel)]="amount" (keyup.enter)="sendMoneyToUser()"/>
-      <button class="createNewTransactionOkButton" (click)="sendMoneyToUser()">
-        Ok
+      <button type="button" [disabled]="paymentSubmission.isPending('transfer')" class="createNewTransactionOkButton" (click)="sendMoneyToUser()">
+        {{paymentSubmission.isPending('transfer') ? 'Processing…' : 'Ok'}}
       </button>
     </div>
   </div>

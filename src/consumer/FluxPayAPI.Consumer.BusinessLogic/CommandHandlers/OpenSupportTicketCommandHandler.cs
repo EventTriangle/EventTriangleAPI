@@ -28,7 +28,7 @@ public class OpenSupportTicketCommandHandler : ICommandHandler<OpenSupportTicket
             return new Result<SupportTicketDto>(new DbEntityNotFoundError(ResponseMessages.RequesterNotFound));
         }
         
-        var wallet = await _context.WalletEntities.FirstOrDefaultAsync(x => x.Id == command.WalletId);
+        var wallet = await _context.WalletEntities.FirstOrDefaultAsync(x => x.Id == command.WalletId && x.Id == requester.WalletId);
 
         if (wallet == null)
         {

@@ -36,7 +36,7 @@ public class CreateTransactionCardToUserCommandHandler : ICommandHandler<CreateT
             return new Result<TransactionDto>(new ConflictError(ResponseMessages.RequesterIsSuspended));
         }
 
-        var creditCard = await _context.CreditCardEntities.FirstOrDefaultAsync(x => x.Id == command.CreditCardId);
+        var creditCard = await _context.CreditCardEntities.FirstOrDefaultAsync(x => x.Id == command.CreditCardId && x.UserId == command.RequesterId);
         
         if (creditCard == null)
         {

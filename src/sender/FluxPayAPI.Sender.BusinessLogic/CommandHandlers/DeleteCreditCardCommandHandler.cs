@@ -24,9 +24,8 @@ public class DeleteCreditCardCommandHandler : ICommandHandler<DeleteCreditCardCo
         var creditCardDeletedEvent = new CreditCardDeletedEvent(command.RequesterId, command.CardId);
 
         _context.CreditCardDeletedEvents.Add(creditCardDeletedEvent);
+        await _client.Publish(creditCardDeletedEvent.CreateEventMessage());
         await _context.SaveChangesAsync();
-        
-        var _ = _client.Publish(creditCardDeletedEvent.CreateEventMessage());
 
         return new Result<CreditCardDeletedEvent>(creditCardDeletedEvent);
     }

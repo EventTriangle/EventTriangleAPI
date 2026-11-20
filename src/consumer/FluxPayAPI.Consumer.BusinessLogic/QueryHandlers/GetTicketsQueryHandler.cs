@@ -33,9 +33,20 @@ public class GetTicketsQueryHandler : ICommandHandler<GetTicketsQuery, List<Supp
             return new Result<List<SupportTicketDto>>(new ConflictError(ResponseMessages.RequesterIsNotAdmin));
         }
         
-        var supportTickets = await _context.SupportTicketEntities
+        var cursorQuery = _context.SupportTicketEntities.AsQueryable();
+        if (command.CursorId is Guid cursorId)
+        {
+            cursorQuery = cursorQuery.Where(x => EF.Functions.LessThan(
+                ValueTuple.Create(x.CreatedAt, x.Id), ValueTuple.Create(command.FromDateTime, cursorId)));
+        }
+        else
+        {
+            cursorQuery = cursorQuery.Where(x => x.CreatedAt < command.FromDateTime);
+        }
+
+        var supportTickets = await cursorQuery
             .OrderByDescending(x => x.CreatedAt)
-            .Where(x => x.CreatedAt < command.FromDateTime)
+            .ThenByDescending(x => x.Id)
             .Where(x => x.TicketStatus == TicketStatus.Open)
             .Select(x => new SupportTicketDto(
                 x.Id,

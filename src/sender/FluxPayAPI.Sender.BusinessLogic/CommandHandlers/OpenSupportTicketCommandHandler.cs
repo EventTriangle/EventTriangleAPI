@@ -28,9 +28,8 @@ public class OpenSupportTicketCommandHandler : ICommandHandler<OpenSupportTicket
             command.TicketReason);
 
         _context.SupportTicketOpenedEvents.Add(supportTicketOpenedEvent);
+        await _client.Publish(supportTicketOpenedEvent.CreateEventMessage());
         await _context.SaveChangesAsync();
-
-        var _ = _client.Publish(supportTicketOpenedEvent.CreateEventMessage());
         
         return new Result<SupportTicketOpenedEvent>(supportTicketOpenedEvent);
     }

@@ -27,9 +27,8 @@ public class TopUpAccountBalanceCommandHandler : ICommandHandler<TopUpAccountBal
             command.Amount);
 
         _context.TransactionCardToUserCreatedEvents.Add(transactionCreatedEvent);
+        await _client.Publish(transactionCreatedEvent.CreateEventMessage() with { OperationId = command.OperationId });
         await _context.SaveChangesAsync();
-        
-        var _ = _client.Publish(transactionCreatedEvent.CreateEventMessage());
 
         return new Result<TransactionCardToUserCreatedEvent>(transactionCreatedEvent);
     }

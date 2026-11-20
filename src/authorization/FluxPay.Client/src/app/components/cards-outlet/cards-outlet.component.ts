@@ -63,7 +63,7 @@ export class CardsOutletComponent implements OnInit {
 
         if (!currentCardId) throw new Error(ErrorMessageConstants.CardNotFound);
 
-        await this._creditCardsStateService.deleteCreditCardAsync(currentCardId);
+        await this.onDeleteCard(currentCardId);
     }}
   ]
 
@@ -82,10 +82,27 @@ export class CardsOutletComponent implements OnInit {
   }
 
   //events
+  async onDeleteCard(cardId: string) {
+    try {
+      await this._creditCardsStateService.deleteCreditCardAsync(cardId);
+    } catch {
+      this._messageService.add({severity: 'error', summary: 'Error', detail: 'Could not delete the card.'});
+    }
+  }
+
   async onAttachCardOkClick() {
-    if (!this.cardHolderName.trim() || this.cardNumber.length !== 16 ||
-        this.expiration.length !== 4 || this.cvv.length !== 3) {
+    if (!this.cardHolderName.trim() || !/^\d{16}$/.test(this.cardNumber) ||
+        !/^\d{4}$/.test(this.expiration) || !/^\d{3}$/.test(this.cvv)) {
       this._messageService.add({severity: 'error', summary: 'Error', detail: 'Enter a cardholder name, 16-digit card number, expiry date and 3-digit security code.'});
+      return;
+    }
+
+    const month = Number(this.expiration.slice(0, 2));
+    const year = 2000 + Number(this.expiration.slice(2));
+    const now = new Date();
+    if (month < 1 || month > 12 || year < now.getFullYear() ||
+        (year === now.getFullYear() && month < now.getMonth() + 1)) {
+      this._messageService.add({severity: 'error', summary: 'Error', detail: 'Enter a valid, unexpired expiry date.'});
       return;
     }
 
@@ -95,17 +112,20 @@ export class CardsOutletComponent implements OnInit {
     const cardNumber = this.cardNumber;
     const cvv = this.cvv;
 
-    this.cardHolderName = "";
-    this.cardNumber = "";
-    this.expiration = "";
-    this.cvv = "";
-
-    await this._creditCardsStateService.attachCreditCardToAccountAsync(
-      cardHolderName,
-      cardNumber,
-      expiration,
-      cvv,
-      this.paymentNetwork);
+    try {
+      await this._creditCardsStateService.attachCreditCardToAccountAsync(
+        cardHolderName,
+        cardNumber,
+        expiration,
+        cvv,
+        this.paymentNetwork);
+      if (this.cardHolderName === cardHolderName) this.cardHolderName = "";
+      if (this.cardNumber === cardNumber) this.cardNumber = "";
+      if (this.expiration === expiration.replace('/', '')) this.expiration = "";
+      if (this.cvv === cvv) this.cvv = "";
+    } catch {
+      this._messageService.add({severity: 'error', summary: 'Error', detail: 'Could not add the card.'});
+    }
   }
 
   // action

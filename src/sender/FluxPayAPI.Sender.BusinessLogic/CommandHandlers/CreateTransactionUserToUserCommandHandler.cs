@@ -28,9 +28,8 @@ public class CreateTransactionUserToUserCommandHandler :
             command.Amount);
 
         _context.TransactionUserToUserCreatedEvents.Add(transactionCreatedEvent);
+        await _client.Publish(transactionCreatedEvent.CreateEventMessage() with { OperationId = command.OperationId });
         await _context.SaveChangesAsync();
-        
-        var _ = _client.Publish(transactionCreatedEvent.CreateEventMessage());
 
         return new Result<TransactionUserToUserCreatedEvent>(transactionCreatedEvent);
     }

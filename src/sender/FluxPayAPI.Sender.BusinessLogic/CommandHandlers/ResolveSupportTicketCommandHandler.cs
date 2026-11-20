@@ -27,9 +27,8 @@ public class ResolveSupportTicketCommandHandler : ICommandHandler<ResolveSupport
             command.TicketJustification);
 
         _context.SupportTicketResolvedEvents.Add(supportTicketResolvedEvent);
+        await _client.Publish(supportTicketResolvedEvent.CreateEventMessage());
         await _context.SaveChangesAsync();
-        
-        var _ = _client.Publish(supportTicketResolvedEvent.CreateEventMessage());
 
         return new Result<SupportTicketResolvedEvent>(supportTicketResolvedEvent);
     }

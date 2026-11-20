@@ -24,9 +24,8 @@ public class NotSuspendUserCommandHandler : ICommandHandler<NotSuspendUserComman
         var userNotSuspendedEvent = new UserNotSuspendedEvent(command.RequesterId, command.UserId);
 
         _context.UserNotSuspendedEvents.Add(userNotSuspendedEvent);
+        await _client.Publish(userNotSuspendedEvent.CreateEventMessage());
         await _context.SaveChangesAsync();
-        
-        var _ = _client.Publish(userNotSuspendedEvent.CreateEventMessage());
         
         return new Result<UserNotSuspendedEvent>(userNotSuspendedEvent);
     }

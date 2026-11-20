@@ -5,4 +5,5 @@ public record TransactionCardToUserCreatedEventMessage(
     string RequesterId,
     Guid CreditCardId, 
     decimal Amount,
-    DateTime CreatedAt);
+    DateTime CreatedAt,
+    Guid? OperationId = null);

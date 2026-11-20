@@ -5,7 +5,8 @@ import { SkeletonModule } from 'primeng/skeleton';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import {Component, OnInit, QueryList, ViewChildren} from '@angular/core';
+import {A11yModule} from '@angular/cdk/a11y';
+import {Component, ElementRef, HostListener, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {animate, query, stagger, style, transition, trigger} from "@angular/animations";
 import {UsersStateService} from "../../services/state/users-state.service";
 import {BehaviorSubject, debounceTime, filter, firstValueFrom, Subject} from "rxjs";
@@ -24,7 +25,7 @@ import {ErrorMessageConstants} from "../../constants/ErrorMessageConstants";
 
 @Component({
   standalone: true,
-  imports: [CommonModule, FormsModule, AngularSvgIconModule, SkeletonModule, ContextMenuModule, TooltipModule, CopyTextDirective],
+  imports: [CommonModule, FormsModule, AngularSvgIconModule, SkeletonModule, ContextMenuModule, TooltipModule, CopyTextDirective, A11yModule],
   selector: 'app-users-outlet',
   templateUrl: './users-outlet.component.html',
   styleUrls: ['./users-outlet.component.scss'],
@@ -41,6 +42,14 @@ import {ErrorMessageConstants} from "../../constants/ErrorMessageConstants";
 })
 export class UsersOutletComponent implements OnInit {
   @ViewChildren('userInfoWindowBodyTransactionContextMenu') ch!: QueryList<ContextMenu>
+  @ViewChild('closeUserInfoButton') set closeUserInfoButton(button: ElementRef<HTMLButtonElement> | undefined) {
+    button?.nativeElement.focus();
+  }
+  private previousFocus: HTMLElement | null = null;
+
+  @HostListener('document:keydown.escape') onEscape() {
+    if (this.showUserInfoWindow) this.closeUserTransactionsInfo();
+  }
 
   //notifiers
   public transactionListScrolledToEndNotifier$ = new Subject<void>();
@@ -108,8 +117,8 @@ export class UsersOutletComponent implements OnInit {
         if (!currentUser) throw new Error(ErrorMessageConstants.UserNotFound);
         const transactionsInfo = this.currentUserTransactionsInfo$.getValue();
         const lastTransactionInTransactionsInfo = transactionsInfo[transactionsInfo.length - 1];
-        const date = new Date(lastTransactionInTransactionsInfo.createdAt);
-        const getTransactionsByUserId$ = this._transactionsApiService.getTransactionsByUserId(currentUser.id, date, 15);
+        if (!lastTransactionInTransactionsInfo) return;
+        const getTransactionsByUserId$ = this._transactionsApiService.getTransactionsByUserId(currentUser.id, lastTransactionInTransactionsInfo.createdAt, 15, lastTransactionInTransactionsInfo.id);
         const transactions = await firstValueFrom(getTransactionsByUserId$);
         const currentUserTransactionsInfo = this.currentUserTransactionsInfo$.getValue();
         currentUserTransactionsInfo.push(...transactions.response);
@@ -130,6 +139,7 @@ export class UsersOutletComponent implements OnInit {
   }
 
   public async onClickGetUserTransactionsInfoHandler(userId: string) {
+    this.previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     this.showUserInfoWindow = true;
     let user = this._usersStateService.users$.getValue().find(x => x.id === userId);
     if (!user) {
@@ -156,6 +166,8 @@ export class UsersOutletComponent implements OnInit {
     this.showUserInfoWindow = false;
     this.currentUserInfo$.next(null);
     this.currentUserTransactionsInfo$.next([]);
+    this.previousFocus?.focus();
+    this.previousFocus = null;
   }
 
   public setSelectedTransactionForContextMenu(transaction: ITransactionDto) {

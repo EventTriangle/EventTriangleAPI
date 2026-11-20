@@ -27,10 +27,21 @@ public class GetTransactionsBySearchQueryHandler : ICommandHandler<GetTransactio
             return new Result<List<TransactionDto>>(new DbEntityNotFoundError(ResponseMessages.RequesterNotFound));
         }
 
-        var transactions = await _context.TransactionEntities
+        var cursorQuery = _context.TransactionEntities.AsQueryable();
+        if (command.CursorId is Guid cursorId)
+        {
+            cursorQuery = cursorQuery.Where(x => EF.Functions.LessThan(
+                ValueTuple.Create(x.CreatedAt, x.Id), ValueTuple.Create(command.FromDateTime, cursorId)));
+        }
+        else
+        {
+            cursorQuery = cursorQuery.Where(x => x.CreatedAt < command.FromDateTime);
+        }
+
+        var transactions = await cursorQuery
             .OrderByDescending(x => x.CreatedAt)
+            .ThenByDescending(x => x.Id)
             .Where(x => x.FromUserId == command.RequesterId || x.ToUserId == command.RequesterId)
-            .Where(x => x.CreatedAt < command.FromDateTime)
             .Where(x => EF.Functions.Like(x.Id.ToString(), $"%{command.SearchText}%"))
             .Take(command.Limit)
             .Select(x => new TransactionDto(

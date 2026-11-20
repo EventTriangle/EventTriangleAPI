@@ -5,4 +5,4 @@ namespace FluxPayAPI.Sender.BusinessLogic.CommandHandlers;
 public record TopUpAccountBalanceCommand(
     string RequesterId,
     Guid CreditCardId,
-    decimal Amount) : ICommand;
+    decimal Amount, Guid? OperationId = null) : ICommand;

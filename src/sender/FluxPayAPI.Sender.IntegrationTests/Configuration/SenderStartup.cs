@@ -14,6 +14,11 @@ internal static class SenderStartup
 
         serviceCollection.AddMassTransit(config =>
         {
+            config.AddEntityFrameworkOutbox<DatabaseContext>(outbox =>
+            {
+                outbox.UsePostgres();
+                outbox.UseBusOutbox();
+            });
             config.UsingInMemory();
         });
         serviceCollection.AddCommandHandlers();

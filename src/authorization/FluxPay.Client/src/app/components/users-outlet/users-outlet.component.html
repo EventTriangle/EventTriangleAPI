@@ -1,9 +1,10 @@
 <div class="userInfoWindowBackground" *ngIf="showUserInfoWindow" (click)="closeUserTransactionsInfo()">
-  <div class="userInfoWindow" *ngIf="(currentUserInfo$ | async) as currentUserInfo" (click)="hideAllContextMenu(); $event.stopPropagation()">
+  <div class="userInfoWindow" role="dialog" aria-modal="true" aria-label="User transactions" cdkTrapFocus *ngIf="(currentUserInfo$ | async) as currentUserInfo" (click)="hideAllContextMenu(); $event.stopPropagation()">
     <div class="userInfoWindowHeader">
       <div class="userInfoWindowHeaderAvatar"></div>
       <p class="userInfoWindowHeaderUsername">{{_textService.pullUsernameFromMail(currentUserInfo.email)}}</p>
       <p class="userInfoWindowHeaderBalance">€{{currentUserInfo.wallet.balance}}</p>
+      <button #closeUserInfoButton type="button" class="userInfoWindowClose" aria-label="Close user transactions" (click)="closeUserTransactionsInfo()">×</button>
     </div>
     <div class="userInfoWindowBody" *ngIf="(currentUserTransactionsInfo$ | async) as currentUserTransactionsInfo"
          (scroll)="onScrollTransactionInfoHandler($event)">
@@ -47,9 +48,9 @@
     } as data">
       <div class="userList" *ngIf="data.users.length > 0 && data.searchText.length === 0; else noUsers" [@userListAnimation]="">
         <div *ngFor="let user of data.users; trackBy: identifyUserDto" class="userItem" (click)="onClickGetUserTransactionsInfoHandler(user.id)">
-          <p class="userItemUsername">
+          <button type="button" class="userItemUsername" (click)="$event.stopPropagation(); onClickGetUserTransactionsInfoHandler(user.id)">
             Username: {{_textService.pullUsernameFromMail(user.email)}}
-          </p>
+          </button>
           <p class="userItemBalance">
             Balance: €{{user.wallet.balance}}
           </p>
@@ -68,9 +69,9 @@
       <ng-template #noUsers>
         <div class="userList" *ngIf="data.searchedUsers.length > 0 && data.searchText.length > 0" [@userListAnimation]="">
           <div *ngFor="let user of data.searchedUsers; trackBy: identifyUserDto" class="userItem" (click)="onClickGetUserTransactionsInfoHandler(user.id)">
-            <p class="userItemUsername">
+            <button type="button" class="userItemUsername" (click)="$event.stopPropagation(); onClickGetUserTransactionsInfoHandler(user.id)">
               Username: {{_textService.pullUsernameFromMail(user.email)}}
-            </p>
+            </button>
             <p class="userItemBalance">
               Balance: €{{user.wallet.balance}}
             </p>
@@ -79,7 +80,7 @@
             </p>
             <p class="userItemStatus">
               <span>Status:</span>
-              <select aria-label="User status" class="userItemStatusSelect" [(ngModel)]="user.userStatus" (change)="onChangeSuspendOrMakeActiveHandler(user)">
+              <select aria-label="User status" class="userItemStatusSelect" [(ngModel)]="user.userStatus" (click)="$event.stopPropagation();" (change)="onChangeSuspendOrMakeActiveHandler(user)">
                 <option value="{{UserStatus.Active}}">Active</option>
                 <option value="{{UserStatus.Suspended}}">Suspended</option>
               </select>

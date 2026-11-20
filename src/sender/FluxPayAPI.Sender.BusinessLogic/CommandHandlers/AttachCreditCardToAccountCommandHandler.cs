@@ -30,9 +30,8 @@ public class AttachCreditCardToAccountCommandHandler : ICommandHandler<AttachCre
             command.PaymentNetwork);
 
         _context.CreditCardAddedEvents.Add(creditCardAddedEvent);
+        await _client.Publish(creditCardAddedEvent.CreateEventMessage());
         await _context.SaveChangesAsync();
-        
-        var _ = _client.Publish(creditCardAddedEvent.CreateEventMessage());
         
         return new Result<CreditCardAddedEvent>(creditCardAddedEvent);
     }

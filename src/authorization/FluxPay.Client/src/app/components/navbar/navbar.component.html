@@ -44,12 +44,12 @@
       </div>
       <p class="itemTitle">Users</p>
     </a>
-    <a class="item" (click)="getLogout()"  [@navbarLinkAnimation]="">
+    <button type="button" class="item logoutButton" (click)="getLogout()" [@navbarLinkAnimation]="">
       <div class="itemIcon">
         <svg-icon src="../../../assets/svg/logout.svg" class="logoutSvg" />
       </div>
-      <p class="itemTitle">Log out</p>
-    </a>
+      <span class="itemTitle">Log out</span>
+    </button>
   </ng-container>
   <ng-template #noUser>
     <p-skeleton class="skeletonNavLink" />

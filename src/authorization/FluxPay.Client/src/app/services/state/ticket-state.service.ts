@@ -16,8 +16,8 @@ export class TicketStateService {
   ) { }
 
   //requests
-  public async getTicketsAsync(fromDateTime: Date, limit: number) {
-    const getTickets$ = this._ticketsApiService.getTickets(fromDateTime, limit);
+  public async getTicketsAsync(fromDateTime: Date | string, limit: number, cursorId?: string) {
+    const getTickets$ = this._ticketsApiService.getTickets(fromDateTime, limit, cursorId);
     const getTicketsResult = await firstValueFrom(getTickets$);
 
     const tickets = this.tickets$.getValue();

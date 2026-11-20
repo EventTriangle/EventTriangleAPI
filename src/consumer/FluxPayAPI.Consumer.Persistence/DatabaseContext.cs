@@ -1,5 +1,6 @@
 using FluxPayAPI.Consumer.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using MassTransit;
 
 namespace FluxPayAPI.Consumer.Persistence;
 
@@ -18,6 +19,11 @@ public class DatabaseContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
+        modelBuilder.AddInboxStateEntity();
+        modelBuilder.AddOutboxMessageEntity();
+        modelBuilder.AddOutboxStateEntity();
+
         modelBuilder
             .Entity<ContactEntity>()
             .HasKey(x => new {x.UserId, x.ContactId});

@@ -8,6 +8,7 @@ import {TicketsApiService} from "../api/tickets-api.service";
 })
 export class SupportTicketStateService {
   public wasRequested = false;
+  private snapshotVersion = 0;
 
   public supportTickets$: BehaviorSubject<ISupportTicketDto[]> = new BehaviorSubject<ISupportTicketDto[]>([]);
 
@@ -17,20 +18,31 @@ export class SupportTicketStateService {
 
   //actions
   public addSupportTicket(supportTicketDto: ISupportTicketDto) {
-    const supportTickets = this.supportTickets$.getValue();
-    supportTickets.unshift(supportTicketDto);
-    this.supportTickets$.next(supportTickets);
+    this.supportTickets$.next([supportTicketDto, ...this.supportTickets$.getValue().filter(item => item.id !== supportTicketDto.id)]);
+  }
+
+  public updateSupportTicket(ticket: ISupportTicketDto) {
+    this.supportTickets$.next(this.supportTickets$.getValue().map(item => item.id === ticket.id ? ticket : item));
   }
 
   //requests
-  public async getSupportTicketsAsync(fromDateTime: Date, limit: number) {
-    const getSupportTickets$ = this._ticketsApiService.getSupportTickets(fromDateTime, limit);
+  public async refreshSupportTicketsAsync() {
+    const version = ++this.snapshotVersion;
+    const result = await firstValueFrom(this._ticketsApiService.getSupportTickets(new Date(), 10));
+    if (version === this.snapshotVersion) this.supportTickets$.next(result.response);
+    this.wasRequested = true;
+  }
+
+  public async getSupportTicketsAsync(fromDateTime: Date | string, limit: number, cursorId?: string) {
+    const version = this.snapshotVersion;
+    const getSupportTickets$ = this._ticketsApiService.getSupportTickets(fromDateTime, limit, cursorId);
     const getSupportTicketsResult = await firstValueFrom(getSupportTickets$);
 
-    const supportTickets = this.supportTickets$.getValue();
-    supportTickets.push(...getSupportTicketsResult.response);
-
-    this.supportTickets$.next(supportTickets);
+    if (version === this.snapshotVersion) {
+      const supportTickets = this.supportTickets$.getValue();
+      const ids = new Set(supportTickets.map(item => item.id));
+      this.supportTickets$.next([...supportTickets, ...getSupportTicketsResult.response.filter(item => !ids.has(item.id))]);
+    }
     this.wasRequested = true;
 
     return getSupportTicketsResult;

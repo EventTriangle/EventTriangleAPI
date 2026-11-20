@@ -36,11 +36,12 @@ public class TicketsController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetTickets(
         [FromQuery] DateTime fromDateTime,
-        [FromQuery] int limit = 25)
+        [FromQuery] int limit = 25,
+        [FromQuery] Guid? cursorId = null)
     {
         var requesterId = _userClaimsService.GetUserId();
         
-        var query = new GetTicketsQuery(requesterId, limit, fromDateTime);
+        var query = new GetTicketsQuery(requesterId, limit, fromDateTime, cursorId);
         var result = await _getTicketsQueryHandler.HandleAsync(query);
 
         return result.ToActionResult();
@@ -54,11 +55,12 @@ public class TicketsController : ControllerBase
     [HttpGet("support-tickets")]
     public async Task<IActionResult> GetSupportTickets(
         [FromQuery] DateTime fromDateTime,
-        [FromQuery] int limit = 25)
+        [FromQuery] int limit = 25,
+        [FromQuery] Guid? cursorId = null)
     {
         var requesterId = _userClaimsService.GetUserId();
         
-        var query = new GetSupportsTicketsQuery(requesterId, limit, fromDateTime);
+        var query = new GetSupportsTicketsQuery(requesterId, limit, fromDateTime, cursorId);
         var result = await _getSupportTicketsQueryHandler.HandleAsync(query);
 
         return result.ToActionResult();

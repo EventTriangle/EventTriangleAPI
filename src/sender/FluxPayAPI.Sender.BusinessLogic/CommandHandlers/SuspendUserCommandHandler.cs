@@ -24,9 +24,8 @@ public class SuspendUserCommandHandler : ICommandHandler<SuspendUserCommand, Use
         var userSuspendedEvent = new UserSuspendedEvent(command.RequesterId, command.UserId);
 
         _context.UserSuspendedEvents.Add(userSuspendedEvent);
+        await _client.Publish(userSuspendedEvent.CreateEventMessage());
         await _context.SaveChangesAsync();
-
-        var _ = _client.Publish(userSuspendedEvent.CreateEventMessage());
         
         return new Result<UserSuspendedEvent>(userSuspendedEvent);
     }

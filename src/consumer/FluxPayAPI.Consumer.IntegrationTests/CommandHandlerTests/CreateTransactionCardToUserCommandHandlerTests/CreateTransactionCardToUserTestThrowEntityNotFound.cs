@@ -42,4 +42,17 @@ public class CreateTransactionCardToUserTestThrowEntityNotFound(TestFixture fixt
 
         createTransactionCardToUserWithNonExistentCardResult.Error.Should().BeOfType<DbEntityNotFoundError>();
     }
+
+    [Fact]
+    public async Task TestCannotUseAnotherUsersCard()
+    {
+        var owner = await Fixture.CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserAliceCommand());
+        var requester = await Fixture.CreateUserCommandHandler.HandleAsync(CreateUserCommandHelper.CreateUserBobCommand());
+        var card = await Fixture.AddCreditCardCommandHandler.HandleAsync(AddCreditCardCommandHelper.CreateCreditCardCommand(owner.Response.Id));
+
+        var result = await Fixture.CreateTransactionCardToUserCommandHandler.HandleAsync(
+            new CreateTransactionCardToUserCommand(card.Response.Id, requester.Response.Id, 1, DateTime.UtcNow));
+
+        result.Error.Should().BeOfType<DbEntityNotFoundError>();
+    }
 }

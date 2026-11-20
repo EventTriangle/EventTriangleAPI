@@ -8,6 +8,7 @@ import {ISupportTicketOpenedEvent} from "../../types/interfaces/sender/ISupportT
 import {ISupportTicketResolved} from "../../types/interfaces/sender/ISupportTicketResolved";
 import {ResolveSupportTickerRequest} from "../../types/requests/ResolveSupportTicketRequest";
 import {IResult} from "../../types/interfaces/IResult";
+import {pageParams} from './page-params';
 import {ConfigService} from "../common/config.service";
 
 @Injectable({
@@ -29,18 +30,18 @@ export class TicketsApiService extends ApiBaseService {
   // requests
 
   // GET consumer/tickets
-  public getTickets(fromDateTime: Date, limit: number) : Observable<IResult<ISupportTicketDto[]>> {
+  public getTickets(fromDateTime: Date | string, limit: number, cursorId?: string) : Observable<IResult<ISupportTicketDto[]>> {
     return this.httpClient.get<IResult<ISupportTicketDto[]>>(
-      this.baseUrl + this.consumerTicketsRoute + `?fromDateTime=${fromDateTime.toJSON()}&limit=${limit}`,
-      { withCredentials: true }
+      this.baseUrl + this.consumerTicketsRoute,
+      { withCredentials: true, params: pageParams(fromDateTime, limit, cursorId) }
     )
   }
 
   // GET consumer/tickets/support-ticket
-  public getSupportTickets(fromDateTime: Date, limit: number) : Observable<IResult<ISupportTicketDto[]>> {
+  public getSupportTickets(fromDateTime: Date | string, limit: number, cursorId?: string) : Observable<IResult<ISupportTicketDto[]>> {
     return this.httpClient.get<IResult<ISupportTicketDto[]>>(
-      this.baseUrl + this.consumerTicketsRoute + `/support-tickets?fromDateTime=${fromDateTime.toJSON()}&limit=${limit}`,
-      { withCredentials: true }
+      this.baseUrl + this.consumerTicketsRoute + '/support-tickets',
+      { withCredentials: true, params: pageParams(fromDateTime, limit, cursorId) }
     )
   }
 

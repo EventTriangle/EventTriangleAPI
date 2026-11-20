@@ -61,11 +61,23 @@
         margin-left: 20px;
       }
 
+      .userInfoWindowClose {
+        position: absolute;
+        right: 12px;
+        top: 10px;
+        border: 0;
+        background: transparent;
+        color: #222;
+        font-size: 28px;
+        cursor: pointer;
+        &:focus-visible { outline: 2px solid $purple; }
+      }
+
       .userInfoWindowHeaderBalance {
         position: absolute;
         font-size: 23px;
         top: 30px;
-        right: 20px;
+        right: 60px;
       }
     }
 
@@ -347,6 +359,14 @@
   cursor: pointer;
 
   .userItemUsername {
+    border: 0;
+    padding: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    &:focus-visible { outline: 2px solid $purple; outline-offset: 2px; }
     max-width: 250px;
     margin: 12px auto 0 0;
     text-overflow: ellipsis;

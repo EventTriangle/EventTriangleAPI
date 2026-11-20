@@ -64,6 +64,8 @@ var rabbitPassword = builder.Configuration[AppSettingsConstants.RabbitMqPassword
 builder.Services.AddMassTransit(config =>
 {
     config.AddConsumer<EventConsumer>();
+    config.AddConsumer<NotificationConsumer>();
+    config.AddEntityFrameworkOutbox<DatabaseContext>(outbox => outbox.UsePostgres());
     
     config.UsingRabbitMq((ctx, cfg) =>
     {
@@ -77,7 +79,14 @@ builder.Services.AddMassTransit(config =>
         {
             c.PrefetchCount = 1;
             c.UseConcurrencyLimit(1);
+            c.UseEntityFrameworkOutbox<DatabaseContext>(ctx);
             c.ConfigureConsumer<EventConsumer>(ctx);
+        });
+
+        cfg.ReceiveEndpoint("notification-queue", c =>
+        {
+            c.UseMessageRetry(retry => retry.Interval(3, TimeSpan.FromSeconds(1)));
+            c.ConfigureConsumer<NotificationConsumer>(ctx);
         });
     });
 });

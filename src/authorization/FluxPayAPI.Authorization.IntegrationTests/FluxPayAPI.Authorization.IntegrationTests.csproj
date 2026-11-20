@@ -16,10 +16,13 @@
         </PackageReference>
         <PackageReference Include="xunit" Version="2.9.3" />
         <PackageReference Include="xunit.extensibility.core" Version="2.9.3" />
+        <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.6" />
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\..\shared\FluxPayAPI.Shared.Application\FluxPayAPI.Shared.Application.csproj" />
+        <ProjectReference Include="..\FluxPayAPI.Authorization.BusinessLogic\FluxPayAPI.Authorization.BusinessLogic.csproj" />
     </ItemGroup>
 
 </Project>

@@ -12,6 +12,7 @@ import {
 } from "rxjs";
 import {TextService} from "../../services/common/text.service";
 import {IContactDto} from "../../types/interfaces/consumer/IContactDto";
+import {MessageService} from "primeng/api";
 import {NavigationStart, Router} from "@angular/router";
 
 @Component({
@@ -59,7 +60,8 @@ export class ContactsOutletComponent implements OnInit, OnDestroy{
       protected _profileStateService: ProfileStateService,
       protected _textService: TextService,
       protected _router: Router,
-      protected _changeDetectorRef: ChangeDetectorRef
+      protected _changeDetectorRef: ChangeDetectorRef,
+      private _messageService: MessageService
   ) {
     this.routerSubscription = this._router.events
         .pipe(filter((event): event is NavigationStart => event instanceof NavigationStart))
@@ -91,11 +93,19 @@ export class ContactsOutletComponent implements OnInit, OnDestroy{
 
   //events
   async onClickAddContactHandler(contactId: string) {
-    await this._contactsStateService.addContactAsync(contactId);
+    try {
+      await this._contactsStateService.addContactAsync(contactId);
+    } catch {
+      this._messageService.add({severity: 'error', summary: 'Error', detail: 'Could not add the contact.'});
+    }
   }
 
   async onClickDeleteContactHandler(contactId: string) {
-    await this._contactsStateService.deleteContactAsync(contactId);
+    try {
+      await this._contactsStateService.deleteContactAsync(contactId);
+    } catch {
+      this._messageService.add({severity: 'error', summary: 'Error', detail: 'Could not remove the contact.'});
+    }
   }
 
   //other

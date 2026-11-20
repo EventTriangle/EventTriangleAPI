@@ -174,7 +174,7 @@ public class EventConsumer :
                 return;
             }    
             
-            await _hubContext.Clients.User(message.RequesterId).CreditCardAddedAsync(result.Response);
+            await context.Publish(new CreditCardAddedNotice(message.RequesterId, result.Response.Id));
         }
         catch(Exception e)
         {
@@ -301,7 +301,7 @@ public class EventConsumer :
                 return;
             }
             
-            await _hubContext.Clients.User(message.RequesterId).SupportTicketOpenedAsync(result.Response);
+            await context.Publish(new SupportTicketOpenedNotice(message.RequesterId, result.Response));
         }
         catch(Exception e)
         {
@@ -338,7 +338,10 @@ public class EventConsumer :
                     result.Error.Message);
 
                 await _hubContext.Clients.User(message.RequesterId).SupportTicketResolvingCanceledAsync(notification);
-            }            
+                return;
+            }
+
+            await context.Publish(new SupportTicketResolvedNotice(result.Response.UserId, result.Response));
         }
         catch(Exception e)
         {
@@ -378,13 +381,13 @@ public class EventConsumer :
                     message.Amount,
                     TransactionType.FromCardToUser,
                     message.CreatedAt,
-                    result.Error.Message);
-            
-                await _hubContext.Clients.User(context.Message.RequesterId).TransactionCanceledAsync(notification);
+                    result.Error.Message, message.OperationId);
+
+                await context.Publish(new TransactionCanceledNotice(message.RequesterId, notification));
                 return;
             }
             
-            await _hubContext.Clients.User(context.Message.RequesterId).TransactionSucceededAsync(result.Response);
+            await context.Publish(new TransactionSucceededNotice(message.RequesterId, null, result.Response, message.OperationId));
         }
         catch(Exception e)
         {
@@ -396,8 +399,8 @@ public class EventConsumer :
                 message.Amount,
                 TransactionType.FromCardToUser,
                 message.CreatedAt,
-                ResponseMessages.InternalError);
-            
+                ResponseMessages.InternalError, message.OperationId);
+
             await _hubContext.Clients.User(context.Message.RequesterId).TransactionCanceledAsync(notification);
             throw;
         }
@@ -427,14 +430,13 @@ public class EventConsumer :
                     message.Amount,
                     TransactionType.FromUserToUser,
                     message.CreatedAt,
-                    result.Error.Message);
-            
-                await _hubContext.Clients.User(context.Message.RequesterId).TransactionCanceledAsync(notification);
+                    result.Error.Message, message.OperationId);
+
+                await context.Publish(new TransactionCanceledNotice(message.RequesterId, notification));
                 return;
             }
             
-            await _hubContext.Clients.User(context.Message.RequesterId).TransactionSucceededAsync(result.Response);
-            await _hubContext.Clients.User(context.Message.ToUserId).TransactionSucceededAsync(result.Response);
+            await context.Publish(new TransactionSucceededNotice(message.RequesterId, message.ToUserId, result.Response, message.OperationId));
         }
         catch(Exception e)
         {
@@ -446,8 +448,8 @@ public class EventConsumer :
                 message.Amount,
                 TransactionType.FromUserToUser,
                 message.CreatedAt,
-                ResponseMessages.InternalError);
-            
+                ResponseMessages.InternalError, message.OperationId);
+
             await _hubContext.Clients.User(context.Message.RequesterId).TransactionCanceledAsync(notification);
             throw;
         }

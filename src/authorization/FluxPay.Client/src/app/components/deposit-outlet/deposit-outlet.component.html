@@ -7,9 +7,9 @@
     <p class="overview">An overview of deposit</p>
     <div class="depositForm" [@depositFormAnimation]="">
       <p-select class="depositInput" [options]="creditCardIdArray" [(ngModel)]="creditCardId" placeholder="Credit Card Id" [editable]="true" />
-      <input aria-label="Deposit amount" type="text" class="depositInput" [(ngModel)]="amount" placeholder="Amount" mask="0000000000000"/>
-      <button class="depositOkButton" (click)="onClickTopUpAccountBalanceHandler()">
-        Ok
+      <input aria-label="Deposit amount" type="text" class="depositInput" [(ngModel)]="amount" placeholder="Amount" inputmode="numeric"/>
+      <button type="button" [disabled]="paymentSubmission.isPending('deposit')" class="depositOkButton" (click)="onClickTopUpAccountBalanceHandler()">
+        {{paymentSubmission.isPending('deposit') ? 'Processing…' : 'Ok'}}
       </button>
     </div>
   </div>

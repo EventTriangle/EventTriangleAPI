@@ -4,6 +4,7 @@ export enum SignalRMethodsName {
     TransactionSucceededAsync = "TransactionSucceededAsync",
     CreditCardAddedAsync = "CreditCardAddedAsync",
     SupportTicketOpenedAsync = "SupportTicketOpenedAsync",
+    SupportTicketResolvedAsync = "SupportTicketResolvedAsync",
     ContactCreatingCanceledAsync = "ContactCreatingCanceledAsync",
     ContactDeletingCanceledAsync = "ContactDeletingCanceledAsync",
     CreditCardAddingCanceledAsync = "CreditCardAddingCanceledAsync",
