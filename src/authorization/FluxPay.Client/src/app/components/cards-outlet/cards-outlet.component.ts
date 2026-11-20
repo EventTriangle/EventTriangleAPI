@@ -10,7 +10,7 @@ import {PaymentNetwork} from "../../types/enums/PaymentNetwork";
 import {CreditCardsStateService} from "../../services/state/credit-cards-state.service";
 import { ProfileStateService } from '../../services/state/profile-state.service';
 import {ICreditCardDto} from "../../types/interfaces/consumer/ICreditCardDto";
-import {MenuItem} from "primeng/api";
+import {MenuItem, MessageService} from "primeng/api";
 import {ErrorMessageConstants} from "../../constants/ErrorMessageConstants";
 import {TextService} from "../../services/common/text.service";
 
@@ -70,7 +70,8 @@ export class CardsOutletComponent implements OnInit {
   constructor(
     protected _creditCardsStateService: CreditCardsStateService,
     protected _profileStateService: ProfileStateService,
-    protected _textService: TextService) {
+    protected _textService: TextService,
+    private _messageService: MessageService) {
 
   }
 
@@ -82,7 +83,11 @@ export class CardsOutletComponent implements OnInit {
 
   //events
   async onAttachCardOkClick() {
-    if (this.expiration.length < 4) return;
+    if (!this.cardHolderName.trim() || this.cardNumber.length !== 16 ||
+        this.expiration.length !== 4 || this.cvv.length !== 3) {
+      this._messageService.add({severity: 'error', summary: 'Error', detail: 'Enter a cardholder name, 16-digit card number, expiry date and 3-digit security code.'});
+      return;
+    }
 
     const expiration = this.expiration.slice(0, 2) + "/" + this.expiration.slice(2);
 

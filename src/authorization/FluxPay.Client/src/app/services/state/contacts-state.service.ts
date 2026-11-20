@@ -64,8 +64,7 @@ export class ContactsStateService {
     const deleteContact$ = this._contactsApiService.deleteContact(contactId);
     const deleteContactResult = await firstValueFrom(deleteContact$);
 
-    const contactIndex = this.contacts$.getValue().findIndex(x => x.contactId === contactId);
-    this.contacts$.getValue().splice(contactIndex, 1);
+    this.contacts$.next(this.contacts$.getValue().filter(x => x.contactId !== contactId));
 
     return deleteContactResult;
   }

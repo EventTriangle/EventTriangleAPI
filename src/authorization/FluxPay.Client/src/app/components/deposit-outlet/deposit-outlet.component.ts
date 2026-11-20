@@ -7,6 +7,7 @@ import { animate, style, transition, trigger } from "@angular/animations";
 import {TransactionsApiService} from "../../services/api/transactions-api.service";
 import {firstValueFrom} from "rxjs";
 import {CreditCardsStateService} from "../../services/state/credit-cards-state.service";
+import {MessageService} from "primeng/api";
 
 @Component({
   standalone: true,
@@ -31,7 +32,8 @@ export class DepositOutletComponent implements OnInit{
 
   constructor(
       private _transactionsApiService: TransactionsApiService,
-      private _creditCardStateService: CreditCardsStateService
+      private _creditCardStateService: CreditCardsStateService,
+      private _messageService: MessageService
   ) {}
 
   async ngOnInit() {
@@ -41,11 +43,18 @@ export class DepositOutletComponent implements OnInit{
 
   //events
   public async onClickTopUpAccountBalanceHandler() {
+    if (!this.creditCardId.trim() || !Number.isFinite(+this.amount) || +this.amount <= 0) {
+      this._messageService.add({severity: 'error', summary: 'Error', detail: 'Select a card and enter an amount greater than zero.'});
+      return;
+    }
     const topUpAccountBalance$ = this._transactionsApiService.topUpAccountBalance(this.creditCardId, +this.amount);
 
-    this.creditCardId = "";
-    this.amount = "";
-
-    await firstValueFrom(topUpAccountBalance$);
+    try {
+      await firstValueFrom(topUpAccountBalance$);
+      this.creditCardId = "";
+      this.amount = "";
+    } catch {
+      this._messageService.add({severity: 'error', summary: 'Error', detail: 'Could not submit the deposit.'});
+    }
   }
 }

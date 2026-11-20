@@ -26,6 +26,7 @@ import {DateService} from "../../services/common/date.service";
 import {ContactsStateService} from "../../services/state/contacts-state.service";
 import {UserStatus} from "../../types/enums/UserStatus";
 import {ErrorMessageConstants} from "../../constants/ErrorMessageConstants";
+import {MessageService} from "primeng/api";
 
 @Component({
   standalone: true,
@@ -97,7 +98,8 @@ export class TransactionsOutletComponent implements OnInit {
     protected _profileStateService: ProfileStateService,
     protected _contactStateService: ContactsStateService,
     protected _textService: TextService,
-    protected _dateService: DateService) {}
+    protected _dateService: DateService,
+    private _messageService: MessageService) {}
 
   async ngOnInit() {
     if (!this._profileStateService.isAuthenticated) return;
@@ -189,7 +191,14 @@ export class TransactionsOutletComponent implements OnInit {
   }
 
   async sendMoneyToUser() : Promise<void> {
-    if (Number.isNaN(+this.amount) || +this.amount <= 0) throw new Error(ErrorMessageConstants.AmountValueIsIncorrect);
+    if (!this.toUserId.trim()) {
+      this._messageService.add({severity: 'error', summary: 'Error', detail: 'Select a recipient.'});
+      return;
+    }
+    if (!Number.isFinite(+this.amount) || +this.amount <= 0) {
+      this._messageService.add({severity: 'error', summary: 'Error', detail: ErrorMessageConstants.AmountValueIsIncorrect});
+      return;
+    }
 
     const sendMoneyToUserSub$ = this._transactionsApiService.createTransactionUserToUser(this.toUserId.trim(), +this.amount);
 

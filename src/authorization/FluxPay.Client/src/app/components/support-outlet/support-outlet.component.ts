@@ -9,6 +9,7 @@ import {debounceTime, firstValueFrom, fromEvent, Subscription} from "rxjs";
 import {SupportTicketStateService} from "../../services/state/support-ticket-state.service";
 import {ISupportTicketDto} from "../../types/interfaces/consumer/ISupportTicketDto";
 import {ProfileStateService} from "../../services/state/profile-state.service";
+import {MessageService} from "primeng/api";
 
 @Component({
   standalone: true,
@@ -62,7 +63,8 @@ export class SupportOutletComponent implements OnInit, OnDestroy {
   constructor(
       private _ticketsApiService: TicketsApiService,
       protected _supportTicketStateService: SupportTicketStateService,
-      protected _profileStateService : ProfileStateService
+      protected _profileStateService : ProfileStateService,
+      private _messageService: MessageService
   ) {}
 
   async ngOnInit() {
@@ -96,10 +98,13 @@ export class SupportOutletComponent implements OnInit, OnDestroy {
 
     const openSupportTicket$ = this._ticketsApiService.openSupportTicket(walletId, this.transactionId, this.ticketReason);
 
-    this.transactionId = "";
-    this.ticketReason = "";
-
-    await firstValueFrom(openSupportTicket$);
+    try {
+      await firstValueFrom(openSupportTicket$);
+      this.transactionId = "";
+      this.ticketReason = "";
+    } catch {
+      this._messageService.add({severity: 'error', summary: 'Error', detail: 'Could not submit the ticket. Check the transaction ID and reason.'});
+    }
   }
 
   //other
