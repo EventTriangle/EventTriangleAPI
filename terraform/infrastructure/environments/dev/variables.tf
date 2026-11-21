@@ -43,7 +43,7 @@ variable "default_node_pool_type" {
 variable "system_node_count" {
   type        = number
   description = "Number of nodes in the AKS system node pool."
-  default     = 3
+  default     = 4
 
   validation {
     condition     = var.system_node_count >= 1
