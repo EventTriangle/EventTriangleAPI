@@ -32,3 +32,20 @@ module "configure_acr_access" {
   aks_identity_principal_id         = module.aks.principal_id
   aks_kubelet_identity_principal_id = module.aks.kubelet_identity_principal_id
 }
+
+resource "azurerm_kubernetes_cluster_node_pool" "redis" {
+  name                  = "redispool"
+  kubernetes_cluster_id = module.aks.id
+  vm_size               = "Standard_D4s_v5"
+  mode                  = "User"
+  node_count            = 3
+
+  node_labels = {
+    workload = "redis-enterprise"
+  }
+  node_taints = ["workload=redis-enterprise:NoSchedule"]
+
+  upgrade_settings {
+    max_surge = "1"
+  }
+}
